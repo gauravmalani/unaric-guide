@@ -1,0 +1,368 @@
+/* ============================================================================*/
+/* UX REVIEW REBRANDING */  
+/* ============================================================================*/  
+
+/* Header & header tool treatment */
+.THIS .slds-card__header * .fa-circle.fa-stack-2x 		{display: none;}
+.THIS .slds-card__header * .fa-square.fa-stack-2x 		{display: none;}
+.THIS .slds-card__header								{padding: 0.3rem 0.6rem 0.3rem !important; border-radius: 1rem 1rem 0 0 !important;}
+.THIS  .fa-stop {color: #B0BF1A;}
+
+/* Card adjustments */
+.THIS .IHCardOuterContainer								{background: transparent;}
+
+/* Generated Sub-components */
+.THIS .IHGeneratedChild * .CardBodyContainer			{background: #ffffff !important;}
+
+/* Other */
+.THIS a p.slds-truncate									{margin: auto;}
+.THIS a p.slds-truncate span.fa-stack					{display: none;}
+.THIS .slds-text-heading_small							{color: #ffffff;}
+.THIS .slds-dropdown									{border: none; border-radius: 0;}
+.THIS .HelpList.ui-resizable							{background: transparent; border: none;}
+
+.THIS .slds-dropdown__item>a:hover						{background-color: unset !important;}
+.THIS .slds-dropdown__item>a:hover:before				{content: "|";}
+
+.THIS .IHAdopter.Twisty							{display: inline; float: right;}
+.THIS .IHAdopter.RLStepSummary					{padding: 0.3rem 0 1rem 1rem;}
+
+/* ============================================================================*/
+/* CARD OVERALL STRUCTURE */  
+/* ============================================================================*/  
+
+/* Sizing shims for specialist situations */
+.THIS .IHCardOuterContainer.ChildUI		{margin: -3px;}
+
+/* History listing */
+.THIS .HistoryContainer					{width: 75%; margin: auto; padding: 0 1rem;}
+
+/* Header */
+.THIS .slds-card__header 				{padding: .75rem 1rem; margin: 0; border-radius: 0.3rem;}
+.THIS .IHCardTitle 						{padding-left: 0.3rem;}
+
+
+/* Limit spillage / growth in header tools area */
+.THIS .IHLimitSpill						{display: inline-block; width: max-content;}
+
+/* Drop down button and tools listing */
+.THIS div.IHLUXDropDown 				{border: solid 1px #dddddd; border-radius: 5px; padding: 2px; margin-right: 7px;}
+.THIS .IHCardDropDownButton 			{position: absolute; box-shadow: 0 0 0 #9faab5; margin-left: 10px; background-color: #ffffff !important;}
+
+.THIS div.IHInlineEditable				{width: 100%;}
+		
+.THIS .IHCardDropDownButton.btnActive 	{box-shadow: 0 0 2px #9faab5; }
+.THIS #IAListViewMenu 					{left: auto;}
+.THIS p.IHToolText 						{line-height: 1.875rem;	display: inline-block; height: 1.875rem; overflow: hidden;}
+
+/* Card outer container (including component padding removal for hidden implementations) */
+.THIS .IHSuppressedUI					{margin-top: -0.75rem;}
+.THIS .HasAuthorOverrides 				{font-style: italic;}
+
+/* Card Body */
+.THIS .IHFullHeight						{height: 100%;}
+.THIS .CardBodyContainer 				{width: 100%; margin: 0; padding: 0; overflow-x: hidden; overflow-y: auto;}
+.THIS .CardBodyContainer.EditMode 		{xoverflow: hidden;}
+.THIS .CardBody 						{width: 100%;}
+.THIS .CardBodyAutoHeight_false			{height: 100%;}
+.THIS .NoDataMessage, .THIS * .NoDataMessage					{width: 100%; height: 100%; font-size: 2em; color: #dddddd; text-align: center; padding: 20px; }
+.THIS .IHModifiedMarker					{margin-right: 10px; vertical-align: unset;}
+
+/* Card Footer */
+.THIS .DiagsText 						{display: inline-block; margin: 0.5rem;}
+.THIS .DebugMode 						{color: red;}
+.THIS .IAFooterTools					{float: right; padding: 2px;}
+.THIS .IAFooterTool						{margin-left: 0.3rem;}
+.THIS .IHFooterTool						{text-align: center;}
+
+.THIS .IHCardFooter						{}
+.THIS .IHCardFooterLogo					{width: 0px; height: 17px; margin: auto; border-radius: 0.4rem 0.4rem 0 0;
+	 										background-size: 100px; background-position-y: 5px; background-position-x: 20px; background-repeat: no-repeat;}
+
+.THIS .IHCardFooterLogoExpanded			{width: 140px !important; margin: -2px auto;}
+.THIS .IHCardFooterLogoLight			{background-image: url(/resource/iahelp__IHSupportMaterials/img/logos/IALogoLight.svg);}
+.THIS .IHCardFooterLogoDark				{background-image: url(/resource/iahelp__IHSupportMaterials/img/logos/IALogoDark.svg);}
+
+.THIS .IHCardFooterOnLogo				{}
+.THIS .IHCardFooterOffLogo				{position: relative; top: -17px;}
+.THIS .IHPBSuppressor					{height: 1px; position: relative; top: 17px; width: 100%;}				
+
+.THIS .slds-card__footer 				{padding: 0 0.7rem !important; margin: 0;}
+
+
+/* ============================================================================*/
+/* ACCORDIONS */  
+/* ============================================================================*/  
+.THIS .ModeSpecificTools				{border: solid 0.1rem #dddbda; border-top: none; border-radius: 0 0 5px 5px;}
+.THIS .IHToolPanel						{border-radius: 5px; background: #ccc; padding: 5px;}
+.THIS .FixedMode						{position: fixed;}
+.THIS .nodeExpanded 					{transform: rotate(90deg);}
+
+/* ============================================================================*/
+/* STENCILS AND SPINNERS */  
+/* ============================================================================*/  
+.THIS .IASpinner						{color: #999; padding: 3rem; overflow: hidden;}
+
+.THIS .IHStencil 						{display: block; width: 100%; margin: .75rem; margin-top: 1.3rem; vertical-align: top; overflow: hidden;}
+.THIS .IHStencil .section				{display: block; clear: both;}
+.THIS .IHStencil * .TwoCol				{display: inline-block; width: 50%; float: left;}
+.THIS .IHStencil * hr					{width: calc(100% - 2.5rem); margin: 0.25rem; border-color: #f3f3f3;}
+.THIS .IHStencil * .text				{display: block; clear: right; background-color: #eee; height: .6rem; border-radius: 100px; margin: 5px 0; width: 50%;}
+.THIS .IHStencil * .text:first-child	{margin-top: 0; height: 1rem;}
+.THIS .IHStencil * .text:nth-child(2)	{min-width: calc(100% - 2rem);}
+.THIS .IHStencil * .media 				{display: block; height: 10rem; background-color: #eee; width: calc(100% - 2rem); margin: 5px 0;} 
+.THIS .IHStencil * .row1 * 				{opacity: 0.9;}
+.THIS .IHStencil * .row2 * 				{opacity: 0.8;}
+.THIS .IHStencil * .row3 * 				{opacity: 0.7;}    
+.THIS .IHStencil * .row4 * 				{opacity: 0.6;}    
+.THIS .IHStencil * .row5 * 				{opacity: 0.5;}    
+.THIS .IHStencil * .row6 * 				{opacity: 0.4;}    
+.THIS .IHStencil * .row7 * 				{opacity: 0.3;}    
+.THIS .IHStencil * .row8 * 				{opacity: 0.2;}
+.THIS .IHStencil * .row9 * 				{opacity: 0.1;}    
+
+/* ============================================================================*/ 
+/* CARD IMPLEMENTATIONS */
+/* ============================================================================*/ 
+
+/* Diagnostics feedback */
+.THIS .IHError							{color: red; font-style: italic;} 
+
+/* Recently modified content marking */
+.THIS .IHCollateralUpdated 				{background: none !important; border-left: dashed 3px gold;}
+
+/* Help Enabling classes */
+.THIS .IATool.New,.THIS .IATool.Add,.THIS.IATool.Clone,.THIS.IATool.Save,.THIS.IATool.Submit	{color: green;}
+.THIS .IATool.Delete,.THIS.IATool.Cancel,.THIS.IATool.Remove	{color: red;}
+.THIS .ToBeUnhelped * .IATool.Delete 	{color: white;}
+
+/* General data entry */
+.THIS ::placeholder						{color: #CF5668; font-style: italic;}
+
+
+.THIS.IHClickable, .THIS .IHClickable 			{cursor: pointer; 
+												font-weight: bold; 												
+												width: 80px; 
+												padding: 3px; 
+												margin: 3px;
+												display: inline-block;
+												text-align: center;
+												border: solid grey 1px; 
+												border-radius: 1rem;}
+
+/* ============================================================================*/ 
+/* CONFIGURATION TOOLS */
+/* ============================================================================*/ 
+
+/* Icon and tool specialisation */        
+.THIS .txtSearch, .THIS .txtTreeSearch	{width: 125px !important;}
+.THIS .ExtensionTool					{color: red;}
+.THIS .BookmarkAdd     					{color: green !important;}
+.THIS .BookmarkRemove     				{color: maroon !important;}
+.THIS .IATool.Active.Dark				{color: lightgreen;}
+.THIS .IATool.Inactive.Dark				{color: gray;}
+.THIS [class*="IATool"]					{cursor: pointer;}
+.THIS .IconContentEllipsis 				{position: relative; font-weight: bold; font-size: 0.6em; top: -2px;}
+.THIS #FocusPuller						{position: absolute; z-index: -1; height: 0px; width: 0px;}
+.THIS .IHToolIconContent				{margin-top: -0.2em;}
+.THIS .IHEllipsisMenuContainer			{display: inline-block;}	
+.THIS .IHEllipsisMenuTool				{display: inline-block; text-align: center;}	
+.THIS span.WhiteText span.IconContentEllipsis {color: #ffffff;}
+
+/* For tools that are capable of responding to selections, e.g., on a listing */
+.THIS .SelectionControlled.HasSelections {color: green !important;}
+
+/* ... including the "drop target" header tool (drag & drop text to search) */
+.THIS span.DropSupport         			{display: none;}
+.THIS input.DropSupport, .THIS .Draggable     {font-size: 1.9em; text-align: center; width: 40px; color: rgb(22, 50, 92); 
+												border: none; border-radius: 6px; padding: 0 0 3px; margin: 3px 5px; }
+.THIS .DropSearch     					{background-color: #ffee77; cursor: zoom-in;}
+.THIS .DropNewTopic     				{background-color: #ffeeee; cursor: crosshair; }
+.THIS .Draggable     					{background-color: #88ff88;font-size: 1.6em !important; cursor: move; }
+
+/* Classes for toggling tool visibility (e.g., collapse / expand list) where slds-hide is non-functional */
+.THIS .toggleOn         				{display: block !important;}
+.THIS .toggleOff        				{display: none !important;}
+
+/* Rotate FontAwesome icons */
+.THIS .fa-rotate-45 					{-webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); transform: rotate(45deg);}
+
+/* [Temporary?] classes for header tool support controls */
+.THIS .IHNarrow         				{float: left; width: 70%;}
+.THIS .IHHeaderToolsContainer			{width: max-content;}
+.THIS .IHHeaderSupportTool				{display: inline-block;}
+
+/* Marker for tools etc. that have yet to be fully implemented */
+.THIS .WIP 								{border-right: dashed 1px red;}
+
+/* Body tools */
+.THIS .microTools						{position: sticky; top: 0; width: 100%; text-align: center;}
+.THIS .microTools span					{padding: 0 0.2rem;}
+.THIS .microTool						{cursor: pointer; font-size: 1.0rem; padding-left: 0.4rem;}
+.THIS .microTool:hover					{color: grey;}
+
+
+/* Ellipsis menu items */
+
+.THIS li.IAEllipsisItem 				{width: 100%;}
+
+/* ============================================================================*/ 
+/* CALLOUTS */ 
+/* ============================================================================*/  
+.THIS.IsFixed 							{position: fixed;}
+.THIS.IsAbsolute 						{position: absolute;}
+.THIS.HelpCalloutContainer 				{z-index: +1; }
+.THIS .IHCalloutIframe					{width: 95%; margin: -0.8rem;}
+
+/* Callout pending / waiting spinner */        
+.THIS .IHTipPending 					{background: rgba(255,255,255,0.7) url(/resource/iahelp__IHResources/img/loading.gif) no-repeat center;}
+
+
+/* ============================================================================*/ 
+/* ITEMS PORTED FROM BRAND LIGHTNING CSS */ 
+/* ============================================================================*/  
+
+/*----------------------------------------------------------*/
+/* Embedded Help */
+/*----------------------------------------------------------*/
+
+/* Helped Element Icon  */
+.THIS .IHClickHelper {width: 0px; height: 16px;}
+
+/* Helped Element hover styling */
+.THIS .IHClickHelper:hover {background-color: #E0E6F7;}
+
+/* Created / Last Modified Date auto-form label extensions */
+@media (min-width: 48em) {.THIS .IHFieldPart2 {position: relative; top: -2rem; padding-left: 66%;} }
+
+
+/*----------------------------------------------------------*/
+/* Configuration Item clickables */
+/*----------------------------------------------------------*/
+
+.THIS .microTool.IHBackBodyTool {float: left; padding: 0.5rem; font-size: 1.2rem;}
+
+
+/*----------------------------------------------------------*/
+/* Topic styling */
+/*----------------------------------------------------------*/
+
+/* Parsed keyword links */
+.THIS a.IHKeyword {border-bottom: dotted 1px blue;}
+
+/* Help Topic Viewer Image size */
+.THIS .IHDetailMediaImage {width: unset !important; background-size: contain !important;}
+
+
+/*----------------------------------------------------------*/
+/* Utility1 in Utility bar: simplify component borders */
+/*----------------------------------------------------------*/
+
+.THIS div.oneUtilityBar div.HelpList {border: none; box-shadow: none;}
+.THIS div.oneUtilityBar div.iahelpIHUtility1 div.iahelpIHDetail {border-left: 1px solid silver;}
+
+
+/* Help Index Global Action refinements */
+/* NB: the latter 2 of these directives rely on creation of a wrapper component with a container DIV, class = HelpIndexUtilityGlobalAction */
+
+.THIS .slds-docked-composer {overflow-y: auto;}
+.THIS .HelpIndexUtilityGlobalAction > div {padding: 0;}
+.THIS .HelpIndexUtilityGlobalAction div.iahelpIHDetail {border-left: none !important;}
+
+
+/*----------------------------------------------------------*/
+/* Trees - flowchart icons */
+/*----------------------------------------------------------*/
+
+/* Hide standard node icons */
+.THIS .Flowchart > div.TreeNodeClickableContainer a.DropTarget span i,
+.THIS .FlowchartStart > div.TreeNodeClickableContainer a.DropTarget i,
+.THIS .FlowchartStop > div.TreeNodeClickableContainer a.DropTarget i,
+.THIS .FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget i,
+.THIS .FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget i,
+.THIS .FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget i {color: transparent !important;background: transparent;}
+
+
+/* Create Flowchart Node decorations */
+.THIS .Flowchart > div.TreeNodeClickableContainer a.DropTarget span,
+.THIS .FlowchartStart > div.TreeNodeClickableContainer a.DropTarget span,
+.THIS .FlowchartStop > div.TreeNodeClickableContainer a.DropTarget span,
+.THIS .FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget span,
+.THIS .FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget span,
+.THIS .FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget span {display: inline-block;vertical-align: middle;margin-right: 0.75rem;width: 1.5rem;height: 1.5rem;}
+.THIS .Flowchart > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Business_Process.png") no-repeat center / contain;}
+.THIS .FlowchartStart > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Start.png") no-repeat center / contain;}
+.THIS .FlowchartStop > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Stop.png") no-repeat center / contain;}
+.THIS .FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Process.png") no-repeat center / contain;}
+.THIS .FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_SubProcess.png") no-repeat center / contain;}
+.THIS .FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget span {display: inline-block;vertical-align: middle;margin-right: 0.75rem;width: 1.5rem;height: 1.5rem;background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Decision.png") no-repeat center / contain;}
+
+
+/*----------------------------------------------------------*/
+/* SLDS-BASED COLOUR HIGHLIGHTS / CUSTOM STYLES */
+/*----------------------------------------------------------*/
+
+/* Fore colours, for tool styling etc */
+.THIS .IATool.ToolTangerine {color: #ff9a3c !important;} 
+.THIS .IATool.ToolDarkBlue{color: #16325c !important;} 
+.THIS .IATool.ToolDarkGrey{color: #706e6b !important;}
+.THIS .IATool.ToolMahogany{color: #c23934 !important;} 
+
+
+/* ============================================================================*/        
+/* LEGACY CUSTOM STYLE SUPPORT */        
+/* ============================================================================*/        
+
+.THIS.DemoRedAlert.IHHelpedSFElement   {color: red !important;}
+.THIS.DemoAmberAlert.IHHelpedSFElement {color: orange !important;}
+.THIS.DemoGreenAlert.IHHelpedSFElement {color: green !important;}
+
+.THIS.DemoHelpChanged.IHHelpedSFElement:before {content: "!!"; color: magenta; padding-right: 5px;}
+.THIS.DemoHelpChanged.IHHelpedSFElement:hover:before {content: "Help Updated!"; color: magenta; padding-right: 5px;}
+
+/* LUX Component support */
+.THIS li.DemoRedAlert { background-color: #ffdddd;}
+.THIS tr.DemoRedAlert { background-color: #ffdddd;}
+.THIS div.DemoRedAlert * { color: red;}
+.THIS div.DemoRedAlert.slds-tree__item {background-color: #ffdddd;}
+
+.THIS li.DemoAmberAlert { background-color: #FFCC66;}
+.THIS tr.DemoAmberAlert { background-color: #FFCC66;}
+.THIS div.DemoAmberAlert * { color: orange; }
+.THIS div.DemoAmberAlert.slds-tree__item {background-color: #FFCC66;}
+
+.THIS li.DemoGreenAlert { background-color: #66ff66;}
+.THIS tr.DemoGreenAlert { background-color: #66ff66;}
+.THIS div.DemoGreenAlert * { color: green; }
+.THIS div.DemoGreenAlert.slds-tree__item {background-color: #66ff66;}
+
+
+/* ============================================================================*/        
+/* LUX STYLES CONTENT BEYOND HERE... */        
+/* ============================================================================*/        
+
+/* Backgrounds, for topic attributes etc */
+.THIS tr.LUXRed, .THIS li.LUXRed, .THIS .slds-tree__item.LUXRed, .THIS .LUXRed * .IHLUXDetailSummary, .THIS .LUXRed.IHCustomStyled									{background-color: #ffdde1 !important;}	/*SLDS Pippin*/
+.THIS tr.LUXAmber, .THIS li.LUXAmber, .THIS .slds-tree__item.LUXAmber, .THIS .LUXAmber * .IHLUXDetailSummary, .THIS .LUXAmber.IHCustomStyled							{background-color: #faffbd !important;}	/*SLDS Lemon Chiffon*/
+.THIS tr.LUXGreen, .THIS li.LUXGreen, .THIS .slds-tree__item.LUXGreen, .THIS .LUXGreen *.IHLUXDetailSummary, .THIS .LUXGreen.IHCustomStyled							{background-color: #d9ffdf !important;}	/*SLDS Snowy mint*/
+.THIS tr.LUXLightBlue, .THIS li.LUXLightBlue, .THIS .slds-tree__item.LUXLightBlue, .THIS .LUXLightBlue * .IHLUXDetailSummary, .THIS .LUXLightBlue.IHCustomStyled		{background-color: #d8edff !important;}	/*SLDS Patten Blue*/
+.THIS tr.LUXDarkBlue, .THIS li.LUXDarkBlue, .THIS .slds-tree__item.LUXDarkBlue, .THIS .LUXDarkBlue * .IHLUXDetailSummary, .THIS .LUXDarkBlue.IHCustomStyled			{background-color: #16325c !important;}	/*SLDS Biscay*/
+.THIS tr.LUXLightGrey, .THIS li.LUXLightGrey, .THIS .slds-tree__item.LUXLightGrey, .THIS .LUXLightGrey * .IHLUXDetailSummary, .THIS .LUXLightGrey.IHCustomStyled		{background-color: #f3f2f2 !important;}	/*SLDS Pattern Grey 3*/
+.THIS tr.LUXDarkGrey, .THIS li.LUXDarkGrey, .THIS .slds-tree__item.LUXDarkGrey, .THIS .LUXDarkGrey * .IHLUXDetailSummary, .THIS .LUXDarkGrey.IHCustomStyled			{background-color: #706e6b !important;}	/*SLDS Pattern Grey 9*/
+
+/* For dark / "reverse" colours above, mostly set white text... */
+.THIS tr.LUXDarkBlue * a, .THIS li.LUXDarkBlue * a, .THIS tr.LUXDarkBlue * p, .THIS li.LUXDarkBlue * p, 
+	.THIS tr.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+	.THIS li.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+	.THIS .slds-tree__item.LUXDarkBlue *,
+	.THIS .LUXDarkBlue * .IHLUXDetailSummary, .THIS .LUXDarkBlue * .IHLUXDetailName 		{color: #ffffff;}
+	
+.THIS tr.LUXDarkGrey * a, .THIS li.LUXDarkGrey * a, .THIS tr.LUXDarkGrey * p, .THIS li.LUXDarkGrey * p, 
+	.THIS tr.LUXDarkGrey * div:not([class*="ListingToolsBlock"]), 
+	.THIS li.LUXDarkGrey * div:not([class*="ListingToolsBlock"]),
+	.THIS .slds-tree__item.LUXDarkGrey *, 
+	.THIS .LUXDarkGrey * .IHLUXDetailSummary, .THIS .LUXDarkGrey * .IHLUXDetailName		{color: #ffffff;}	
+
+/* ... but with the exception of ellipsis buttons for contracted tools area */
+.THIS .LUXDarkBlue * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}	
+.THIS .LUXDarkGrey * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}

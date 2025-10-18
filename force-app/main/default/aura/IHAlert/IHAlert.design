@@ -1,0 +1,47 @@
+<design:component label="IHAlert">
+
+	<design:attribute name="Title" 
+	                label="Title" 
+	                description="" 
+	                default="Title"
+                    required="true" />
+    
+	<design:attribute name="Height" 
+	                label="Height" 
+	                description="" 
+	                default="-1"
+                    required="false" />
+    
+	<design:attribute name="Message" 
+	                label="Message" 
+	                description="" 
+	                default="Message"
+                    required="true" />	
+
+	<design:attribute name="Image" 
+	                label="Image" 
+	                description="" 
+	                default="/resource/IHREsources/img/grabs/cogs.png"
+                    required="true" />	
+
+	<design:attribute name="ToolContext" 
+	                label="Tool Context" 
+	                description="" 
+	                default="CardHelpTopic"
+                    required="true" />	
+
+	<design:attribute name="Style" 
+	                label="Style" 
+	                description="" 
+	                default="Two Column"
+	                datasource="Single Column,Two Column"
+                    required="true" />	
+    
+    <design:attribute name="componentDef" 
+	                label="Component Definition" 
+	                description="" 
+	                default=""
+                    required="false" />
+                                     
+
+</design:component>

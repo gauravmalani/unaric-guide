@@ -1,0 +1,196 @@
+<!--
+============================================================================================== 
+CALLOUT PRESENTING BOTH IMAGE AND VIDEO MEDIA, FLOATING AT THE LEFT OF THE PAGE, WITH 
+TOPIC SUMMARY AND DESCRIPTION AT THE RIGHT. MEDIA SIZED AT 20% OF SCREEN WIDTH / AR HEIGHT
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)
+
+Martin Little for Improved Apps
+January 2016
+Copyright (c.) Improved Apps Limited 2016. All Rights Reserved.
+============================================================================================== 
+ -->
+
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="false"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+                
+    <head>      
+        <apex:stylesheet value="{!BrandCSS}" />        
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+
+        <style>
+            .Container              {height: Calc(100% - 10px); margin-top: 5px; margin-right: 5px; overflow-y: auto;}
+            #dvMedia                {padding: 5px 10px 5px 10px; float: left; width: 20%;}
+            #dvMediaLUX             {padding: 5px 10px 5px 10px; float: left; width: 25%;}
+            #dvContent              {padding: 5px 10px 5px 10px;}
+            #dvPrimaryMedia         {padding: 5px;}
+            #dvSecondaryMedia       {padding: 5px;}
+            #dvSummary              {}
+            #dvDescription          {margin-top: 15px;}
+            
+            #dvDescriptionLUX       {background-color: #ffffff; padding: 0.75rem;}
+            #dvContentLUX           {width: 75%; float: right;}            
+            
+            .IHWide {width: 100% !important;}            
+        </style>
+
+        <script>
+            function initialise() {
+                var x = document.getElementsByTagName('iframe')[0];
+                var y = document.getElementsByTagName('img')[0];
+                x.setAttribute("style", "width: 100%; height: auto;");
+                y.setAttribute("style", "width: 100%; height: auto;");
+            }
+        </script>
+
+        <apex:slds rendered="{!isIHLUX==true}" />
+    </head>
+    
+
+    <body onload="javascript:initialise();" class="Dialogue {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">
+        <apex:form >
+        
+<!--   
+===============================================
+CLASSIC TREATMENT
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!!isIHLUX}"> 
+                <div class='Callout Bubble' style="position: absolute; height: Calc(100% - 40px); width: Calc(100% - 20px);">
+                    <div class='Container'>
+                    
+                        <div id='dvMedia'>
+                            <div id='dvPrimaryMedia'>
+                                <apex:iframe width="{!TVWidth}px" height="{!TVHeight}px" frameborder="false" src="{!TVURL}" />
+                            </div>
+                            
+                            <div id='dvSecondaryMedia'>
+                                <apex:image width="{!TImageWidth}px" height="{!TImageHeight}px" alt="{!TImageTitle}" value="{!TImageURL}" /> 
+                            </div>
+                        </div>
+        
+                        <div id='dvContent'>
+                        
+                            <!-- Share, Like and other tools -->
+                            <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                        
+                            <div id='dvSummary'>
+                                                        
+                                <div class='IH-H3'>
+                                    <!-- Show topic summary as a link if read more is allowed -->
+                                    <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                    title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                    value="{!JSENCODE(TMoreLinkHref)}" 
+                                                    onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                    target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+                    
+                                        <div class='MoreLink'>
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="[" />
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor || Hlp.ShowReadMoreLink__c == true, true, false)}" value="{!TSummary}" />
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="]" />
+                                        </div>
+                                    </apex:outputLink>                        
+                                </div>
+                                
+                            
+                                <!-- Show topic summary text only (no link) if read more is NOT allowed -->
+                                <div class="MoreLinkDisabled">
+                                    <apex:outputText escape="true" rendered="{!IF(!isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="{!TSummary}" ></apex:outputText>   
+                                </div>
+                                
+                            </div>
+    
+                            <div id='dvDescription'>
+                                <apex:outputField value="{!Hlp.Description__c}" />
+                            </div>                  
+    
+                        </div>
+    
+                    </div>
+                </div>
+            </apex:pageBlock>
+            
+<!--   
+===============================================
+LIGHTNING TREATMENT
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!isIHLUX}">
+                <div style="padding: 1rem; position: absolute; height: 100%;" class='{!TCSSClass}'>
+                    <section style="height: 100%;" class="{!CustomStyle} {!LUXNubbinClass} slds-popover IHWide IHCustomStyled">
+                    
+                        <div class='Container'>
+                            <div id='dvMediaLUX'>
+                                <div id='dvPrimaryMedia'>
+                                    <apex:iframe width="100%" height="{!TVHeight}px" frameborder="false" src="{!TVURL}" />
+                                </div>
+                                
+                                <div id='dvSecondaryMedia'>
+                                    <apex:image width="100%" alt="{!TImageTitle}" value="{!TImageURL}" /> 
+                                </div>
+                            </div>
+            
+                            <div id='dvContentLUX' class="slds-popover__body">
+                            
+                                <div id='dvSummary'>
+                                
+                                    <header class="slds-popover__header">
+                                        <h2 class="slds-text-heading_small">
+        
+                                            <!-- Show topic summary as a link if read more is allowed -->
+                                            <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                            title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                            value="{!JSENCODE(TMoreLinkHref)}" 
+                                                            onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+                            
+                                                <div class='MoreLink IHLUXDetailSummary'>
+                                                    <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="[" />
+                                                    <apex:outputText escape="true" rendered="{!IF(isAuthor || Hlp.ShowReadMoreLink__c == true, true, false)}" value="{!TSummary}" />
+                                                    <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="]" />
+                                                </div>
+                                            </apex:outputLink>                        
+        
+                                            <!-- Show topic summary text only (no link) if read more is NOT allowed -->
+                                            <div class="MoreLinkDisabled IHLUXDetailSummary">
+                                                <apex:outputText escape="true" rendered="{!IF(!isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="{!TSummary}" ></apex:outputText>   
+                                            </div>
+        
+                                        </h2>
+                                    </header>
+                                    
+                                </div>
+                                
+    
+                                <!-- Share, Like and other tools -->
+                                <div style="margin: 0.75em;">
+                                    <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                </div>
+                                
+        
+                                <div id='dvDescriptionLUX' >
+                                    <apex:outputField value="{!Hlp.Description__c}" />
+                                </div>                  
+        
+                            </div>
+        
+                        </div>
+                        
+                    </section>
+                </div>
+            </apex:pageBlock>
+            
+        </apex:form>
+    </body>
+</apex:page>

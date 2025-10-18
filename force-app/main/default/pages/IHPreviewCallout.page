@@ -1,0 +1,49 @@
+<!--
+============================================================================================== 
+"CONTAINER" PAGE FOR PREVIEWING A TOPIC'S CALLOUT TEMPLATE. LOADS AN IFRAME TO DO THIS,
+SIZING IT TO SHOW AT CALLOUT HEIGHT...
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID), I.E:
+
+    [SF base URL]/Apex/IHPreviewCallout?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/IHPreviewCallout?ElemID=[helped element id]
+    
+NB: This page is NOT currently help enabled (but the templates in the IFRAME may be)
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+                
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+
+    <body class='Page'>
+
+        <div class='IH-H3' style='margin: 10px;'>
+            {!DialogueLocalisations['TitleDialogueTitle']} - {!TName}
+        </div>    
+    
+        <div class='TopicSummary' style="margin: 10px;">
+            {!DialogueLocalisations['AdviceLabelMain']}
+        </div>              
+    
+        <div id='CalloutWrapper' >                     
+            <iframe style='border: 0; width: 100%; height: {!Hlp.CalloutHeight__c}px;' scrolling='no' src='{!TCalloutPreviewLink}' id='tfrmContent' />
+        </div>  
+            
+    </body>
+                
+</apex:page>

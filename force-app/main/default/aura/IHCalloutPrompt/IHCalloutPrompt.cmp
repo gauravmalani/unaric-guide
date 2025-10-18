@@ -1,0 +1,244 @@
+<aura:component>
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+	<aura:handler name="change" value="{!v.OpMode}" action="{!c.enforceEditingRights}"/>
+	<aura:handler name="change" value="{!v.AllowEdits}" action="{!c.enforceEditingRights}"/>
+	<aura:handler name="change" value="{!v.VideoURL}" action="{!c.validateVURL}"/>
+	<aura:handler name="change" value="{!v.ImageURL}" action="{!c.validateIURL}"/>
+
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+	<lightning:navigation aura:id="navService"/>
+
+<!-- 
+================================================
+Internationalised values for use in mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelModified" type="string" required="false" default="Modified" access="public" />
+	<aura:attribute name='FieldLabelName' type='string' required='false' default='' access='global' />
+	<aura:attribute name='FieldLabelSummary' type='string' required='false' default='' access='global' />
+	<aura:attribute name='FieldLabelImageURL' type='string' required='false' default='' access='global' />
+	<aura:attribute name='FieldLabelVideoURL' type='string' required='false' default='' access='global' />
+	<aura:attribute name="TipButtonClose" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGenericEdit" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipView" type="string" required="false" default="" access="global" />
+	<aura:attribute name='QAMAdviceLabelGuideStepCounter1' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMAdviceLabelGuideStepCounter2' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMTitleButtonGotoNextStep' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMButtonGotoNextStep' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMMessageGuideStepsCompleted' type='string' required='false' default='' access='public' />
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+	<aura:attribute name="Parent" type="Object" required="true" default="" access="global" />
+    <aura:attribute name="ComponentId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="OpMode" type="string" required="true" default="View" access="public" />    
+    <aura:attribute name="AllowEdits" type="boolean" required="true" default="false" access="public" />    
+	<aura:attribute name="ReadingListType" type="string" required="true" default="1" access="public" />		<!-- Linear=1, Non=2 -->
+	
+	<aura:attribute name="CurrentRecord" type="sObject" required="false" access="public" />    
+	<aura:attribute name="CurrentRecordId" type="string" required="false" default="" access="public" />    
+	<aura:attribute name="HeaderText" type="string" required="false" default="" access="public" />
+	<aura:attribute name="BodyText" type="string" required="false" default="" access="public" />
+	<aura:attribute name="ImageURL" type="string" required="false" default="" access="public" />
+	<aura:attribute name="VideoURL" type="string" required="false" default="" access="public" />
+	<aura:attribute name="ShowCallout" type="boolean" required="false" default="false" access="public" />
+	
+	<aura:attribute name="CurrentLocalStep" type="integer" required="true" default="1" access="public" />
+	<aura:attribute name="TotalLocalSteps" type="integer" required="true" default="1" access="public" />
+    <aura:attribute name="GuidedFields" type="List" required="false" default="[]" access="public" />
+    <aura:attribute name="CurrentField" type="string" required="false" default="" access="public" />
+    <aura:attribute name="NubbinClass" type="string" required="false" default="slds-nubbin_bottom-left" access="public" />
+
+    <aura:attribute name="NextGuide" type="string" required="false" default="" access="public" />
+
+    <aura:attribute name="isInitialised" type="boolean" required="false" default="false" access="public" />
+    <aura:attribute name="isDirty" type="boolean" default="false" access="public" />
+
+
+	<div class="{!v.NubbinClass}">
+
+		<section id="PromptPopover" class="{! 'slds-popover slds-popover_walkthrough ' + v.NubbinClass}"
+				role="dialog"
+				aria-describedby="PromptMessage"
+				aria-labelledby="PromptMessage">
+
+<!--
+========================================================
+Tools / close button
+========================================================
+-->						
+			<button type="button" class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse"
+					disabled="{!v.AllowEdits}" 
+					title="{!v.TipButtonClose}" 
+					onclick="{!c.requestClose}">
+				
+				<span class="fa-stack fa-lg">
+				    <i class="fa fa-times" aria-hidden="true"></i>
+				</span>
+	
+				<span class="slds-assistive-text">
+					{!v.TipButtonClose}
+				</span>
+			</button>			
+
+			<button type="button" class="{! v.AllowEdits == true ? 'slds-button' : 'slds-hide'}" onclick="{!c.toggleOpMode}">
+			
+				<span class="{! v.OpMode == 'View' ? 'fa-lg IATool BookmarkAdd fa-stack' : 'slds-hide'}">
+					<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+					<i class="fa fa-toggle-on fa-stack-1x fa-inverse" aria-hidden="true" title="{!v.TipGenericEdit}"></i>
+					
+					<span class="sr-only">
+						{!v.TipGenericEdit}
+					</span>
+				</span>		
+			
+				<span class="{! v.OpMode == 'Edit' ? 'fa-lg IATool BookmarkRemove fa-stack' : 'slds-hide'}">
+					<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+					<i class="fa fa-toggle-off fa-stack-1x fa-inverse" aria-hidden="true" title="{!v.TipView}"></i>
+					
+					<span class="sr-only">
+						{!v.TipView}
+					</span>
+				</span>		
+				
+			</button>
+
+<!--
+========================================================
+Data modified marker
+========================================================
+-->		
+			<span class="{! v.isDirty == true ? 'slds-badge DataModifiedMarker' : 'slds-hide DataModifiedMarker'}">
+				{!v.AdviceLabelModified}
+			</span>                                    
+	
+<!--
+========================================================
+Prompt Header - always shown
+========================================================
+-->
+			<header class="slds-popover__header slds-p-vertical_medium">
+				<h2 id="PromptMessage" class="slds-text-heading_medium">
+			
+					<div class="{! v.OpMode == 'View' ? '' : 'slds-hide'}">
+						{!v.HeaderText}
+					</div>
+					
+					<div class="{! v.OpMode == 'Edit' ? '' : 'slds-hide'}">
+						<lightning:input variant="label-hidden" type="text" maxlength="80" value="{!v.HeaderText}" onfocus="{!c.markInitialised}" onchange="{!c.setDirty}" placeholder="{! '[' + v.FieldLabelName + ']'}" class="GPHeaderText" />
+					</div>
+					
+				</h2>
+			</header>
+		
+<!--
+========================================================
+Prompt Body - shown if there's at least 1 element to show
+Body text ignored (treated as blank) if set to "NEW" (the default value)
+========================================================
+-->
+			<div id="PromptBody" class="{! v.OpMode == 'Edit' || 
+												(v.BodyText != '' &amp;&amp; v.BodyText != null &amp;&amp; v.BodyText != 'NEW') || 
+												(v.ImageURL != '' &amp;&amp; v.ImageURL != null) || 
+												(v.VideoURL != '' &amp;&amp; v.VideoURL != null)
+										? 'slds-popover__body' : 'slds-hide'}">
+			
+				<div id="PromptBodyText">
+					<div class="{! v.OpMode == 'View' &amp;&amp; v.BodyText != 'NEW' ? '' : 'slds-hide'}">
+						{!v.BodyText}
+					</div>
+					<div class="{! v.OpMode == 'Edit' ? '' : 'slds-hide'}">
+						<lightning:textarea variant="label-hidden" maxlength="255" value="{!v.BodyText}" onfocus="{!c.markInitialised}" onchange="{!c.setDirty}" placeholder="{! '[' + v.FieldLabelSummary + ']'}" class="GPBodyTextArea" rows="3" />
+					</div>
+				</div>
+			
+<!-- 
+1.41: HIDING IMAGE AND VIDEO EDITING CONTROLS UNTIL THESE CAN BE USED TO SAVE DATA
+ALSO NEED TO ADD SHOW CALLOUT CHECKBOX, SAVE THIS AND IMPLEMENT IN LUX GUIDES
+ -->			
+			
+				<div class="{! v.OpMode == 'View' ? '' : 'slds-hide'}">
+					<div class="{! v.ImageURL != '' &amp;&amp; v.ImageURL != null &amp;&amp; v.ImageURL + '' != 'null' ? '' : 'slds-hide'}" >
+						<img class="PromptImage" src="{!v.ImageURL}" />
+					</div>
+				</div>
+				<div class="{! v.OpMode == 'XEdit' ? '' : 'slds-hide'}">
+					<lightning:input variant="label-hidden" type="text" maxlength="255" value="{!v.ImageURL}" onfocus="{!c.markInitialised}" onchange="{!c.setDirty}" onblur="{!c.IURLBlur}" placeholder="{! '[' + v.FieldLabelImageURL + ']'}" class="GPBodyText" />			
+				</div>
+			
+			
+				<aura:if isTrue="{! v.OpMode == 'View'}">
+					<div class="{! v.VideoURL != '' &amp;&amp; v.VideoURL != null ? 'VideoIframeContainer' : 'slds-hide VideoIframeContainer'}">
+						<aura:if isTrue="{!v.VideoURL != '' &amp;&amp; v.VideoURL != null &amp;&amp; v.VideoURL + '' != 'null'}">				
+							<iframe class="VideoIframe" frameborder="0" src="{!v.VideoURL}" />	
+						</aura:if>							
+					</div>	
+				</aura:if>
+				<div class="{! v.OpMode == 'XEdit' ? '' : 'slds-hide'}">
+					<lightning:input variant="label-hidden" type="text" maxlength="255" value="{!v.VideoURL}" onfocus="{!c.markInitialised}" onchange="{!c.setDirty}" onblur="{!c.VURLBlur}" placeholder="{! '[' + v.FieldLabelVideoURL + ']'}" class="GPBodyText" />			
+				</div>
+			
+			</div>
+
+<!--
+========================================================
+Footer navigation - Linear (disabled if editing)
+========================================================
+-->		
+			<footer class="slds-popover__footer">
+				<aura:if isTrue="{! v.ReadingListType + '' == '1'}">
+					<div id="IHNextStepIcon" class="slds-grid slds-grid_vertical-align-center">
+							
+						<span id="IHFooterText" class="slds-text-title">
+							{!v.QAMAdviceLabelGuideStepCounter1}&nbsp;
+							{!v.CurrentLocalStep}&nbsp;
+							{!v.QAMAdviceLabelGuideStepCounter2}&nbsp;
+							{!v.TotalLocalSteps}
+						</span>	            											
+		
+						<button type="button" class="slds-button slds-button_brand slds-col_bump-left" disabled="{!v.AllowEdits}"					
+								title="{!v.QAMTitleButtonGotoNextStep}" 
+								onclick="{!c.showNextStep}">
+							{!v.QAMButtonGotoNextStep}
+						</button>
+					</div>
+				</aura:if>
+			
+<!--
+========================================================
+Footer navigation - Non-Linear (disabled if editing)
+========================================================
+-->	
+				<aura:if isTrue="{! v.ReadingListType + '' == '2'}">	
+					<div class="slds-form-element">			
+						<label class="slds-form-element__label slds-assistive-text" for="stepList">
+							{!v.QAMAdviceLabelGuideStepCounter1} {!v.CurrentLocalStep} {!v.QAMAdviceLabelGuideStepCounter2} {!v.TotalLocalSteps}
+						</label>
+					
+						<div id="LuxModeStepList" class="slds-form-element__control">
+							<lightning:select aura:id="stepList" class="GPBodySelect" onchange="{!c.showNextStep}" disabled="{!v.AllowEdits}" >
+	
+								<aura:iteration items="{!v.GuidedFields}" var="F">
+									<option value="{!F}">{!F}</option>
+								</aura:iteration>
+							</lightning:select>
+						</div>
+					
+					</div>
+				</aura:if>
+			</footer>
+	
+		</section>
+	
+	</div>
+	
+</aura:component>

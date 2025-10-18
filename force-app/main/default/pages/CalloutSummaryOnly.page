@@ -1,0 +1,147 @@
+<!--
+============================================================================================== 
+CALLOUT FEATURING TOPIC SUMMARY TEXT ONLY FORCED TO A SINGLE LINE WITH OVERFLOW ELLIPSIS. 
+SUMMARY TEXT ACTS AS THE "READ MORE" LINK WHERE RELEVANT. 
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+                
+        <style>
+            .MoreLink, .MoreLinkDisabled {text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+            .IHWide {width: 100% !important;}
+        </style>
+        
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/> 
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCommunities.js')}"/>          
+
+        <script>
+            IHCommunities.IAIHCPrefix = "{!$Site.Prefix}";
+            try {IHCommunities.IAIHInitialiseForCommunities();} catch(e) {}           
+        </script>
+
+        <apex:slds rendered="{!isIHLUX==true}" />
+    </head>    
+
+
+    <body class="Dialogue {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">
+        <apex:form >
+
+<!--   
+===============================================
+CLASSIC TREATMENT
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!!isIHLUX}">
+                <div id='CalloutSummaryOnly' class='Callout Bubble {!TCSSClass}'>
+                    <div class="CalloutContent">
+                        <div class="CalloutOneLiner">
+                    
+                            <div class="CalloutSummary">
+                                <div style="float: left;">
+                                    <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                                </div>
+                                
+                                <!-- Share, Like and other tools -->
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                
+                                <span class='{!MessageClass}'>
+                                    
+                                    <!-- Show topic summary as a link if read more is allowed -->
+                                    <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                    title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                    value="{!JSENCODE(TMoreLinkHref)}" 
+                                                    onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                    target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+    
+                                        <div class='MoreLink'>
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="[" />
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor || Hlp.ShowReadMoreLink__c == true, true, false)}" value="{!TSummary}" />
+                                            <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="]" />
+                                        </div>
+                                    </apex:outputLink>                        
+                                    
+                                    <!-- Show topic summary text only (no link) if read more is NOT allowed -->
+                                    <div class="MoreLinkDisabled">
+                                        <apex:outputText escape="true" rendered="{!IF(!isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="{!TSummary}" ></apex:outputText>   
+                                    </div>
+                                
+                                </span>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>               
+            </apex:pageBlock>
+                    
+<!--   
+===============================================
+LIGHTNING TREATMENT
+===============================================
+ -->  
+            <apex:pageBlock rendered="{!isIHLUX}">
+                <div style="padding: 1rem;" class='{!TCSSClass}'>                
+            
+                    <section class="{!CustomStyle} {!LUXNubbinClass} slds-popover IHWide IHCustomStyled">
+    
+                        <div class="slds-popover__body">
+        
+                            <!-- Share, Like and other tools -->
+                            <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+        
+                            <p>
+                                <!-- Show topic summary as a link if read more is allowed -->
+                                <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring IHLUXDetailSummary', 'IHLUXDetailSummary')}" 
+                                        title="{!JSENCODE(TMoreLinkTitle)}" 
+                                        value="{!JSENCODE(TMoreLinkHref)}" 
+                                        onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                        target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+        
+                                    <div class='MoreLink'>
+                                        <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="[" />
+                                        <apex:outputText escape="true" rendered="{!IF(isAuthor || Hlp.ShowReadMoreLink__c == true, true, false)}" value="{!TSummary}" />
+                                        <apex:outputText escape="true" rendered="{!IF(isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="]" />
+                                    </div>
+                                </apex:outputLink>                        
+                
+                                <!-- Show topic summary text only (no link) if read more is NOT allowed -->
+                                <div class="MoreLinkDisabled IHLUXDetailSummary">
+                                    <apex:outputText escape="true" rendered="{!IF(!isAuthor && Hlp.ShowReadMoreLink__c == false, true, false)}" value="{!TSummary}" ></apex:outputText>   
+                                </div>
+                            </p>
+    
+                        </div>
+                    </section>
+                </div>
+            </apex:pageBlock>
+            
+        </apex:form> 
+    </body>
+</apex:page>

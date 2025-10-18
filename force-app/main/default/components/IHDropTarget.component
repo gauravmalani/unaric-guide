@@ -1,0 +1,39 @@
+<apex:component allowDML="true">
+
+    <apex:attribute required="true" name="Id" description="Page-unique identifier for this component instance" type="string" />
+    <apex:attribute required="true" name="Name" description="Main label for this component" type="string" />
+    <apex:attribute required="true" name="DropTargetLabel" description="Label for the drop area" type="string" />
+
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS0121, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+    
+        <div class="slds"> 
+        
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <svg aria-hidden="true" class="slds-icon slds-icon-standard-contact slds-icon--small">
+                            <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+                        </svg>
+                    </div>
+            
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">
+                            {!Name}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="slds-card__body">
+                <div class="DropTarget" id='{!Id}'>
+                    {!DropTargetLabel}
+                    <ul class='DropOpsList' id='{!Id}_DropOpsList'></ul>
+                </div>
+            </div>
+        </div>
+    </html>
+    
+</apex:component>

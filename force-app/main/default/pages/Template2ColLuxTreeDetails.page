@@ -1,0 +1,91 @@
+<!--
+============================================================================================== 
+HELP TOPIC TEMPLATE. REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) 
+PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+IN ADDITION, IF DESIRED SUPPLY THE IH1UX PARAMETER TO SWITCH STYLE TO SUIT THE Salesforce1 ENVIRONMENT, IE
+
+    [address as above]&IH1UX=true
+
+Martin Little for Improved Apps
+October 2017
+Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <apex:includeLightning />
+        <apex:slds />
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsLUXOps.js')}"/>
+    
+        <script>
+    
+            initialise();
+       
+            // Create LUX components and populate the relevant DIVs
+            function initialise() {
+                var HTID = '{!Hlp.Id}';
+                var H = {!Hlp.HeightBeforeScrolling__c} - 10;
+                var parms;
+                var aMap1, aMap2;
+                
+                
+                // Tree
+                parms = 'ComponentId~theTree^ListensTo~theTopic^Height~' + H + '^RootNode~' + HTID; 
+                aMap1 = IHLUXOps.getParmsMap(parms);
+
+                $Lightning.use('iahelp:appIH', function() {
+                    $Lightning.createComponent('iahelp:IHTree', 
+                    aMap1, 
+                    "CardTree",                  
+                    function(cmp) {
+                    }
+                    );
+                });
+                
+                // Topic Details
+                parms = 'ComponentId~theTopic^ListensTo~theTree^Height~' + H + '^HelpRecordId~' + HTID;  
+                aMap2 = IHLUXOps.getParmsMap(parms);
+               
+                $Lightning.use('iahelp:appIH', function() {
+                    $Lightning.createComponent('iahelp:IHDetail', 
+                    aMap2, 
+                    "CardDetails",                  
+                    function(cmp) {
+                    }
+                    );
+                });
+                
+            }
+            
+        </script>
+        
+    </head>
+
+    <body class="Page{!IF(isIH1UX==true, ' IH1UX', '')}{!CustomStyle}">    
+    
+        <apex:include pageName="IHHook"/>
+        
+        <div style="padding: 0 10px;">
+            <div id="CardTree" style="padding: 5px; width: 50%; float: left;"></div>
+            <div id="CardDetails" style="padding: 5px; width: 50%; float: right;"></div>
+        </div>
+        
+    
+    </body>
+</apex:page>

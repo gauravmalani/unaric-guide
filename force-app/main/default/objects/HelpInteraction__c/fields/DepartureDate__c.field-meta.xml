@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DepartureDate__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Latest timestamp recorded by the component that originally logged the interaction - approximating to a departure time when context check timer has been requested</description>
+    <inlineHelpText>Latest timestamp recorded by the component that originally logged the interaction - approximating to a departure time when context check timer has been requested</inlineHelpText>
+    <label>Departure Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,112 @@
+/*==========================================================*/
+/*  Improved Help Branding CSS for Lightning v1.44 */
+/*==========================================================*/
+
+/*----------------------------------------------------------*/
+/* Embedded Help */
+/*----------------------------------------------------------*/
+
+/* Helped Element Icon  */
+.IHClickHelper {width: 0px; height: 16px;}
+
+/* Helped Element hover styling */
+.IHClickHelper:hover {background-color: #E0E6F7;}
+
+/* Created / Last Modified Date auto-form label extensions */
+@media (min-width: 48em) { .IHFieldPart2 {position: relative; top: -2rem; padding-left: 66%;} }
+
+
+/*----------------------------------------------------------*/
+/* Configuration Item clickables */
+/*----------------------------------------------------------*/
+
+.microTool.IHBackBodyTool {float: left;}
+
+
+/*----------------------------------------------------------*/
+/* Topic styling */
+/*----------------------------------------------------------*/
+
+/* Parsed keyword links */
+a.IHKeyword {border-bottom: dotted 1px blue;}
+
+/* Help Topic Viewer Image size */
+.IHDetailMediaImage {width: unset !important; background-size: contain !important;}
+
+
+/*----------------------------------------------------------*/
+/* Utility1 in Utility bar: simplify component borders */
+/*----------------------------------------------------------*/
+
+div.oneUtilityBar div.HelpList {border: none; box-shadow: none;}
+div.oneUtilityBar div.iahelpIHUtility1 div.iahelpIHDetail {border-left: 1px solid silver;}
+
+
+/* Help Index Global Action refinements */
+/* NB: the latter 2 of these directives rely on creation of a wrapper component with a container DIV, class = HelpIndexUtilityGlobalAction */
+.slds-docked-composer {overflow-y: auto;}
+.HelpIndexUtilityGlobalAction > div {padding: 0;}
+.HelpIndexUtilityGlobalAction div.iahelpIHDetail {border-left: none !important;}
+
+/*----------------------------------------------------------*/
+/* Trees - flowchart icons */
+/*----------------------------------------------------------*/
+
+/* Hide standard node icons */
+.Flowchart > div.TreeNodeClickableContainer a.DropTarget span i,
+.FlowchartStart > div.TreeNodeClickableContainer a.DropTarget i,
+.FlowchartStop > div.TreeNodeClickableContainer a.DropTarget i,
+.FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget i,
+.FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget i,
+.FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget i {color: transparent !important;background: transparent;}
+
+/* Create Flowchart Node decorations */
+.Flowchart > div.TreeNodeClickableContainer a.DropTarget span,
+.FlowchartStart > div.TreeNodeClickableContainer a.DropTarget span,
+.FlowchartStop > div.TreeNodeClickableContainer a.DropTarget span,
+.FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget span,
+.FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget span,
+.FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget span {display: inline-block;vertical-align: middle;margin-right: 0.75rem;width: 1.5rem;height: 1.5rem;}
+.Flowchart > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Business_Process.png") no-repeat center / contain;}
+.FlowchartStart > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Start.png") no-repeat center / contain;}
+.FlowchartStop > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Stop.png") no-repeat center / contain;}
+.FlowchartProcess > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Process.png") no-repeat center / contain;}
+.FlowchartSubProcess > div.TreeNodeClickableContainer a.DropTarget span {background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_SubProcess.png") no-repeat center / contain;}
+.FlowchartDecision > div.TreeNodeClickableContainer a.DropTarget span {display: inline-block;vertical-align: middle;margin-right: 0.75rem;width: 1.5rem;height: 1.5rem;background: url("/resource/iahelp__IHResources/img/LUX/flowchart/Flowchart_Decision.png") no-repeat center / contain;}
+
+
+/*----------------------------------------------------------*/
+/* SLDS-BASED COLOUR HIGHLIGHTS / CUSTOM STYLES */
+/*----------------------------------------------------------*/
+
+/* Backgrounds, for topic attributes etc */
+tr.LUXRed, li.LUXRed, .slds-tree__item.LUXRed, .LUXRed * .IHLUXDetailSummary, .LUXRed.IHCustomStyled                                                                    {background-color: #ffdde1 !important;} /*SLDS Pippin*/
+tr.LUXAmber, li.LUXAmber, .slds-tree__item.LUXAmber, .LUXAmber * .IHLUXDetailSummary, .LUXAmber.IHCustomStyled                                                  {background-color: #faffbd !important;} /*SLDS Lemon Chiffon*/
+tr.LUXGreen, li.LUXGreen, .slds-tree__item.LUXGreen, .LUXGreen *.IHLUXDetailSummary, .LUXGreen.IHCustomStyled                                                   {background-color: #d9ffdf !important;} /*SLDS Snowy mint*/
+tr.LUXLightBlue, li.LUXLightBlue, .slds-tree__item.LUXLightBlue, .LUXLightBlue * .IHLUXDetailSummary, .LUXLightBlue.IHCustomStyled              {background-color: #d8edff !important;} /*SLDS Patten Blue*/
+tr.LUXDarkBlue, li.LUXDarkBlue, .slds-tree__item.LUXDarkBlue, .LUXDarkBlue * .IHLUXDetailSummary, .LUXDarkBlue.IHCustomStyled                   {background-color: #16325c !important;} /*SLDS Biscay*/
+tr.LUXLightGrey, li.LUXLightGrey, .slds-tree__item.LUXLightGrey, .LUXLightGrey * .IHLUXDetailSummary, .LUXLightGrey.IHCustomStyled              {background-color: #f3f2f2 !important;} /*SLDS Pattern Grey 3*/
+tr.LUXDarkGrey, li.LUXDarkGrey, .slds-tree__item.LUXDarkGrey, .LUXDarkGrey * .IHLUXDetailSummary, .LUXDarkGrey.IHCustomStyled                   {background-color: #706e6b !important;} /*SLDS Pattern Grey 9*/
+
+/* For dark / "reverse" colours above, mostly set white text... */
+tr.LUXDarkBlue * a, li.LUXDarkBlue * a, tr.LUXDarkBlue * p, li.LUXDarkBlue * p, 
+        tr.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+        li.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+        .slds-tree__item.LUXDarkBlue *,
+        .LUXDarkBlue * .IHLUXDetailSummary, .LUXDarkBlue * .IHLUXDetailName             {color: #ffffff;}
+        
+tr.LUXDarkGrey * a, li.LUXDarkGrey * a, tr.LUXDarkGrey * p, li.LUXDarkGrey * p, 
+        tr.LUXDarkGrey * div:not([class*="ListingToolsBlock"]), 
+        li.LUXDarkGrey * div:not([class*="ListingToolsBlock"]),
+        .slds-tree__item.LUXDarkGrey *, 
+        .LUXDarkGrey * .IHLUXDetailSummary, .LUXDarkGrey * .IHLUXDetailName             {color: #ffffff;}       
+
+/* ... but with the exception of ellipsis buttons for contracted tools area */
+.LUXDarkBlue * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}      
+.LUXDarkGrey * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}
+
+/* Fore colours, for tool styling etc */
+.IATool.ToolTangerine {color: #ff9a3c !important;} /*SLDS Tangering*/
+.IATool.ToolDarkBlue{color: #16325c !important;} /*SLDS Biscay*/
+.IATool.ToolDarkGrey{color: #706e6b !important;} /*SLDS Pattern Grey 9*/
+.IATool.ToolMahogany{color: #c23934 !important;} /*SLDS Flush Mahogany*/

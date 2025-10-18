@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BrandImage__c</fullName>
+    <defaultValue>&quot;/resource/iahelp__IHResources/img/LogoToolsPage.svg&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Logo to feature at the top of Help detail pages.</description>
+    <inlineHelpText>Logo to feature at the top of Help detail pages.</inlineHelpText>
+    <label>Brand Image</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

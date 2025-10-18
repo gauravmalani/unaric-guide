@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ToggleActiveMarker__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Conditions that, if component state or record metadata matches, indicates that the current tool in a toggle group should be available (not toggled hidden)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Conditions that, if component state or record metadata matches, indicates that the current tool in a toggle group should be available (not toggled hidden)</inlineHelpText>
+    <label>Toggle Active Marker</label>
+    <length>50</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

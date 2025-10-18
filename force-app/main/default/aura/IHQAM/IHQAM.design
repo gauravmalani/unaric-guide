@@ -1,0 +1,86 @@
+<design:component label="Improved Help: Quick Access Menu">
+     
+	<design:attribute name="Height" 
+	                label="Expanded Height" 
+	                description="Display height for the menu when opened (pixels)." 
+                    default="450" 
+                    required="true" />
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present." 
+                    default="[Search or Filter for Help]" 	
+                    required="false" />
+
+	<design:attribute name="QAMHandleLabel" 
+	                label="Handle Label" 
+	                description="Optional: Label text to display next to the QAM handle icon." 
+                    default="" 	
+                    required="false" />
+
+	<design:attribute name="QAMIconColour" 
+	                label="Handle Icon Colour" 
+	                description="Optional: Enter a six character web colour (HEX) code to use for the QAM handle icon. Leave blank to use brand default font colour."
+	                max="6" 
+                    default="" 	
+                    required="false" />
+
+    <design:attribute name="RowLabellingOption" 
+                    label="Topic Labelling Option" 
+                    description="For Help Topic listings, the fields to display for each row." 
+                    datasource="Element Name - Topic Name,Topic Name (Element Type),Topic Name" 
+                    default="Topic Name" 
+                    required="false" />
+
+    <design:attribute name="ListingTagFilters" 
+                    label="Tagged Content Settings" 
+                    description="Defines the items to show via the 'Tagged Items' listing option." 
+                    default="" 
+                    required="false" />
+
+    <design:attribute name="RootNode" 
+                    label="Help Index Root Topic" 
+                    description="Id of the record to be used as the 'root' of the Tree on this component's Help Index." 
+                    default=""
+                    required="false" />
+
+	<design:attribute name="FormFactor" 
+	                label="Help Index Layout" 
+	                description="If using the Help Index with this QAM, select 'Single Column' to switch between Tree and Topic viewer when navigating. Select 'Standard' to show both components at all times." 
+	                datasource="Single Column,Standard"
+	                default="Standard"
+                    required="true" />	                    
+
+	<design:attribute name="DefaultMenuOption" 
+                    label="Default Menu Option" 
+                    description="Choose whether to display the 'Help for this Page' listing or the 'Help Index' (requires a Help Index Root Topic) when users first open the QAM." 
+                    datasource="Help Index,Help for this Page" 
+                    default="Help for this Page" 
+                    required="true" />
+
+    <design:attribute name="MaxListingTools" 
+                    label="Collapse Tools At" 
+                    description="The maximum number of tools to show against list items before collapsing them into an Ellipsis. 0 = always collapse, -1 = never collapse." 
+                    default="0" 
+                    required="true" />
+
+    <design:attribute name="NegotiateToolbars" 
+                    label="Show Shortcuts" 
+                    description="Check this box to provide shortcuts to certain menu tools in the QAM handle." 
+                    default="false" 
+                    required="false" />
+
+	<design:attribute name="StartAutomatically" 
+                    label="Start Automatically" 
+                    description="When checked, QAM is populated on page load. Un-check this box to populate help lists only as the QAM is opened." 
+                    default="false" 
+                    required="false" />
+
+    <design:attribute name="DialogueMode" 
+                    label="Dialogue Display Mode" 
+                    description="Controls the way in which certain options, such as the Reading List Viewer, are displayed." 
+                    datasource="Modal,In-QAM" 
+                    default="In-QAM" 
+                    required="true" />
+	
+</design:component>

@@ -1,0 +1,87 @@
+<design:component label="Improved Help: Topic Viewer">
+    
+	<design:attribute name="Height" 
+	                label="Viewer Component Height" 
+	                description="Display height for this component (pixels). Enter -1 to set height to 100% (i.e., the height required to avoid scrollbars)." 
+	                default="-1"
+                    required="true" />	
+
+	<design:attribute name="SuppressHeader" 
+	                label="Suppress Header" 
+	                description="Check this box to hide the header area of this component." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="SuppressFooter" 
+	                label="Suppress Footer" 
+	                description="Check this box to hide the footer / diagnostics area of this component." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present." 
+	                default="[No Data]"
+                    required="false" />	
+
+    <design:attribute name="HelpRecordId" 
+                    label="Default Help Topic" 
+                    description="Id of the Help Topic to display on loading. Leave blank to show the Org's default Help Topic as defined in Global Settings. 
+                    	Enter '[None]' to start with no Topic or an Author Configuration, regardless of the Org's default.
+                    	If using this component on a record layout, enter '[RecordId]' to use the current record."
+                    default="" 
+                    required="false" />
+
+    <design:attribute name="ToolContext" 
+                    label="Tool Context" 
+                    description="Defines the set of clickables (ellipsis menu items, listing tools, drop downs etc) to present on this component. Enter a value from the 'Tool Context' pick list field of the Configuration Item object. Enter '[DEFAULT]' to accept the default toolset for the component configuration being requested." 
+                    default="[DEFAULT]"
+                    required="true" />
+
+	<design:attribute name="LayoutInfoPrecedence" 
+                    label="Topic Layout: Source" 
+                    description="Where custom layouts are used, defines which layout definition (Topic's, as specified by its Full Template, 
+                    	or Component's, as specified here) takes precedence." 
+					datasource="Component Definition,Help Topic"                    	
+                    default="Help Topic"
+                    required="false" />
+
+	<design:attribute name="LayoutInfo" 
+                    label="Topic Layout: Component Definition" 
+                    description="Instructions for customising the layout of Help Topic data when presented via this component: contact Support for details." 
+                    default=""
+                    required="false" />
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="CachedRecordSource" 
+                    label="Cache Source" 
+                    description="The component, among those being listened to, that this component can use as a source of 'cached' Topic records. Leave blank to seek Topic data from Salesforce server-side as users select topics." 
+                    default=""
+                    required="false" />
+
+
+</design:component>

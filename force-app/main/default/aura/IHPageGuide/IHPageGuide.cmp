@@ -1,0 +1,127 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+				access="global"  
+				extends="IHCard"				
+				>
+   
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+	<aura:method name="showGuide" action="{!c.showGuide}" />
+
+	<aura:set attribute="IHCardType" value="PageGuide" />    
+
+<!-- 
+================================================
+(Form-specific) internationalisations for mark-up
+================================================
+-->
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+	<aura:attribute name="ReadingListId" type="string" required="false" default="" access="global" />	
+
+	<aura:attribute name="RowCount" type="integer" required="true" default="10" access="global" />	
+	<aura:attribute name="ColCount" type="string" required="true" default="6" access="global" />	
+	<aura:attribute name="Topics" type="string" required="false" default="" access="global" />	
+	<aura:attribute name="Positions" type="string" required="false" default="" access="global" />	
+	<aura:attribute name="Pages" type="string" required="false" default="" access="global" />	
+
+	<aura:attribute name="CDefs" type="string[]" required="true" default="" access="private" />	
+	<aura:attribute name="ColTwelfths" type="integer" required="true" default="1" access="private" />	
+	<aura:attribute name="PageDefs" type="Object[]" required="true" default="" access="private" />	
+	
+	<aura:attribute name="Rows" type="string[]" required="true" default="" access="private" />	
+	<aura:attribute name="Cols" type="string[]" required="true" default="" access="private" />	
+	<aura:attribute name="RowH" type="integer" required="true" default="50" access="private" />	
+
+	<aura:attribute name="CurrentStep" type="integer" required="true" default="-1" access="private" />	
+	<aura:attribute name="CurrentRow" type="integer" required="true" default="0" access="private" />	
+	<aura:attribute name="CurrentCol" type="integer" required="true" default="0" access="private" />	
+	<aura:attribute name="CurrentDesignCell" type="integer" required="true" default="0" access="private" />	
+	<aura:attribute name="GridVisible" type="boolean" required="true" default="false" access="private" />	
+	<aura:attribute name="DesignMode" type="boolean" required="true" default="false" access="public" />	
+
+    <aura:attribute name="ComponentId" type="string" required="true" default="IHPageGuide" access="private" />
+	
+
+	<aura:set attribute="SuppressCardUI" value="true" />
+	<aura:set attribute="SuppressCardStyling" value="true" />
+	<aura:set attribute="Height" value="-1" />
+
+
+	<lightning:navigation aura:id="navService"/>
+
+
+	<div class="{!v.SuppressHeader == true ? 'Overlay' : 'OnPage'}">
+	
+		<aura:if isTrue="{!v.SuppressHeader == false}">
+			<div class="ToolBar">
+				<div class="{! 'IHClickable Toggle_' + v.GridVisible}" onclick="{!c.showGuide}">
+					{!v.TitleTabGuides}
+				</div>
+			
+				<div class="IHClickable Button" onclick="{!c.toggleDesign}">
+					{!v.TipGenericEdit}
+				</div>
+			</div>
+		</aura:if>	
+	
+	
+		<div aura:id="Outermost">
+			<div aura:id="grid" class="IHOnTop slds-hide" onmouseover="{!c.finaliseGrid}">
+				
+				<aura:iteration items="{!v.Rows}" var="R">
+					<div class="slds-grid" >
+						<aura:iteration items="{!v.Cols}" var="C">	
+							<div class="{! 'slds-size_' + v.ColTwelfths + '-of-12 ComponentContainer'}" style="{! 'height: ' + v.RowH + 'px;'}">
+								
+								<aura:if isTrue="{!v.DesignMode == true}">
+									<div id="{! R + ':' + C}" aura:id="GridCellLabel" class="GridCellLabel" onclick="{!c.toggleHighlight}">
+										{!R}:{!C}
+									</div>
+								</aura:if>
+	
+	
+								<aura:if isTrue="{!v.DesignMode == false &amp;&amp; R == v.CurrentRow &amp;&amp; C == v.CurrentCol}">							
+									<div class="IHClickable Button" 
+											title="{!v.QAMTitleButtonGotoNextStep}"
+											onclick="{!c.setStep}" 
+											style="{! 'background: #' + v.UXThemeColour1  + ';'}">
+											
+										{!v.QAMButtonGotoNextStep}
+									</div>
+									
+									<div class="CloseGuideButton" title="{!v.TipButtonClose}" style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+										<span class="fa-stack fa-lg IATool" onclick="{!c.closeGuide}">
+											<i class="fa fa-times fa-stack-1x"></i>
+										</span>									
+									</div>									
+									
+								</aura:if>	
+	
+	
+						        <c:IHComponentGenerator aura:id="CG">
+		            				<aura:set attribute="Id" value="{! R + ':' + C}" />
+		            				<aura:set attribute="Parent" value="{!this}" />
+		        				</c:IHComponentGenerator>
+		        				
+							</div>
+						</aura:iteration>
+					</div>
+				</aura:iteration>
+			</div>
+		</div>
+		
+	</div>
+	
+	 
+</aura:component>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SkipExport__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Check to exclude this record from configuration data exports, for example where it is desired to create tools for local use in a particular org only</description>
+    <inlineHelpText>Check to exclude this record from configuration data exports, for example where it is desired to create tools for local use in a particular org only</inlineHelpText>
+    <label>Skip Export</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

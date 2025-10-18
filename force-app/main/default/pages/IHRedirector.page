@@ -1,0 +1,40 @@
+<!--
+============================================================================================== 
+REDIRECTS A USER TO THE TEMPLATE SPECIFIED FOR A HELP TOPIC.
+IN OTHER WORDS, THIS PAGE CAN BE USED TO SEND A USER TO THE CORRECT TEMPLATE WHEN ONLY
+TOPIC ID IS KNOWN
+
+REQUIRES A HELP TOPIC (HTID), I.E:
+
+    [SF base URL]/Apex/IHRedirector?HTID=[topic id]
+
+v1.33+ : OPTIONALLY PASS "ShowCallout=true" TO REDIRECT TO THE TOPIC'S CALLOUT
+(OTHERWISE, AS PREVIOUSLY, REDIRECTION WILL BE TO FULL TOPIC TEMPLATE)
+
+v1.38+ : PASS "ShowCallout=[Callout template ID]" TO REDIRECT TO THE SPECIFIED CALLOUT TEMPLATE,
+AS WHEN USING CERTAIN PREVIEW CALLOUT LINKS
+
+v1.39+ : PASS "LUXCaller=true" TO PASS THROUGH FORCING OF USE OF LIGHTNING COMPONENT OVERRIDE TO CALLOUT,
+SO THAT IT GENERATES APPROPRIATE READ MORE LINKS ETC., IF DESIRED
+
+Martin Little for Improved Apps
+October 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['MessageRedirecting']}"
+                controller="ControllerHelpContent"
+                action="{!gotoTopicTemplate}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['MessageRedirecting']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+    
+    {!GlobalLocalisations['MessageRedirecting']}...
+
+</apex:page>

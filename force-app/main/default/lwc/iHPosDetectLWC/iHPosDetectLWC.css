@@ -1,0 +1,198 @@
+.bubble-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    max-width: 300px; 
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    word-wrap: break-word;
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.bubble-text {
+    position: relative;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    color: #16325c;
+	 flex: 1 1 auto;
+    word-break: break-word;
+}
+
+.icon-wrapper {
+	position: absolute;
+	top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1b3f78;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+}
+
+.help-icon {
+    pointer-events: none;
+}
+
+.bubble-container:hover {
+    cursor: pointer;
+}
+
+.standalone-icon {
+    position: relative;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background-color: #1b3f78;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	 cursor: pointer;
+}
+
+.ToolButtonTextEllipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.ToolButtonTextWrap {
+    white-space: normal;
+    word-break: break-word;
+    max-width: CALC(100% - 2em);
+}
+
+.ToolButtonTextWrapSetWidth {
+    
+    white-space: normal;
+    word-break: break-word;
+}
+
+.ToolsContainer {
+    padding: 3px;
+}
+
+.ToolsContainerTransparent {
+    /* Transparent container */
+  position: relative;
+    display: flex;
+    align-items: flex-start;
+    max-width: 300px; 
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    word-wrap: break-word;
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+     z-index: 1;
+}
+
+.ToolsContainerColoured {
+
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    max-width: 300px; 
+    justify-content: space-between;
+    background-color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    word-wrap: break-word;
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+.positioning-wrapper {
+    position: relative;
+}
+
+.ToolButtonRight {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.ToolButtonLeft {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ToolButtonAboveLeft {
+    display: inline-block;
+    position: absolute;
+    top: -2rem;
+    left: 0;
+}
+
+.ToolButtonAboveRight {
+    display: inline-block;
+    position: absolute;
+    top: -2rem;
+    right: 0;
+}
+
+.ToolButtonInline {
+    display: inline-block;
+}
+
+.designTimeHidden {
+    height: 0px;
+    font-size: 0;
+}
+
+.designTime {
+    background-color: #ffeeee;
+    text-align: center;
+    font-variant: small-caps;
+    position: absolute;
+    width: 100%;
+    height: 35px !important;
+    top: -3px;
+    padding: 7px;
+    font-size: 1.1em !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.theGEDiv {
+    text-align: center;
+    font-variant: small-caps;
+    position: absolute;
+    width: 100%;
+    height: 35px !important;
+    top: -3px;
+    padding: 7px;
+    font-size: 1.1em !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer; /* Guide enable support */
+}
+
+.custom-transparent-card {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+}

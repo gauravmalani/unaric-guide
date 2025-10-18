@@ -1,0 +1,95 @@
+/* ============================================================================*/
+/* Overall Listing style specifics */
+/* ============================================================================*/
+
+/* Tile mode */
+.THIS .TileList 								{display: flex;	flex-direction: row; flex-wrap: wrap; justify-content: center;}
+.THIS .ListTile									{z-index: 1;}
+.THIS .ListTile:hover 							{text-decoration: none;}
+
+/* Wide mode */
+.THIS .HelpListItemsWide						{display: table;}
+.THIS .FlexCol 									{white-space: normal; width: 100%;}
+.THIS .ListItemLink 							{padding-top: 0.3em;}
+
+/* Narrow mode*/
+.THIS .HelpListItemsNarrow 						{margin-top: 0 !important;}
+
+/* ============================================================================*/
+/* Rows - general */
+/* ============================================================================*/
+
+/* List-item: rows */
+.THIS .HelpListingItem 							{border-top: 1px solid #d8dde6;cursor: grab;}
+.THIS .HelpListingItem:active 					{cursor: grabbing;}
+
+/* ============================================================================*/
+/* Row highlighting */
+/* ============================================================================*/
+
+/* List-item: Featured items, e.g. Featured Reading List */
+.THIS li.FeaturedListItem,.THIS tr.FeaturedListItem		
+												{color: #8800ff; background-color: #efe3fc; box-shadow: 0 0 6px #8800ff inset;}
+
+/* List-item: Featured items, e.g. Featured Reading List */
+.THIS a.FeaturedListItem::before 				{content: '\2729 \0020';}
+
+/* List-item: "Selected" / active (last clicked) record in a list: ONLY 1x row can have this class */
+.THIS .SelectedRecord 							{background: #ecebea; box-shadow: #0070d2 4px 0 0 inset;}
+.THIS .SelectedRecord * a 						{box-shadow: none;}
+
+/* List items - included in the COLLECTION of those that have been selected: MANY rows can have this class */
+.THIS .IsSelected, .THIS .IsSelected th 		{border-left: solid 10px green;}
+
+/* ============================================================================*/
+/* Additional listing columns */
+/* ============================================================================*/
+
+/* List-item - additional columns - e.g., relationship semantics */
+.THIS .AdditionalColumn 						{font-size: 0.7rem; font-style: italic;}
+
+/* ============================================================================*/
+/* Listing tools */
+/* ============================================================================*/
+
+/* List-item: in-line tools */
+.THIS .IAToolInline 							{padding-left: 2.2em;}
+
+/* List-item: collapse tools ellipsis */
+.THIS .IAToolMaster 							{float: right;}
+
+.THIS .WideListingToolCell						{white-space: pre-wrap; min-width: 120px;}
+.THIS .WideListingTool							{float: right;}
+
+.THIS .Smaller									{font-size: 0.7rem;}
+
+/* ============================================================================*/
+/* Errors & Issues */
+/* ============================================================================*/
+
+/* List-item: issues - configuration */
+.THIS .IHHelpedSFElementError 					{border: none !important;}
+
+.THIS li.IHHelpedSFElementError,.THIS tr.IHHelpedSFElementError 
+												{border-top: 1px solid #d8dde6 !important;background-color: #ffefef; box-shadow: 0 0 6px red inset;}
+
+.THIS a.IHHelpedSFElementError::before 			{content: "!!!! ";}
+
+/* List-item: issues - data-driven filter (DDF) */
+.THIS .IHDDFFailElement 						{border: none !important; color: blue;}
+
+.THIS li.IHDDFFailElement,.THIS tr.IHDDFFailElement 
+												{border-top: 1px solid #d8dde6 !important; background-color: #efefff; box-shadow: 0 0 6px blue inset;}
+
+.THIS a.IHDDFFailElement::before 				{content: "!!!! ";}
+
+
+
+
+/* CANDIDATES FOR DELETION? */
+/* STYLES THAT NEED TO MOVE TO CUSTOMER.CSS */
+
+/* Inline tool fontawesome content in compact / expanded list views */ 
+.THIS .IAToolInline.BookmarkAdd .fa-stack-1x,.THIS .IAToolInline.BookmarkRemove .fa-stack-1x {
+    margin-top: -0.2em; color: white;
+}

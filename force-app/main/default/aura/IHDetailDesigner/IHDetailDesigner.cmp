@@ -1,0 +1,293 @@
+<aura:component controller="ControllerLUXOps" access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->	         
+	<aura:handler name="change" value="{!v.CurrentRecord}" action="{!c.init}"/>									   
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+	<aura:method name="reInitialise" action="{!c.init}" />
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="ButtonSave" type="string" required="false" default="" access="private" />
+    <aura:attribute name="ButtonCancel" type="string" required="false" default="" access="private" />
+    <aura:attribute name="FieldLabelDisplayType" type="string" required="false" default="" access="private" />
+    <aura:attribute name="FieldLabelSource" type="string" required="false" default="" access="private" />
+    <aura:attribute name="FieldLabelComponentDefinition" type="string" required="false" default="" access="private" />
+    <aura:attribute name="FieldLabelLiteralText" type="string" required="false" default="" access="private" />
+    <aura:attribute name="FieldLabelStyleClass" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonAddColumn" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonDeleteColumn" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonAddRow" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonDeleteRow" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonSave" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipGenericCancel" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipEdit" type="string" required="false" default="" access="private" />
+    
+<!-- 
+================================================
+Core member data
+================================================
+-->
+	<aura:attribute name="CurrentRecord" type="sObject" required="false" access="global" />    
+	<aura:attribute name="Delimiters" type="string" required="true" default="|¬,^" access="global" />
+    <aura:attribute name="MyDelimiter" type="string" required="true" default=":~¬|" access="global" />
+	<aura:attribute name="ParentControl" type="Object" />
+    <aura:attribute name="ParentControlHelper" type="Object" />
+	<aura:attribute name="LayoutInfo" type="string" required="false" default="" access="global" />   
+	<aura:attribute name="LayoutInfoBackup" type="string" required="false" default="" access="global" />  
+    
+	<aura:attribute name="Initialised" type="boolean" required="true" default="false" access="public" />    
+
+	<aura:attribute name="Rows" type="object[]" required="false" default="" access="private" />    	
+	<aura:attribute name="DataMode" type="string" required="true" default="View" access="private" />    
+    
+    <aura:attribute name="DesignerAttributes" type="sObject[]" required="false" access="private" />
+	<aura:attribute name="DesignerDisplayTypes" type="List" access="private" default="[
+			{'label': 'Component', 'value': 'Component'},
+			{'label': 'Field', 'value': 'Field'},
+			{'label': 'Image', 'value': 'Image'},
+			{'label': 'Literal', 'value': 'Literal'},
+			{'label': 'Video', 'value': 'Video'},
+			]"/>
+
+<!-- 
+================================================
+Scripts & Styles
+================================================
+-->    
+    <ltng:require styles="/resource/iahelp__IHResources/lib/FontAwesome463/css/font-awesome.min.css" />
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+
+	<div class="slds-grid slds-wrap slds-p-horizontal_small">     
+<!-- 
+================================================
+View mode - display specified layout
+================================================
+-->
+		<aura:if isTrue="{!v.DataMode == 'View'}">
+
+	 		<aura:iteration items="{!v.Rows}" var="R" indexVar="Idx">
+		 		<div class="{! 'slds-col slds-p-horizontal--small slds-size--' + (R.Columns + 1) + '-of-12'}">
+		 			
+		 			<aura:iteration items="{!R.Fields}" var="F">
+		 				<div class="{!F.Style}">
+	
+				 			<aura:if isTrue="{!F.Type == 'Field'}">
+						 		<aura:unescapedHtml value="{!F.Label}" />
+				 			</aura:if>
+			
+				 			<aura:if isTrue="{!F.Type == 'Image'}">
+	
+								<div style="{! 'margin: auto; width: ' + v.CurrentRecord.iahelp__ImageWidth__c 
+										+ 'px; height: ' + v.CurrentRecord.iahelp__ImageHeight__c 
+	                                    + 'px; background: url(\'' + F.Label + '\') no-repeat center; ' 
+	                                    + 'background-size: ' + v.CurrentRecord.iahelp__ImageWidth__c + 'px ' + v.CurrentRecord.iahelp__ImageHeight__c + 'px;'}"
+	                                 
+									 class="IHDetailMediaImage"		
+									 title="{!v.CurrentRecord.iahelp__ImageTitle__c + '' == 'null' ? '' : v.CurrentRecord.iahelp__ImageTitle__c}"
+	                                 data-MediaMode="Image"
+	                                 data-MediaURL="{!F.Label}"
+		                             onclick="{!c.openMedia}">
+		                        </div>
+	
+				 			</aura:if>
+				 			
+				 			<aura:if isTrue="{!F.Type == 'Video'}">
+	
+		                        <div class="slds-align_absolute-center">
+		                            <iframe aura:id="TopicVideoIframe"
+		                            		class="{! F.Label != null ? '' : 'slds-hide'}" 
+		                            		frameborder="0" 
+		                            		allowfullscreen="allowfullscreen"
+		                                    src="{!F.Label}" 
+											style="{! 'height: ' + v.VideoHeight + 'px; width: ' + v.CurrentRecord.iahelp__VideoWidth__c + 'px;'}" >
+		
+		                            </iframe>                                                                 
+		                        </div>     
+		                                                   
+				 			</aura:if>
+				 			
+				 			<aura:if isTrue="{!F.Type == 'Literal'}">
+						 		{!F.Label}
+				 			</aura:if>
+				 			
+				 			<aura:if isTrue="{!F.Type == 'Component'}">
+						 		
+								<c:IHComponentGenerator aura:id="CGIHDetail">
+								    <aura:set attribute="Parent" value="{!this}" />
+									<aura:set attribute="ComponentDef" value="{!F.Def}" />
+                                    <aura:set attribute="MyDelimiter" value="{!v.MyDelimiter}" />
+								</c:IHComponentGenerator>
+						 		
+				 			</aura:if>
+				 			
+		 				
+		 				</div>
+		 			</aura:iteration>
+		 			
+		 		</div>
+		 	</aura:iteration>		 	
+		</aura:if>	 	
+	 
+<!-- 
+================================================
+Design mode - show layout editor
+================================================
+-->
+		<aura:if isTrue="{!v.DataMode == 'Design'}">
+		
+			<aura:iteration items="{!v.Rows}" var="R" indexVar="rIdx">
+				<aura:iteration items="{!R.Fields}" var="F" indexVar="fIdx">
+
+<!-- 
+................................................
+Element selection controls
+................................................
+-->
+	                <div class="{! 'IHDesignerRow slds-col slds-p-horizontal_small slds-size_' + R.Columns + '-of-12'}" >
+
+<!-- 
+All types - type selection pick list
+ -->
+						<div class='slds-grid'>
+							<div class='slds-col slds-size_11-of-12'>
+			                    <lightning:combobox name="{! rIdx  + '_' + fIdx + '_Type'}" onchange="{!c.paramChange}" label="{!v.FieldLabelDisplayType}" variant="label-inline" value="{!F.Type}" options="{!v.DesignerDisplayTypes}" />
+							</div>
+							<div class='slds-col slds-size_1-of-12' />	
+						</div>	
+	                   
+
+<!-- 
+For field / image / video - field name selection pick list
+ -->
+                        <aura:if isTrue="{!F.Type != 'Literal' &amp;&amp; F.Type != 'Component'}">
+							<div class='slds-grid'>
+								<div class='slds-col slds-size_11-of-12'>
+		                        	<lightning:combobox  name="{! rIdx  + '_' + fIdx + '_Source'}" onchange="{!c.paramChange}" label="{!v.FieldLabelSource}" variant="label-inline" value="{!F.Def}" options="{!v.DesignerAttributes}" />
+								</div>
+								<div class='slds-col slds-size_1-of-12' />	
+							</div>	
+                        </aura:if>
+	                    
+<!-- 
+For literals, text entry box
+ -->
+                        <aura:if isTrue="{!F.Type == 'Literal'}">
+							<div class='slds-grid'>
+								<div class='slds-col slds-size_11-of-12'>
+		                        	<lightning:input  name="{! rIdx  + '_' + fIdx + '_Source'}" onblur="{!c.paramChange}" label="{!v.FieldLabelLiteralText}" variant="label-inline" type="text" value="{!F.Def}" />
+								</div>
+								<div class='slds-col slds-size_1-of-12' />	
+							</div>	
+                        </aura:if>
+	                    
+<!-- 
+For component type elements, include a component generator in design mode, 
+accessible via an edit button, to build the desired definition 
+-->
+                        <aura:if isTrue="{!F.Type == 'Component'}">
+							<div class='slds-grid'>
+								<div class='slds-col slds-size_11-of-12'>
+		                            <div style="display: flex; align-items: center;">
+		                                <lightning:input  name="{! rIdx  + '_' + fIdx + '_Source'}" onblur="{!c.paramChange}" label="{!v.FieldLabelComponentDefinition}" variant="label-inline" type="text" value="{!F.Def}" />
+		                            </div>  
+                            
+		                            <div id = "{!rIdx  + '_' + fIdx + '_IHCOMPContainer'}" class = 'slds-hide'>
+		                                <c:IHComponentGenerator aura:id="{!rIdx  + '_' + fIdx + '_IHCOMP'}">
+		                                    <aura:set attribute="Parent" value="{!this}" />
+		                                    <aura:set attribute="SuppressPoweredBy" value="true" />
+		                                    <aura:set attribute="ToToggle" value="true" />
+		                                    <aura:set attribute="ComponentDef" value="{!F.Def}" />
+		                                    <aura:set attribute="MyDelimiter" value="{!v.MyDelimiter}" />
+		                                </c:IHComponentGenerator>
+		                            </div>
+								</div>
+								
+								<div class='slds-col slds-size_1-of-12' title='{!v.TipEdit}'>
+	                                <div class="fa-stack fa-lg " >
+	                                    <a href="javascript:void(0);" onclick="{!c.showComponentDesigner}" id="{! rIdx  + '_' + fIdx +'_listingTool'}" >
+	                                    	<i class="fa fa-bars fa-stack-1x fa-inverse menuItem"></i>
+	                                    </a>
+	                                </div>                               	
+								</div>
+							</div>	
+                            
+                        </aura:if>  
+
+<!-- 
+All types - styling for selected type
+ -->
+						<div class='slds-grid'> 
+							<div class='slds-col slds-size_11-of-12'>
+			                    <lightning:input  name="{! rIdx  + '_' + fIdx + '_Style'}" onblur="{!c.paramChange}" label="{!v.FieldLabelStyleClass}" variant="label-inline" type="text" value="{!F.Style}" />
+							</div>
+							<div class='slds-col slds-size_1-of-12' />	
+						</div>	
+
+<!-- 
+................................................
+Column manipulation buttons
+................................................
+-->
+	                    <div class="columnButtons">               
+	                        <button class="designerEditButton designerEditColumnButton" name="Add Column" id="{! rIdx  + '_' + fIdx}" onclick="{! c.handleClick }" >
+	                    		<i class="fa fa-plus-square microTool" id="{! rIdx  + '_' + fIdx}" title="{!v.TipButtonAddColumn}" aria-hidden="true"></i>
+	        				</button>
+	
+	                        <button class="designerEditButton designerEditColumnButton" name="Delete Column" id="{! rIdx  + '_' + fIdx}" onclick="{! c.handleClick }" >
+	                    		<i class="fa fa-minus-square microTool" id="{! rIdx  + '_' + fIdx}" title="{!v.TipButtonDeleteColumn}" aria-hidden="true"></i>
+	        				</button>
+	                    </div>
+	                    
+	                </div>
+	                
+<!-- 
+................................................
+Row manipulation buttons
+................................................
+-->
+                    <div class="slds-col slds-size_1-of-12">
+                            
+						<aura:if isTrue = "{!R.RowEnd}">
+							<div class="RowButtons">
+								<button name="Add Row" class="designerEditButton" id="{! rIdx}" data-rownumber="{!R.RowNumber}" onclick="{! c.handleClick }" >
+									<i class="fa fa-plus" title="{!v.TipButtonAddRow}" aria-hidden="true"></i>
+								</button>
+						
+								<button name="Delete Row" class="designerEditButton" id="{! R.RowNumber}" label="{!R.RowNumber}" onclick="{! c.handleClick }" >
+							     	<i class="fa fa-minus" title="{!v.TipButtonDeleteRow}" aria-hidden="true"></i>    	
+								</button>
+							</div>
+						</aura:if>
+                        
+                    </div>
+                        
+				</aura:iteration>				
+			</aura:iteration>
+
+<!-- 
+................................................
+Layout design save/Cancel button
+................................................
+-->			
+            <div class = "slds-align_absolute-center slds-m-top_small">
+                <div class="slds-m-right_small">
+                    <lightning:button variant="brand" label="{!v.ButtonSave}" title="{!v.TipButtonSave}" name="save" onclick="{! c.handleSave }" />
+                </div>
+                
+                <div>
+                    <lightning:button label="{!v.ButtonCancel}" title="{!v.TipGenericCancel}" name="Cancel" onclick="{! c.handleCancel }" />
+                </div>
+			</div>
+		</aura:if>	 	
+	 </div>
+		
+</aura:component>

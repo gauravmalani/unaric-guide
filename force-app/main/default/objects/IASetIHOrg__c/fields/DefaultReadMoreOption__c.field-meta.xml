@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DefaultReadMoreOption__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Defines whether or not to show &quot;Read More&quot; links by default in callouts for new Help Topics</description>
+    <inlineHelpText>Defines whether or not to show &quot;Read More&quot; links by default in callouts for new Help Topics</inlineHelpText>
+    <label>Default Read More Option</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

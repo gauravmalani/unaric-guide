@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ContextObjectLabel__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Where relevant, the name (label) of the Object whose layout gave rise to the interaction</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Where relevant, the name (label) of the Object whose layout gave rise to the interaction</inlineHelpText>
+    <label>Context Object Label</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

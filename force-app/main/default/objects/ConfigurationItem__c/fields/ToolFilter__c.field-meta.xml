@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ToolFilter__c</fullName>
+    <defaultValue>-1</defaultValue>
+    <deprecated>false</deprecated>
+    <description>For Listing and certain other Configuration Tool Types, defines the records for which the Item will be shown</description>
+    <externalId>false</externalId>
+    <inlineHelpText>For Listing and certain other Configuration Tool Types, defines the records for which the Item will be shown</inlineHelpText>
+    <label>Tool Filter</label>
+    <precision>10</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

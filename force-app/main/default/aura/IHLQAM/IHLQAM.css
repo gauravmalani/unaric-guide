@@ -1,0 +1,42 @@
+.THIS .DropTarget {
+    border: solid 1px silver;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.THIS #DropBucket {
+    background-color: #eeeeee;
+    float: left;
+}
+
+.THIS #WasteBucket {
+    color: red;
+    float: right;
+}    
+
+.THIS .DelTargetActive {
+    background-color: red;
+    color: white !important;
+}
+
+.THIS .DropTargetActive {
+    background-color: #ffffcc !important;
+}
+
+.THIS .DropTargetUnavailable {
+    background-color: #ffcccc !important;
+}
+
+.THIS .WorkingSetItem {
+    margin: 5px;
+}
+
+.THIS .WorkingSetItem span {
+    padding: 0 5px;
+}
+
+.THIS .WorkingSetArea {
+    padding: 20px;
+}

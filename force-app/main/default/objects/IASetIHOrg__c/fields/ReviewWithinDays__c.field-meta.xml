@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ReviewWithinDays__c</fullName>
+    <defaultValue>90</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The interval in days at which Help Topics should have their content reviewed for ongoing accuracy</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The interval in days at which Help Topics should have their content reviewed for ongoing accuracy</inlineHelpText>
+    <label>ReviewWithinDays</label>
+    <precision>2</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

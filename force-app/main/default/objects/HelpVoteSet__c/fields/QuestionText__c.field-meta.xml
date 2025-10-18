@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QuestionText__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The question to present to Users when offering the Help Vote Options from which to select</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The question to present to Users when offering the Help Vote Options from which to select</inlineHelpText>
+    <label>Question Text</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

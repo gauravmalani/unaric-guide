@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SkipImportOverwrite__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Check to prevent this record from being overwritten when importing configuration items, for example where a tool is locally defined in a particular org only</description>
+    <inlineHelpText>Check to prevent this record from being overwritten when importing configuration items, for example where a tool is locally defined in a particular org only</inlineHelpText>
+    <label>Prevent Import Overwrites</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

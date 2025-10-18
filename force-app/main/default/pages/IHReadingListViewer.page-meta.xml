@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Page for navigating the topics in a Reading List &quot;stand alone&quot; instead of via the Tools Page</description>
+    <label>Reading List Viewer</label>
+</ApexPage>

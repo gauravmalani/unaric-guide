@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Summary__c</fullName>
+    <defaultValue>&quot;Newly created help topic - details pending&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>A brief summary of the full Help Topic that appears when Improved Help is first shown (before the full Topic is requested)</description>
+    <inlineHelpText>A brief summary of the full Help Topic that appears when Improved Help is first shown (before the full Topic is requested)</inlineHelpText>
+    <label>Summary</label>
+    <required>true</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

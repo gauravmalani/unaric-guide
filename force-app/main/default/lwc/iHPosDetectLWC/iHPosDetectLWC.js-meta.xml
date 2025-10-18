@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<masterLabel>Improved Help: Position Detector (LWC)</masterLabel>
+	<apiVersion>62.0</apiVersion>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightning__RecordAction</target>
+		<target>lightning__UtilityBar</target>
+		<target>lightningCommunity__Default</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Page_Layout</target>
+		<target>lightningCommunity__Theme_Layout</target>
+	</targets>
+		   <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage,lightning__UtilityBar">
+
+			<property name="positioningrole" 
+                     label="Role" 
+					 type = "String"
+					 description="The service this detector will provide. Help Cue: issues a context message to cue help in other components as soon as this component renders. Help Button: renders a button to cue contextual help on click. Help Request: logs an interaction requestinng that Help be added to this page." 
+					 datasource="Help Cue,Help Button"
+					 default="Help Cue"
+					 required="true" />	
+
+            <property name="positioningGroup" 
+					  type="String" 
+					  label="Positioning Group"
+					  description="A reference name for this component, similar to Component Id and used in conjunction with the 'Listens To' parameter. This field may be used in Reports, so choose a nice friendly name e.g. 'Contact Page'" 
+					   />	   
+           
+		    <property name="helpContext"
+					  type="String" 
+					  label="Help Context (Help Topic ID)"
+					  description="For the 'Help Cue' and 'Help Button' roles, information defining the contextualise request to issue. For example, a Help Topic ID or (for Fixed listings) the API name of an object."
+					  />
+
+			<property name="logContextInteraction"
+					  type = "Boolean"
+	                  label="Log Context Interaction" 
+	                  description="For the 'Help Cue' and 'Help Button' roles, check this box to log a Help Interaction as and when context messages are issued." 
+	                  default="false"
+                      required="false" />	
+			
+			<property name="contextcheckinterval"
+					  type = "Integer" 
+	                 label="Navigation Checking Interval" 
+	                 description="USE WITH DUE REGARD FOR MACHINE RESOURCES: Enter zero unless re-contextualisation is required. Enter a number greater than zero (representing milliseconds) to check for changes in user context (page address). Minimum recommended interval is 1000." 
+	                 default="0"
+                     required="true" />
+            
+			<property name="label"
+					  type="String" 
+					  label="Button Text"
+					  description="For the 'Help Button' role, optional text to display alongside the icon."  
+					  />
+			<property name="HelpButtonTextSize"
+					  type="String"
+					  label="Button Text Size"
+					  datasource="Small,Medium,Large"
+					  description="For the 'Help Button' role, sets the font size of optional text."
+					  default="Small"
+					  />
+
+			<property name="HelpButtonTextStyle"
+					type="String"
+					label="Button Text Style"
+					description="For the 'Help Button' role, controls how optional text wraps"
+					default="Ellipsis"
+					datasource="Ellipsis,Wrap 100%,Wrap fixed width"
+					required="false" 
+					/>
+			
+			<property name="HelpButtonTextWidth"
+					type="String"
+					label="Button Text Width"
+					description="For the 'Help Button' role, sets the width of the optional text area."
+					default="250"
+					required="false" 
+					/>
+
+			<property name="HelpButtonPosition"
+					type="String"
+					label="Button Position"
+					description="For the 'Help Button' role, controls button positioning."
+					datasource="Left,Right,Above Left,Above Right,Inline"
+					default="Right"
+					required="false" 
+					/>
+			<property name="UXTheme"
+					type="String"
+					label="Colour Scheme" 
+					description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" 
+					/>
+
+				<property name="BackgroundStyle"
+					type="String"
+				    label="Background Style" 
+	                description="Controls the background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true"
+					/>
+		  
+            
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureParameterInteger xmlns="http://soap.sforce.com/2006/04/metadata">
+    <dataflowDirection>SubscriberToLmo</dataflowDirection>
+    <masterLabel>S2L - Count - PD Context Interactions</masterLabel>
+    <value>4548</value>
+</FeatureParameterInteger>

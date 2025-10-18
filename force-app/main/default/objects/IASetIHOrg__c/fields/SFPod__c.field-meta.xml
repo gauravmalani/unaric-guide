@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFPod__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The name of the server pod hosting the Org&apos;s SF and VF pages</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The name of the server pod hosting the Org&apos;s SF and VF pages</inlineHelpText>
+    <label>SFPod</label>
+    <length>4</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

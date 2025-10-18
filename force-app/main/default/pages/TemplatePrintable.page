@@ -1,0 +1,102 @@
+<!--
+============================================================================================== 
+HELP TOPIC TEMPLATE DESIGNED TO OFFER A PRINTABLE VIEW OF A HELP TOPIC. 
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) 
+PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+Martin Little for Improved Apps
+July 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" 
+                contentType="{!ContentType}">
+
+<!--
+SET contentType TO "application/msword" TO SEND CONTENT TO AN HTML FILE THAT CAN BE OPENED IN WORD 
+ -->
+
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>
+
+    <body class='Page'>
+        <apex:form >
+        
+            <div id="PrintableView">
+                <div class="IH-H1">
+                    <apex:outputText escape="true" value="{!TName}"></apex:outputText>
+                </div>
+                
+                <div class="IH-H2">
+                    <apex:outputText escape="true" value="{!TSummary}"></apex:outputText>
+                </div>  
+    
+                <div class="PrintableViewContent">
+                    <apex:outputText value="{!TDescription}" escape="false" />                    
+                </div>
+                
+                <div class="PrintableViewContent">
+                    <div class="MediaTitle">
+                        <apex:outputText value="{!TImageTitle}" escape="true"></apex:outputText>
+                    </div>
+                    
+                    <div>
+                        <apex:image alt="{!TImageTitle}" url="{!TImageURL}" width="{!TImageWidth}" height="{!TImageHeight}" style="border: none;'"></apex:image>
+                    </div>
+                    
+                    <div class="MediaCaption">
+                        <apex:outputText value="{!TImageCaption}" escape="true"></apex:outputText>
+                    </div>
+                </div>
+                            
+                <div class="PrintableViewContent">
+
+
+                
+                    <div class="PrintableViewWarning" > 
+                        {!DialogueLocalisations['AdviceLabelPrintShelfLife']}<br/>
+                        {!DialogueLocalisations['AdviceLabelTopicReviewDeadline']} {!ReviewDate}.
+                    </div>
+                
+                    <p>{!DialogueLocalisations['AdviceLabelViewInPortal']}
+                    <a href='{!TRootLink}/apex/iahelp__{!PortalPage}?HTID={!THelpId}&{!PassThroughParameters}' title="{!DialogueLocalisations['TipViewInPortal']}">
+                        {!TRootLink}/apex/iahelp__{!PortalPage}?HTID={!THelpId}&amp;{!PassThroughParameters}
+                    </a></p>
+
+                    <div style="display: {!IF(Settings.EnableExportDocHT__c == false, 'none', 'block')};">
+                        <div style="display: {!IF(ContentType !='', 'none', 'block')};">
+                            <p>{!DialogueLocalisations['AdviceLabelExportAs']} 
+                                <a href='{!TRootLink}/apex/iahelp__TemplatePrintable?HTID={!THelpId}&ContentType=1' title="{!DialogueLocalisations['TipButtonExportAsHTML']}">
+                                    {!DialogueLocalisations['ButtonExportAsHTML']}
+                                </a> |
+                                <a href='{!TRootLink}/apex/iahelp__IHExportDoc?HTID={!THelpId}' title="{!DialogueLocalisations['TipButtonExportAsXML']}">
+                                    {!DialogueLocalisations['ButtonExportAsXML']}
+                                </a>                         
+                            </p>
+                        </div>
+                    </div>                    
+
+                </div>
+                
+                <div id='IHPowered'>
+                    {!BrandingLocalisations['ProductPoweredBy']} {!BrandingLocalisations['ProductStrapline']}
+                </div>
+
+            </div>
+            
+        </apex:form>
+    </body>
+</apex:page>

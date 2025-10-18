@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X6_All_My_Featured_Reading_Lists</fullName>
+    <columns>NAME</columns>
+    <columns>Summary__c</columns>
+    <columns>Visibility__c</columns>
+    <columns>ReadingListStatus__c</columns>
+    <columns>NumberOfEntries__c</columns>
+    <columns>FeaturedUntil__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>FeaturedUntil__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>7. All My Featured Reading Lists</label>
+</ListView>

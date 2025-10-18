@@ -1,0 +1,30 @@
+<!--
+============================================================================================== 
+PAGE THAT CONVERTS A READING LIST INTO XML FORMAT SUITED TO TO USE BY POWERPOINT (OFFICE OPEN XML FORMAT)
+
+REQUIRES A READING LIST ID (RLID) PARAMETER
+
+Martin Little for Improved Apps
+July 2014
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<!-- 
+ORIGINAL VERSION NOW DEPRECATED AND UNREACHABLE VIA STANDARD UI
+
+<apex:page controller="zInstallHandler" contentType="txt/xml#ExportPPT.xml" cache="true">
+
+    <apex:outputText value="{!ioHeaderPPT}"/>
+    
+    <pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">
+        <apex:outputText value="{!ioDataPPT}" escape="false"/>
+    </pkg:package>
+    
+</apex:page>
+ -->
+
+<apex:page >
+    This facility has been deprecated. For content export, please see print and export tools available
+    via our Lightning components or contact us.
+</apex:page>

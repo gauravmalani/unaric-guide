@@ -1,0 +1,366 @@
+<aura:component>
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>       
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>   
+
+<!-- 
+================================================
+(Form-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelTools" type="string" required="false" default="Tools" access="public" />
+    <aura:attribute name="AdviceLabelDropToSort" type="string" required="false" default="Sort" access="public" />
+    <aura:attribute name="NodeExpanderTip" type="string" access="public" />	
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="isInitialised" type="boolean" required="false" default="false" access="public" />
+
+    <aura:attribute name="TreeControl" type="Object" />
+    <aura:attribute name="Expanded" type="Boolean" default="true" />
+    <aura:attribute name="Node" type="Object" />
+    <aura:attribute name="NodeIconStyle" type="string" access="public" />	
+	<aura:attribute name="DisplayDensity" type="string" required="false" default="Comfy" access="public" />    
+    
+    <aura:attribute name="ListingTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="SuppressListingTools" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="MaxListingTools" type="integer" default="3" required="false" access="public" />
+	<aura:attribute name="QualifyingListingTools" type="integer" default="0" required="false" access="private" />
+
+    <aura:attribute name="Delimiter" type="string" required="false" access="public" />
+    <aura:attribute name="Level" type="integer" required="true" default="0" access="public" />
+
+	<aura:attribute name="GlobalSettings" type="sObject" required="false" access="private" />
+	<aura:attribute name="UXThemeColour1" type="string" required="false" access="private" />
+    <aura:attribute name="TreeControlLevelIndentation" type="integer" required="true" default="0" access="private" />
+    <aura:attribute name="TreeControlPrintView" type="integer" required="true" default="0" access="private" />   
+
+    <aura:attribute name="PrintableNodeDescription" type="string" required="false" default="" access="private" />   
+
+	<aura:attribute name="DataMode" type="string" required="false" default="View" access="public" />
+    
+    <!-- parent node attributes  -->
+    <aura:attribute name="isParentNode" type="Boolean" default="false" />
+    <aura:attribute name="FilteredListingTools" type="ConfigurationItem__c[]" />
+    
+
+    <div>
+    
+<!-- 
+================================================
+ON-SCREEN VIEW 
+================================================
+-->     
+		<aura:if isTrue="{! v.TreeControlPrintView == false}">    
+        	<div aura:id="NodeContainer" id="{! 'NodeContainer_' + v.Node.Id + v.Delimiter + v.Node.ParentId}" style="{! v.Node.Style}" class="{!v.Node.StyleClass + ' slds-tree__item slds-truncate TreeNodeContainer node' + v.DisplayDensity}" 
+                 ondragleave="{!c.doDragLeave}" 
+                  draggable="true"
+                 ondrop="{!c.doDrop}"
+                 ondragstart="{!c.doDragStart}"
+                 ondragend="{!c.doDragEnd}"
+                 data-nodeid="{!v.Node.Id}"
+                 data-parentid="{!v.Node.ParentId}"
+                 data-sortvalue="{!v.Node.SortValue}"
+                 onclick="{!c.treeNodeClick}">
+
+        
+<!-- 
+................................................
+EXPAND/COLLAPSE BRANCHES BUTTON IF REQUIRED
+Use 'just in time' call to obtain children if required
+................................................
+-->      
+				<aura:if isTrue="{! ! v.Node.hasChilds}">   
+					<div onclick="{!c.toggle}"
+							class="{! v.Node.items.length > 0 ?						
+								v.Expanded == true ? 
+									'nodeExpanded slds-button slds-button_icon slds-m-right_x-small' 
+									: 'slds-button slds-button_icon slds-m-right_x-small'
+								: 'IHTwistyHidden slds-button slds-button_icon slds-m-right_x-small'}" 
+							title="{!v.NodeExpanderTip}">
+							
+						<lightning:icon class="slds-button__icon" size="xx-small" iconName="utility:chevronright"/>
+						<span class="slds-assistive-text">{!v.NodeExpanderTip}</span>
+					</div>
+				</aura:if>
+				
+				
+                <aura:if isTrue="{!v.Node.hasChilds}">   
+					<div onclick="{!c.getSubTree}" class="slds-button slds-button_icon slds-m-right_x-small">
+                    	<lightning:icon aura:id="{!v.Node.Id}" 
+                    			class="slds-button__icon" size="xx-small" variant="warning" iconName="utility:chevronright" 
+                    			alternativeText="{!v.NodeExpanderTip}" title="{!v.NodeExpanderTip}" 
+                    			 />
+					</div>                     
+					
+				</aura:if> 
+				
+
+<!-- 
+................................................
+NODE SORT ORDINAL, FOR D&D OPS, WHERE SUPPORTED
+................................................
+-->   
+				<div class="TreeNodeClickableContainer">
+
+					<div aura:id="NodeOrdinal" data-SortValue="{!v.Node.SortValue}" class="NodeOrdinal slds-hide" 
+							id="{!v.Node.Id + v.Delimiter + v.Node.ParentId + v.Delimiter + 'NodeOrdinal'}"
+							ondragover="{!c.doDragOver}"
+							ondragleave="{!c.doDragLeave}"
+							ondrop="{!c.doDrop}"	
+							>	
+									
+						{!v.AdviceLabelDropToSort}
+					</div>
+
+<!-- 
+................................................
+NODE LABEL / CLICKABLE - as label when not inline editing
+................................................
+-->   			
+					<aura:if isTrue="{!v.DataMode == 'View'}">		 			
+	
+						<a ondragstart="{!c.doDragStart}" ondragover="{!c.doDragOver}" ondragleave="{!c.doDragLeave}" ondrop="{!c.doDrop}" ondragend="{!c.doDragEnd}"					 
+								id="{!v.Node.Id + v.Delimiter + v.Node.ParentId}" 
+								href="javascript:void(0);" 
+								onclick="{!c.treeNodeClick}" 
+								class="DropTarget" 
+								title="{!v.Node.Title}">
+						
+							<aura:if isTrue="{!v.Node.Icon != '' &amp;&amp; v.NodeIconStyle == 'Small'}">
+								<i class="{! 'fa fa-fw fa-lg ' + v.Node.Icon}" aria-hidden="true"
+										style="{! 'color: #' + v.UXThemeColour1  + ';'}"/>
+							</aura:if>
+								
+							<aura:if isTrue="{!v.Node.Icon != '' &amp;&amp; v.NodeIconStyle == 'Large'}">
+								<span class="fa-stack fa-lg"
+										style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+										
+			  						<i class="fa fa-square-o fa-stack-2x" />
+									<i class="{! 'fa fa-stack-1x ' + v.Node.Icon}" aria-hidden="true" />
+								</span>
+							</aura:if>
+		
+							{!v.Node.Label}
+	 
+			 			</a>   
+					</aura:if>
+
+<!-- 
+................................................
+NODE LABEL / CLICKABLE - inline edit mode
+................................................
+-->   			
+					<aura:if isTrue="{!v.DataMode == 'Edit'}">		 			
+						<c:IHLTopicSelector>
+							<aura:set attribute="InputType" value="Input" />
+							<aura:set attribute="recordId" value="{!v.Node.Id}" />
+							<aura:set attribute="FieldName" value="Name" />
+							<aura:set attribute="FieldValue" value="{!v.Node.Label}" />
+						</c:IHLTopicSelector>
+					</aura:if>		 			
+		 			                                     
+				</div>
+
+<!-- 
+................................................
+IN-LINE LISTING TOOLS - where enabled
+................................................
+-->            
+				<aura:if isTrue="{!v.SuppressListingTools == false}"> 
+					
+		 			<!-- NOTE: Do not display tools if there's a configuration issue... -->
+					<div class="{! v.Node.StyleClass == 'IHHelpedSFElementError' ? 'slds-hide' : 'slds-col_bump-left'}">
+
+						<!-- Collapse inline listing tools to an ellipsis button above tool number threshold -->
+						<div class="{! v.QualifyingListingTools &lt;= v.MaxListingTools || v.MaxListingTools == -1 
+						    		? 'ListingToolsBlockExpanded_' + v.Node.Id : 'slds-hide ListingToolsBlock_' + v.Node.Id}">
+                            
+                            <aura:iteration items="{!v.FilteredListingTools}" var="T">
+                                <!-- 
+     Hide ALL tools initially, pending checks in done rendering etc. that
+     tool is suited to the data of the tree node (i.e., tool filter is appropriate).
+     In order to make these checks possible, we mark (class) this blanket hide as follows:
+     
+     [Action code] TBit[Tool Bit]
+     
+     ... where [Tool Bit] is as follows:
+     {!v.Node.ObjCode}	= 3 letter code for object whose row is represented in list item (tree node)
+     {!v.Node.ToolBit}	= above code looked up in known object codes and translated to tool bit position (to check is on in tool filter binary)
+                    -->
+                                <span class="{! 'slds-hide ' + T.iahelp__ActionCode__c + ' TBit' + v.Node.ToolBit}">
+                                    <!--
+      We need to show / hide tools based on certain contextual markers:
+      E.g., if already bookmarked, show remove bmk etc...
+      Note: onward toggling of "show next" tool etc covered in click handler: 
+      all we need to do here is choose which tool to show initially...
+     
+                        SHOW TOOL IF:
+                            Tool is NOT in Group ([NEXT] = 0) 
+                            OR Row marks tool as current( Row marked with "active" marker for this tool)
+                            OR Tool is Group default and no Row current marker ([PREV] = 0 AND Row has no "active" marking at all)
+                            OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+                         -->
+                                    <span class="{! (T.iahelp__ToggleNext__c == 0 
+                                                 || v.Node.RowState == T.iahelp__ToggleActiveMarker__c
+                                                 || (T.iahelp__TogglePrev__c == 0 &amp;&amp; v.Node.RowState == '')                                        
+                                                 || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any'))
+                                                 ? 'fa-stack IATool IAToolInline ' + T.iahelp__ToolClass__c : 'slds-hide'}" 
+                                          style="{! T.iahelp__ToolClass__c != '' &amp;&amp; T.iahelp__ToolClass__c != null ? '' : 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}"
+                                          title="{!T.iahelp__TipText__c}">
+                                        <i id="{! v.Node.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + v.Node.Id + ',' + v.Node.ParentId}" 
+                                           onclick="{!c.treeNodeToolClick}" 
+                                           class="{! 'fa fa-stack-2x ' + T.iahelp__IconClass__c}" 
+                                           aria-hidden="true" 
+                                           title="{!T.iahelp__TipText__c}">
+                                        </i>
+                                        <span class="fa-stack-1x"
+                                              id="{! v.Node.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + v.Node.Id + ',' + v.Node.ParentId}"
+                                              onclick="{!c.treeNodeToolClick}">
+                                            <!-- 
+           NOTE: Icon Label only used by the "Show Peer Trees" action to show number of peers:
+           Other listing tools use icon content text, as standard.
+            -->
+                                            {!T.iahelp__IconContent__c}
+                                            {! T.iahelp__ActionCode__c == 'TreeShowPeers' ? v.Node.IconLabel : ''}
+                                        </span>
+                                        <span class="sr-only">
+                                            {!T.iahelp__Label__c}
+                                        </span>
+                                    </span>
+                                </span>   <!-- "Blanket hide" span - pending tool bit / filter checking -->
+                            </aura:iteration>
+
+						</div> <!-- END of div defining expandable / collapsible tools listing -->						
+					</div> <!-- END of div containing tools listing -->
+
+						
+					<!-- Show Ellipsis button above tool number threshold -->
+					<div>
+						<div class="{! v.QualifyingListingTools &lt;= v.MaxListingTools || v.MaxListingTools == -1 ? 'slds-hide' : ''}"
+style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+						
+							<span class="{! 'ListingToolsBlockMaster_' + v.Node.Id + ' fa-stack IATool IAToolMaster'}">
+						    	<i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+						    	<i id="{! v.Node.Id + v.Delimiter + 'ToggleListingTools' + v.Delimiter + v.Node.Id}" 
+										onclick="{!c.treeNodeToolClick}" 
+										class="fa fa-ellipsis-h fa-stack-1x fa-inverse" 
+										title="{!v.AdviceLabelTools}" 
+										aria-hidden="true"></i>
+						
+								<span class="sr-only">{!v.AdviceLabelTools}</span>
+						
+							</span>				
+						</div>
+					</div>
+
+				</aura:if>
+            
+	        </div>
+        
+<!-- 
+................................................
+THIS NODE'S CHILDREN
+................................................
+--> 
+	        <aura:if isTrue="{!v.Expanded}">
+	        
+				<div class="node">
+	                <aura:iteration items="{!v.Node.items}" var="node">
+	                    <c:IHTreeNodes aura:id="myNodes">
+				            <aura:set attribute="Node" value="{!node}" />
+				            <aura:set attribute="TreeControl" value="{!v.TreeControl}" />
+							<aura:set attribute="Expanded" value="{!node.Expanded}" />
+							<aura:set attribute="NodeIconStyle" value="{!v.NodeIconStyle}" />	
+							
+							<aura:set attribute="DisplayDensity" value="{!v.DisplayDensity}" />						
+							<aura:set attribute="ListingTools" value="{!v.ListingTools}" />
+							<aura:set attribute="SuppressListingTools" value="{!v.SuppressListingTools}" />						
+							<aura:set attribute="MaxListingTools" value="{!v.MaxListingTools}" />
+
+							<aura:set attribute="Delimiter" value="{!v.Delimiter}" />
+							<aura:set attribute="Level" value="{!v.Level + 1}" />
+							
+							<aura:set attribute="AdviceLabelTools" value="{!v.AdviceLabelTools}" />
+							<aura:set attribute="NodeExpanderTip" value="{!v.NodeExpanderTip}" />											
+
+							<aura:set attribute="AdviceLabelDropToSort" value="{!v.AdviceLabelDropToSort}" />	
+							
+							<aura:set attribute="DataMode" value="{!v.DataMode}" />						
+	                    </c:IHTreeNodes>
+	                </aura:iteration>
+	            </div>
+	            
+	        </aura:if>
+
+		</aura:if>
+
+<!-- 
+================================================
+PRINTABLE VIEW
+================================================
+-->          
+		<aura:if isTrue="{! v.TreeControlPrintView == true}">    
+
+<!-- 
+................................................
+TREE NODE
+
+ADD OPTIONS FOR:
+- Optional bleed-through of topic custom style
+- Optional hyperlink from title to topic 
+- Global branding / header & footer
+................................................
+--> 
+	        <div style="{! 'padding-left: ' + (v.TreeControlLevelIndentation * v.Level) + 'rem;'}" 
+	        		id="{! 'NodeContainer_' + v.Node.Id + v.Delimiter + v.Node.ParentId}" 
+	        		class="{!'slds-text-longform node level_' + (v.Level + 1)}">
+	        		
+				<div class="PrintTopic">
+				
+		 			<div class="PrintLabel slds-text-heading_medium">
+		 				{!v.Node.Label}
+		 			</div>
+		 			
+		 			<div class="PrintTitle slds-text-heading_small">
+		 				{!v.Node.Title}
+		 			</div>
+		 			
+					<img class="PrintImage" src="{!v.Node.Icon}" />	 			
+		 			
+					<aura:unescapedHtml value="{!v.PrintableNodeDescription}" />	 				 			
+
+				</div>
+	        </div>
+        
+<!-- 
+................................................
+THIS NODE'S CHILDREN - always expanded for print
+................................................
+-->      
+              
+			<div class="printNode">
+		        <aura:iteration items="{!v.Node.items}" var="node">
+	            	<c:IHTreeNodes>
+						<aura:set attribute="Node" value="{!node}" />
+						<aura:set attribute="TreeControl" value="{!v.TreeControl}" />
+						<aura:set attribute="ListingTools" value="{!v.ListingTools}" />
+						<aura:set attribute="Delimiter" value="{!v.Delimiter}" />
+						<aura:set attribute="Level" value="{!v.Level + 1}" />
+	                </c:IHTreeNodes>
+				</aura:iteration>
+			</div>
+
+		</aura:if>     
+		   
+    </div>
+</aura:component>

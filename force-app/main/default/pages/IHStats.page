@@ -1,0 +1,161 @@
+<!--
+============================================================================================== 
+PAGE FOR SHOWING HELP INTERACTION STATISTICS IN SUMMARY FORM.
+REQUIRES EITHER A HELPED ELEMENT ID (ElemID) AND PAGE LAYOUT IDENTIFIER, I.E:
+
+    [SF base URL]/Apex/IHStats?ElemID=[helped element id]&HPL=[Page identifier]
+    
+OR A HELP TOPIC ID, I.E:
+
+    [SF base URL]/Apex/IHStats?HTID=[Help topic ID] 
+
+WHERE ELEMENT ID HAS BEEN PASSED AND MORE THAN 1 MATCH EXISTS (THERE BEING MULTIPLE ELEMENTS
+WITH THE SAME IDENTIFIER BUT DIFFERENT DATA FILTERS) OPTIONALLY SPECIFY THE DESIRED ELEMENT RECORD ID
+WITHIN THE SET OF MATCHING ELEMENTS, I.E:
+
+    [SF base URL]/Apex/IHStats?ElemID=[helped element id]&HPL=[Page identifier]&Id=[record Id]
+
+OPTIONALLY PASS IHLUX=true to modify appearence and facilities to suit Lightning use
+
+Martin Little for Improved Apps
+September 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}"
+                controller="ControllerStats"
+                action="{!getStats}">
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>
+            .IHSelectorBullet:link                  {text-decoration: none;}           
+            .InlineStatsNarrativeWarning            {float: right;}
+            
+            /* Lightning mode, when passed in URL */
+            .IHLUXStats .Callout                    {margin-top: 0px !important;}
+            .IHLUXStats .Callout .CalloutContent    {border-radius: 5px !important;}
+            .IHLUXStats .Callout .Panel             {box-shadow: 0px 0px !important;}
+        </style>    
+        
+        <apex:slds rendered="{!isIHLUX==true}" />        
+    </head>    
+
+    <body class="{!IF(isIHLUX==true, 'IHLUXStats ', '')}Dialogue">      
+        
+        <div id='CalloutStats' class='Callout'>
+            <apex:form >
+                <div class='CalloutContent Panel' style="width: 98%;">                  
+                    
+                    <div style="{!IF(isIHLUX == true, '', 'width:50%;')} float: left;">
+                        <div class='IH-H3'>
+                        
+<!--   
+===============================================
+STATS PANEL TITLE AND ELEMENT SELECTOR LINK
+===============================================
+ -->                        
+                            <apex:outputText value="{!DialogueLocalisations['TitleDialogueSubtitle']} '{!ElemName}':" escape="true"></apex:outputText>&nbsp;&nbsp;
+                                                            
+                            <apex:outputPanel rendered="{!HEs != null}">
+                                    
+                                <apex:repeat var="HE" value="{!HEs}">
+                                    <span style="font-size: 14px;">
+                                        <apex:outputLink styleClass="IHSelectorBullet" rendered="{!IF(HEs.size > 1, true, false)}" 
+                                                            title="{!IF(HE.Id != RequestedElemId, DialogueLocalisations['TipLinkSelectElement'] +' - ' + HE.Name, '')}"
+                                                            value="{!$Page.IHStats + '?ElemId=' + HE.Identifier__c + '&HPL=' + HPL + '&Id=' + HE.Id}" >
+                                                            
+                                            <apex:outputText escape="true" value="{!IF(HE.Id != RequestedElemId, '[-]', '')}" />
+                                            
+                                        </apex:outputLink>
+                                        
+                                        <apex:outputText escape="true" rendered="{!IF(HE.Id == RequestedElemId && HEs.size > 1, true, false)}" value="[X]" />
+
+                                    </span>
+                                </apex:repeat>
+
+                            </apex:outputPanel>                                                        
+                        </div>                        
+
+<!--   
+===============================================
+LIST OF TOPIC STATISTICS
+===============================================
+ -->        
+                        <div class="InlineStatsNarrative">
+                            <div class="InlineStatsNarrativeLine">
+                                <!-- Callout views -->
+                                <b>&#9675; {!DialogueLocalisations['AdviceLabelCalloutViews']}: </b>
+                                <apex:outputText value="{!NumSummaryViews}" escape="true"></apex:outputText>
+                            </div>
+    
+                            <div class="InlineStatsNarrativeLine">
+                                <!-- Full Topic views -->
+                                <b>&#9675; {!DialogueLocalisations['AdviceLabelFullTopicViews']}: </b>
+                                <apex:outputText value="{!NumFullViews}" escape="true"></apex:outputText>                               
+                            </div>
+    
+                            <div class="InlineStatsNarrativeLine">
+                                <!-- User comments -->
+                                <b>&#9675; {!DialogueLocalisations['AdviceLabelUserComments']}: </b>
+                                <apex:outputText value="{!NumComments}" escape="true"></apex:outputText>
+                            </div>
+                            
+                            <div class="InlineStatsNarrativeLine">
+                                <!-- Votes -->
+                                <b>&#9675; {!DialogueLocalisations['AdviceLabelVotes']}: </b>
+                                <apex:outputText value="{!NumVotes}" escape="true"></apex:outputText>
+                            </div>
+
+                            <div class="InlineStatsNarrativeLine">
+                                <span class='IHError'>{!IssuesWarning}</span>
+                            </div>
+
+                        </div>  
+                                            
+                    </div>
+                        
+<!--   
+===============================================
+PIE CHART AND LINK TO REPORT (hidden for LUX)
+===============================================
+ -->                              
+                    <div style="width:50%; float: right;">
+                    
+                        <div class='IAIHTip InlineStatsTip' style="float: right; position: relative; top: 45px;">
+                            <a href="{!MoreLink}" title="{!DialogueLocalisations['TipLinkInteractionReport']}" target="_Stats">
+                                {!DialogueLocalisations['AdviceLabelLinkInteractionReport']}
+                            </a>
+                        </div>
+        
+                        <div class="InlineStatsChart" style="{!IF(isIHLUX, 'display: none; ', '')}float: right;">
+                            <apex:chart data="{!GraphInfo}" height="65px" width="140px" legend="false" animate="0" colorSet="#A3C0DA,#004080,#ff8000,">
+                                <apex:pieSeries labelField="itemTip" dataField="itemValue"/>
+                            </apex:chart>
+                        </div>
+
+                    </div>                        
+
+
+<!--   
+===============================================
+WARNING TEXT WHERE SOQL LIMITS EXCEEDED
+===============================================
+ -->                              
+                    <div class="InlineStatsNarrativeWarning">
+                        {!limitExceedMsg}                                                                
+                    </div>
+                  
+                </div>
+           
+            </apex:form>
+        </div>                
+    </body>
+
+</apex:page>

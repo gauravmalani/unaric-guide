@@ -1,0 +1,407 @@
+<!--
+============================================================================================== 
+PAGE TO VIEW / MANIPULATE READING LIST PROPERTIES:
+(FOR MANIPULATION OF RL ENTRIES, SEE IHManageReadingList).
+
+CAN BE PROVIDED WITH VARIOUS PARAMETERS, AS FOLLOWS:
+
+    MODE:       Controls overall appearance of page, including title and available facilities.
+                Known modes are "Read", "Edit" and "New".
+                Passing no mode or an unknown one results in Mode = Read.
+            
+    ID:         ID of an existing reading list (to edit when in Mode = Edit).
+    
+    HTID:       A Help Topic ID: If Mode = Add, this enables the "Create & Link" (new reading
+                list to existing help topic) facility.
+    
+    Diags:      Optional feedback message (to pass to "Diags" member data and thus report to user)
+    
+    ShowBack:   Show a "back to Salesforce" button
+    
+    LightBox:   View as a lightbox (this is NOT always coterminus with showing a back button)
+    
+
+OPTIONALLY, CONTROL THE UI VARIANT WITH PARAMETERS - IHLUX=true (Lightning)    
+    
+Keith Clarke for Improved Apps
+December 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+        title="{!BrandingLocalisations['ProductName']} - {!DialogueTitle}"
+         standardController="HelpReadingList__c"
+         extensions="ControllerRListInfo">
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueTitle}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        
+        <apex:stylesheet value="{!BrandCSS}" /> 
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        
+        <script type='text/javascript'>
+        
+            function initialise() {
+            
+                // Load required RL onto our Entries tab
+                var x = document.getElementById('frmRLEntries');
+                if(x) {
+                    x.src='iahelp__IHManageReadingList?RList={!HelpReadingList__c.Id}';
+                }
+
+                // Ensure tools buttons adopt IH look and feel for tasks in progress
+                IHEditHelp.initialiseButtons();
+
+                
+                // Set tool tips to use on editing controls
+                var ary = new Array ('{!DialogueLocalisations['TipButtonAdd']}', '{!DialogueLocalisations['TipButtonEdit']}', '{!DialogueLocalisations['TipButtonDelete']}', '{!DialogueLocalisations['TipButtonSave']}', '{!GlobalLocalisations['TipGenericCancel']}');
+                setTips(ary);
+                
+                // Set button availability:
+                // NB: whilst in general we want all buttons available (subject to mode's usual logic
+                // which includes user rights) if we're adding a RL (New mode), we don't want to allow "Save"
+                // because this must be accomplished using our create / create and link buttons...
+                
+                if ('{!JSENCODE(Mode)}'.toUpperCase() == 'NEW') {
+                    ary = new Array(true, true, true, false, true);
+                } else {
+                    ary = new Array(true, true, true, true, true);
+                }
+                setButtons(ary);
+                
+                // Set tools mode to match our own
+                setMode('{!JSENCODE(Mode)}');
+                
+                
+                // As (for some reason!) we can't put this in our command button "oncomplete" code
+                // on this page, check here (on load) whether an action we have taken means we 
+                // need to report back to the user with confirmations of any kind...
+                IHEditHelp.confirmComplete(null, '{!JSENCODE(Diags)}');                                                            
+                return;
+            }
+        
+        </script>
+    </head>   
+
+    
+    <body class="Dialogue{!IF(isLightBox, ' lightbox', '')}" onload="javascript:initialise();">
+    
+        <apex:include pageName="IHHook"/>
+        
+
+<!--   
+===============================================
+OPEN LIGHTBOX: VISIBLE ONLY IF WE'RE FULL SCREEN 
+===============================================
+ -->            
+        <div style="{!IF(isLightBox, 'width: 80%; margin: auto; margin-top: 40px;', '')}">
+
+        <!--
+        NB: DIV CLASS SWITCHING IN FOLLOWING LINE IS INTENDED TO ADD MARGIN (ONLY) WHERE REQUIRED:
+        THIS VARIES DEPENDING ON WHTHER THIS PAGE IS VIEWED AS A DIALOGUE IN AN IFRAME OR FULL SCREEN 
+        AS A RE-DIRECT FROM A SALESFORCE RECORD... 
+         -->
+        <div id="ReadingListProperties" class="{!IF(OptionalFeaturesBack, 'x', '')}IHDialogue IHPanel" >
+            <apex:form id="ReadingListProperties">            
+
+
+<!--   
+===============================================
+DIALOGUE HEADER (non-LUX only)
+===============================================
+ -->            
+                <div class='IHPanelHeader' style="{!IF(isIHLUX==true, 'display: none;', '')}">
+                    <div class='IH-H3 Helpable' id='RLPropertiesTitle' title='{!DialogueTitle}' style='text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 98%;'>{!DialogueTitle}</div>
+                </div>
+
+<!--   
+===============================================
+DIALOGUE BODY
+===============================================
+ -->                
+
+                <apex:tabPanel activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="xIHPanelHeader" headerSpacing="0" contentClass="IHTabContent IHTabBody" switchType="client" selectedTab="tbList" width="100%">
+
+                    <apex:tab label="{!DialogueLocalisations['TitleDialogueSubtitleRLPropertiesTab']}" name="tbList" styleClass="IHTab">
+        
+                        <!--
+                        The following in-line formula sets dialogue body height for different circumstances.
+                        Change the numbers at the end of each line in the {!code block} to set height for:
+                            Read mode
+                            Edit mode   
+                            New mode                            
+                         -->
+                         
+                        <div class='IHPanelBody' style="height: 
+                            {!IF(optionalFeaturesRead, '440px;' 
+                            , IF(AND(optionalFeaturesEdit, NOT(optionalFeaturesNew)), '440px;'
+                            , '510px;'))}
+                        overflow: auto;"> 
+
+<!--   
+===============================================
+READ MODE: READING LIST PROPERTIES (Users)
+===============================================
+ -->  
+
+                            <apex:pageBlock rendered="{!optionalFeaturesRead && isUserOnly}" >
+
+                                <table width='100%'>
+                                    <tr>
+                                        <td width='15%' class='labelCol '>{!DialogueLocalisations['FieldLabelSummary']}</td>
+                                        <td>
+                                            <div class='dataCol IHDataCol' style="height: 45px; margin-bottom: 10px;" >
+                                                <apex:outputText styleClass="IHOutputField" value="{!HelpReadingList__c.Summary__c}" />                                     
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='labelCol '>{!DialogueLocalisations['FieldLabelDescription']}</td>
+                                        <td>
+                                            <div class='dataCol IHDataCol' style="height: 210px; overflow: auto;" >
+                                                <apex:outputField value="{!HelpReadingList__c.Description__c}" />
+                                            </div>  
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </apex:pageBlock>
+
+<!--   
+===============================================
+READ MODE: READING LIST PROPERTIES (Authors etc)
+===============================================
+ -->  
+                            <apex:pageBlock rendered="{!optionalFeaturesRead && !isUserOnly}" >
+                            
+                                <apex:PageBlockSection id="pbsFields1" columns="1" showHeader="false">
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelName']}" value="{!HelpReadingList__c.Name}" style="width: 100%;"/>
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelSummary']}" value="{!HelpReadingList__c.Summary__c}" style="width: 100%; height: 3em;"/>
+                                </apex:PageBlockSection>
+
+                                <apex:PageBlockSection id="pbsFields2" columns="2" showHeader="false">
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelType']}" value="{!HelpReadingList__c.ReadingListType__c}" />
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelVisibility']}" value="{!HelpReadingList__c.Visibility__c}" escape="true" style="width: 100%;"/>
+                                </apex:PageBlockSection>
+                                
+                                <apex:PageBlockSection id="pbsFields3" columns="2" showHeader="false">                                  
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelFeaturedUntil']}" value="{0, date, dd MMM yyyy}">
+                                        <apex:param value="{!HelpReadingList__c.FeaturedUntil__c}" />
+                                    </apex:outputText>                                  
+                                                                            
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelStatus']}" value="{!HelpReadingList__c.ReadingListStatus__c}" />
+                                </apex:PageBlockSection>
+
+                                <apex:PageBlockSection id="pbsFields4" columns="1" showHeader="false">
+                                    <apex:outputField label="{!DialogueLocalisations['FieldLabelActive']}" value="{!HelpReadingList__c.Active__c}" />
+                                </apex:PageBlockSection>
+                                
+                                <apex:PageBlockSection id="pbsFields5" columns="1" showHeader="false">
+                                    <apex:outputField label="{!DialogueLocalisations['FieldLabelDescription']}" value="{!HelpReadingList__c.Description__c}" style="width: 100%;"/>
+                                </apex:PageBlockSection>                    
+
+                                <apex:PageBlockSection id="pbsSystem1" columns="1" showHeader="false">
+                                    <apex:outputText label="{!DialogueLocalisations['FieldLabelOwner']}" value="{!IF(HelpReadingList__c.Owner.Name == null, HelpReadingList__c.Owner.FirstName + ' ' + HelpReadingList__c.Owner.LastName, HelpReadingList__c.Owner.Name)}" />   
+                                </apex:PageBlockSection>
+
+                            </apex:pageBlock>
+<!--   
+===============================================
+EDIT/NEW MODE: READING LIST PROPERTIES
+===============================================
+ -->  
+                            <apex:pageBlock rendered="{!OR(optionalFeaturesEdit,optionalFeaturesNew)}">
+                            
+                                <apex:PageBlockSection id="pbsFields1" columns="1" showHeader="false">
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelName']}" value="{!HelpReadingList__c.name}" required="true" style="width: 100%;"/>
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelSummary']}" value="{!HelpReadingList__c.Summary__c}" style="width: 100%; height: 3em;"/>
+                                </apex:PageBlockSection>
+                                
+                                <apex:PageBlockSection id="pbsFields2" columns="2" showHeader="false">
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelType']}" value="{!HelpReadingList__c.ReadingListType__c}" />
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelVisibility']}" value="{!HelpReadingList__c.Visibility__c}" />
+                                </apex:PageBlockSection>
+
+                                <apex:PageBlockSection id="pbsFields3" columns="2" showHeader="false">
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelFeaturedUntil']}" value="{!HelpReadingList__c.FeaturedUntil__c}" id="Featured" onfocus="DatePicker.pickDate(false, this, false);"/>                                          
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelStatus']}" value="{!HelpReadingList__c.ReadingListStatus__c}" />
+                                </apex:PageBlockSection>
+                                
+                                <apex:PageBlockSection id="pbsFields4" columns="1" showHeader="false">
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelActive']}" value="{!HelpReadingList__c.Active__c}" />
+                                </apex:PageBlockSection>
+
+                                <apex:PageBlockSection id="pbsFields5" columns="1" showHeader="false">
+                                    <apex:inputTextArea label="{!DialogueLocalisations['FieldLabelDescription']}" value="{!HelpReadingList__c.Description__c}" richText="true" rows="5" style="width: 100%;"/>
+                                </apex:PageBlockSection>
+
+                                <apex:PageBlockSection id="pbsSystem1" columns="1" showHeader="false">
+                                    <apex:inputField label="{!DialogueLocalisations['FieldLabelOwner']}" value="{!HelpReadingList__c.OwnerId}" />   
+                                </apex:PageBlockSection>
+                                
+                            </apex:pageBlock>                   
+<!--   
+===============================================
+READ/EDIT MODE: READ ONLY SYSTEM / RECORD DETAILS
+===============================================
+ -->                                                
+                            <apex:pageBlock rendered="{!NOT(optionalFeaturesNew) && NOT(isUserOnly)}">
+                                
+                                <apex:PageBlockSection id="pbsSystem2" columns="2" showHeader="false">
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelCreatedBy']}" value="{!HelpReadingList__c.CreatedBy.Name}"/>
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelCreatedByDT']}" value="{!HelpReadingList__c.CreatedDate}"/>                           
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelModifiedBy']}" value="{!HelpReadingList__c.LastModifiedBy.Name}"/>
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelModifiedByDT']}" value="{!HelpReadingList__c.LastModifiedDate}"/>
+                                    
+                                    <apex:outputField value="{!HelpReadingList__c.Id}"/>                                    
+                                </apex:PageBlockSection>
+                                
+                            </apex:pageBlock>   
+<!--   
+===============================================
+NEW MODE: NEW / LINKED READING LIST PANEL
+===============================================
+ -->            
+                            <apex:pageBlock rendered="{!optionalFeaturesNew}">
+
+                                <apex:tabPanel selectedTab="tbAddLink" activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="IHSettingsHeader" headerSpacing="0" contentClass="IHTabContent" switchType="client" rendered="{!optionalFeaturesNew}">
+                                                            
+                                    <apex:tab label="{!DialogueLocalisations['TitleDialogueSubtitleCreateAndNewTab']}" name="tbAddNew" styleClass="IHTab" >                        
+                                        <div class='IHTabBody'>
+                                            <span style="font-size: 11px;" >
+                                                <apex:outputText >{!DialogueLocalisations['AdviceLabelCreateAndNew']}</apex:outputText>
+                                            </span>
+                                            
+                                            <table width='100%' >
+                                                <tr>
+                                                    <td class='labelCol' width='18%'>{!DialogueLocalisations['FieldLabelNewHTName']}</td>
+                                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                                    <td><div><apex:inputText value="{!fld1}" style="width: 99%; float: left;"/></div></td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class='labelCol'>{!DialogueLocalisations['FieldLabelNewHTSummary']}</td>
+                                                    <td><div class="requiredBlock" style='height: 3.6em;'/></td>
+                                                    <td><apex:inputTextArea value="{!fld2}" style="width: 99%; height: 3em;" /></td>
+                                                </tr>
+                                            </table>
+                                            
+                                            <apex:commandButton title="{!DialogueLocalisations['TipButtonCreateAndNew']}" 
+                                                                action="{!createAndNew}" 
+                                                                styleclass="IHIcon24 IHIdle" 
+                                                                onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                                value="{!DialogueLocalisations['ButtonCreateAndNew']}"/>
+                                                                
+                                        </div>
+                                    </apex:tab> 
+                                    
+                                    <apex:tab label="{!DialogueLocalisations['TitleDialogueSubtitleCreateAndLinkTab']}" name="tbAddLink" styleClass="IHTab" disabled="{!DisableOpts}">                        
+                                        <div class='IHTabBody'>
+                                            <span style="font-size: 11px;" >
+                                                <apex:outputText >{!DialogueLocalisations['AdviceLabelCreateAndLink']}</apex:outputText>
+                                            </span>
+                                            <br/>
+                                            <br/>
+                                            <apex:commandButton title="{!DialogueLocalisations['TipButtonCreateAndLink']}" 
+                                                                action="{!createAndLink}" 
+                                                                disabled="{!DisableOpts}" 
+                                                                styleclass="IHIcon24 IHIdle" 
+                                                                onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                                value="{!DialogueLocalisations['ButtonCreateAndLink']}"/>
+                                        </div>
+                                    </apex:tab> 
+                                        
+                                </apex:tabPanel>    
+                            </apex:pageBlock>           
+                            
+                        </div>   <!-- IHPanel Body -->                  
+
+<!--   
+===============================================
+DIALOGUE FOOTER
+===============================================
+ -->
+                        <div class="IHPanelFooter" style="padding: 3px;">
+                            
+<!--   
+===============================================
+HISTORY REPORT AND EXPORT LINKS
+===============================================
+ -->    
+
+                            <apex:commandLink styleclass="IHLinkButton Right" target="_Blank" action="{!viewHistory}" immediate="true" title="{!DialogueLocalisations['TipButtonViewHistory']}" rendered="{!OptionalFeaturesHistory}">
+                                <div class='IHIcon32 IHIdle IHIconHistory'></div>
+                            </apex:commandLink>
+
+                            <apex:outputLink styleclass="IHLinkButton Right" target="_Blank" value="{!$Page.IHExportDoc}?RLID={!HelpReadingList__c.Id}" title="{!DialogueLocalisations['TipButtonExportToWord']}" rendered="{!EnableExportDoc}">
+                                <div class='IHIcon32 IHIdle IHIconExportDocXML'></div>
+                            </apex:outputLink>
+
+                            <!--
+                            EXPERIMENTAL FEATURE EXCLUDED AS AT v1.21 
+                            <apex:outputLink styleclass="IHLinkButton Right" target="_Blank" value="{!$Page.IHExportPPT}?RLID={!HelpReadingList__c.Id}" title="Export this Reading List to PowerPoint">
+                                <div class='IHIcon32 IHIdle IHIconHistory'></div>
+                            </apex:outputLink>
+                            -->
+
+<!--   
+===============================================
+COMMON EDITING TOOLS
+===============================================
+ -->    
+                            <apex:include pageName="IHEditingTools"/>
+
+                            <apex:actionFunction name="doAdd" action="{!navToAddMode}" />
+                            <apex:actionFunction name="doEdit" action="{!navToEditMode}" />
+                            <apex:actionFunction name="doDelete" action="{!deleteReadingList}" />
+                            <apex:actionFunction name="doSave" action="{!saveReadingList}" />
+                            <apex:actionFunction immediate="true" name="doCancel" action="{!cancelReadingListChanges}" />
+
+                        </div>
+                    </apex:tab> 
+
+<!--   
+===============================================
+RL ENTRIES TAB
+===============================================
+ -->                            
+                    <apex:tab label="{!DialogueLocalisations['TitleDialogueSubtitleRLEntriesTab']}" name="tbEntries" styleClass="IHTab" disabled="{!IF(optionalFeaturesNew, 'true', 'false')}">
+                        <iframe id='frmRLEntries' frameborder="0" style="width: 100%; height: 483px; position: relative; " src='' />
+                    </apex:tab> 
+    
+                </apex:tabPanel>                         
+
+
+<!--   
+===============================================
+FOOTER BACK BUTTON
+===============================================
+ -->                                           
+                <div style="{!IF(OptionalFeaturesBack, 'width: 32px; height: 32px; padding: 13px;', 'display: none;')}">
+
+                    <apex:commandLink action="{!backToSF}"                                      
+                                        title="{!DialogueLocalisations['TipLinkBack']}" 
+                                        rendered="{!OptionalFeaturesBack}"
+                                        immediate="true" >
+                                        
+                        <div class="IHIcon32 IHIdle IHIconNavPrevious"></div>
+                    </apex:commandLink>
+                    
+                </div>
+                                
+            </apex:form>
+        </div>
+        
+<!--   
+===============================================
+CLOSE LIGHTBOX
+===============================================
+ -->            
+        </div>
+        
+    </body>
+</apex:page>

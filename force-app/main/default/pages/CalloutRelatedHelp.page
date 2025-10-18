@@ -1,0 +1,130 @@
+<!--
+============================================================================================== 
+CALLOUT THAT ITERATES OVER THE RELEVANT TOPIC'S RELATED HELP AND, FOR EACH RELATIVE, DISPLAYS
+ITS CALLOUT AT (100 / Number of Relatives)% WIDTH. 
+ 
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)
+
+Martin Little for Improved Apps
+July 2017
+Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleResources']}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleResources']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>     
+            /* Classes particular to mark up on this page */
+            div.RHlpCalloutBody             {overflow: hidden; height: {!(Hlp.CalloutHeight__c - 85)}px !important;}
+            .Summary                        {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+        </style>
+        
+        
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCommunities.js')}"/>          
+        <script>
+            IHCommunities.IAIHCPrefix = "{!$Site.Prefix}";
+            try {IHCommunities.IAIHInitialiseForCommunities();} catch(e) {}
+        </script>
+        
+        <apex:slds rendered="{!isIHLUX==true}" />
+    </head>
+
+    <body class="Page {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">     
+        
+        <div class="{!TCSSClass}">
+            <apex:form >
+                <div class="CalloutContent IHCustomStyled {!CustomStyle}" >
+                
+<!--   
+===============================================
+CLASSIC HEADER
+===============================================
+ -->      
+                    <div class="CalloutHeader" style="{!IF(isIHLUX == true, 'display: none;', '')}">
+                        <div title="{!TSummary}" class="IH-H4 Summary" style="width: 98%;">
+                        
+                            <div style="float: left;">
+                                <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                            </div>
+
+                            <!-- Share, Like and other tools -->
+                            <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                            
+                            <apex:outputText escape="true" value="{!TSummary}" />
+                        </div>     
+                    </div>
+
+<!--   
+===============================================
+LIGHTNING HEADER
+===============================================
+ -->      
+                    <div class="CalloutHeaderLUX" style="{!IF(isIHLUX != true, 'display: none;', '')}">
+                        <header class="slds-popover__header ">
+                        
+                            <!-- Share, Like and other tools -->
+                            <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                        
+                            <h2 class="slds-text-heading_small Summary IHLUXDetailSummary">
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </h2>
+                        </header>
+                    </div>
+
+                        
+<!--   
+===============================================
+BODY / FOOTER FOR BOTH FLAVOURS
+===============================================
+ -->      
+                    <div class="RHlpCalloutBody">
+                        <apex:repeat value="{!Relations}" var="Rel">
+                            <iframe style="border: none; height: Calc(100%); width: Calc((100% - 25px) * (1 / {!Relations.size}));" 
+                                    scrolling="no" 
+                                    src="{!$Page.IHRedirector}?HTID={!Rel.RelItemHTID}&ShowCallout=true&{!PassThroughParameters}" />
+                        </apex:repeat>                                                
+                    </div>
+                                               
+                    <div class="CalloutFooter" style="{!IF(isIHLUX==true, 'height: 2em !important;', '')}">
+                        <div class="ReadMoreLink">     
+                            <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                            title="{!JSENCODE(TMoreLinkTitle)}" 
+                                            value="{!JSENCODE(TMoreLinkHref)}" 
+                                            onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+
+                                <div class='MoreLink'>
+                                    <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                </div>
+                            </apex:outputLink>                        
+                        </div>  
+                    </div>
+                                                  
+                </div>
+                
+            </apex:form>
+        </div>                
+    </body>
+
+</apex:page>

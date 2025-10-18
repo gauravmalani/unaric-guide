@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HelpResource__c</fullName>
+    <deprecated>false</deprecated>
+    <inlineHelpText>The Help Resource accessible from this Help Topic</inlineHelpText>
+    <label>Help Resource</label>
+    <referenceTo>HelpResource__c</referenceTo>
+    <relationshipLabel>Help Topics</relationshipLabel>
+    <relationshipName>HelpTopicResources</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

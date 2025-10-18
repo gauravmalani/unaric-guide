@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RaisePlatformEvents__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Controls whether or not platform events are raised as users interact with Help in certain circumstances.</description>
+    <inlineHelpText>Controls whether or not platform events are raised as users interact with Help in certain circumstances.</inlineHelpText>
+    <label>RaisePlatformEvents</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

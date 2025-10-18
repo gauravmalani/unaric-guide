@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DataDrivenFilter__c</fullName>
+    <deprecated>false</deprecated>
+    <description>(Optional) criteria limiting the circumstances in which this Helped Element is to be displayed based on data values</description>
+    <inlineHelpText>(Optional) criteria limiting the circumstances in which this Helped Element is to be displayed based on data values. Use Field Name not the Label, as this builds a SOQL query.</inlineHelpText>
+    <label>Data-driven Filter</label>
+    <length>32768</length>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

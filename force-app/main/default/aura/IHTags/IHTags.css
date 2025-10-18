@@ -1,0 +1,36 @@
+.THIS .ModeTools				{float: left; margin: 0.5em;}
+.THIS .lblTagMode				{margin-right: 10px;} 
+.THIS .ctlTagMode				{float: right; margin: 0; position: relative; top: 0.3em;}
+
+.THIS .IHTagsContainer			{height: 100%;}
+
+.THIS .Selector 				{float: left; padding: 5px;}
+  
+.THIS .IATool a					{position: relative; top: 0.2em; }
+.THIS .IATool.Tagged			{background-color: #4bca81 !important;}
+.THIS .IATool.Tagged a			{color: #ffffff !important;}
+
+.THIS .IATool.UnTagged.UnTaggedItemsOption	{background-color: transparent !important;}
+.THIS .IATool.Tagged.UnTaggedItemsOption	{background-color: #ffcccc !important;}
+
+.THIS .Tagged.SCIENCE_BLUE		{background-color: #0070d2 !important;}
+.THIS .Tagged.MIDNIGHT_BLUE		{background-color: #00396b !important;}
+.THIS .Tagged.FLUSH_MAHOGANY	{background-color: #c23934 !important;}
+.THIS .Tagged.AZURE				{background-color: #1589ee !important;}
+.THIS .Tagged.SALEM				{background-color: #04844b !important;}
+.THIS .Tagged.KOROMIKO			{background-color: #ffb75d !important;}
+.THIS .Tagged.EMERALD			{background-color: #4bca81 !important;}
+.THIS .Tagged.PALETTE_GRAY_9	{background-color: #706e6b !important;}
+
+.THIS .IHTagTopicUpdated		{border: solid 3px yellow;}
+
+.THIS .BadgeRemover				{color: red; margin-left: 1em; padding-right: 0.7em; margin-top: 0.8em !important;}
+
+
+.THIS .DropTargetActive {
+    background-color: #ffffcc !important;
+}
+
+.THIS .DropTargetUnavailable {
+    background-color: #ffcccc !important;
+}

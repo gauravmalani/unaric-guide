@@ -1,0 +1,16 @@
+<!--
+============================================================================================== 
+PAGE THAT TAKES IMPROVED APPS CONFIGURATION RECORD DATA AND CONVERTS IT INTO JSON FORM
+SUITED TO IMPORT / TRANSFER TO ANOTHER ORG VIA GLOBAL SETTINGS JSON UPLOAD FACILITIES
+
+Martin Little for Improved Apps
+December 2016
+Copyright (c.) Improved Apps Limited 2016. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page controller="zInstallHandler" contentType="txt/json#HelpConfig.json" cache="true">
+
+    <apex:outputText value="{!ioDataConfigJSON}" escape="true"/>
+
+</apex:page>

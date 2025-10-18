@@ -1,0 +1,430 @@
+<!--
+============================================================================================== 
+"CONTAINER" PAGE OFFERING TOOLS COMMON TO ALL IMPROVED HELP TOPIC LAYOUTS
+FOR USE IN THE SAELSFORCE1 UX
+
+REQUIRES A HELP TOPIC (HTID), PLUS DETAILS OF THE SF1 CONTEXT LAST ENCOUNTERED (IHContext) I.E.
+
+    [SF base URL]/Apex/IH1Tools?HTID=[topic id]&IHContext=[SF record Id]
+
+NOTE THAT THE CONTEXT FOR THESE PURPOSES IS A RECORD ID ONLY - NOT A FULL URL AS
+USED IN OTHER INSTANCES OF IHContext
+
+Martin Little for Improved Apps
+December 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                docType="html-5.0"
+                standardcontroller="HelpTopic__c"
+                extensions="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />
+                
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>
+            .IH1PanelBody                   {padding-bottom: 60px;}    
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSettings.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsIH1UX.js')}" />
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+          
+        <script type='text/javascript'>
+            $IAIHj = jQuery.noConflict();
+            
+            $IAIHj(document).ready(function($) {
+                                    
+                // Calculate Header Text width from viewPort
+                var viewportWidth = $IAIHj(window).width() - 90;
+                $IAIHj('.IH1HeaderText').css('max-width',viewportWidth);
+                                    
+                // Quick Links
+                $IAIHj(".IH1QuickLink ul li a").wrapInner("<div class='IH1ListItem'></div>");
+                $IAIHj(".IH1QuickLink ul li a .IH1ListItem").wrapInner("<div class='IH1ListItemFirstLine'></div>");
+                                    
+                // Bookmarks
+                $IAIHj(".IHIcon").toggleClass("IHIcon IHIcon30");
+                                                            
+
+                // Nav bar handling
+                $IAIHj(".IH1NavButton:not('#Bookmark')").click(function() {
+                    var PanelToShow = "#Panel" + $IAIHj(this).parent().attr("id");
+                                            
+                    //Hide Panels and Nav Bar Items
+                    $IAIHj(".IH1NavBarItem,.IH1Panel,.IH1QAMTitleText").hide();
+                    
+                    //Make clicked Nav Bar Item Active
+                    var ActiveNavBarItem = '#' + $IAIHj(this).parent().attr("id");
+                    
+                    $IAIHj(".IH1NavBarItem").removeClass("IHActive");
+                    $IAIHj(ActiveNavBarItem).addClass("IHActive");                      
+                                            
+                    //Show active Panel 
+                    $IAIHj(PanelToShow).show();
+                    
+                    //Show Navigation
+                    $IAIHj(".IH1NavBarItem").show();
+
+                    // Show active title
+                    $IAIHj(PanelToShow + 'Title').show();
+                });
+
+
+                // Having set up listeners, click the tab we desire on entry to this page
+                // (i.e., Topic details)
+                document.getElementById('IH1TopicDetailsButton').click();
+
+
+                // Show / hide listing details
+                $IAIHj(".IH1ViewMode").click(function() {
+                    if($IAIHj(this).hasClass('IHIconExpandIH1')) {
+                        IHIH1UX.toggleDetails('Expand');
+                    } else {
+                        IHIH1UX.toggleDetails('Collapse');
+                    }
+                });
+                
+
+                // Initialise expanded/collapsed state based on cookie
+                if (readCookie('IH1ViewMode') != null) {
+                    IHIH1UX.toggleDetails(readCookie('IH1ViewMode'));
+                }
+
+            }); 
+                
+                                
+            window.onmessage = function (e) {
+                // Message = some action has completed
+                if (e.data.toString().substring(0,16) == 'confirmComplete=') {
+                    // In our case, this message is sent only by the comments
+                    // page from its iframe: when this happens, we want to return
+                    // the user to the help details
+                    
+                    document.getElementById('IH1TopicDetailsA').click();
+                    document.getElementById('IH1TopicDetailsA').focus();
+                }
+            }
+            
+
+        </script>
+              
+    </head>
+   
+    
+    <body class="IH1UX IH1Tools">
+        <apex:form >
+        
+
+<!-- 
+IMPORTANT NOTE: 
+THE BACK BUTTON RETURNS TO THE QAM: WE NEED TO ADD THE PARAMETERS TO ENSURE IT IS
+SIZED FOR SF1 AND NOT BROWSER (EVEN IF WE LAUNCH TOOLS PAGE FROM PUBLISHER ACTION, IT WILL LAUNCH
+INTO NEW TAB, SO WE DON'T WANT TO GO BACK TO A QAM WHOSE LISTING IS SET TO PUBLISHER HEIGHT).
+
+HOWEVER, ON RETURNING TO QAM: 
+    - IN SF1, WE NEED THE isdtp PARAMETER, WITHOUT WHICH, NAVIGATION FROM QAM TO CORRECT TOPIC BECOMES UNRELIABLE
+    - IN CLASSIC, WE MUST NOT HAVE isdtp, AS WITH IT ALL QAM LINKS STOP WORKING
+SO:
+WE USE A COMBINATION OF 2 PARAMETERS TO CHECK WHETHER TO USE isdtp=p1 OR IH1UX=true TO SIGNIFY THAT WE'RE IN SF1 
+
+    - IF inline='1' AND isdtp='' -> ASSUME WE WERE OPENED IN CLASSIC AND USE IH1UX=true
+    - OTHERWISE, ASSUME WE'RE IN SF1 PROPER AND USE isdtp=p1
+    
+IN ALL CASES, SEND inline PARAMETER AS WE RECIEVE IT    
+ -->
+
+
+
+
+<!--   
+===============================================
+HEADER / BRANDING
+===============================================
+ -->            
+            <div id="IH1Container">
+
+                <div class="IH1Header">
+                    <div id="IH1Branding">                     
+                        <a title="{!IF(Settings.DefaultHelpTopic__c != null && Settings.DefaultHelpTopic__c != '', GlobalLocalisations['TipButtonHelpHome'], '')}" 
+                            href="{!IF(Settings.DefaultHelpTopic__c != null && Settings.DefaultHelpTopic__c != '', TRootLink + '/apex/iahelp__IH1Tools?HTID=&IHContext=' + IHContext + '&' + IF($CurrentPage.parameters.inline == '1' && $CurrentPage.parameters.isdtp == '', 'IH1UX=true', 'isdtp=p1') + '&inline=' + $CurrentPage.parameters.inline, 'javascript:void(0);')}">
+                            
+                            <div class="IH1ToolsBrandImage {!IF(TBrandImage=='', '', 'X')}ToolsBrandImageDefault">
+                                <img src='{!TBrandImage}' alt='{!TBrandTitle}' />
+                            </div>
+                        </a>                                                            
+                    </div>
+                    
+                    <div class="IH1Utilities"></div>                  
+                    
+                    <div class="IH1HeaderText">
+                        <div class="IH1HeaderSuperscript"><apex:outputText value="{!TName}" /></div>
+                        <div class="IH1HeaderTitle">
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1TopicDetailsTitle">{!DialogueLocalisations['TitleSubtitleTopicDetails']}</div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1NavOptionsTitle">{!DialogueLocalisations['TitleSubtitleGoingBack']}</div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1RelatedTopicsTitle">{!DialogueLocalisations['TitleSubtitleRelatedTopics']}</div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1ReadingListsTitle">{!GlobalLocalisations['TitleSubtitleReadingLists']}</div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1ResourcesTitle">{!DialogueLocalisations['TitleSubtitleResources']}</div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1HelpToolsTitle">{!GlobalLocalisations['TitleSubtitleTools']}</div>
+                        </div>                  
+                    </div>
+                    
+                </div>
+
+<!--   
+===============================================
+NAV BAR
+===============================================
+ -->            
+            
+                <div id="IH1NavBar">                    
+
+                    <div id="IH1NavOptions" title="{!DialogueLocalisations['TipTabGoBack']}" class="IH1NavBarItem" style="width: 16.66%;">
+                            <a class="IH1NavButton" href="{!$Page.IH1QAM}?id={!IHContext}&{!IF($CurrentPage.parameters.inline == '1' && $CurrentPage.parameters.isdtp == '', 'IH1UX=true', 'isdtp=p1')}&inline={!$CurrentPage.parameters.inline}">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpBackIH1" ></div>
+                        </a>
+                    </div>
+
+                    <div id="IH1TopicDetails" title="{!DialogueLocalisations['TipTabTopicDetails']}" class="IH1NavBarItem IHActive" style="width: 16.66%;">
+                        <a class="IH1NavButton" id="IH1TopicDetailsA" href="javascript:void(0);">
+                            <div id="IH1TopicDetailsButton" class="IH1NavButtonIcon IHIcon30 IHIconHelpTopicIH1" ></div>
+                        </a>
+                    </div>
+                    
+                    <div id="IH1RelatedTopics" title="{!DialogueLocalisations['TipTabRelatedHelp']}" class="IH1NavBarItem" style="width: 16.66%;">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IH1IconRelatedHelpTopic"></div>
+                        </a>
+                    </div>
+                    
+                    <div id="IH1ReadingLists" title="{!DialogueLocalisations['TipTabRelatedReadingLists']}" class="IH1NavBarItem" style="width: 16.66%;">
+                        <a  class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconReadingListIH1" ></div>
+                        </a>
+                    </div>
+                    
+                    <div id="IH1Resources" title="{!DialogueLocalisations['TipTabRelatedResources']}" class="IH1NavBarItem" style="width: 16.66%;">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpResourceIH1" ></div>
+                        </a>
+                    </div>
+
+                    <div id="IH1HelpTools" title="{!GlobalLocalisations['TipTabTools']}" class="IH1NavBarItem" style="width: 16.66%">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpMenuIH1"></div>
+                        </a>    
+                    </div>                                              
+                                                        
+                </div>
+
+<!--   
+===============================================
+HELP TOPIC DETAILS
+===============================================
+ -->            
+                <div id="PanelIH1TopicDetails" class="IH1Panel" style="display: none;">
+                    <div class="IH1PanelBody">
+
+                        <div class="IH1ListView">
+                            <div class="IH1ListViewLabel">
+                                {!DialogueLocalisations['TitleSubtitleTabTopicDetails']}
+                            </div> 
+                        </div>
+
+                        <div class='IH1ToolsContent' >                     
+                            <iframe style='border: 0; width: 100%; height: {!THeight}px;' src='{!TLayout}&IH1UX=true' id='tfrmContent'></iframe>
+                        </div>
+                                          
+                    </div>
+                </div>                          
+
+<!--   
+===============================================
+RELATED HELP TOPICS
+===============================================
+ -->            
+                <div id="PanelIH1RelatedTopics" class="IH1Panel" style="display: none;">
+
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">
+                            {!GlobalLocalisations['TitleSubtitleRelatedHelp']}
+                        </div> 
+                    </div>
+
+                    <div class="IH1PanelBody">
+ 
+                            <div class="IH1RelatedTopic"> 
+    
+                                <apex:dataTable style="width: 100%" id="RHelpTopics" value="{!Relations}" var="Rel">
+                                    <apex:column >
+                                        <a title="{!Rel.Summary}"
+                                            href="{!Rel.ItemURL + '&IHContext=' + IHContext + '&' + IF($CurrentPage.parameters.inline == '1' && $CurrentPage.parameters.isdtp == '', 'IH1UX=true', 'isdtp=p1') + '&inline=' + $CurrentPage.parameters.inline}">
+                                            
+                                            <div class="IH1ListItem">                                            
+                                                <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Rel.Name}</div>
+                                                <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Rel.Summary}</div>
+                                            </div>
+                                        </a>                  
+                                    </apex:column>             
+                                </apex:dataTable>
+    
+                            </div>
+
+                    </div>
+                </div>      
+    
+<!--   
+===============================================
+READING LISTS
+===============================================
+ -->            
+                <div id="PanelIH1ReadingLists" class="IH1Panel" style="display: none;">
+
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">
+                            {!DialogueLocalisations['TitleSubtitleTabRelatedReadingLists']}
+                        </div>  
+                    </div>
+
+                    <div class="IH1PanelBody">
+ 
+                        <apex:repeat value="{!ReadingLists}" var="Lst">  
+                            <div style="float: left; width:100%">                               
+                                <div class="IH1ListItem">
+                                    <a title="{!DialogueLocalisations['TipButtonViewReadingList']}"
+                                        href="{!TRootLink}/apex/iahelp__IHReadingListViewer?RLID={!Lst.RLID}&IH1UX=true&HTID={!IF(Lst.IncludesCurrentTopic == true, THelpId, '')}&IHContext={!IHContext}&isdtp={!$CurrentPage.parameters.isdtp}&inline={!$CurrentPage.parameters.inline}" >                                          
+                                        
+                                            <div class="IH1ListItemHeader{!IF(Lst.ListCSSClass != '', ' ' + Lst.ListCSSClass, '')}"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Lst.ListName}</div>
+                                            <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Lst.ListSummary}</div>
+                                         
+                                    </a>                                        
+                                </div>
+                            </div>   
+                        </apex:repeat>
+
+                    </div>
+                </div>      
+    
+<!--   
+===============================================
+RESOURCES
+===============================================
+ -->            
+                <div id="PanelIH1Resources" class="IH1Panel" style="display: none;">
+
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">
+                            {!DialogueLocalisations['TitleSubtitleTabRelatedResources']}
+                        </div> 
+                    </div>
+                    
+                    <div class="IH1PanelBody" > 
+                        <div class="IH1HelpResource"> 
+                            <apex:repeat value="{!Resources}" var="Res">
+                                
+                                    <apex:commandLink title="{!Res.Summary}" action="{!gotoResource}">
+                                        <apex:param name="SelectedRecord" value="{!Res.HTRID}" assignTo="{!SelectedRecord}" />
+
+                                        <div class="IH1ListItem">
+                                            <div class="IH1ListItemHeader">
+                                                <div class='IH1HelpResourceIcon' style="float: left; width: 20px; height: 20px; margin: -4px 10px 0 -4px; background-image:url({!JSENCODE(Res.PreviewURL)}); background-size: 20px 20px;"/>
+                                                    <span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Res.Name}                                             
+                                                </div>
+                                                <div class="IH1ListItemFirstLine"><b>{!DialogueLocalisations['AdviceLabelResourceUsage']}</b> {!Res.UsageNotes}</div>
+                                                <div class="IH1ListItemLine"><b>{!DialogueLocalisations['AdviceLabelResourceLocation']}</b> {!Res.Location}</div>
+                                        </div>
+                                    </apex:commandLink>
+
+                            </apex:repeat>                                                                                      
+                        </div>
+                    </div>
+                </div>      
+
+<!--   
+===============================================
+HELP TOOLS MENU
+===============================================
+ -->            
+
+                <div id="PanelIH1HelpTools" class="IH1Panel" style="display: none;">
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">
+                            {!GlobalLocalisations['TitleSubtitleTabTools']}
+                        </div>
+                    </div>
+                
+                    <div class="IH1ToolList">
+                        <div class="IH1List" style="clear: both;">
+                        
+                            <div class="IH1ListItem">
+                                <div class="IH1ListItemHeader">
+                                    <div title="{!GlobalLocalisations['TipButtonCompactView']}" class="IH1ViewMode IH1NavButtonIcon IHIcon30 IHIconCollapseIH1" style="display: inline-block; cursor: pointer; vertical-align: middle;">&nbsp;</div>
+                                        <span style="font-weight: bold;">
+                                            {!GlobalLocalisations['ButtonCompactView']}
+                                        </span>  
+                                    </div>                                         
+
+                                <div class="IH1ListItemFirstLine">
+                                    {!GlobalLocalisations['AdviceLabelCompactView']}
+                                </div>
+                            </div>
+
+                            <div class="IH1ListItem">
+                                <div class="IH1ListItemHeader">
+                                    <apex:commandLink rendered="{!!BmkExists}" action="{!addBookmark}" >
+                                        <div title="{!GlobalLocalisations['AdviceLabelAddBookmark']}" class="IHIcon30 IHIconBookmarkAdd" style="display: inline-block; vertical-align: middle;">&nbsp;</div>
+                                        <span style="font-weight: bold;">
+                                            {!GlobalLocalisations['AdviceLabelAddBookmark']}
+                                        </span>  
+                                    </apex:commandLink>                                    
+                                    
+                                    <apex:commandLink rendered="{!BmkExists}" action="{!removeBookmark}" >
+                                        <div title="{!GlobalLocalisations['TipButtonRemoveBookmark']}" class="IHIcon30 IHIconBookmarkRemove" style="display: inline-block; vertical-align: middle;">&nbsp;</div>
+                                        <span style="font-weight: bold;">
+                                            {!GlobalLocalisations['TipButtonRemoveBookmark']}
+                                        </span>  
+                                    </apex:commandLink>                                    
+                                </div>
+
+                                <div class="IH1ListItemFirstLine">
+                                    {!DialogueLocalisations['AdviceLabelBookmark']}
+                                </div>
+                            </div>
+                                
+                            <div class="IH1ListItem">
+                                <div class="IH1ListItemHeader">
+                                    <div class="IH1NavButtonIcon IHIcon30 IHIconCommentIH1" style="display: inline-block; vertical-align: middle;">&nbsp;</div>
+                                    <span style="font-weight: bold;">
+                                        {!GlobalLocalisations['AdviceLabelComment']}
+                                    </span>  
+                                    <div class='IH1QAMComment' style="clear: left; width: 100%;">                     
+                                        <iframe style='border: 0; width: 100%; height: 95px;' src='{!TRootLink}/apex/iahelp__IHComment?HTID={!THelpId}&IH1UX=true&IHContext=IHHosted' id='tfrmComment' ></iframe>                                
+                                    </div>
+
+                                </div>
+
+                                <div class="IH1ListItemFirstLine">
+                                    {!DialogueLocalisations['AdviceLabelCommentOnTopic']}
+                                </div>
+                            </div>
+                                                    
+                        </div>
+                    </div>
+
+                </div>
+            
+            </div>              
+            
+        </apex:form>
+    </body>        
+
+</apex:page>

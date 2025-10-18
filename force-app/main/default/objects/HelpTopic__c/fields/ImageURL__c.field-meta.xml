@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ImageURL__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Full web address of the image to associate with this Help Topic</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Full web address of the image to associate with this Help Topic</inlineHelpText>
+    <label>Image URL</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

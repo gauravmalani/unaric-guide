@@ -1,0 +1,1031 @@
+<!--
+============================================================================================== 
+"CONTAINER" PAGE OFFERING TOOLS COMMON TO ALL IMPROVED HELP TOPIC LAYOUTS
+WITH AN IFRAME TO DISPLAY THE SELECTED TOPIC USING ITS SELECTED HELP TOPIC TEMPLATE
+
+REQUIRES EITHER A HELP TOPIC (HTID), A HELP READING LIST (RLID) OR 
+HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/IHTools?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/IHTools?RLID=[reading list id]
+    ...OR...
+    [SF base URL]/Apex/IHTools?ElemID=[helped element id]&HPL=[helped page layout identifier]
+    
+NB: HPL is an identification string (derived from SF page address) NOT HelpedPageLayout__c.Id.
+NB: In addition, SF itself can access this page using just its standard "id=x" syntax:
+        This is handled via mechanisms in the constructor to our extension controller class.
+
+NB: In addition, URL can specify:
+    Mode=New            - to automatically create a new record then enter edit mode on it
+    Mode=Edit           - to automatically edit the specified help topic (identified by mandatory HTID param)
+    ForceSearch=true    - to force visibility of search tool where (apparent) console use (iframing) would otherwise suppress this
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                standardcontroller="HelpTopic__c"
+                extensions="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />
+                
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+
+        <apex:includeScript value="/support/console/28.0/integration.js"/>        
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}" />
+        
+        <script type='text/javascript'>
+
+            // Prepare page for use
+            function initialise() {
+
+                // Ensure tools buttons adopt IH look and feel for tasks in progress
+                IHEditHelp.initialiseButtons();
+                
+                // Also, resize to small toolbar buttons if required
+                resizeToolbarItems();
+
+                
+                // Bind a "before unload" function to check on pending edits
+                window.onbeforeunload = function() {                
+                    var dirtWarning = IHEditHelp.IHjsEditCheckDirty();
+                    
+                    if (dirtWarning != '') {
+                        return dirtWarning;
+                    } else {
+                        return;
+                    }
+                }
+
+                                
+                // Amend furniture and set tab title if we are in console:
+                // NB: as SF console API does NOT keep track of whether we're in a console
+                // tab as we navigate, we have to assume here that we're in a console if 
+                // we're in a frame etc.
+                // v1.33: If we need to override this assumption (e.g., SF web tabs), we can pass the "ForceSearch" parameter...
+                try {
+                    var forceSearch = {!IF($CurrentPage.parameters.ForceSearch == "true", true, false)};
+                    
+                    if ((IHQAMenu.isConsolePage == true || self != top) && forceSearch == false) {
+                    
+                        // Redirect resources to the current console tab
+                        $IAIHj('.ResLinkNormal').addClass('IHHidden');
+                        $IAIHj('.ResLinkConsole').removeClass('IHHidden');
+                        
+                        // "Disable" the home page tool completely (c.f jsEditHelp.ToggleTools)
+                        $IAIHj('#ToolbarIconHome').addClass('Disabled');
+
+                    } else {
+                        // Show bookmarks and search (not needed in console - can be found in QAM)
+                        $IAIHj('#ToolsUtilities').show('slow');
+                        
+                        // Show SF Home link (not relevant in console)
+                        $IAIHj('#containerToolbarIconHome').show();
+                        $IAIHj('#ToolbarIconHomeUnavailable').addClass('IHHidden');
+
+                        // Set focus to search text box on load
+                        document.getElementById('txtSearchTerm').focus();
+                    
+                    }
+                    
+                    // Hide IH Home icon if no default help topic has been set
+                    if (IHSettings[defaultHTSet] == 'false') {
+                        // "Disable" the IH home page tool completely (c.f jsEditHelp.ToggleTools)
+                        $IAIHj('#ToolbarIconHelpHome').addClass('Disabled');
+                    
+                    } else {
+                        $IAIHj('#containerToolbarIconHelpHome').show();
+                        $IAIHj('#ToolbarIconHelpHomeUnavailable').addClass('IHHidden');
+                    }
+                    
+                    
+                    // Re-enter edit mode (disabling of toolbar icons) if we've just edited callout template
+                    if ('{!JSENCODE(TEditorClass)}' == 'CALLOUTCHANGE') {
+                        IHEditHelp.ToggleTools();
+                    }
+                                    
+                    // Toggle editing controls any time we're in edit mode 
+                    if ('{!JSENCODE(Mode)}'.toUpperCase() == 'EDIT') {
+                        IHEditHelp.ToggleEditMode();
+                    }
+
+                    
+                    // Set tab title to current topic name
+                    sforce.console.setTabTitle('{!JSENCODE(TName)}');
+                } catch (e) {
+                }
+
+                return;
+            }
+        
+
+            // For keeping track of topic height before scrolling when editing
+            function synchHBS(elem) {
+                var x = document.getElementById('HBS');
+                x.value = elem.value;
+                
+                // NB: also set page to "dirty" from editing perspective...
+                IHEditHelp.IHjsEditSetDirty();
+                
+                return;
+            }
+            
+            
+            // To resize toolbar tools if required
+            window.onresize = function (e) {
+                resizeToolbarItems();
+            }           
+            function resizeToolbarItems() {
+                var w = $IAIHj(window).innerWidth();
+                if (w <= 1135) {                    
+                    $IAIHj('.IHIcon').removeClass('IHIcon').addClass('IHIconSmall');
+                } else {
+                    $IAIHj('.ToolsToolbar .IHIconSmall').removeClass('IHIconSmall').addClass('IHIcon');
+                }
+
+                return;
+            }
+                   
+        </script>
+    </head>
+   
+    
+    <body class='ToolsPage' id='ToolsPageBody' onload='javascript:initialise();' >        
+
+        <apex:include pageName="IHHook"/>
+            <apex:form id="ToolsPageForm">
+            
+                <apex:actionFunction name="doCloneTopic" action="{!cloneTopic}" />       
+            
+<!--   
+===============================================
+HEADER / BRANDING
+===============================================
+ -->            
+                <div id='ToolsHeader' class='IHBranded'>
+                    <div class='ToolsBrand'>
+                        <div id='ToolsTitle' class='IH-H1'>{!TBrandTitle}</div>
+
+                        <div id='ToolsLinks'>     
+                                                                   
+                            <ul id="IHQuickLinks">
+
+                                                        
+                                <apex:outputPanel rendered="{!Settings.QuickLink1__c != null}" >
+                                    <li><a target="Qlink" title="{!IF(Settings.QuickTip1__c != null, Settings.QuickTip1__c, GlobalLocalisations['TipGoto'] + ' ' + Settings.QuickText1__c)}" href="{!Settings.QuickLink1__c}">{!Settings.QuickText1__c}</a></li>   
+                                </apex:outputPanel>
+                            
+                                <apex:outputPanel rendered="{!Settings.QuickLink2__c != null}" >
+                                    <li><a target="Qlink" title="{!IF(Settings.QuickTip2__c != null, Settings.QuickTip2__c, GlobalLocalisations['TipGoto'] + ' ' + Settings.QuickText2__c)}" href="{!Settings.QuickLink2__c}">{!Settings.QuickText2__c}</a></li>   
+                                </apex:outputPanel>
+                            
+                                <apex:outputPanel rendered="{!Settings.QuickLink3__c != null}" >
+                                    <li><a target="Qlink" title="{!IF(Settings.QuickTip3__c != null, Settings.QuickTip3__c, GlobalLocalisations['TipGoto'] + ' ' + Settings.QuickText3__c)}" href="{!Settings.QuickLink3__c}">{!Settings.QuickText3__c}</a></li>
+                                </apex:outputPanel>
+                            
+                                <apex:outputPanel rendered="{!Settings.QuickLink4__c != null}" >
+                                    <li><a target="Qlink" title="{!IF(Settings.QuickTip4__c != null, Settings.QuickTip4__c, GlobalLocalisations['TipGoto'] + ' ' + Settings.QuickText4__c)}" href="{!Settings.QuickLink4__c}">{!Settings.QuickText4__c}</a></li>
+                                </apex:outputPanel>
+                            
+                                <apex:outputPanel rendered="{!Settings.QuickLink5__c != null}" >
+                                    <li><a target="Qlink" title="{!IF(Settings.QuickTip5__c != null, Settings.QuickTip5__c, GlobalLocalisations['TipGoto'] + ' ' + Settings.QuickText5__c)}" href="{!Settings.QuickLink5__c}">{!Settings.QuickText5__c}</a></li>
+                                </apex:outputPanel>
+                            
+                                <apex:outputPanel rendered="{!isAdministrator}" >
+                                    <li><a target="Qlink" title="{!GlobalLocalisations['TipButtonConfigureSettings']}" href="{!$Page.IHManageSettings}?Cat=QuickLinks"><div class="IHIcon IHIconSettings"></div></a></li>
+                                </apex:outputPanel>
+                                
+                            </ul>                                                        
+                        </div>
+                                                
+                        <div id='ToolsSubtitle' class='IH-H2'>{!TBrandSubTitle}</div>
+                    </div>
+                        
+                    <div id='ToolsUtilities' class='ToolsUtilities' style='display: none;'>
+                        <div title="{!GlobalLocalisations['TipButtonOpenBookmarks']}" onclick='javascript:IHQAMenu.showBookmarks(event);' class='IHIcon24 IHIconBookmarkList' style='float: right; cursor: pointer;'></div>
+                        
+                        <div id="SearchWidget" >
+                            <div onclick='javascript:IHSearch.doSearchPopup(event);' id='SearchButton' class='IHButton' style='float: right;'>
+                                {!GlobalLocalisations['AdviceLabelSearchHelp']}
+                            </div>
+                            
+                            <div id='SearchInput'>
+                                <input title="{!GlobalLocalisations['TipInputTextbox']}" type="text" id="txtSearchTerm" style='border: 0px solid; margin: 4px 4px 0 5px;' value="" size='20' maxlength='20' onfocus="javascript:IHSearch.checkSearchTerm(this);" onkeydown="javascript:return IHSearch.checkEnter('POPUP', event);" />
+                            </div>
+                        </div>
+                    </div>      
+                                                                                                        
+                </div>
+
+                <div class="ToolsBrandImage {!IF(TBrandImage=='', '', 'X')}ToolsBrandImageDefault">
+                    <img class='IHBranded' id="IHBrandImage" src='{!TBrandImage}' alt='{!TBrandTitle}' style='width: 100%; height: 100%;' />
+                </div>              
+
+<!--  
+===============================================
+MAIN BODY FRAME AND CONTENT BLOCK BEGINS
+===============================================
+ -->
+
+                <div id='ToolsBodyFrame'>
+                    <div id='ToolsContentFrame' >
+                        <div id='ToolsContentBackground' class='IHBranded'>           
+    
+<!--  
+===============================================
+TOPIC TOOLBAR
+===============================================
+ -->            
+                            <div class='ToolsToolbar'>
+                            
+                                <div id='containerToolbarIconHome' style='display: none;'>
+                                    <div id='ToolbarIconHome' >
+                                        <a title="{!DialogueLocalisations['TipButtonSFHome']}" href='{!TRootLink}/home/home.jsp' >
+                                            <div class="IHIcon IHIconSalesforceHome"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div id='ToolbarIconHomeUnavailable' >
+                                    <div class="IHIcon IHIconSalesforceHomeUnavailable"></div>
+                                </div>
+
+
+                                <div id='containerToolbarIconHelpHome' style='display: none;'>
+                                    <div id='ToolbarIconHelpHome' >
+                                        <a title="{!GlobalLocalisations['TipButtonHelpHome']}" href='{!TRootLink}/apex/iahelp__{!PortalPage}' >
+                                            <div class="IHIcon IHIconHelpHome"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div id='ToolbarIconHelpHomeUnavailable' class='XIHHidden'>
+                                    <div class="IHIcon IHIconHelpHomeUnavailable"></div>
+                                </div>
+
+                            
+                                <div id='ToolbarIconBookmark'>                                    
+                                    <apex:commandLink rendered="{!!BmkExists}" action="{!addBookmark}" >
+                                        <div title="{!GlobalLocalisations['AdviceLabelAddBookmark']}" class="IHIcon IHIconBookmarkAdd"></div>
+                                    </apex:commandLink>                                    
+                                    
+                                    <apex:commandLink rendered="{!BmkExists}" action="{!removeBookmark}" >
+                                        <div title="{!GlobalLocalisations['TipButtonRemoveBookmark']}" class="IHIcon IHIconBookmarkRemove"></div>
+                                    </apex:commandLink>                                    
+                                </div>
+                                <div id='ToolbarIconBookmarkUnavailable' class=' IHHidden'>
+                                    <div class='IHIcon IHIconBookmarkAddUnavailable'></div>
+                                </div>
+
+
+                                <div id='ToolbarIconPrint'>
+                                    <a title="{!DialogueLocalisations['TipButtonPrintTopic']}" href='{!TRootLink}/apex/iahelp__TemplatePrintable?HTID={!THelpId}&{!PassThroughParameters}' target='_Popout' >
+                                        <div class="IHIcon IHIconTopicPrintable"></div>
+                                    </a>
+                                </div>
+                                <div id='ToolbarIconPrintUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconTopicPrintableUnavailable"></div>
+                                </div>
+                                 
+
+                                <div id='ToolbarIconComment'>
+                                    <a title="{!DialogueLocalisations['TipButtonComment']}" href='javascript:void(0);' onclick='javascript:IHWebToolTips.DoTips("dfrm", "{!JSENCODE(TCommentLink)}", "7", 300, 208, event);'>
+                                        <div class="IHIcon IHIconComment"></div>
+                                    </a>
+                                </div>
+                                <div id='ToolbarIconCommentUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconCommentUnavailable"></div>
+                                </div>
+                                
+                                
+                                <div id='ToolbarIconHelpedElements'>
+
+                                    <!--
+                                    THIS TOOL MAY NOT BE AVAILABLE - I.E. WHEN THERE ARE NO HELPED ELEMS,
+                                    BUT (v1.21 / T-1029) WE ALWAYS WANT TO SHOW SOMETHING IN THE TOOLBAR: 
+                                    SO SWITCHING IS BETWEEN DISABLED/GREYED OUT ICON AND AVAILABLE ONE
+                                     -->
+
+                                    <apex:outputPanel rendered="{!TViewElementsLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonViewHelpedElements']}" href="javascript:void(0);" onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHSearchResults}?Opts=6&HTID={!JSENCODE(THelpId)}', '7', 600, 440, event);">
+                                            <div class="IHIcon IHIconHelpedElements"></div>
+                                        </a>
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel rendered="{!TViewElementsLink == '' && isAuthor}" >
+                                        <div class="IHIcon IHIconHelpedElementsUnavailable"></div>
+                                    </apex:outputPanel>
+
+                                </div>
+                                <div id='ToolbarIconHelpedElementsUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconHelpedElementsUnavailable"></div>
+                                </div>                              
+                                <div class='ToolsToolbarSpacer'></div>
+                                
+
+                                <div id='ToolbarIconInteractions'>
+                                    <apex:outputPanel rendered="{!TInteractionsLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonStats']}" href="{!TStatsLink}" target="_Stats">
+                                            <div class="IHIcon IHIconModeAnalyse"></div>
+                                        </a>                            
+                                    </apex:outputPanel>
+                                </div>
+                                <div id='ToolbarIconInteractionsUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconModeAnalyseUnavailable"></div>                                 
+                                </div>
+                                <div class='ToolsToolbarSpacer'></div>
+                                
+                                
+                                <div id='ToolbarIconSFEditing'>
+                                    <apex:outputPanel rendered="{!TSFEditingLinks != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonSFTopicsTab']}" href="{!TRootLink}/{!MID(Settings.SFObjectIds__c, 0, 3)}">
+                                            <div class="IHIcon IHIconTab"></div>
+                                        </a>
+                                    </apex:outputPanel>
+                                </div>
+                                <div id='ToolbarIconSFEditingUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconTabUnavailable"></div>
+                                </div>
+                                <div class='ToolsToolbarSpacer'></div>
+
+
+                                <div id='ToolbarIconTopicClone' class="{!IF(TAddHelpTopicLink != '', '', 'IHHidden')}">
+                                    <a href="javascript:void(0);" onclick="javascript:cueCreateClones();">
+                                        <div title="{!DialogueLocalisations['TipButtonClone']}" class="IHIcon IHIconClone"></div>
+                                    </a>
+                                </div>
+                                <div id='ToolbarIconTopicCloneUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconCloneUnavailable"></div>
+                                </div>
+                                <apex:inputHidden id="CNames" value="{!CloneTopicNames}" />
+                                <apex:inputHidden id="CRels" value="{!CloneTopicRels}" />
+
+
+                                <div id='ToolbarIconTopicAdd'>
+                                    <apex:commandLink rendered="{!TAddHelpTopicLink != ''}" action="{!addHelpTopic}">
+                                        <div title="{!DialogueLocalisations['TipButtonAddTopic']}" class="IHIcon IHIconAdd"></div>
+                                    </apex:commandLink>
+                                </div>
+                                <div id='ToolbarIconTopicAddUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconAddUnavailable"></div>
+                                </div>
+
+   
+                                <apex:outputPanel rendered="{!TEditModeLink != ''}" >
+                                    <a title="{!GlobalLocalisations['TipButtonEditTopic']}" onclick="javascript:IHEditHelp.ToggleEditMode();">
+                                        <div class="IHIcon IHIconEdit"></div>   
+                                    </a>
+                                </apex:outputPanel>                                
+
+
+                                <div id='ToolbarIconTopicDelete'>
+                                    <apex:commandLink rendered="{!TDeleteHelpTopicLink != ''}" action="{!deleteHelpTopic}" immediate="true" onclick="if (!confirm('{!GlobalLocalisations['MessageDeleteWarning']}')) return false">
+                                        <div title="{!DialogueLocalisations['TipButtonDeleteTopic']}" class="IHIcon IHIconDelete"></div>
+                                    </apex:commandLink>                            
+                                </div>
+                                <div id='ToolbarIconTopicDeleteUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconDeleteUnavailable"></div>
+                                </div>
+                                <div class='ToolsToolbarSpacer'></div>
+
+
+                                <div id='ToolbarIconAddToReadingList'>                                    
+                                    <apex:outputPanel rendered="{!TAddToReadingListLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonAddTopicToRL']}" href="javascript:void(0);" onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHSearchResults}?HTID={!JSENCODE(THelpId)}&Opts=4', '7', 200, 330, event);">
+                                            <div class="IHIcon IHIconEditList"></div>
+                                        </a>
+                                    </apex:outputPanel>                                    
+                                </div>
+                                <div id='ToolbarIconAddToReadingListUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconEditListUnavailable"></div>                                
+                                </div>
+                                
+
+                                <div id='ToolbarIconHistory'>
+                                    <apex:outputPanel rendered="{!THistoryLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonTopicHistory']}" target="_Blank" href="{!TRootLink}/{!THistoryReportId}?pv0={!URLENCODE(TName)}&drilldown=1">
+                                            <div class="IHIcon IHIconHistory"></div>
+                                        </a>
+                                    </apex:outputPanel>                                    
+                                </div>
+                                <div id='ToolbarIconHistoryUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconHistoryUnavailable"></div>                                 
+                                </div>                              
+
+                                                                                                
+                                <div id='ToolbarIconSFHelp'>
+                                    <div id='ToolsSFHelp' style='float: right;'>
+                                        <apex:outputPanel rendered="{!Hlp.SalesforceHelpURL__c != '' && Hlp.SalesforceHelpURL__c != null}" >
+                                            <a title="{!DialogueLocalisations['TipButtonSFHelp']}" href="{!Hlp.SalesforceHelpURL__c}" target="_SFHelp" >
+                                                <div class="IHIcon IHIconSalesforceHelp"></div>
+                                            </a>                                        
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputPanel rendered="{!(Hlp.SalesforceHelpURL__c == '' || Hlp.SalesforceHelpURL__c == null) && (isAuthor || isAdministrator)}" >
+                                            <div class="IHIcon IHIconSalesforceHelpNone"></div>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                                <div id='ToolbarIconSFHelpUnavailable' class=' IHHidden'>
+                                    <div class="IHIcon IHIconSalesforceHelpNone"></div>                                 
+                                </div>
+
+                            </div> 
+                                                                                    
+<!--  
+===============================================
+TOPIC CONTENT FRAME
+===============================================
+ -->            
+    
+                            <div class='ToolsContent' >                     
+                                <iframe style='border: 0; width: 100%; height: {!THeight}px; padding-top: 10px;' src='{!TLayout}' id='tfrmContent' allowTransparency="true" frameborder="0"></iframe>
+                            </div>  
+                        </div>
+                    </div>
+                                            
+<!--  
+===============================================
+SIDEBAR BEGINS...
+===============================================
+ -->                    
+                    <div id='ToolsSidebarFrame'>                
+<!--  
+===============================================
+HELP TOPIC EDITOR PANEL
+===============================================
+ -->            
+
+                        <div id='ToolsEditor' class='ToolsEditor {!TEditorClass}'>
+
+                            <!--
+                            This action function allows enter key to fire record saves when on this form:
+                            Works in conjunction with the hooking of keystrokes (see "onkeypress" attribute
+                            of each affected control in the editor, below, to call jsSearch.checkEnter) 
+                            NB: for now, checkEnter does NOT call doSave, so enter key is effectively ignored
+                             -->                             
+
+                            <apex:actionFunction name="doSave" action="{!saveHelp}"></apex:actionFunction>
+                            
+                            <!--
+                            This action function ensures that callout height responds to changes
+                            in the selected callout template - and re-enters edit mode as it does so
+                             --> 
+
+                            <apex:actionFunction name="doCalloutTemplateChange" action="{!calloutTemplateChange}"></apex:actionFunction>
+
+
+                            <div class='IHPanelFooter'>
+                                <table width='100%' border='0'>
+                                    <tr>
+                                        <td>
+                                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                                styleClass="IHIcon24 IHIdle IHIconQuickSave" 
+                                                                rerender="pbsGeneral1, pbsStatus1, pbsStatus2, pbsImage, pbsVideo, pbsGuides" 
+                                                                image="{!URLFOR($Resource.IHResources, '/img/IconQuickSave.png')}" 
+                                                                action="{!saveHelp}" 
+                                                                title="{!DialogueLocalisations['TipButtonQuickSave']}" 
+                                                                oncomplete="IHEditHelp.ReNav(this, '{!JSENCODE(Diags)}', '{!THelpId}');" 
+                                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;" />  
+                                                                                                        
+                                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                                styleClass="IHIcon24 IHIdle IHIconSave" 
+                                                                rerender="pbsGeneral1, pbsStatus1, pbsStatus2, pbsImage, pbsVideo, pbsGuides" 
+                                                                image="{!URLFOR($Resource.IHResources, '/img/IconSave.png')}" 
+                                                                action="{!saveHelp}" 
+                                                                title="{!DialogueLocalisations['TipButtonSave']}" 
+                                                                oncomplete="IHEditHelp.ReNavToggle(this, '{!JSENCODE(Diags)}', '{!THelpId}');" 
+                                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;" />
+                                        </td>
+
+                                        <td width='5%'>
+                                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                                immediate="true"
+                                                                styleClass="IHIcon24 IHIdle IHIconCancelBtn" 
+                                                                image="{!URLFOR($Resource.IHResources, '/img/IconCancelBtn.png')}" 
+                                                                action="{!cancelHelpChanges}" 
+                                                                title="{!DialogueLocalisations['TipButtonCancel']}"                                                                 
+                                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;"  />
+                                        </td>
+                                    </tr>
+                                </table>                            
+                            </div>
+
+                            
+                            <apex:PageBlock >
+                                <apex:tabPanel activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="IHPanelHeader" headerSpacing="2" contentClass="IHTabContent IHTabBody" switchType="client" selectedTab="tbGeneral" width="100%">
+                                    
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabGeneral']}" name="tbGeneral" styleClass="IHTab">
+
+                                        <apex:PageBlockSection id="pbsGeneral1" columns="1" showHeader="false">
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelName']}" value="{!Hlp.Name}" style="width:98%;" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                                      
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelSummary']}" value="{!Hlp.Summary__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelMasterTopicIdentifier']}" value="{!Hlp.MasterTopicIdentifier__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                           
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelSFHelpURL']}" value="{!Hlp.SalesforceHelpURL__c}" style="width: 98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            
+                                            <apex:selectList id="fldCalloutTemplate" onchange="javascript:doCalloutTemplateChange();" label="{!DialogueLocalisations['FieldLabelCalloutTemplate']}" value="{!Hlp.CalloutTemplate__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                                <apex:selectOptions value="{!TemplatesC}"/>
+                                            </apex:selectList> 
+                                            
+                                            <apex:inputField id="fldCalloutHeight" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCalloutHeight']}" value="{!Hlp.CalloutHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            
+                                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCalloutMediaChoice']}" value="{!Hlp.CalloutMediaChoice__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                                <apex:selectOption itemValue="Image" itemLabel="{!DialogueLocalisations['ValueMediaChoiceImage']}"/>
+                                                <apex:selectOption itemValue="Video" itemLabel="{!DialogueLocalisations['ValueMediaChoiceVideo']}"/>
+                                            </apex:selectList>
+
+                                            <apex:pageBlockSectionItem >
+                                                <apex:outputLabel />          
+                                                
+                                                <a title="{!DialogueLocalisations['TipButtonPreviewCallout']}" target='PreviewCallout' href='{!TRootLink}/apex/iahelp__IHPreviewCallout?HTID={!THelpId}'>
+                                                    {!DialogueLocalisations['ButtonPreviewCallout']}
+                                                </a>
+
+                                                : : :
+
+                                                <a title="{!DialogueLocalisations['TipButtonPreviewCalloutAsEdited']}" href='javascript:void(0);' onclick='javascript:doCalloutPreview();'>
+                                                    {!DialogueLocalisations['ButtonPreviewCalloutAsEdited']}
+                                                </a>
+                                                
+                                                <script>
+                                                    // View the current topic in its callout (as edited on screen) in-situ 
+                                                    function doCalloutPreview() {
+                                                        var H = document.getElementById('{!$Component.fldCalloutHeight}').value;
+                                                        var CID = document.getElementById('{!$Component.fldCalloutTemplate}').value;
+                                                        var U = '{!TRootLink}/apex/iahelp__IHRedirector?HTID={!THelpId}&ShowCallout=' + CID;
+                                                        var W = 0;
+                                                        
+                                                        if (document.getElementById('tfrm').style.display == 'none') {
+                                                            IHWebToolTips.DoTips ('tfrm', U, '6', W, H + 30, event);
+                                                        } else {
+                                                            IHWebToolTips.StopTips('tfrm');
+                                                        }
+                                                    }
+                                                </script>
+                                                
+                                                <div style="margin-top: 10px;">
+                                                    <a target="_Blank" title="{!GlobalLocalisations['TipButtonGotoTemplates']}" href="{!TemplatesLink}">
+                                                        {!GlobalLocalisations['ButtonGotoTemplates']}
+                                                    </a>                                    
+                                                </div>
+                                            </apex:pageBlockSectionItem>
+                                                                                                
+                                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelFullTemplate']}" value="{!Hlp.Template__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                                <apex:selectOptions value="{!TemplatesF}"/>
+                                            </apex:selectList>                                              
+        
+                                            <apex:inputField id="fldHeightBeforeScrolling" onchange="javascript:synchHBS(this);" label="{!DialogueLocalisations['FieldLabelHeightBeforeScrolling']}" value="{!Hlp.HeightBeforeScrolling__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+
+                                            <!-- NB: put this hidden input here so we can get required IFRAME height after edits client side...  -->
+                                            <input id='HBS' type='text' style='display: none;' value='{!Hlp.HeightBeforeScrolling__c}' />                                               
+                                        </apex:PageBlockSection>
+                                    
+                                    </apex:tab>
+                                    
+                                    
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabCustom']}" name="tbCustom" styleClass="IHTab" rendered="{!CustomFields != null}">
+                                        <apex:PageBlockSection id="pbsCustom" columns="1" showHeader="false">
+                                            <apex:repeat: value="{!CustomFields}" var="f">
+                                                <apex:inputField value="{!Hlp[f.fieldPath]}" />
+                                            </apex:repeat:>
+                                        </apex:PageBlockSection>
+                                    </apex:tab>
+                                    
+                                    
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabStatus']}" name="tbStatus" styleClass="IHTab">                                              
+                                        <apex:PageBlockSection id="pbsStatus1" columns="1" showHeader="false">
+
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelActive']}" value="{!Hlp.Active__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                             
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowReadMore']}" value="{!Hlp.ShowReadMoreLink__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                   
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowReferringTopics']}" value="{!Hlp.ShowReferringRelationships__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                                                                 
+    
+                                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStatus']}" value="{!Hlp.HelpTopicStatus__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                                <apex:selectOption itemValue="New" itemLabel="{!DialogueLocalisations['ValueTopicStatusNew']}"/>
+                                                <apex:selectOption itemValue="Drafted" itemLabel="{!DialogueLocalisations['ValueTopicStatusDrafted']}"/>
+                                                <apex:selectOption itemValue="Submitted for Approval" itemLabel="{!DialogueLocalisations['ValueTopicStatusSubmittedforApproval']}"/>
+                                                <apex:selectOption itemValue="Approved" itemLabel="{!DialogueLocalisations['ValueTopicStatusApproved']}"/>
+                                                <apex:selectOption itemValue="Published" itemLabel="{!DialogueLocalisations['ValueTopicStatusPublished']}"/>
+                                                <apex:selectOption itemValue="Suspended" itemLabel="{!DialogueLocalisations['ValueTopicStatusSuspended']}"/>
+                                                <apex:selectOption itemValue="Obsolete" itemLabel="{!DialogueLocalisations['ValueTopicStatusObsolete']}"/>
+                                            </apex:selectList>
+
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVisibility']}" value="{!Hlp.Visibility__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                             
+
+                                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCustomStyle']}" value="{!Hlp.CustomStyle__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                                <apex:selectOptions value="{!CustomStyles}"/>
+                                            </apex:selectList>           
+                                            
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVoteInfo']}" value="{!Hlp.HelpVoteSet__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                             
+                                            <apex:outputText label="{!DialogueLocalisations['FieldLabelVoteInfoSetText']}" value="{!IF(Hlp.HelpVoteSet__r.QuestionText__c == '' || Hlp.HelpVoteSet__r.QuestionText__c == null, GlobalLocalisations['AdviceLabelQuestionTextNotSet'], Hlp.HelpVoteSet__r.QuestionText__c)}" escape="true" />
+                                            
+                                            <apex:image height="16" width="16" value="{!IF(Hlp.HelpVoteSet__r.ImageClass__c == '' || Hlp.HelpVoteSet__r.ImageClass__c == null, '', Hlp.HelpVoteSet__r.ImageClass__c)}" />
+
+
+                                            <apex:pageBlockSectionItem >
+                                                <apex:outputLabel />                                                                                        
+                                                <a target="_Blank" title="{!DialogueLocalisations['TipButtonGotoVoteSets']}" href="{!TVoteSetsLink}">
+                                                    {!DialogueLocalisations['ButtonGotoVoteSets']}
+                                                </a>                                    
+                                            </apex:pageBlockSectionItem>
+
+                                        </apex:PageBlockSection>
+                                                                                                                        
+                                    </apex:tab>
+                                    
+                                    
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabImage']}" name="tbImage" styleClass="IHTab">                                              
+                                        <apex:PageBlockSection id="pbsImage" columns="1" showHeader="false">
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageURL']}" value="{!Hlp.ImageURL__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />     
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageTitle']}" value="{!Hlp.ImageTitle__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageCaption']}" value="{!Hlp.ImageCaption__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageALTText']}" value="{!Hlp.ImageALTText__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageWidth']}" value="{!Hlp.ImageWidth__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageHeight']}" value="{!Hlp.ImageHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        
+                                            <apex:pageBlockSectionItem >
+                                                <apex:outputLabel />                                                                                        
+                                                <a title="{!GlobalLocalisations['TipButtonUploadImage']}" href='javascript:void(0);' onclick='javascript:IHWebToolTips.DoTips("dfrm", "{!$Page.IHUploadTopicImage}?HTID={!JSENCODE(Hlp.Id)}", "7", 100, 180, event);'>
+                                                    {!GlobalLocalisations['ToolLabelButtonUpload']}
+                                                </a>
+                                            </apex:pageBlockSectionItem>
+                                        
+                                        </apex:PageBlockSection>
+
+
+                                        <apex:commandButton value="{!DialogueLocalisations['ButtonResetImage']}" 
+                                            title="{!DialogueLocalisations['TipButtonResetImage']}" 
+                                            action="{!resetTopicImage}" rerender="pbsImage" oncomplete="IHEditHelp.ReNav(this, '', '{!THelpId}');" />
+                                    </apex:tab>
+
+
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabVideo']}" name="tbVideo" styleClass="IHTab">                                              
+                                        <apex:PageBlockSection id="pbsVideo" columns="1" showHeader="false">
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoURL']}" value="{!Hlp.VideoURL__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoTitle']}" value="{!Hlp.VideoTitle__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoCaption']}" value="{!Hlp.VideoCaption__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoWidth']}" value="{!Hlp.VideoWidth__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoHeight']}" value="{!Hlp.VideoHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                 
+                                        </apex:PageBlockSection>
+                                        
+                                        <apex:commandButton value="{!DialogueLocalisations['ButtonResetVideo']}" 
+                                            title="{!DialogueLocalisations['TipButtonResetVideo']}" 
+                                            action="{!resetTopicVideo}" rerender="pbsVideo" oncomplete="IHEditHelp.ReNav(this, '', '{!THelpId}');" />                                       
+                                    </apex:tab>
+            
+            
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabText']}" name="tbText" styleClass="IHTab">                                               
+                                        <apex:PageBlockSection id="pbsRichText" columns="1" showHeader="false">
+                                            <apex:inputField label="" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" value="{!Hlp.Description__c}" />
+                                            <apex:inputField label="{!DialogueLocalisations['FieldLabelKeywords']}" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" value="{!Hlp.Keyword__c}" />
+                                        </apex:PageBlockSection>
+                                    </apex:tab>
+
+
+                                    <apex:tab label="{!DialogueLocalisations['TitleTabGuides']}" name="tbGuides" styleClass="IHTab">
+                                        <apex:PageBlockSection id="pbsGuides" columns="1" showHeader="false">
+                                            <span class='IHError'>
+                                                {!DialogueLocalisations['AdviceLabelGuideSettings']}
+                                            </span>
+                                    
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepMode']}" value="{!Hlp.GuideStepMode__c}" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepLayout']}" value="{!Hlp.GuidedLayout__c}" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepElement']}" value="{!Hlp.GuidedElement__c}" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepContext']}" value="{!Hlp.GuidedRecord__c}" />
+                                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowCallout']}" value="{!Hlp.GuideCallout__c}" />
+                                    
+                                        </apex:PageBlockSection>
+                                    </apex:tab>
+                                    
+                                </apex:tabPanel>
+                                
+                                <apex:pageBlockSection id="pbsStatus2" columns="2" showHeader="false">
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelCreatedBy']}" value="{!Hlp.CreatedBy.Name}" />
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelCreatedByDT']}" value="{!Hlp.CreatedDate}" />
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelModifiedBy']}" value="{!Hlp.LastModifiedBy.Name}" />
+                                    <apex:outputField label="{!GlobalLocalisations['FieldLabelModifiedByDT']}" value="{!Hlp.LastModifiedDate}" />
+                                </apex:pageBlockSection>                                                            
+                            </apex:PageBlock>
+                            
+                        </div>                              
+
+<!--  
+===============================================
+RELATED HELP TOPICS PANEL
+===============================================
+ -->                                    
+
+                        <div id='RelatedHelpTopics' class="IHPanel ToolsRelatedList {!IF(TEditorClass=='IHHidden', '', 'IHHidden')}">
+                            
+                            <div class='IHPanelHeader IHBranded'>
+                                <div id='RelHelpTopics' class='IH-H3 HelpableR_95 IHSnapToElement' >
+                                    {!GlobalLocalisations['TitleSubtitleRelatedHelp']}
+                                </div>
+                            </div>
+                            
+                            <div class='IHPanelBody'>
+                                <apex:dataTable id="RHelpTopics" value="{!Relations}" var="Rel" rowClasses="odd,even">
+                                    <apex:column >
+                                        <div title="{!Rel.Summary}" class='{!Rel.RClass}'></div>
+                                    </apex:column>
+                                    
+                                    <apex:column >
+                                        <a href="{!Rel.ItemURL}" title="{!Rel.Summary}">
+                                            <div>
+                                                <p>{!Rel.Name}</p>
+                                            </div>
+                                        </a>                  
+                                    </apex:column>         
+    
+                                    <apex:column >
+
+                                        <apex:commandLink action="{!Rel.deleteItem}" 
+                                            title="{!DialogueLocalisations['TipButtonUnlinkRelatedHelp']}" 
+                                            onclick="if (!confirm('{!DialogueLocalisations['MessageConfirmUnlink']}')) return" oncomplete="document.location='iahelp__{!PortalPage}?HTID={!THelpId}';">
+
+                                            <apex:param name="HRID" assignTo="{!HRID}" value="{!Rel.HRID}"></apex:param>
+
+                                            <apex:outputPanel rendered="{!Rel.DeleteIcon != ''}" >
+                                                <div class="IHIcon IHIconUnlink"></div>
+                                            </apex:outputPanel>
+                                        </apex:commandLink>                                 
+                                    </apex:column>                  
+    
+                                </apex:dataTable>
+                            </div>
+                                                        
+                            <div class="IHPanelFooter" style="height: 16px;">
+                                <div style="float: left;" >
+                                    <apex:outputPanel rendered="{!TAddRelatedHelpLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonLinkRelatedHelp']}" href="javascript:void(0);" onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHSearchResults}?HTID={!JSENCODE(THelpId)}&Opts=1', '7', 200, 478, event);">
+                                            <div class="IHIcon IHIconLink"></div>
+                                        </a>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>                              
+                        </div>
+
+<!--  
+===============================================
+READING LISTS PANEL
+===============================================
+ -->            
+                        
+                        <div id='ReadingLists' class="IHPanel ToolsRelatedList {!IF(TEditorClass=='IHHidden', '', 'IHHidden')}">
+    
+                            <div class='IHPanelHeader IHBranded'>
+                                <div id='RelReadingLists' class='IH-H3 HelpableR_95 IHSnapToElement'>
+                                    {!GlobalLocalisations['TitleSubtitleReadingLists']}
+                                </div>
+                            </div>
+                            
+                            <div class='IHPanelBody'>
+                                <apex:dataTable value="{!ReadingLists}" var="Lst" rowClasses="odd,even" >
+                                    
+                                    <!-- LUX popout -->
+                                    <apex:column >
+                                        <a title="{!DialogueLocalisations['TipButtonPopoutRL']} - Lightning"
+                                            href="javascript:void(0);" 
+                                            onclick="IHQAMenu.DoVFQAMDialogue('{!JSENCODE(TRootLink)}/apex/iahelp__IHLUXOutHost?NSApp=iahelp&App=appIH&NSComp=iahelp&Comp=IHRLViewer&Parms=Height~600^HelpRecordId~{!JSENCODE(Lst.RLID)}', 800, 600, '_RLViewer');" >
+                                            
+                                            <div class="IHIcon IHIconPopoutLUX"></div>
+                                        </a>                                        
+                                    </apex:column>
+                                    
+                                    <!-- Classic popout -->
+                                    <apex:column >
+                                        <a title="{!DialogueLocalisations['TipButtonPopoutRL']}"
+                                            href="javascript:void(0);" 
+                                            onclick="IHQAMenu.DoVFQAMDialogue('{!JSENCODE(TRootLink)}/apex/iahelp__IHReadingListViewer?RLID={!JSENCODE(Lst.RLID)}&HTID={!IF(Lst.IncludesCurrentTopic == true, JSENCODE(THelpId), '')}', 600, 540, '_RLViewer');" >
+                                            
+                                            <div class="IHIcon IHIconPopout"></div>
+                                        </a>                                        
+                                    </apex:column>
+
+    
+                                    <apex:column >  
+                                                
+                                        <apex:outputLink value="#" 
+                                                        onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHReadingListProperties}?Id={!JSENCODE(Lst.RLID)}&HTID={!JSENCODE(THelpId)}&Mode=Read', '7', 200, 590, event);" 
+                                                        title="{!JSENCODE(Lst.ListSummary)}">
+                                                        
+                                            <div class='{!Lst.ListCSSClass}'>
+                                                <p>{!Lst.ListName}</p>
+                                            </div>
+                                        </apex:outputLink>
+                                                                
+                                        <div class='ReadingListNav'>                                            
+                                            <div class="ReadingListNavOuter">
+                                                <div class="ReadingListNavInner">
+                                                    <apex:outputLink value="{!Lst.PrevURL}" title="{!Lst.PrevName}">
+                                                        <div class='{!Lst.PrevClass}'></div>
+                                                    </apex:outputLink>
+
+                                                    <apex:Repeat value="{!Lst.Entries}" var="RLE">
+                                                        <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.Id == THelpId}">
+                                                            <div title="[{!GlobalLocalisations['TipButtonNavCurrentTopic']}]" class="IHIcon IHIconEntryActive"></div>
+                                                        </apex:outputPanel>
+                                                        
+                                                        <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.Id != THelpId}">
+                                                            <apex:outputLink title="{!GlobalLocalisations['TipGoto']} {!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}" value="{!JSENCODE(TRootLink)}/apex/iahelp__{!JSENCODE(PortalPage)}?HTID={!RLE.EntryRecord.HelpTopic__r.Id}"><div class="IHIcon IHIconEntryInactive"></div>
+                                                            </apex:outputLink>
+                                                        </apex:outputPanel> 
+                                                    </apex:Repeat> 
+                                                    
+                                                    <apex:outputLink value="{!Lst.NextURL}" title="{!Lst.NextName}" ><div class='{!Lst.NextClass}'></div>
+                                                    </apex:outputLink>
+                                                </div>
+                                            </div>                                      
+                                        </div>
+                                                                    
+                                    </apex:column>         
+                                </apex:dataTable>
+                            </div>                                                          
+                                 
+                            <div class="IHPanelFooter" style="height: 16px;">
+                                <div style="float: left;" >
+                                    <apex:outputPanel rendered="{!TAddReadingListLink != ''}" >
+                                        <a title="{!GlobalLocalisations['TipButtonCreateRL']}" href="javascript:void(0);" onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHReadingListProperties}?Mode=New&HTID={!JSENCODE(THelpId)}', '7', 200, 585, event);">
+                                            <div class="IHIcon IHIconAdd"></div>
+                                        </a>
+                                    </apex:outputPanel>                                    
+                                </div>
+                            </div>          
+                                                                                                    
+                        </div>
+                    </div>
+                </div>
+<!--  
+===============================================
+END OF SIDEBAR - START OF FOOTER / HELP RESOURCES PANEL
+===============================================
+ -->
+                <div id='ToolsFooterFrame'>
+                    <div id='ResourceList' class="IHPanel IHBranded ToolsRelatedList {!IF(TEditorClass=='IHHidden', '', 'IHHidden')}">
+                    
+                        <div class='IHPanelHeader'>
+                            <div id='RelHelpResources' class='IH-H3 HelpableR_98 IHSnapToElement'>
+                                {!DialogueLocalisations['TitleSubtitleRelatedResources']}
+                            </div>
+                        </div>
+                        
+                        <div class='IHPanelBody'>
+                                
+                            <apex:dataTable value="{!Resources}" var="Res" rowClasses="odd,even">       
+                                <apex:column style="padding-left: 10px;" >
+                                
+                                    <!-- Resource targetting changes if we're in console - see initialise -->
+                                    
+                                    <div class='ResLinkConsole IHHidden'>
+                                        <apex:commandLink target="_HelpResource" title="{!Res.Summary}" action="{!gotoResource}">
+                                            <apex:param name="SelectedRecord" value="{!Res.HTRID}" assignTo="{!SelectedRecord}" />
+                                            <apex:outputText value="{!Res.Name}" escape="true" />
+                                        </apex:commandLink>
+                                    </div>                                      
+
+                                    <div class='ResLinkNormal'>
+                                        <apex:commandLink target="_HelpResource" title="{!Res.Summary}" action="{!gotoResource}">
+                                            <apex:param name="SelectedRecord" value="{!Res.HTRID}" assignTo="{!SelectedRecord}" />
+                                            <apex:outputText value="{!Res.Name}" escape="true" />
+                                        </apex:commandLink>
+                                    </div>                                      
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='HelpResourcePreview' style='background-image:url({!JSENCODE(Res.PreviewURL)});'/> 
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <p>{!Res.Location}</p>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <p>{!Res.UsageNotes}</p>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:outputPanel rendered="{!Res.EditIcon != ''}" >
+                                        <a title="{!GlobalLocalisations['TipButtonEditResourceNotes']}" target="_Blank" href="{!TRootLink}/{!Res.HTRID}/e">
+                                            <div class="IHIcon IHIconEdit"></div>
+                                        </a>
+                                    </apex:outputPanel>                                 
+                                </apex:column>                                                              
+                                
+                                <apex:column >
+                                    <apex:commandLink action="{!Res.deleteItem}" 
+                                        title="{!DialogueLocalisations['TipButtonUnlinkRelatedResource']}" 
+                                        onclick="if (!confirm('{!DialogueLocalisations['MessageConfirmUnlink']}')) return" oncomplete="document.location='iahelp__{!PortalPage}?HTID={!THelpId}';">
+
+                                        <apex:param name="HTRID" assignTo="{!HTRID}" value="{!Res.HTRID}"></apex:param>
+
+                                        <apex:outputPanel rendered="{!Res.DeleteIcon != ''}" >
+                                            <div class="IHIcon IHIconUnlink"></div>
+                                        </apex:outputPanel>
+                                    </apex:commandLink>                                 
+                                </apex:column>                  
+                                                                         
+                            </apex:dataTable>
+                    
+                            <div class="IHPanelFooter" style="height: 16px;">
+                                <div style="float: left;" >
+                                    <apex:outputPanel rendered="{!TAddReadingListLink != ''}" >
+                                        <a title="{!DialogueLocalisations['TipButtonLinkRelatedResource']}" href="javascript:void(0);" onclick="javascript:IHWebToolTips.DoTips('dfrm', '{!$Page.IHSearchResults}?HTID={!JSENCODE(THelpId)}&Opts=3', '7', 200, 530, event);">
+                                            <div class="IHIcon16 IHIconLink"></div>
+                                        </a>
+                                    </apex:outputPanel>
+                                </div>                             
+                                
+                            </div>
+                        </div>                              
+                    </div>
+                    
+                </div>
+<!--  
+===============================================
+TOOLS WINDOW (COMMENTS ETC)
+===============================================
+ -->            
+
+                <div id="IHDialogueWrapper" style="display: none;">
+                    <div class="IHIcon IHIconClose" title="{!GlobalLocalisations['TipButtonClose']}" onclick='javascript:STDlg();'></div>                                  
+                    <iframe style='z-index: +1; display: none; scrolling: no; border: 0; width: 300px; height: 200px; margin: 0px; padding: 0px;' src='' id='dfrm' allowTransparency="true" frameborder="0"/> 
+                </div>
+<!--  
+===============================================
+ADDITIONAL SUPPORT SCRIPTS (Cloning)
+===============================================
+ -->            
+
+            <script>                
+                function cueCreateClones() {
+                    var i;
+                    var numClones = prompt('{!DialogueLocalisations['MessageCloneTopicNumber']}', 1); 
+                    var allCNames = '';
+                    var allCRels = '';
+                    var currentClone;
+                    
+                    
+                    if (numClones > 0) {
+                        for(i=1; i <= numClones; i++) {
+                            currentClone = prompt('{!DialogueLocalisations['MessageCloneTopicNames']} (' + i + '/' + numClones + '):', '{!Hlp.Name}: ' + i);
+                            allCNames += currentClone.split('^').join('') + '^';
+                            
+                            currentClone = prompt('{!DialogueLocalisations['MessageCloneTopicRelationships']}', 'Y');
+                            allCRels += currentClone.split('^').join('^') + '^';                    
+                        }
+                    }
+                                    
+                    // Having gathered the required naming data, create the requested clones
+                    if (allCNames != '') {
+                        document.getElementById('{!$Component.CNames}').value = allCNames;
+                        document.getElementById('{!$Component.CRels}').value = allCRels;
+                        doCloneTopic();
+                    }
+                    
+                    return;
+                }
+                                    
+            </script>
+       
+        </apex:form>
+
+<!--  
+===============================================
+FOOTER CHATTER PANEL
+===============================================
+ -->                    
+
+        <div id='ChatterPanel' style="display: {!IF(isAuthor || isAdministrator, 'block', 'none')}; height: 20px; margin: 10px .5% 0 0.5%; ">
+            <chatter:feedWithFollowers rendered="{!IF(isAuthor || isAdministrator, 'true', 'false')}" entityId="{!THelpId}" />
+        </div>  
+
+<!--  
+===============================================
+IMPROVED HELP FOOTER
+===============================================
+ -->            
+    
+        <div id='IHPowered'>{!BrandingLocalisations['ProductPoweredBy']} <span id="IHStrap">{!BrandingLocalisations['ProductStrapline']}</span></div>
+        
+        <div class="IHStatusBox">
+            <div class="IHStatusMessage">
+                <span id='Diags' class="IHError {!IF(TEditorClass=='IHHidden', '', 'IHHidden')}">
+                    <apex:outputText value="{!Diags}" escape="true" />
+                </span>         
+            </div>
+        </div>
+    </body>
+    
+
+</apex:page>

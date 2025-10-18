@@ -1,0 +1,474 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+				access="global" 
+                extends="IHCard" extensible="true">
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+	<aura:handler name="change" value="{!v.ListingItems}" action="{!c.setInitialRows}"/>
+    
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+    <aura:set attribute="Title" value="Improved Help" />
+	<aura:set attribute="IHCardType" value="List" />
+	<aura:set attribute="SuppressCardStyling" value="{!v.ListingStyle == 'Tile'}" />
+
+
+<!-- 
+================================================
+Member data
+================================================
+--> 
+    
+    <aura:attribute name="ListingStyle" type="string" default="Narrow" required="true" access="global" />
+    <aura:attribute name="ListingTileSize" type="string" default="Medium" required="false" access="global" />
+    <aura:attribute name="ListingRowStyle" type="string" default="Expanded" required="false" access="global" />    
+    <aura:attribute name="MaxListingTools" type="integer" default="3" required="false" access="global" />
+    <aura:attribute name="ListingClickActionCode" type="string" default="" required="false" access="global" />
+    <aura:attribute name="ListingTagFilters" type="string" default="" required="false" access="global" />
+    <aura:attribute name="AllFilters" type="string[]" required="false" access="private" />
+	<aura:attribute name="InitialRows" type="integer" required="true" default="100" access="global" />
+	<aura:attribute name="CurrentRows" type="integer" required="true" default="100" access="private" />
+
+<aura:attribute name="TreeMaxDepth" type="integer" default="0" required="false" access="global" />
+
+<aura:attribute name="MouseoverLatch" type="boolean" required="false" default="false" access="private" />
+
+<aura:attribute name="listitem" type="sObject[]" required="false" access="public" />
+    
+<!--
+================================================
+NO DATA MESSAGE (IF ZERO ROWS ARE AVAILABLE)
+================================================
+-->     
+    
+   
+    <div class="{!v.ListingItems.length == 0 ? 'NoDataMessage' : 'slds-hide'}">
+        {!v.NoDataMessage}
+    </div>
+
+
+    <div id="IAListComponentBody" class="{! v.ListingStyle == 'Tile' ? 'slds-card__body TileList' : 'slds-card__body'}" onmouseenter="{!c.markSelections}">
+
+<!-- 
+================================================
+LISTING - NARROW FORM
+================================================
+
+................................................
+List Items
+................................................
+-->
+		<aura:if isTrue="{! v.ListingStyle == 'Narrow'}">
+			<ul class="{! v.ListingStyle == 'Narrow' ? 'slds-m-top_small HelpListItemsNarrow' : 'slds-hide'}">
+
+				<aura:iteration items="{!v.ListingItems}" var="L" end="{! v.CurrentRows}">
+                    
+                    <li draggable="true"
+                        ondragstart="{!c.doDragStart}" 	
+                        ondragend="{!c.doDragEnd}"									
+                        data-cmpId="{!globalId}"					
+                        aura:id="HelpListingItem" 
+                        id="{! 'LINarrow_' + L.Id}" 
+                        class="{! v.UIFilter == (L.IconLabel + 'Help') || v.UIFilter == 'AllHelp' ? L.Id + ' ' + L.StyleClass + ' ' + L.IconLabel + 'Help HelpListingItem slds-has-dividers_top' : 'slds-hide'}">
+
+                        <div class="slds-grid">
+                            
+                            
+                            
+                            <div class="slds-col_padded ListItemLink">
+                                <h3 class="slds-truncate" >
+                                
+									<!-- 
+									Allow for listing click action overrides 
+									-->
+                                	<aura:if isTrue="{!v.ListingClickActionCode == ''}">
+	                                    <a class="{!L.StyleClass}" id="{! L.Id + v.Delimiter + L.ActionCode + v.Delimiter + L.Parameters}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}"	                                    
+												onmouseover="{!c.listingItemMouseOver}"
+												onmouseout="{!c.listingItemMouseOut}" >
+												
+	                                        {!L.Label}
+	                                    </a>    
+	                                    
+	                                    <aura:set attribute="else">
+		                                    <a class="{!L.StyleClass}" id="{! L.Id + v.Delimiter + v.ListingClickActionCode + v.Delimiter + L.Parameters}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}"
+													onmouseover="{!c.listingItemMouseOver}"
+													onmouseout="{!c.listingItemMouseOut}" >
+													
+		                                        {!L.Label}
+		                                    </a>    	                                    
+	                                    </aura:set>
+                                    </aura:if>                                    
+                                </h3>
+                                
+                            </div>
+                            
+<!-- 
+................................................
+Additional listing columns, where member data specified this
+................................................
+-->                            
+							<aura:if isTrue="{!L.Cols != '' &amp;&amp; L.Cols + '' != 'undefined'}">
+								<div class="slds-col_bump-left">
+									<aura:iteration items="{!L.Cols}" var="Col" indexVar="cIdx">
+										<span title="{!Col[1]}" class="AdditionalColumn">
+											<span class="{! cIdx > 0 ? '' : 'slds-hide'}"> &#8226; </span> {!Col[0]}
+										</span>
+									</aura:iteration>
+								</div>
+							</aura:if>                            
+                                
+<!-- 
+................................................
+In-line listing tools
+................................................
+-->
+
+                            <!-- NOTE: Do not display tools if there's a configuration issue... -->
+						    <div class="{! L.StyleClass == 'IHHelpedSFElementError' ? 'slds-hide' : 'slds-col_bump-left'}">
+						         
+                                <div class="{! v.ListingTools.length &lt;= v.MaxListingTools || v.MaxListingTools == -1 
+                                    ? 'ListingToolsBlock_' + L.Id : 'slds-hide ListingToolsBlock_' + L.Id}">
+    
+    						        <aura:iteration items="{!v.ListingTools}" var="T">
+
+                                        <!--
+                                        We need to show / hide tools based on certain contextual markers:
+                                        E.g., if already bookmarked, show remove bmk etc...
+                                        Note: onward toggling of "show next" tool etc covered in click handler: 
+                                        all we need to do here is choose which tool to show initially...
+                                        
+                                        SHOW TOOL IF:
+                                            Tool is NOT in Group ([NEXT] = 0)
+                                            OR Row marks tool as current( Row marked with "active" marker for this tool)
+                                            OR Tool is Group default and no Row current marker ([PREV] = 0 AND Row has no "active" marking at all)
+                                            OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+                                        -->
+                                        <span class="{! T.iahelp__ToggleNext__c == 0 
+                                                        || L.RowState == T.iahelp__ToggleActiveMarker__c
+                                                        || (T.iahelp__TogglePrev__c == 0 &amp;&amp; L.RowState == '') 
+                                                        || (T.iahelp__TogglePrev__c == 0 &amp;&amp; 
+                                                                T.iahelp__ToggleActiveMarker__c == 'Any')
+                                                     	
+                                        
+                                                        ? 'fa-stack IATool IAToolInline ' + T.iahelp__ToolClass__c : 'slds-hide'}" 
+	                                            title="{!T.iahelp__TipText__c}" 
+												style="{! T.iahelp__ToolClass__c != '' &amp;&amp; T.iahelp__ToolClass__c != null ? '' : 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+    
+                                            <i id="{! L.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + L.Parameters}" 
+                                                onclick="{!c.listingToolClick}" 
+                                                class="{! 'fa fa-stack-2x ' + T.iahelp__IconClass__c}" 
+                                                aria-hidden="true" 
+                                                title="{!T.iahelp__TipText__c}">
+                                            </i>
+    
+                                            <span class="fa-stack-1x"
+                                                    id="{! L.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + L.Parameters}"
+                                                    onclick="{!c.listingToolClick}" >
+                                                
+                                                {!T.iahelp__IconContent__c}
+                                            </span>
+                                            
+                                            <span class="sr-only">
+                                                {!T.iahelp__Label__c}
+                                            </span>
+                                        </span>
+        						    </aura:iteration>
+
+                                </div> <!-- END of div defining expandable / collapsible tools listing -->
+
+                            </div>
+                            <div>
+                                <!-- Collapse inline listing tools to an ellipsis button above tool number threshold -->
+                                <div class="{! v.ListingTools.length &lt;= v.MaxListingTools || v.MaxListingTools == -1 ? 'slds-hide' : ''}"
+										style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+
+                                    <span class="{! 'ListingToolsBlockMaster_' + L.Id + ' fa-stack IATool IAToolMaster'}">
+                                        <i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+                                        <i id="{! L.Id + v.Delimiter + 'ToggleListingTools' + v.Delimiter + ''}" 
+                                            onclick="{!c.listingToolClick}" 
+                                            class="fa fa-ellipsis-h fa-stack-1x fa-inverse" 
+											title="{!v.AdviceLabelTools}" 
+                                            aria-hidden="true"></i>
+										<span class="sr-only">{!v.AdviceLabelTools}</span>
+                                    </span>				
+                                </div>
+
+						    </div> <!-- END of div for ellipsis tool-->
+
+						</div>
+
+                        <div class="slds-text-body_small">
+							<p aura:id="Compact" class="{! v.ListingRowStyle == 'Expanded' ? 'Expanded slds-m-horizontal_small' : 'slds-hide'}">
+								{!L.Title} 
+                            </p>
+                        </div>
+                    </li>
+                    
+				</aura:iteration>                                            
+            </ul>	
+		</aura:if>
+
+<!-- 
+================================================
+LISTING - WIDE FORM
+================================================
+
+................................................
+List Items
+................................................
+-->
+		<aura:if isTrue="{! v.ListingStyle == 'Wide'}">
+	        <table class="{! v.ListingStyle == 'Narrow' ? 'slds-hide' : 'slds-table slds-table_bordered HelpListItemsWide'}">
+	        	<tbody>
+	                <aura:iteration items="{!v.ListingItems}" var="L" end="{! v.CurrentRows}">
+	        
+						<tr ondragstart="{!c.doDragStart}" 
+								ondragend="{!c.doDragEnd}"						
+								data-cmpId="{!globalId}"										
+								aura:id="HelpListingItem" 
+								id="{! 'LIWide_' + L.Id}" 
+								class="{! v.UIFilter == (L.IconLabel + 'Help') || v.UIFilter == 'AllHelp' ? L.Id + ' ' + L.StyleClass + ' slds-hint-parent HelpListingItem' : 'slds-hide'}">
+								
+	                        <th scope="row">
+	                            <span class="fa-stack fa-lg" 
+	                            		style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+	                            		
+	                                <i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+	                                <i class="{! 'fa ' + L.Icon + ' fa-stack-1x fa-inverse'}" title="{!L.IconTitle}" aria-hidden="true"></i>
+	                                <span class="sr-only">{!L.IconTitle}</span>
+	                            </span>																	
+	                        </th>
+	                        
+	                        <td>
+	                            <div>
+	                                <div class="FlexCol">
+										<!-- {!L.IconLabel} -->
+	                                </div>
+	                                <div class="FlexCol">
+	                                
+										<!-- 
+										Allow for listing click action overrides 
+										-->
+	                                	<aura:if isTrue="{!v.ListingClickActionCode == ''}">
+		                                    <a class="{!L.StyleClass}" id="{! L.Id + v.Delimiter + L.ActionCode + v.Delimiter + L.Parameters}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}" 
+													onmouseover="{!c.listingItemMouseOver}"
+													onmouseout="{!c.listingItemMouseOut}" >
+													
+		                                        {!L.Label}
+		                                    </a>
+		                                    
+		                                    <aura:set attribute="else">
+			                                    <a class="{!L.StyleClass}" id="{! L.Id + v.Delimiter + v.ListingClickActionCode + v.Delimiter + L.Parameters}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}" 
+														onmouseover="{!c.listingItemMouseOver}"
+														onmouseout="{!c.listingItemMouseOut}" >
+														
+			                                        {!L.Label}
+			                                    </a>
+		                                    </aura:set>
+	                                    </aura:if>                                    
+	                                
+	                                </div>
+									<div aura:id="Compact" class="{! v.ListingRowStyle == 'Expanded' ? 'FlexCol' : 'slds-hide'}">
+										{!L.Title} 
+	                                </div>
+	                            </div>
+	                        </td>
+	                        
+<!-- 
+................................................
+Additional listing columns, where member data specified this
+................................................
+-->
+							<aura:if isTrue="{!L.Cols != '' &amp;&amp; L.Cols + '' != 'undefined'}">
+								<aura:iteration items="{!L.Cols}" var="Col">
+									<td>
+										<div class="FlexCol AdditionalColumn" title="{!Col[1]}">
+											{!Col[0]}
+										</div>
+									</td>
+								</aura:iteration>
+							</aura:if>             	                        
+                    
+<!-- 
+................................................
+In-line listing tools
+................................................
+-->
+
+	                        <td class="WideListingToolCell">
+	                            
+	                            <!-- NOTE: Do not display tools if there's a configuration issue... -->
+	                            <span class="{! L.StyleClass == 'IHHelpedSFElementError' ? 'slds-hide' : 'IAToolMaster'}">
+	        				
+	                                <!-- Collapse inline listing tools to an ellipsis button above tool number threshold -->
+	                                <div class="{! v.ListingTools.length &lt;= v.MaxListingTools || v.MaxListingTools == -1 ? 'slds-hide' : ''}" style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+	
+	                                    <span class="{! 'ListingToolsBlockMaster_' + L.Id + ' fa-stack fa-lg IATool IAToolMaster'}">
+	                                        <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+	                                        <i id="{! L.Id + v.Delimiter + 'ToggleListingTools' + v.Delimiter + ''}" 
+	                                            onclick="{!c.listingToolClick}" 
+	                                            class="fa fa-ellipsis-h fa-stack-1x fa-inverse" 
+												title="{!v.AdviceLabelTools}" 
+	                                            aria-hidden="true"></i>
+											<span class="sr-only">{!v.AdviceLabelTools}</span>
+	                                    </span>				
+	                                </div>
+	
+	                                <div class="{! v.ListingTools.length &lt;= v.MaxListingTools || v.MaxListingTools == -1 
+	                                    ? 'ListingToolsBlock_' + L.Id : 'slds-hide ListingToolsBlock_' + L.Id}">
+	        				
+	        					    
+	            					    <aura:iteration items="{!v.ListingTools}" var="T" indexVar="Idx">   
+	            					    
+	                                        <!--
+	                                        We need to show / hide tools based on certain contextual markers:
+	                                        E.g., if already bookmarked, show remove bmk etc...
+	                                        Note: onward toggling of "show next" tool etc covered in click handler: 
+	                                        all we need to do here is choose which tool to show initially...
+	                                        
+	                                        SHOW TOOL IF:
+	                                            Tool is NOT in Group ([NEXT] = 0)
+	                                            OR Row marks tool as current( Row marked with "active" marker for this tool)
+	                                            OR Tool is Group default and no Row current marker ([PREV] = 0 AND Row has no "active" marking at all)
+	                                            OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+	                                            
+	                                        -->
+	                                        
+	                                        <span class="{! T.iahelp__ToggleNext__c == 0 
+	                                                        || L.RowState == T.iahelp__ToggleActiveMarker__c
+	                                                        || (T.iahelp__TogglePrev__c == 0 &amp;&amp; L.RowState == '') 
+	                                                        || (T.iahelp__TogglePrev__c == 0 &amp;&amp; 
+	                                                                T.iahelp__ToggleActiveMarker__c == 'Any') 
+	                                        
+	                                                        ? 'fa-stack fa-lg IATool ' + T.iahelp__ToolClass__c : 'slds-hide'}" 
+	                                                        
+													style="{! T.iahelp__ToolClass__c != '' &amp;&amp; T.iahelp__ToolClass__c != null ? '' : 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}"
+		                                            title="{!T.iahelp__TipText__c}" >
+	        
+	                		    				<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+	                                            
+	                                            <i id="{! L.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + L.Parameters}" 
+	                                                onclick="{!c.listingToolClick}" 
+	                                                class="{! 'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}" 
+	                                                aria-hidden="true"></i>
+	                							
+	                							<span class="sr-only">
+	                							    {!T.iahelp__Label__c}
+	            							    </span>
+	                							
+	                							<span class="fa-stack-1x IHToolIconContent" 
+	                                                id="{! L.Id + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + L.Parameters}" 
+	                                                onclick="{!c.listingToolClick}"            							
+	                							>
+	                							    {!T.iahelp__IconContent__c}
+	            							    </span>
+	                                		</span>	                        		
+	                					</aura:iteration>                
+	
+	                                </div> <!-- END of div defining expandable / collapsible tools listing -->
+	                            </span> <!-- END of span defining listing tools area as a whole-->
+	                            
+	        	            </td>
+	            	    </tr>
+	                
+	                </aura:iteration>
+	            </tbody>
+	        </table>                                
+		</aura:if>
+
+<!-- 
+================================================
+LISTING - TILE FORM
+================================================
+-->
+		<aura:if isTrue="{! v.ListingStyle == 'Tile'}">
+		
+			<aura:iteration items="{!v.ListingItems}" var="L" end="{! v.CurrentRows}">
+
+                <!-- 
+          		Allow for listing click action overrides 
+          		-->
+				<aura:if isTrue="{!v.ListingClickActionCode == ''}">
+					<a class="{! 'ListTile ' + L.StyleClass}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}" 
+							id="{! L.Id + v.Delimiter + L.ActionCode + v.Delimiter + L.Parameters}"
+							onmouseover="{!c.listingItemMouseOver}"
+							onmouseout="{!c.listingItemMouseOut}" >
+
+						<c:IHListTile aura:id="HelpListingItem">
+							<aura:set attribute="TileId" value="{! L.Id + v.Delimiter + L.ActionCode + v.Delimiter + L.Parameters + v.Delimiter}" />
+                            
+							<aura:set attribute="Size" value="{!v.ListingTileSize}" />
+							<aura:set attribute="Summary" value="{!L.Label}" />
+							<aura:set attribute="Description" value="{!L.Title}" />
+							<aura:set attribute="Icon" value="{!L.Icon}" />
+							<aura:set attribute="IconColour" value="{!v.UXThemeColour1}" />
+							<aura:set attribute="StyleClass" value="{!L.StyleClass}" /> 
+							<aura:set attribute="ListingRowStyle" value="{!v.ListingRowStyle}" />
+                            <aura:set attribute="UXThemeTileColour1" value="{!v.UXThemeColour1}" />
+							<aura:set attribute="UXThemeTileColour2" value="{!v.UXThemeColour2}" />
+							<aura:set attribute="UXThemeTileColour3" value="{!v.UXThemeColour3}" />
+							<aura:set attribute="UXMenuBackgroundColourTile" value="{!v.UXMenuBackgroundColour}" />
+							<aura:set attribute="UXMenuFontColourTile" value="{!v.UXMenuFontColour}" />
+                            <aura:set attribute="UXTheme" value="{!v.UXTheme}"/>
+						</c:IHListTile>
+					</a>
+		                                    
+				<aura:set attribute="else">
+					<a class="{! 'ListTile ' + L.StyleClass}" href="javascript:void(0);" onclick="{!c.listingToolClick}" title="{!L.Title}" 
+							id="{!L.Id}"
+							onmouseover="{!c.listingItemMouseOver}"
+							onmouseout="{!c.listingItemMouseOut}" >
+
+						<c:IHListTile aura:id="HelpListingItem"> 
+							<aura:set attribute="TileId" value="{! L.Id + v.Delimiter + v.ListingClickActionCode + v.Delimiter + L.Parameters + v.Delimiter}" />
+                            
+							<aura:set attribute="Size" value="{!v.ListingTileSize}" />
+							<aura:set attribute="Summary" value="{!L.Label}" />
+							<aura:set attribute="Description" value="{!L.Title}" />
+							<aura:set attribute="Icon" value="{!L.Icon}" />
+							<aura:set attribute="IconColour" value="{!v.GlobalSettings.iahelp__BrandColour6__c}" />
+							<aura:set attribute="ListingRowStyle" value="{!v.ListingRowStyle}" />
+                            <aura:set attribute="UXThemeTileColour1" value="{!v.UXThemeColour1}" />
+							<aura:set attribute="UXThemeTileColour2" value="{!v.UXThemeColour2}" />
+							<aura:set attribute="UXThemeTileColour3" value="{!v.UXThemeColour3}" />
+							<aura:set attribute="UXMenuBackgroundColourTile" value="{!v.UXMenuBackgroundColour}" />
+							<aura:set attribute="UXMenuFontColourTile" value="{!v.UXMenuFontColour}" />
+						</c:IHListTile>
+					</a>
+				</aura:set></aura:if>                                    
+			
+			</aura:iteration>
+		
+		</aura:if>
+
+<!-- 
+================================================
+BOTTOM ROW / 'more rows available' marker
+================================================
+-->
+		<aura:if isTrue="{! v.CurrentRows &lt; v.ListingItems.length}">
+			<div onmouseover="{!c.setCurrentRows}" aura:id="BottomRowMarker" 
+					class="CardBody IASpinner" 
+					role="alert">
+					
+				<span class="sr-only">{!v.AdviceLabelWorking}</span>
+				
+				<div class="IHFooterTool Smaller">		
+					{!v.CurrentRows + ' ' + v.QAMAdviceLabelGuideStepCounter2 + ' ' + v.ListingItems.length + ' - ' + v.TipReadMoreLinkUsers}			
+				</div>
+				
+				<div class="IHFooterTool">
+				    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+				</div>
+						
+			</div>
+		</aura:if>
+
+    </div>
+</aura:component>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MinimumFormFactor__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Defines the minimum screen size required to display this control. Approximately: Small = mobile phone, Medium = tablet, Large = desktop only</description>
+    <inlineHelpText>Defines the minimum screen size required to display this control. Approximately: Small = mobile phone, Medium = tablet, Large = desktop only</inlineHelpText>
+    <label>Minimum Form Factor</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>1 - Small</fullName>
+                <default>true</default>
+                <label>1 - Small</label>
+            </value>
+            <value>
+                <fullName>2 - Medium</fullName>
+                <default>false</default>
+                <label>2 - Medium</label>
+            </value>
+            <value>
+                <fullName>3 - Large</fullName>
+                <default>false</default>
+                <label>3 - Large</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Views</fullName>
+    <columns>NAME</columns>
+    <columns>HelpInteractionType__c</columns>
+    <columns>Description__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>HelpTopic__c</columns>
+    <columns>HelpResource__c</columns>
+    <columns>Context__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>HelpInteractionType__c</field>
+        <operation>equals</operation>
+        <value>Resource</value>
+    </filters>
+    <label>Views: Resources</label>
+</ListView>

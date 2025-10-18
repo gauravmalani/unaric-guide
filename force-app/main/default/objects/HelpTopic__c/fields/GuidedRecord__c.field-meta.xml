@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GuidedRecord__c</fullName>
+    <deprecated>false</deprecated>
+    <description>If desired, specify the ID of a specific Salesforce object record to display on the Guide step associated with this Topic: leave blank to use the record the User is currently viewing.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If desired, specify the ID of a specific Salesforce object record to display on the Guide step associated with this Topic: leave blank to use the record the User is currently viewing.</inlineHelpText>
+    <label>Step Context</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

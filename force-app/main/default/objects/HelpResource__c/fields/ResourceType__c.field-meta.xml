@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ResourceType__c</fullName>
+    <deprecated>false</deprecated>
+    <inlineHelpText>Defines the Type of Help Resource and the Preview that Helped Users will see in Related Help Resources listings</inlineHelpText>
+    <label>Resource Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Document</fullName>
+                <default>false</default>
+                <label>Document</label>
+            </value>
+            <value>
+                <fullName>Image</fullName>
+                <default>false</default>
+                <label>Image</label>
+            </value>
+            <value>
+                <fullName>Video</fullName>
+                <default>false</default>
+                <label>Video</label>
+            </value>
+            <value>
+                <fullName>Web-page</fullName>
+                <default>false</default>
+                <label>Web-page</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

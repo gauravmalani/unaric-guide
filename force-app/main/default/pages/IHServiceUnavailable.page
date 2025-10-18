@@ -1,0 +1,55 @@
+<!--
+============================================================================================== 
+IH SERVICE UNAVAILABLE PAGE.
+USER WILL BE DIRECTED TO THIS IN CASES WHERE SETTINGS OR SUBSCRIPTION ARE INCORRECTLY CONFIGURED
+
+Martin Little for Improved Apps
+July 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="true" sidebar="true" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleServiceUnavailable']}"  
+                controller="ControllerHelpContent"
+                action="{!checkServiceUnavailable}">
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleServiceUnavailable']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+
+    <body class='Dialogue'>
+
+        <apex:form >
+
+            <!-- IF CSS/SETTINGS PRESENT, ISSUE IS PROBABLY SUBSCRIPTION -->
+            <div id='ServiceUnavailable' class='IHDialogue IHPanel' style="display: {!IF(BrandCSS != '', 'block', 'none')};">
+
+                <div class='IHPanelHeader'><div class='IH-H3'>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleServiceUnavailable']}</div></div>
+                                                
+                <div class="IHPanelBody" style="padding: 10px;">
+                    {!GlobalLocalisations['MessageServiceUnavailableSubscription']}
+                </div>
+
+                <div class="IHPanelFooter" style="height: 16px;"></div>              
+            </div>
+            
+            
+            <!-- LACK OF BRAND CSS IS SYMPTOMATIC OF LACK OF SETTINGS -->                
+            <div id='ServiceUnavailable' class='IHDialogue IHPanel' style="display: {!IF(BrandCSS == '', 'block', 'none')};">
+
+                <div style='font-weight: bold; font-size: 16px; color: red;'>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleServiceUnavailable']}</div>
+                                
+                <div class="IHPanelBody">
+                    {!GlobalLocalisations['MessageServiceUnavailableConfiguration']}
+                </div>
+
+                <div class="IHPanelFooter" style="height: 16px;"></div>              
+            </div>
+            
+        </apex:form>
+    </body>
+</apex:page>

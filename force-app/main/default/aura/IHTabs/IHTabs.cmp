@@ -1,0 +1,371 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+				extends="IHCard"  	
+				access="global" > 
+
+<!-- 
+================================================
+Events and Handlers
+================================================ 
+-->  
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+<aura:method name="addTab" action="{!c.addTab}" />
+    
+    <aura:method name="generateTabContent" action="{!c.generateTabContent}" />
+    <aura:method name="selectTab" action="{!c.selectTab}">
+    	<aura:attribute name="tabIndex" type="Integer" default="0"/>
+    </aura:method>
+    
+	<aura:set attribute="IHCardType" value="Tabs" />    	
+	<aura:set attribute="Height" value="-1" />	
+	<aura:set attribute="SuppressFooter" value="true" />	
+	<aura:set attribute="SuppressHeader" value="true" />	
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="TipToggleButton" type="string"  access="global" default=""/>
+    <aura:attribute name="TipGenericReorder" type="string"  access="global" default=""/>
+    <aura:attribute name="TipGenericAdd" type="string"  access="global" default=""/>
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+	<aura:attribute name="WizardName" type="string" required="false" default="" access="global" />    
+    <aura:attribute name="NodeIconStyle" type="string" required="false" default="Large" access="global" />	
+    <aura:attribute name="Treatment" type="string" required="false" default="Standard" access="global" />	
+    <aura:attribute name="SuppressLabels" type="boolean" required="false" default="false" access="global" />
+    <aura:attribute name="ListCardConfig" type="string" required="false" default="Child Help" access="global" />
+	<aura:attribute name="TemplateActionCode" type="string" required="false" default="TabsOf_IHDetail" access="global" />
+    <aura:attribute name="ConfigAllowed" type="boolean" default="true" access="global" />
+    <aura:attribute name="TabWidth" type="integer" required="false" default="500" access="global" />
+
+	<aura:attribute name="InitialTab" type="integer" required="true" default="0" access="global" />
+	<aura:attribute name="TabComponentDefs" type="ConfigurationItem__c[]" required="false" access="private" />
+	
+<aura:attribute name="DefaultTabDef" type="string" required="false" default="iahelp:IHDetail~Height¬-2" access="public" />
+	
+	<aura:attribute name="TabInitialised" type="boolean[]" required="false" access="private" />
+	<aura:attribute name="ActiveTabIndex" type="integer" required="false" default="0" access="private" />
+
+    <aura:attribute name="editMode" type="boolean" default="false" access="global" />
+    <aura:attribute name="ToggleButton" type="string"  access="global" default="fa fa-toggle-off"/>
+    
+    <aura:attribute name="TabListToInsert" type="List"  access="global" />
+    <aura:attribute name="TabListToDelete" type="List"  access="global" />
+    <aura:attribute name="TabStatus" type="string"  access="global" />
+    <aura:attribute name="oldWizardSteps" type="ConfigurationItem__c[]"  access="global" />
+<!-- 
+================================================
+Scripts & Styles
+================================================
+-->    
+    <ltng:require styles="/resource/iahelp__IHResources/lib/FontAwesome463/css/font-awesome.min.css" />   
+    
+<!-- 
+================================================
+List - present solely to provide logic to obtain related records:
+Therefore, only rendered when the list of tabs to display is to be based on
+related help records: if a wizard name is supplied, the list of tabs comes 
+directly from the relevant wizard step configuration records, so no list needed.
+Also, we never want the list to have a visible impact - we just need its data - 
+so place inside a hidden div...
+================================================
+-->    
+	<aura:if isTrue="{!v.WizardName == ''}">
+		<div class="slds-hide">
+		    <c:IHList aura:id="theList">
+				<aura:set attribute="Height" value="0" />    	
+				<aura:set attribute="SuppressHeader" value="true" />    	
+				<aura:set attribute="SuppressFooter" value="true" />    	
+				<aura:set attribute="ListingStyle" value="NoListing" />    	
+				<aura:set attribute="ToolContext" value="[Template]" />    	
+		    	<aura:set attribute="ComponentId" value="{!v.ComponentId + '_List'}" />
+				<aura:set attribute="CardConfig" value="{!v.ListCardConfig}" />
+				<aura:set attribute="HelpRecordId" value="{!v.HelpRecordId}" />    	
+				<aura:set attribute="recordId" value="{!v.HelpRecordId}" />    	
+				<aura:set attribute="NoDataMessage" value="" />
+		    </c:IHList>
+	    </div>
+	</aura:if>
+
+
+	<div class="slds-grid slds-gutters slds-wrap" >
+        <div class="slds-col slds-size_1-of-1">
+
+<!-- 
+================================================
+NO DATA MESSAGE (IF TABS NOT DEFINED)
+PLUS DESIGN MODE TOGGLE BUTTON
+================================================
+-->
+            <div class="{! v.WizardSteps.length == 0 &amp;&amp; v.isInitialised == true ? 'NoDataMessage' : 'slds-hide'}">
+                <aura:if isTrue="{! (v.isAdministrator || v.isAuthor) &amp;&amp; v.ConfigAllowed}">
+                    <span class="IATool IAFooterTools" title="{!v.TipToggleButton}" onclick="{!c.toggleEditMode}">
+                        <i class="{!v.ToggleButton}"></i>  
+                    </span>
+                </aura:if>
+                
+                {!v.NoDataMessage}
+            </div>
+
+<!-- 
+================================================
+Tab header scroll left / right tools
+================================================
+-->
+			<aura:if isTrue="{! v.WizardSteps.length > 0 }">
+				<div class="{! 'tabShiftTools TabSelector' + v.Treatment}">
+				
+					<span onclick="{!c.shiftTabsLeft}">
+						<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+					</span>
+					
+					<span onclick="{!c.shiftTabsRight}">
+						<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+					</span>
+					
+				</div>
+			</aura:if>
+            
+           
+			<div class="slds-tabs_default">
+
+<!-- 
+================================================
+Tab headers
+================================================
+-->			
+				<ul class="{! 'slds-tabs_default__nav TabSelector' + v.Treatment}" role="tablist">
+                
+<!-- 
+................................................
+View Mode
+................................................
+-->			
+                   <aura:if isTrue="{!v.editMode == false}">
+                        <aura:iteration items="{!v.WizardSteps}" var="WS" indexVar="Idx" start="{!v.InitialTab}">	
+            
+                            <li onclick="{!c.clickTab}" 
+                            		id="{! globalId + 'IHTabsSelector_' + Idx}" 
+                            		class="{! WS.iahelp__ToolClass__c + ' ' + v.Treatment + ' slds-tabs_default__item'}" 
+                            		title="{!WS.iahelp__TipText__c}" 
+                            		role="presentation"
+                            		style="{! v.Treatment == 'Utility' ? 'background-color: #' + v.UXThemeColour1 + ';' : ''}"
+                            		>
+    
+                                <a class="slds-tabs_default__link" 
+                                        href="javascript:void(0);" 
+                                        role="tab" tabindex="0" 
+                                        aria-selected="true" 
+                                        aria-controls="{! globalId + 'IHTabsBody_' + Idx}" 
+                                        >
+    
+    
+                                    <aura:if isTrue="{!WS.iahelp__IconClass__c != '' &amp;&amp; v.NodeIconStyle == 'Small'}">
+                                        <i class="{! 'fa fa-fw fa-lg ' + WS.iahelp__IconClass__c + ' ' + WS.iahelp__ToolClass__c}"
+                                                aria-hidden="true"
+                                                aria-controls="{! globalId + 'IHTabsBody_' + Idx}"
+                                                />
+                                    </aura:if>
+                                        
+                                    <aura:if isTrue="{!WS.iahelp__IconClass__c != '' &amp;&amp; v.NodeIconStyle == 'Large'}">
+                                        <span class="{! WS.iahelp__ToolClass__c + ' fa-stack fa-lg'}"
+                                                style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+                                                
+                                            <i class="fa fa-square-o fa-stack-2x" />
+                                            <i class="{! 'fa fa-stack-1x ' + WS.iahelp__IconClass__c}" 
+                                                    aria-hidden="true" 
+                                                    aria-controls="{! globalId + 'IHTabsBody_' + Idx}" />
+                                        </span>
+                                    </aura:if>
+                                    
+                                    
+                                    <aura:if isTrue="{! v.SuppressLabels == false || v.NodeIconStyle == 'None'}">	
+                                        {!WS.iahelp__Label__c}
+                                    </aura:if>
+                                    
+                                </a>
+                            </li>
+                              
+                        </aura:iteration>
+					</aura:if>
+                                     
+<!-- 
+................................................
+Edit Mode
+................................................
+-->			
+                    <aura:if isTrue="{!v.editMode}">
+                        <aura:iteration items="{!v.WizardSteps}" var="WS" indexVar="Idx" start="{!v.InitialTab}">
+                            <li onclick="{!c.clickTab}" id="{! globalId + 'IHTabsSelector_' + Idx}" class="{! WS.iahelp__ToolClass__c + ' slds-tabs_default__item'}" title="{!WS.iahelp__TipText__c}" role="presentation">
+                                
+                                <a class="slds-tabs_default__link IHTabsInline" 
+                                   href="javascript:void(0);" 
+                                   role="tab" tabindex="0" 
+                                   aria-selected="true" 
+                                   aria-controls="{! globalId + 'IHTabsBody_' + Idx}"
+                                   id="{!Idx}"                                   
+                                   ondragstart="{!c.disableDD}"
+                                   ondragover="{!c.disableDD}"
+                                   ondragleave="{!c.disableDD}"
+                                   ondrop="{!c.disableDD}">
+                                    
+                                    
+                                    <!-- To move left the Tab -->
+                                    <aura:if isTrue="{!Idx > 0}">
+                                        <span onclick="{!c.moveToLeft}" data-value="{!Idx}">
+                                            <lightning:icon title="{!v.TipGenericReorder}" iconName="utility:chevronleft" size="xx-small" />
+                                        </span>    
+                                    </aura:if>
+                                    
+                                    
+                                    <!-- Tab icon - small -->
+                                    <aura:if isTrue="{!WS.iahelp__IconClass__c != '' &amp;&amp; v.NodeIconStyle == 'Small'}">
+                                        <i class="{! 'fa fa-fw fa-lg ' + WS.iahelp__IconClass__c + ' ' + WS.iahelp__ToolClass__c}"
+                                           aria-hidden="true"
+                                           aria-controls="{! globalId + 'IHTabsBody_' + Idx}"
+                                           style="{! 'color: #' + v.GlobalSettings.UXThemeColour1  + ';'}"/>
+                                    </aura:if>
+                                    
+
+                                    <!-- Tab icon - large -->
+                                    <aura:if isTrue="{!WS.iahelp__IconClass__c != '' &amp;&amp; v.NodeIconStyle == 'Large'}">
+                                        <span class="{! WS.iahelp__ToolClass__c + ' fa-stack fa-lg'}"
+                                              style="{! 'color: #' + v.UXThemeColour1  + ';'}">
+                                            
+                                            <i class="fa fa-square-o fa-stack-2x" />
+                                            <i class="{! 'fa fa-stack-1x ' + WS.iahelp__IconClass__c}" 
+                                               aria-hidden="true" 
+                                               aria-controls="{! globalId + 'IHTabsBody_' + Idx}" />
+                                        </span>
+                                    </aura:if>
+                                    
+                                    
+                                   	<!-- Tab label (including edit facility) -->                                    
+                                    <aura:if isTrue="{! v.SuppressLabels == false || v.NodeIconStyle == 'None'}">	
+                                        
+                                        <aura:if isTrue="{!v.editMode}">		 			
+                                            <c:IHLTopicSelector>
+                                                <aura:set attribute="InputType" value="Input" />
+                                                <aura:set attribute="recordId" value="{!WS.Id}" />
+                                                <aura:set attribute="FieldName" value="iahelp__Label__c" />
+                                                <aura:set attribute="FieldValue" value="{!WS.iahelp__Label__c}" />
+                                                <aura:set attribute="TipGenericEdit" value="{!v.TipGenericEdit}" />
+                                            </c:IHLTopicSelector>
+                                        </aura:if>	
+                                        
+                                    </aura:if>
+                                    
+                                    <!-- To move right the Tab -->
+                                    <aura:if isTrue="{!Idx &lt; v.WizardSteps.length - 1}">
+                                        <span onclick="{!c.moveToRight}" data-value="{!Idx}"> 
+                                            <lightning:icon title="{!v.TipGenericReorder}" iconName="utility:chevronright" size="xx-small"/>
+                                        </span>    
+                                    </aura:if>
+                                    
+                                </a>
+                                
+                                <!-- To Delete the Tab -->                                
+                                <span class="IATool fa-stack" onclick="{!c.deleteTab}" data-value="{!Idx}" title="{!v.TipGenericDelete}">
+                                    <i class="fa fa-circle fa-stack-1x badgeRemover"></i>
+                                    <i class="fa fa-times fa-stack-1x fa-inverse"></i> 
+                                </span>
+                                
+                            </li>                            
+                        </aura:iteration> 
+                        
+                        
+                        <!-- To Add a Tab -->
+                        <span class="IATool fa-stack" onclick="{!c.addTab}" title="{!v.TipGenericAdd}">
+                            <i class="fa fa-circle fa-stack-1x fa-inverse"></i>
+                            <i class="fa fa-plus fa-stack-1x "></i>
+                        </span>
+                        
+                    </aura:if>
+            	
+
+<!-- 
+................................................
+View / Edit toggle button
+................................................
+-->			            	
+                    <div class="{! v.WizardSteps.length > 0 &amp;&amp; v.ConfigAllowed == true &amp;&amp; v.isInitialised == true ? '' : 'slds-hide'}">
+                        <aura:if isTrue="{!v.isAdministrator || v.isAuthor ? true : false}">
+                            <span class="IATool" title="{!v.TipToggleButton}" onclick="{!c.toggleEditMode}">
+                                <i class="{!v.ToggleButton}"></i>  
+                            </span>
+                        </aura:if>
+                    </div>      
+				</ul>
+	             
+<!-- 
+================================================
+Tab bodies
+================================================
+-->
+				<aura:iteration items="{!v.WizardSteps}" var="WS" indexVar="Idx">
+
+					<div aura:id="TCompContainer" 
+							id="{! globalId + 'IHTabsBody_' + Idx}" 
+							class="{! Idx == 0 ? 'slds-tabs_default__content IHCompactTabSet TabPanel' + v.Treatment : 'slds-hide TabPanel' + v.Treatment}" 
+							role="tabpanel" 
+							aria-labelledby="{! 'IHTabsSelector_' + Idx}"
+							style="{! v.Treatment == 'Utility' ? 'width: ' + v.TabWidth + 'px;' : ''}" >
+
+<!-- 
+................................................
+Iteration around each component for this tab
+................................................
+ --> 
+						<aura:iteration items="{!v.TabComponentDefs}" var="TC" indexVar="IdxC">
+
+							<aura:if isTrue="{! TC.iahelp__DisplayGrouping__c == Idx + 1}">
+							
+								<c:IHComponentGenerator aura:id="TComp">
+									<aura:set attribute="isInitialised" value="true" />
+								    <aura:set attribute="Id" value="{! 'TabComp_' + Idx}" /> 
+									<aura:set attribute="ComponentDef" value="{!WS.iahelp__SupportingControls__c}" />
+								    <aura:set attribute="Parent" value="{!this}" />								    
+									<aura:set attribute="SuppressPoweredBy" value="true" /> 
+                                    <aura:set attribute="ToToggle" value="{!v.editMode}"/>
+                                    <aura:set attribute="isAdministrator" value="{!v.isAdministrator}"/>
+                                    <aura:set attribute="isAuthor" value="{!v.isAuthor}"/>
+								</c:IHComponentGenerator>  
+																
+<!-- 
+................................................
+Edit mode - save / cancel buttons
+................................................
+ --> 
+                                <aura:if isTrue="{!v.editMode}">
+                                    <div class = "slds-align_absolute-center slds-m-top_small" style="margin-bottom: 1rem;">
+                                                                         
+                                        <span class="slds-m-right_small">
+                                            <lightning:button title="{!v.TipButtonSave != '' ? v.TipButtonSave : 'TipButtonSave' }" label="{!v.ButtonSave.length != 0 ? v.ButtonSave : 'ButtonSave'}" onclick="{!c.onSaveTabs}" variant="brand" />
+                                        </span>
+                                        <span>
+                                            <lightning:button title="{!v.TipGenericCancel != '' ? v.TipGenericCancel : 'TipGenericCancel'}" label="{!v.ButtonCancel.length != 0 ? v.ButtonCancel : 'ButtonCancel' }" onclick="{!c.cancelChanges}" variant="brand"/>
+                                        </span>
+                                        
+                                    </div> 
+                                </aura:if>    
+							</aura:if>
+
+						</aura:iteration>
+ 						
+					</div>
+                    
+				</aura:iteration>
+			</div>
+           
+		</div>
+	</div>
+            
+</aura:component>

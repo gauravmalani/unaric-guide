@@ -1,0 +1,72 @@
+<!--
+============================================================================================== 
+LUX VERSION OF THE CLASSIC HELP PORTAL, IHTOOLS. REQUIRES EITHER A HELP TOPIC (HTID) 
+OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/IHToolsLUX?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/IHToolsLUX?ElemID=[helped element id]&HPL=[helped page layout identifier]
+    
+NB: HPL is an identification string (derived from SF page address) NOT HelpedPageLayout__c.Id.
+NB: In addition, SF itself can access this page using just its standard "id=x" syntax:
+        This is handled via mechanisms in the constructor to our extension controller class.
+
+Keith Clarke & Martin Little for Improved Apps
+October 2017
+Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.
+============================================================================================== 
+ -->
+<apex:page standardStylesheets="false" showHeader="false"
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                standardcontroller="HelpTopic__c"
+                extensions="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <apex:include pageName="IHHook"/>
+
+    <head>    
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.' />
+
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/LUXApp.css')}" />        
+        <apex:stylesheet value="{!BrandCSS}" />        
+        <apex:includeLightning />
+        <apex:slds />
+
+        <style>
+            body    {background: #{!Settings.BrandColour2__c} !important;}        
+        </style>
+
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsLUXOps.js')}"/>
+        
+        <script>
+            initialise();
+       
+            // Create LUX portal component and populate the relevant DIV
+            function initialise() {
+                var HTID = '{!Hlp.Id}';
+                var parms;
+                var aMap1, aMap2, aMap3;
+                var H = -1;
+                
+                // Topic Details
+                // NOTE: topic listens to itself - so it can respond to record change when topic added / cloned
+                parms = 'ComponentId~thePortal^Height~' + H + '^recordId~' + HTID;  
+                aMap1 = IHLUXOps.getParmsMap(parms);
+               
+                $Lightning.use('iahelp:appIH', function() {
+                    $Lightning.createComponent('iahelp:IHPortal', 
+                    aMap1, 
+                    "CardDetails",                  
+                    function(cmp) {
+                    }
+                    );
+                });
+             }  
+        </script>
+    </head>
+
+    <div id="CardDetails"></div>
+
+</apex:page>

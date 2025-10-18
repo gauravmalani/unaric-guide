@@ -1,0 +1,182 @@
+<design:component label="Improved Help: Utility 1">
+
+<!-- 
+================================================
+SHARED SETTINGS
+================================================
+ -->
+	<design:attribute name="Height" 
+	                label="General: Component Height" 
+	                description="Display height for this component (pixels). Enter -1 to set height to 100% (i.e., the height required to avoid scrollbars)." 
+                    default="-1" 
+                    required="true" />	
+                    
+	<design:attribute name="SuppressHeaders" 
+	                label="General: Suppress Headers" 
+	                description="Check this box to hide the header areas of this component." 
+	                default="true"
+                    required="true" />	
+
+	<design:attribute name="SuppressFooters" 
+	                label="General: Suppress Footers" 
+	                description="Check this box to hide the footer / diagnostics areas of this component." 
+	                default="true"
+                    required="true" />	                    
+
+	<design:attribute name="NoDataMessage" 
+	                label="General: 'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present." 
+                    default="[Index Not Available]" 	
+                    required="false" />
+
+	<design:attribute name="FormFactor" 
+	                label="General: Layout" 
+	                description="Select 'Single Column' to switch between Tree and Topic viewer when navigating. Select 'Standard' to show both components at all times." 
+	                datasource="Single Column,Standard"
+	                default="Standard"
+                    required="true" />	                    
+
+	<design:attribute name="ColumnRatio" 
+	                label="General: Left Column Width" 
+	                description="Default width of the left-hand (Tree) component of this utility, as a percentage." 
+	                datasource="33%,40%,50%"
+	                default="50%"
+                    required="true" />	                    
+
+    <design:attribute name="RootNode" 
+                    label="General: Root Topic" 
+                    description="Id of the record to be used as the 'root' of the Tree (and thus the default Topic) on this component. Enter '[None]' to allow Author Configurations to set this." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ToolContext" 
+                    label="General: Tool Context" 
+                    description="Defines the set of clickables (ellipsis menu items, listing tools, drop downs etc) to present on this component. 
+                    		Enter '[DEFAULT]' to accept the default toolset.
+                    		In all other cases, the value you enter will be used with '_Tree' appended for the Tree's context and '_Topic' for the Topic Viewer.
+                    		The resulting values should match an entry in the 'Tool Context' pick list field of the Configuration Item object." 
+                    default="[DEFAULT]"
+                    required="true" />
+
+	<design:attribute name="supportsPopOut" 
+	                label="General: Allow Popout" 
+	                description="Check this box to enable this utility item to be 'popped out' into a separate window." 
+	                default="false"
+                    required="false" />	                    
+
+	<design:attribute name="UXTheme" 
+	                label="General: Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+	<design:attribute name="BackgroundStyle" 
+	                label="General: Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+
+
+<!-- 
+================================================
+DETAIL/TOPIC SPECIFICS
+================================================
+ -->
+
+	<!-- NONE AS OF 1.44 -->
+
+<!-- 
+================================================
+TREE SPECIFICS
+================================================
+ -->
+ 	<design:attribute name="TreeSuppressListingTools" 
+	                label="Tree: Suppress Node Tools" 
+	                description="Check this box to simplify the Tree presented via this control, with node-level clickables hidden." 
+	                default="true"
+                    required="true" />	
+
+ 
+	<design:attribute name="TreeDisplayDensity" 
+                    label="Tree: Display Density" 
+                    description="Controls how much white space to display around the nodes of the Tree on this component." 
+                    datasource="Comfy,Compact"
+                    default="Compact"
+                    required="true" />	
+
+	<design:attribute name="TreeNodeIconStyle" 
+	                label="Tree: Node Icon Style" 
+	                description="Controls the appearence of icons against each node on the Tree on this component." 
+                    datasource="None,Small,Large"
+                    default="None" 
+                    required="true" />	
+
+	<design:attribute name="TreeMaxListingTools" 
+                    label="Tree: Collapse Tools At" 
+                    description="The maximum number of tools to show against each node on the Tree on this component before collapsing them into an Ellipsis. 0 = always collapse, -1 = never collapse." 
+                    default="0"
+                    required="false" />
+
+    <design:attribute name="TreeNodeProvider" 
+                    label="Tree: Node Provider" 
+                    description="[OPTIONAL] The name of a 'node provider' implementation that can be used to render locally-defined trees." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="TreeMaxDepth" 
+                    label="Tree: Max. Depth" 
+                    description="The maximum number of levels to display on the Tree. 0 = show all available levels." 
+                    default="0"
+                    required="true" />
+ 
+     <design:attribute name="TreeDDAllowed" 
+                    label="Tree: Enable Drag and Drop" 
+                    description="If checked, allows Authors to use Drag and Drop to add and re-arrange tree nodes, where supported by the tree provider." 
+                    default="false" 
+                    required="true" />
+
+ 
+ <!--
+ ================================================ 
+ POSITION DETECTOR / CONTEXT SPECIFICS
+ ================================================
+  -->
+	<design:attribute name="PDHelpRecordId" 
+                    label="Contextualisation: Help Context" 
+                    description="Information defining the contextualise request to issue. For example, a Help Topic ID or (for Fixed listings) the API name of an object."
+	                default=""
+                    required="false" />	
+
+	<design:attribute name="PDLogContextInteraction" 
+	                label="Contextualisation: Log Interaction" 
+	                description="Check this box to log a Help Interaction as and when this component is created." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="PopUtilityBar" 
+	                label="Contextualisation: Auto-open Utility Item?" 
+	                description="If using this component in the Utility Bar, check this box to pop it open when contextualisation messages are received." 
+	                default="true"
+                    required="true" />	                    
+
+	<design:attribute name="PDContextCheckInterval" 
+	                label="Contextualisation: Navigation Checking Interval" 
+	                description="USE WITH DUE REGARD FOR MACHINE RESOURCES: Enter zero unless re-contextualisation is required. Enter a number greater than zero (representing milliseconds) to check for changes in user context (page address) periodically and issue related re-contextualisation instructions to this component's tree and topic viewer. Minimum recommended interval is 1000." 
+	                default="0"
+                    required="true" />	
+
+    <design:attribute name="PDPositioningGroup" 
+                    label="Contextualisation: Component ID" 
+                    description="A Component Identifier for the Position Detector included with this component."
+	                default="PosUtilBar"
+                    required="true" />	
+   	
+    <design:attribute name="PDListensTo" 
+                    label="Contextualisation: Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'."
+                    default=""
+                    required="false" />
+
+</design:component>

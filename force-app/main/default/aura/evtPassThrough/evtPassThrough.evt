@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION" 
+	    description="An event to pass generic or unknown messages on to sub-components for them to handle" 
+	    access="global">
+    
+    <aura:attribute name="SourceComponent" type="String" default="" />
+    <aura:attribute name="ActionCode" type="String" default="" />
+    <aura:attribute name="Parameters" type="String" default="" />
+    
+</aura:event>

@@ -1,0 +1,181 @@
+<!--
+============================================================================================== 
+CALLOUT SHOWING TOPIC SUMMARY AND RICH TEXT AT RIGHT WITH SELECTED MEDIA AT FIXED HEIGHT, ASPECT
+RATIO WIDTH, FLOATING LEFT.
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)   
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />  
+           
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <style>     
+            /* Classes particular to mark up on this page */
+            div#CalloutTopicText        {height: {!(Hlp.CalloutHeight__c - 25)}px;}
+            div.CalloutBody             {overflow: hidden; height: {!(Hlp.CalloutHeight__c - 85)}px;}
+            div.CalloutText             {height: 99%; margin: auto; padding: 0px 5px; overflow-y: auto;}                
+
+            Xdiv#CalloutDetailsLUX      {height: CALC({!Hlp.CalloutHeight__c}px - 5em); overflow-y: auto;}            
+
+
+            #CalloutBubbleLUX           {height: CALC({!Hlp.CalloutHeight__c}px - 3em); padding: 1em;}
+            div#CalloutContentLUX       {height: CALC(100% - 1rem); overflow-y: auto; border: 1px solid #d8dde6;}
+            div#CalloutContentWindowLUX {contain: content; min-height: 100%; position: relative; background-color: #ffffff;}
+            div.CalloutBodyLUX          {position: absolute; }   
+
+            .IHWide {width: 100% !important;}
+        </style>        
+
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>       
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCommunities.js')}"/>  
+                
+        <script>
+            IHCommunities.IAIHCPrefix = "{!$Site.Prefix}";
+            try {IHCommunities.IAIHInitialiseForCommunities();} catch(e) {}           
+        </script>
+        
+        <apex:slds rendered="{!isIHLUX==true}" />        
+    </head>
+    
+    <body class="Page {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">     
+        <apex:form >
+
+<!--   
+===============================================
+CLASSIC TREATMENT
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!!isIHLUX}">
+                <div id='CalloutTopicDetails' class="Callout Bubble {!TCSSClass}">
+                    <div class="CalloutContent">
+                        <div class="CalloutHeader">
+                                                
+                            <div title="{!TSummary}" class="IH-H4" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 98%;">
+    
+                                <div style="float: left;">
+                                    <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                                </div>
+    
+                                <!-- Share, Like and other tools -->
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </div>              
+                            
+                        </div>
+                            
+                        <div class="CalloutBody">
+    
+                            <div class="CalloutText">
+                                <div class="CalloutMedia" style="height: {!IF(TPreviewMedia == '', 0, 115)}px; width: {!TPreviewMediaAR * 115}px; float: left; margin: 0px 16px;" title="{!JSENCODE(TPreviewMediaCaption)}"> 
+                                    <apex:image rendered="{!Hlp.CalloutMediaChoice__c == 'Image'}" style="width: 100%; height: 100%;" alt="{!TImageTitle}" value="{!TPreviewMedia}" /> 
+                                    <apex:iframe rendered="{!Hlp.CalloutMediaChoice__c == 'Video'}" width="100%" height="100%" frameborder="false" src="{!TPreviewMedia}" />
+                                </div>
+    
+                                <apex:outputField value="{!Hlp.Description__c}" />
+                            </div>                                                              
+                                                                                 
+                        </div>
+                                                   
+                        <div class="CalloutFooter">
+                            <div class="ReadMoreLink">
+                                <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                value="{!JSENCODE(TMoreLinkHref)}" 
+                                                onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+    
+                                    <div class='MoreLink'>
+                                        <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                    </div>
+                                </apex:outputLink>                        
+                            </div>  
+                        </div>
+                                                      
+                    </div>
+                </div>                
+            </apex:pageBlock>
+
+<!--   
+===============================================
+LIGHTNING TREATMENT
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!isIHLUX}">
+                <div style="padding: 1rem;" class='{!TCSSClass}'>
+                    <section id="CalloutBubbleLUX" class="{!CustomStyle} {!LUXNubbinClass} slds-popover IHWide IHCustomStyled">
+                        <div id="CalloutContentLUX">
+        
+                            <header class="slds-popover__header">
+                                <h2 class="slds-text-heading_small IHLUXDetailSummary">
+                                    <apex:outputText escape="true" value="{!TSummary}" />
+                                </h2>
+                            </header>
+
+                            <div id="CalloutContentWindowLUX">
+                                <div class="CalloutBodyLUX slds-popover__body">
+                            
+                                    <!-- Share, Like and other tools -->
+                                    <div style="padding-top: 0.5em;">
+                                        <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                    </div>
+                                        
+                                    <div class="CalloutMedia" style="height: {!IF(TPreviewMedia == '', 0, 115)}px; width: {!TPreviewMediaAR * 115}px; float: left; clear: left; margin: 8px 0px;" title="{!JSENCODE(TPreviewMediaCaption)}"> 
+                                        <apex:image rendered="{!Hlp.CalloutMediaChoice__c == 'Image'}" style="width: 100%; height: 100%;" alt="{!TImageTitle}" value="{!TPreviewMedia}" /> 
+                                        <apex:iframe rendered="{!Hlp.CalloutMediaChoice__c == 'Video'}" width="100%" height="100%" frameborder="false" src="{!TPreviewMedia}" />
+                                    </div>
+                                        
+                                    <div style="width: CALC(100% - {!TPreviewMediaAR * 115}px); float: right;">
+                                        <apex:outputField value="{!Hlp.Description__c}" />
+                                    </div>    
+                                                              
+                                </div>                                                              
+                            </div>
+                            
+                        </div>  
+                                            
+                        <div class="ReadMoreLink" style="padding-top: 0.5em;">
+                            <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring IHLUXDetailSummary', 'IHLUXDetailSummary')}" 
+                                            title="{!JSENCODE(TMoreLinkTitle)}" 
+                                            value="{!JSENCODE(TMoreLinkHref)}" 
+                                            onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+                        
+                                <div class='MoreLink'>
+                                    <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                </div>
+                            </apex:outputLink>                        
+                        </div>
+                          
+                    </section>
+                </div>                
+            </apex:pageBlock>
+
+        </apex:form>
+    </body>
+</apex:page>

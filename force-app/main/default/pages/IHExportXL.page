@@ -1,0 +1,562 @@
+<!--
+============================================================================================== 
+PAGE THAT CONVERTS ITS IMPROVED HELP OBJECT MEMBER DATA AND CONVERTS IT INTO XLS FORM
+SUITED TO IMPORT / TRANSFER USING THE IMPROVED HELP XML GENERATING UTILITY SPREADSHEET
+
+OPTIONALLY PASS AN EXPORT SCOPING PARAMETER, I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?Scope=[z]
+    
+... WHERE [z] IS A COMMA SEPARATED LIST OF HELP TOPIC IDs. THIS WILL BE USED TO RESTRICT
+THE DOWNLOAD TO THE RELEVANT TOPICS AND THEIR RELATED RECORDS
+    
+
+Martin Little for Improved Apps
+July 2014
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page controller="zInstallHandler" action="{!xlGetExportData}" contentType="txt/xml#ImprovedHelpExport.xls" cache="true">
+
+    <apex:outputText value="{!ioHeaderXL}"/>
+
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:o="urn:schemas-microsoft-com:office:office"
+         xmlns:x="urn:schemas-microsoft-com:office:excel"
+         xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:html="http://www.w3.org/TR/REC-html40">
+
+        <Styles>
+            <Style ss:ID="s1">
+                <Alignment/>
+                <Borders/>
+                <Font ss:Bold="1"/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+        </Styles>
+
+
+<!--   
+===============================================
+TOPICS
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Topics">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="50"/>
+                <Column ss:Width="50"/>
+                <Column ss:Width="50"/>
+                
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                
+                <Column ss:Width="80"/>
+
+                <Column ss:Width="80"/>
+                
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                <Column ss:Width="55"/>
+                
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Id</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >MasterTopicIdentifier</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Summary</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Keyword</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Default</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Active</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >CalloutHeight</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >CalloutMediaChoice</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >CalloutTemplate</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HeightBeforeScrolling</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Template</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >LightningTemplate</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpTopicStatus</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >SalesforceHelpURL</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Visibility</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >CustomStyle</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ShowReferringRelationships</Data></Cell>
+                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >GuidedLayout</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >GuidedRecord</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >GuidedElement</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >GuideStepMode</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >GuideCallout</Data></Cell>
+                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ShowReadMoreLink</Data></Cell>
+
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpVoteSet</Data></Cell>
+                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageHeight</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageWidth</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageCaption</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageTitle</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageURL</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ImageALTText</Data></Cell>
+                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >VideoHeight</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >VideoWidth</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >VideoCaption</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >VideoTitle</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >VideoURL</Data></Cell>                
+                    
+                </Row>
+    
+                <apex:repeat value="{!xlTopics}" var="T">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!T.Id}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.MasterTopicIdentifier__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.Summary__c}</Data></Cell>                        
+                        <Cell><Data ss:Type="String">{!T.Description__c}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!T.Keyword__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >false</Data></Cell>                    
+                        <Cell><Data ss:Type="String" >{!T.Active__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="Number" >{!T.CalloutHeight__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.CalloutMediaChoice__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.CalloutTemplate__r.PageURL__c}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!T.HeightBeforeScrolling__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.Template__r.PageURL__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="String" >{!T.LightningTemplate__r.Name}</Data></Cell>
+
+                        <Cell><Data ss:Type="String" >{!T.HelpTopicStatus__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.SalesforceHelpURL__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.Visibility__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.CustomStyle__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.ShowReferringRelationships__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="String" ></Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.GuidedRecord__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" ></Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.GuideStepMode__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.GuideCallout__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="String" >{!T.ShowReadMoreLink__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="String" >{!T.HelpVoteSet__c}</Data></Cell>
+
+                        <Cell><Data ss:Type="Number" >{!T.ImageHeight__c}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!T.ImageWidth__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.ImageCaption__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.ImageTitle__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.ImageURL__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.ImageALTText__c}</Data></Cell>
+                        
+                        <Cell><Data ss:Type="Number" >{!T.VideoHeight__c}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!T.VideoWidth__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.VideoCaption__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.VideoTitle__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!T.VideoURL__c}</Data></Cell>                
+                    </Row>
+                </apex:repeat>
+                
+            </Table>
+        </Worksheet>
+
+
+<!--   
+===============================================
+HELP RELATIONSHIPS
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Relationships">   
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ReferringTopic</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >RelatedHelpTopic</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >SemanticTag</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Order</Data></Cell>
+                </Row>
+                
+                <apex:repeat value="{!xlRelationships}" var="R">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!R.ReferringTopic__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!R.RelatedHelpTopic__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!R.SemanticTag__r.Name}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!R.Order__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+            </Table>    
+        </Worksheet>
+ 
+
+<!--   
+===============================================
+READING LISTS
+===============================================
+ -->            
+        <Worksheet ss:Name="Reading Lists">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                
+<Column ss:Width="80"/>
+                
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Id</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Summary</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description</Data></Cell>
+
+<Cell ss:StyleID="s1"><Data ss:Type="String" >LightningPresentationStyle</Data></Cell>
+
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FeaturedUntil</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ReadingListStatus</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ReadingListType</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlReadingLists}" var="RL">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!RL.Id}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RL.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RL.Summary__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!SUBSTITUTE(RL.Description__c, '<br>', '<br/>')}</Data></Cell>
+
+<Cell><Data ss:Type="String" >{!RL.LightningPresentationStyle__c}</Data></Cell>
+
+                        <Cell><Data ss:Type="String" >{!RL.FeaturedUntil__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RL.ReadingListStatus__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RL.ReadingListType__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+ 
+ 
+ <!--   
+===============================================
+READING LIST ENTRIES
+===============================================
+ -->            
+ 
+        <Worksheet ss:Name="Reading List Entries">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+
+<Column ss:Width="80"/>
+<Column ss:Width="80"/>
+<Column ss:Width="135"/>
+<Column ss:Width="135"/>
+
+                <Column ss:Width="80"/>
+
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpReadingList</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpTopic</Data></Cell>
+
+<Cell ss:StyleID="s1"><Data ss:Type="String" >DisplayRow</Data></Cell>
+<Cell ss:StyleID="s1"><Data ss:Type="String" >DisplayColumn</Data></Cell>
+<Cell ss:StyleID="s1"><Data ss:Type="String" >NavigationType</Data></Cell>
+<Cell ss:StyleID="s1"><Data ss:Type="String" >NavigationDetails</Data></Cell>
+                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ReadingOrder</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlReadingListEntries}" var="RLE">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!RLE.HelpReadingList__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RLE.HelpTopic__c}</Data></Cell>
+                        
+<Cell><Data ss:Type="Number" >{!RLE.DisplayRow__c}</Data></Cell>
+<Cell><Data ss:Type="Number" >{!RLE.DisplayColumn__c}</Data></Cell>
+<Cell><Data ss:Type="String" >{!RLE.NavigationType__c}</Data></Cell>
+<Cell><Data ss:Type="String" >{!RLE.NavigationDetails__c}</Data></Cell>               
+                        
+                        <Cell><Data ss:Type="Number" >{!RLE.ReadingOrder__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+    
+            </Table>
+        </Worksheet>
+ 
+ 
+ 
+ 
+ <!--   
+===============================================
+HELP RESOURCES
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Resources">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="200"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Id</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Summary</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Location</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ResourceType</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >URL</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlResources}" var="RS">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!RS.Id}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RS.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RS.Summary__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RS.Location__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RS.ResourceType__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!RS.ResourceURL__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+ 
+ 
+ <!--   
+===============================================
+HELP TOPIC RESOURCES
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Topic Resources">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpResource</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpTopic</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >UsageNotes</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlHelpTopicResources}" var="HTR">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!HTR.HelpResource__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HTR.HelpTopic__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HTR.UsageNotes__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+
+
+<!--   
+===============================================
+HELP FILTERS
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Filters">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="170"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Id</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilterIdentifier</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilterLogic</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilteredObject</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilteredObjectIdentifier</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlHelpFilters}" var="HF">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!HF.Id}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HF.FilterIdentifier__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HF.FilterLogic__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HF.FilteredObject__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HF.FilteredObjectIdentifier__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+
+
+<!--   
+===============================================
+HELP FILTER CRITERIA
+===============================================
+ -->            
+        <Worksheet ss:Name="Help Filter Criteria">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpFilter</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >CriterionNumber</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilteredField</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilteredFieldType</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Operator</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >FilterValue</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlHelpFilterCriteria}" var="HFC">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!HFC.HelpFilter__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.CriterionNumber__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.FilteredField__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.FilteredFieldType__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.Operator__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HFC.FilterValue__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+
+ 
+<!--   
+===============================================
+HELPED PAGE LAYOUTS
+===============================================
+ -->            
+ 
+        <Worksheet ss:Name="Helped Page Layouts">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="80"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Id</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >PageLayoutIdentifier</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >PageType</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >AllowComments</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >RehookTimes</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >RehookInterval</Data></Cell>
+                </Row>
+
+                <apex:repeat value="{!xlHelpedPageLayouts}" var="HPL">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!HPL.Id}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HPL.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HPL.PageLayoutIdentifier__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HPL.PageType__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HPL.AllowComments__c}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!HPL.RehookTimes__c}</Data></Cell>
+                        <Cell><Data ss:Type="Number" >{!HPL.RehookInterval__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+
+            </Table>
+        </Worksheet>
+
+ 
+ 
+ <!--   
+===============================================
+HELPED ELEMENTS
+===============================================
+ -->
+ 
+        <Worksheet ss:Name="Helped Elements">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="135"/>
+                <Column ss:Width="80"/>
+                
+                <Column ss:Width="170"/>
+                <Column ss:Width="80"/>
+                <Column ss:Width="170"/>
+
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpedPageLayout</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >ElementType</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpTopic</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Identifier</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Visibility</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >HelpFilter</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >DataDrivenFilter</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >UseForNew</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Parameters</Data></Cell>
+                </Row>
+
+
+                <apex:repeat value="{!xlHelpedElements}" var="HE">
+                    <Row>
+                        <Cell><Data ss:Type="String" >{!HE.HelpedPageLayout__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HE.ElementType__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HE.HelpTopic__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HTMLEncode(HE.Name)}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HTMLEncode(HE.Identifier__c)}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HE.Visibility__c}</Data></Cell>                     
+                        <Cell><Data ss:Type="String" >{!HE.HelpFilter__c}</Data></Cell>                     
+                        <Cell><Data ss:Type="String" >{!HTMLEncode(HE.DataDrivenFilter__c)}</Data></Cell>                    
+                        <Cell><Data ss:Type="String" >{!HE.UseForNew__c}</Data></Cell>
+                        <Cell><Data ss:Type="String" >{!HE.Parameters__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+  
+            </Table>
+        </Worksheet>
+  
+    </Workbook>     
+</apex:page>

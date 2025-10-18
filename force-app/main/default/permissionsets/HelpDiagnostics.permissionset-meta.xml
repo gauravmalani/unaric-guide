@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants access to certain Improved Help utilities that are useful in tracing permissions and other issues but which are not required for live production users.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Help Diagnostics</label>
+    <pageAccesses>
+        <apexPage>IHFLSCheck</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+</PermissionSet>

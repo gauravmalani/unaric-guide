@@ -1,0 +1,6 @@
+.THIS .BookmarkAdd     		{color: green;}
+.THIS .BookmarkRemove     	{color: maroon;}
+ 
+.THIS .IconContent			{margin-top: -0.2em}
+
+.THIS [class*="IATool"]	{cursor: pointer;}

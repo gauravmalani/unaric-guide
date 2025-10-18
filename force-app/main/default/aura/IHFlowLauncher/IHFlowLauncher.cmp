@@ -1,0 +1,129 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,force:hasRecordId,force:hasSObjectName"
+				access="global"
+				>
+    
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+<!-- 
+================================================
+Internationalised values for use in mark-up
+================================================
+-->
+    <aura:attribute name="ButtonOK" type="string" required="true" default="OK" access="global" />
+    <aura:attribute name="TipButtonOK" type="string" required="true" default="Click to launch the selected flow" access="global" />
+    <aura:attribute name="TipButtonCloseFlow" type="string" required="true" default="Close" access="global" />
+    <aura:attribute name="AdviceLabelFlowLaunchedLightBox" type="string" required="true" default="" access="global" />
+    <aura:attribute name="AdviceLabelFlowLaunchedNewTab" type="string" required="true" default="" access="global" />
+
+<!-- 
+================================================
+Other member data
+================================================
+-->
+	<!-- Potential card members -->
+    <aura:attribute name="ComponentId" type="string" required="false" default="IHFlowLauncher" access="global" />	
+	<aura:attribute name="CommunityRoot" type="string" required="false" default="" access="public" />
+    <aura:attribute name="Title" type="string" required="true" default="Suggestions for this page..." access="global" />
+    <aura:attribute name="NoDataMessage" type="string" required="false" default="Improved Help: Flow Launcher" access="global" />       
+    <aura:attribute name="recordId" type="Id" access="global" />
+    <aura:attribute name="ListingItems" type="sObject[]" required="false" access="public" />
+    <aura:attribute name="Diags" type="string" required="true" default="" access="private" />
+	
+	<!-- Other -->
+    <aura:attribute name="theFlowName" type="string" required="true" default="[CONTEXT]" access="global" />	
+    <aura:attribute name="theFlowLabel" type="string" required="true" default="" access="global" />	
+    <aura:attribute name="theFlowParams" type="string" required="false" default="" access="global" />	
+    <aura:attribute name="FlowRadioOptions" type="object[]" required="false" access="private" />
+    
+    <aura:attribute name="OpMode" type="string" required="true" default="Run" access="private" />    
+    <aura:attribute name="DialogueMode" type="string" required="true" default="InPlace" access="private" />    
+    <aura:attribute name="isError" type="boolean" required="true" default="false" access="private" />	
+	
+
+	<div class="slds-card slds-card__body IHFLContainer">
+
+<!--
+========================================================
+'Run' operational mode - create and run a flow
+========================================================
+-->	
+		<aura:if isTrue="{!v.OpMode == 'Run'}">
+			<aura:if isTrue="{!v.isError == false}">
+			
+				<aura:if isTrue="{!v.DialogueMode == 'InPlace'}">
+					<lightning:flow aura:id="theFlow" onstatuschange="{!c.handleFlowStatusChange}" />
+				</aura:if>
+				
+				<aura:if isTrue="{!v.DialogueMode == 'LightBox'}">
+				
+					<div class="FlowLaunchedAdvice">
+						{!v.theFlowLabel}:<br/>
+						{!v.AdviceLabelFlowLaunchedLightBox}
+					</div>
+
+					<div aura:id="ModalContainer">
+						<c:IHDialogue aura:id="theModal">
+						    <aura:set attribute="ComponentId" value="{!v.ComponentId + '_Dialogue'}" />   
+							<aura:set attribute="TipButtonClose" value="{!v.TipButtonCloseFlow}" />    
+						</c:IHDialogue>
+					</div>					
+
+				</aura:if>
+				
+				<aura:if isTrue="{!v.DialogueMode == 'NewTab'}">
+					<div class="FlowLaunchedAdvice">
+						{!v.theFlowLabel}:<br/>
+						{!v.AdviceLabelFlowLaunchedNewTab}
+					</div>
+				</aura:if>
+
+			</aura:if>
+		</aura:if>
+	
+<!--
+========================================================
+'Prompt' operational mode - ask user to select flow
+========================================================
+-->	
+		<aura:if isTrue="{!v.OpMode == 'Prompt'}">
+
+<!-- 
+................................................
+NO DATA MESSAGE (IF ZERO CONTEXT FLOWS ARE AVAILABLE)
+................................................
+-->
+	    	<div class="{!v.ListingItems.length == 0 ? 'NoDataMessage' : 'NoDataMessage slds-hide'}" >
+	        	{!v.NoDataMessage}
+	    	</div>
+
+<!-- 
+................................................
+FLOW PICKER OPTIONS AND GO BUTTON IF OPTIONS AVAILABLE
+................................................
+-->
+			<div class="{!v.ListingItems.length > 0 ? '' : 'slds-hide'}">
+			
+				<lightning:radioGroup type="radio" required="true"
+						label="{!v.Title}"
+				        options="{!v.FlowRadioOptions}"
+				        value="{!v.theFlowName}" 
+				        onchange="{!c.setFlow}"
+				        />
+
+				<div class="slds-card__footer IHFlowLauncherFooter">			
+					<lightning:button type="button" variant="brand" class="slds-m-around_xx-small" 
+							onclick="{!c.cueFlow}" 
+							label="{!v.ButtonOK}" 
+							title="{!v.TipButtonOK}"  
+							disabled="{!v.theFlowName == '' || v.theFlowName == '[CONTEXT]'}" />
+				</div>		
+			</div>
+	
+			{!v.Diags}
+			
+		</aura:if>
+	
+	</div>	
+</aura:component>

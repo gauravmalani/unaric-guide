@@ -1,0 +1,449 @@
+<!--
+============================================================================================== 
+LIGHTNING OUT COMPONENT HOST: CAN INSTANTIATE ONE OF SEVERAL IMPROVED HELP LUX COMPONENTS, 
+OR THOSE FROM OTHER NAME SPACES, AS SPECIFIED BY THE CALLER. REQUIRES DETAILS OF THE COMPONENT TO INSTANTIATE 
+PLUS NAMESPACES INVOLVED AND ANY PARAMETERS TO SEND TO THE COMPONENT BEING CREATED, AS FOLLOWS
+
+    [SF base URL]/Apex/IHLUXOutHost
+        ?NSApp=[Name space of the Lightning dependency app (aura:application) to use]
+        &App=[Name of the dependency app file]
+        &NSComp=[Name space of the Lightning component to create]
+        &Comp=[Name of the component]
+        &Parms=[Parameters (attribute information) to send to the component], in the form:
+            Attribute1Name~Attribute1Value^ ... AttributeNName~AttributeNValue
+        
+AS THIS FACILITY IS TO BE USED TO ALLOW FOR GUIDES IN LIGHTNING, AN ADDITIONAL PARAMETER CAN BE PASSED TO CUE A GUIDE ON LOAD, AS FOLLOWS:
+    GID=[Salesforce ID of the Guide (Reading List) to load]
+    GMode=[1 for linear, 2 for non-linear Guiding]
+
+ALSO, ONE CAN CONTROL HOOKING BEHAVIOUR, AS FOLLOWS:
+    HookMode=[1 = hook only, 2 = hook and show QAM, any other value or none = do not hook]
+
+ALSO, ONE CAN CONTROL BACKGROUND COLOUR, AS FOLLOWS:
+    BGHex=[6-character colour hex (no '#', default = ffffff]
+
+IF PAGE IS CALLED WHEN USER IS IN CLASSIC EXPERIENCE ONLY:
+    Add parameter "HideHeader=false" to show the standard Salesforce page header and sidebars.
+    Add parameter "HideSidebar=false" to show the standard Salesforce sidebar.
+
+TO VIEW LIGHTNING OUT URL BUILDER TOOLS RATHER THAN A CONTROL, PASS:
+    LOBuilder=true
+
+Martin Little for Improved Apps 
+November 2016
+Copyright (c.) Improved Apps Limited 2016. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page controller="ControllerLUXOps" standardStylesheets="false" 
+                showHeader="{!!HideHeader}" sidebar="{!!HideSidebar}"
+                title="Improved Help: Lightning Component Host"
+                >
+
+    <head>
+        <title>Improved Help: Lightning Component Host</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2016. All Rights Reserved.' />
+                        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}"/>       
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsGuides.js')}"/>       
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsLUXOps.js')}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/LUXApp.css')}" />        
+        <apex:stylesheet value="{!BrandCSS}" />        
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" /> 
+        
+        <apex:includeLightning />
+        <apex:slds />
+
+        <style>
+        
+            /* Local item styling */
+            #luxContainer                           {position: relative; border-radius: 0.25rem;}
+            #luxContainer .slds-section__content    {padding: 1rem 0.75rem;} 
+            #spinner                                {background-color: #ffffff; min-height: 100px; height: 100%; width: 100%; position: absolute; display: inline;}
+            
+            #luxOutParams                           {width: auto;}
+            #luxOutParams tr td                     {padding: 5px;}
+            .LUXOutParam                            {min-width: 400px;}
+            .helpText                               {color: blue; font-style: italic;}
+            
+            /* Overrides to render SF controls independently of LUX experience "correctly" */
+            .uiMenuList--default .uiMenuItem>a      {height: auto !important;}
+            a.datePicker-openIcon                   {position: absolute !important; left: auto !important;}
+            a.uiDayInMonthCell--default             {font-size: inherit !important; height: auto !important; width: auto !important; line-height: inherit !important;}
+            .full.forcePageBlockItemView            {border-top: none !important;} /* Line item top border */
+            .forceDetailPanelDesktop.slds-card      {margin-top: -12px;}
+            .forceStyle.desktop .forceRecordLayout .full.forcePageBlockSectionView .forcePageBlockSectionRow .forcePageBlockItemView
+                                                    {padding: 0 !important;}
+                                                    
+            .forcePageBlockSectionRow               {display: flex !important;}
+                                                    
+            #HEModeExitOuter                        {position: absolute; height: 100%; top: 0px; right: 1em;}
+            #HEModeExitInner                        {height: 100%; width: 1.5em; background-color: rgba(128,0,0,0.5); cursor: pointer;}
+            #HEModeExitInner:hover                  {background-color: rgba(128,0,0,1);}
+            #HEModeExitInnerText                    {transform:rotate(90deg); transform-origin: bottom left; width: 10000px; color: #ffffff;}
+
+.slds-card {border: none !important;}
+        </style>
+
+<!--   
+===============================================
+SCRIPTS TO BUILD LUX COMPONENT
+===============================================
+ -->                        
+        <script type="text/javascript">
+            
+            // Gather request parameters
+            var theNSA = decodeURI(IHSearch.getURLParam('NSApp'));                  // Namespace of dependency app to use
+            var theApp = decodeURI(IHSearch.getURLParam('App'));                    // Dependency app
+            var theNSC = decodeURI(IHSearch.getURLParam('NSComp'));                 // Namespace of component within App to create
+            var theComponent = decodeURI(IHSearch.getURLParam('Comp'));             // Component within App
+            var theGuide = decodeURI(IHSearch.getURLParam('GID'));                  // Specify a Guide ID if page is to cue a Guide on arrival
+            var theGuideMode = decodeURI(IHSearch.getURLParam('GMode'));            // For Guides, specify 1 = Linear or 2 = Non-Linear (default)
+            var parms = decodeURIComponent(IHSearch.getURLParam('Parms'));          // Additional parameters controlling component
+            var HookMode = '{!HookMode}';                                           // Control attempts to hook etc.
+            var LOBuilder = decodeURI(IHSearch.getURLParam('LOBuilder'));           // Set to "true" to show lightning URL builder UI
+            var BGHex = decodeURI(IHSearch.getURLParam('BGHex'));                   // LUX Ctl background colour
+            var Internats = decodeURI(IHSearch.getURLParam('Internats'));           // Internationalised messages
+
+            
+            // Create a LUX component if params have been passed, otherwise show URL builder
+            function initialise() {
+            
+                // Set LUX container background colour
+                if (BGHex + '' == 'null' || BGHex == '') {BGHex = 'ffffff';}
+                document.getElementById('luxContainer').style =  'background-color: #' + BGHex + ';';
+
+                // Split the "Parms" parameter into a map of settings to pass to the instantiated LUX component:
+                // The name / value pairs supplied are initially built into a JSON string, which is then converted
+                // to a Map (i.e., an Object) that can be used as a parameter to the Lightning Out object creation call
+                
+                console.log('Lightning Out Host: getting map for parameters: ' + parms);
+                
+                var aMap = IHLUXOps.getParmsMap(parms);         
+
+                // Use all parameters gathered to instantiate the LUX object:
+                if (theNSA + '' != 'null' && theApp + '' != 'null' && theNSC + '' != 'null' && theComponent + '' != 'null') {
+    
+                    // Proceed only where basic parameters are in place...
+                    $Lightning.use(theNSA + ':' + theApp, function() {
+                        $Lightning.createComponent(theNSC + ':' + theComponent, 
+                            aMap, 
+                            "luxContainer",                     
+                            function(cmp) {
+                                // Once component is built, hide waiting spinner
+                                document.getElementById('spinner').style.display = 'none';                            
+                            }
+                        );
+                    });
+                     
+                } else if (LOBuilder == 'true') {
+                    // If parameters are not passed and builder instruction is, offer to build a LUX out URL
+                    document.getElementById('spinner').style.display = 'none';
+                    document.getElementById('urlBuilder').style.display = 'block';
+                    setAdditionalParams();
+                }
+                
+            }   
+            
+/*
+===============================================
+SCRIPTS TO ARRANGE HOOKING/GUIDES AFTER LUX LOAD
+===============================================
+*/          
+            // Configure the QAM once the component is fully loaded so that any helpables etc.
+            // are in place, so will be recognised, thus allowing mode changes etc. 
+            // The call and its parameter are defined via the QAM include (see jsQAMenu plus jsToggleHelp)           
+            var QAMSetupRepeater = window.setInterval("attemptQAMSetup()", 5000);
+            var reTries = 3;
+            function attemptQAMSetup() {
+                
+                // Only attempt hooking if requested (and thus hook include is present)
+                if (HookMode == '1' || HookMode == '2' || HookMode == '3') {
+
+                    // Ensure helpables are in place before attempting to set mode 
+                    if (hasHelpableElements == true || reTries == 0) {
+
+                        if (HookMode == '3') {
+                            // Help enable mode requested:
+                            // We'll need to "defeat" any re-hook interval here - or the HE mode page will simply reset!
+                            window.clearInterval(IHQAMenu.HookRepeater);
+                            IHSettings[RepeatHooking] = '0,0';
+                            
+                            // Hide the QAM (has to be present as elements of it are referenced by enabling code)
+                            if (document.getElementById('IHQAM') + '' != 'null') {
+                                document.getElementById('IHQAM').style.display = 'none';
+                            }
+                            
+                            // Set up help enable mode
+                            configurePage('CONFIGURE');
+                            
+                            // Add a clickable to exit enable mode
+                            var dv = document.createElement('div');
+                            var dvInner = '';
+                            var msg = Internats + '...&nbsp;&nbsp;&nbsp;';
+                            
+                            dv.id = 'HEModeExitOuter';                          
+                            dvInner += '<div id="HEModeExitInner" title="' + msg + '" onclick="javascript:configurePage(\'Saved\', event);">';
+                            dvInner += '<div id="HEModeExitInnerText">';
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += msg;
+                            dvInner += '</div></div>';      
+                            
+                            dv.innerHTML = dvInner;
+                            document.getElementById('luxContainer').appendChild(dv);            
+                                                
+                        } else {
+                            // Hook or Hook & QAM only
+                            IHQAMenu.SetupQAM(theCurrentMode);
+                        }                   
+                        
+                        // Stop setting up mode once successfully achieved
+                        window.clearInterval(QAMSetupRepeater);
+
+                        // If a guide was requested, cue it
+                        if (theGuide != '' && theGuide + '' != 'null') {
+                            if (theGuideMode != '1' && theGuideMode != '2') {theGuideMode = 2;} 
+                            
+                            // Need to set any community paths info here - as we would in classic / jsConsole.HookAndCueGuide...
+                            IHGuides.setCommunityPaths(IHSettings[CPrefix], '', '');
+                            IHGuides.CueGuide(theGuide, theGuideMode);
+                        }
+                        
+                    } else {
+                        reTries -= 1;
+                    }
+                
+                } else {
+                    window.clearInterval(QAMSetupRepeater);
+                }
+            }
+            
+/*
+===============================================
+URL BUILD MODE SUPPORT
+===============================================
+*/              
+            // Build a LUX Out URL based on options selected on screen
+            var knownComps = [
+                ["iahelp", "IHImageViewer"  , "MediaWidth~50^ImageTitle~YOUR_TITLE^NoDataMessage~YOUR_MESSAGE^ImageURL~YOUR_URL"
+                    , "MediaWidth is one of three percentage values (50, 75 or 100).<br/>ImageURL must be HTTPS"],
+                    
+                ["iahelp", "IHList"         , "CardConfig~AllHelp^ListingStyle~Wide"
+                    , "ListingStyle = 'Narrow' or 'Wide'.<br/>CardConfig = 'AllHelp', 'Bookmarks' or 'QuickLinks'"],
+                    
+                ["iahelp", "IHRLViewer"     , "HelpRecordId~YOUR_READINGLIST_ID"
+                    , "Please replace 'YOUR_READINGLIST_ID' with the ID of a Reading List"],
+                    
+                ["iahelp", "IHDetail"       , "HelpRecordId~YOUR_HELP_TOPIC_ID"
+                    , "Please replace 'YOUR_HELP_TOPIC_ID' with the ID of a Help Topic"],
+                    
+                ["iahelp", "IHTree"         , "RootNode~YOUR_HELP_TOPIC_ID"
+                    , "Please replace 'YOUR_HELP_TOPIC_ID' with the ID of a Help Topic that has 'child' Topics"],
+
+                ["force", "recordView"      , "recordId~SF_RECORD_ID&IHContext=SF_RECORD_ID"
+                    , "Please replace 'SF_RECORD_ID' (both instances) with the Salesforce record to be viewed: this MUST be the same value for the recordId and IHContext parameters.<br/>If specifying a Guide, this must be for the appropriate object type AND Hooking Behaviour should NOT be [None]."]
+            ];
+
+
+            function setAdditionalParams() {
+                var fldCmp = document.getElementById('fldCmp').value;
+                var fldParms = document.getElementById('fldParms');                 
+                var hlpParms = document.getElementById('helpParms');                
+
+                fldParms.value = knownComps[fldCmp][2];
+                hlpParms.innerHTML = knownComps[fldCmp][3];
+                buildLUXOutURL();
+            }
+            
+            function buildLUXOutURL() {
+            
+                var fldCmp = document.getElementById('fldCmp').value;
+                var fldParms = document.getElementById('fldParms').value;
+                var fldH = document.getElementById('fldHeight').value;
+                var fldGID = document.getElementById('fldGID').value;
+                var fldGMode = document.getElementById('fldGMode').value;
+                var HookMode = document.getElementById('fldHookMode').value;
+                
+                var U = 'https://' + document.location.host + '{!$Page.IHLUXOutHost}';
+                
+                U += '?NSApp=iahelp';
+                U += '&App=appIH';
+                U += '&NSComp=' + knownComps [fldCmp] [0];
+                U += '&Comp=' + knownComps [fldCmp] [1];
+                
+                U += '&Parms=Height~' + fldH;
+                if (fldParms != '') {U += '^' + fldParms;}   
+                                
+                if (fldGID != '') {
+                    U += '&GID=' + fldGID;
+                    U += '&GMode=' + fldGMode;
+                }
+                
+                U += '&HookMode=' + HookMode;
+                
+                document.getElementById('theLUXOutURL').innerHTML = U;
+                document.getElementById('theTestLink').href = U;
+            }
+            
+        </script>
+
+    </head>
+    
+
+    <body onload="javascript:initialise();">
+        <apex:form >
+
+<!--   
+===============================================
+HOOKING / QAM INCLUDED OPTIONALLY
+===============================================
+ -->                        
+        
+            <apex:include rendered="{!HookMode == '1'}" pageName="IHHook"/>
+            <apex:include rendered="{!HookMode == '2'}" pageName="IHQAM"/>
+            <apex:include rendered="{!HookMode == '3'}" pageName="IHQAM"/>
+            
+            <apex:pageBlock rendered="{!!HideButtons}">
+                <!--
+                NOT AVAILABLE IN THIS RELEASE 
+                <apex:commandButton rendered="{!EditMode == false}" styleClass="btn" value="Edit" action="{!LuxOut_Edit}" />
+                <apex:commandButton rendered="{!EditMode == true}" styleClass="btn" value="Save" action="{!LuxOut_Save}" />
+                <apex:commandButton rendered="{!EditMode == true}" styleClass="btn" value="Cancel" action="{!LuxOut_Cancel}" />         
+                *{!LuxDiags}*
+                 -->
+            </apex:pageBlock>
+    
+
+<!--   
+===============================================
+WAITING VISUAL CUE (SPINNER)
+===============================================
+ -->                        
+            <div id="spinner" class="IAIHWaiting" />
+    
+            <div class="desktop container forceStyle oneOne oneAppLayoutContainer" >
+
+<!--   
+===============================================
+CONTAINER THAT GETS FILLED WITH LUX COMPONENT
+===============================================
+ -->                        
+                <div id="luxContainer" />
+                
+                
+<!--   
+===============================================
+BUILDER MODE URL PRODUCTION TOOLS
+===============================================
+ -->                                        
+                <div id="urlBuilder" style="display: none;">
+
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-col">                          
+
+                                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                    <span class="slds-text-heading--small">
+                                        Improved Help: Lightning Out Host - URL Builder (Beta)
+                                    </span>
+                                </div>
+
+                                <h3>
+                                    <span class="errorMsg">Experimental Feature - Translations not available at this time</span>: 
+                                    <br/>
+                                    This page presents a non-exhaustive list of the parameters that can be used to control our Lightning Out Host page.
+                                    Please contact Support for more advanced options.
+                                    <br/>
+                                    Make selections below then copy the URL provided to link directly to one of our Lightning Out components: 
+                                </h3>
+
+                                <hr/>
+                                <table id="luxOutParams">
+                                    <tr>
+                                        <td>Desired Component:</td>
+                                        <td>
+                                            <select class="LUXOutParam" id="fldCmp" onchange="javascript:setAdditionalParams();" >
+                                                <option value="0">Image Viewer</option>
+                                                <option value="1">Listing</option>
+                                                <option value="2">Reading List Viewer</option>
+                                                <option value="3">Topic Viewer</option>
+                                                <option value="4">Tree View</option>
+                                                <option value="5">Salesforce Record View</option>
+                                            </select>
+                                        </td>       
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Height (Pixels):</td>
+                                        <td><input class="LUXOutParam" id="fldHeight" type="text" value="300" onchange="javascript:buildLUXOutURL();" /></td>       
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Additional parameters controlling component:</td>
+                                        <td><input class="LUXOutParam" id="fldParms" type="text" onchange="javascript:buildLUXOutURL();" /></td>        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <div class="helpText" id="helpParms" />
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Specify a Guide ID if page is to cue a Guide on arrival (Salesforce Record View only):</td>
+                                        <td><input class="LUXOutParam" id="fldGID" type="text" onchange="javascript:buildLUXOutURL();" /></td>      
+                                    </tr>
+
+                                    <tr>
+                                        <td>For Guides, specify Guide Mode:</td>
+                                        <td>
+                                            <select class="LUXOutParam" id="fldGMode" onchange="javascript:buildLUXOutURL();" >
+                                                <option value="1">Linear</option>
+                                                <option value="2">Non-Linear</option>
+                                            </select>
+                                        </td>       
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Help Hooking Behaviour</td>
+                                        <td>
+                                            <select class="LUXOutParam" id="fldHookMode" onchange="javascript:buildLUXOutURL();" >
+                                                <option value="0">[None]</option>
+                                                <option value="1">Hook Only</option>
+                                                <option value="2">Hook and show classic QAM</option>
+                                            </select>
+                                        </td>       
+                                    </tr>
+                                    
+                                </table>
+                                <hr/>
+                                
+                                <span class="slds-text-heading--small">
+                                    Lightning Out Host URL:
+                                </span>
+                                
+                                <div id="theLUXOutURL" class="errorMsg" />
+                                <br/>
+                                <a id='theTestLink' target='_LUXOut'>Test this link</a>
+
+                            </div>
+                        </div>                      
+                    </div>
+
+                </div>
+            </div>        
+            
+    
+        </apex:form>
+    </body>    
+</apex:page>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SalesforceHelpURL__c</fullName>
+    <deprecated>false</deprecated>
+    <inlineHelpText>URL to standard Salesforce Help associated with this Help Topic (optional, if applicable)</inlineHelpText>
+    <label>Salesforce Help URL</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

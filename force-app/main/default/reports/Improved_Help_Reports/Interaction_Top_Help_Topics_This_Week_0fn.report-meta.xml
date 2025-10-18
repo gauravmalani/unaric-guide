@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpTopicSummary__c</field>
+    </columns>
+    <description>Which are the popular Help Topics being used this week?</description>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpTopic__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Interaction: Top Help Topics This Week</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Help_Interactions_with_User_Analysis__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>User.iahelp__HelpInteraction__c$CreatedById$CreatedDate</dateColumn>
+        <interval>INTERVAL_LAST7</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,67 @@
+<design:component label="Improved Help: Background">
+
+	<design:attribute name="Image" 
+	                label="Image URL" 
+	                description="URL of the image you wish to use as a backgrouhd." 
+	                default="/resource/iahelp__IHResources/img/grabs/cogs.png"
+                    required="true" />	
+
+	<design:attribute name="Height" 
+	                label="Component Height" 
+	                description="Display height for this component (pixels)." 
+	                default="450"
+                    required="true" />	
+	
+	<design:attribute name="posX" 
+	                label="Image X position" 
+	                description="Horizontal (X) position in pixels of wallpaper image within its container." 
+	                default="0"
+                    required="true" />	
+	
+	<design:attribute name="posY" 
+	                label="Image Y position" 
+	                description="Vertical (Y) position in pixels of wallpaper image within its container." 
+	                default="0"
+                    required="true" />	
+	
+	<design:attribute name="VPad" 
+	                label="Vertical displacement" 
+	                description="Amount in pixels by which to displace content vertically appearing 'on top' of this wallpaper." 
+	                default="0"
+                    required="true" />	
+
+	<design:attribute name="styleWidth" 
+	                label="Wallpaper coverage" 
+	                description="Controls whether the background is allowed to 'escape' its containing column." 
+	                default="Containing column"
+                    required="true" 
+                    datasource="Containing column,Screen width" />	
+	
+	<design:attribute name="checkInterval" 
+	                label="Resize checking interval" 
+	                description="Time interval (milliseconds) at which image will resize itself in the event that the user's viewport size changes." 
+	                default="2000"
+                    required="true" />	
+	
+	<design:attribute name="styleSize" 
+	                label="Image sizing option" 
+	                description="Controls whether the image grows to fill available space." 
+	                default="Original size"
+                    required="true" 
+                    datasource="Stretch to fill,Original size" />	
+
+	<design:attribute name="styleRepeat"
+	                label="Image repeat" 
+	                description="Controls whether to 'tile' the image vertically and / or horizontally." 
+	                default="None"
+                    required="true" 
+                    datasource="None,Horizontal,Vertical,Both" />	
+
+	<design:attribute name="stylePosition"
+	                label="Image positioning" 
+	                description="Controls how the image behaves if the page is taller than the user's viewport (screen)." 
+	                default="Fixed"
+                    required="true" 
+                    datasource="Fixed,Scrolling" />	
+
+</design:component>

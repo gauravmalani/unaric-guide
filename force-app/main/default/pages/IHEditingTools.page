@@ -1,0 +1,244 @@
+<!--
+============================================================================================== 
+TOOLBAR OFFERING COMMON FEATURES TO DIALOGUES. OFFERS EDITING BUTTONS WITH SUITABLE TOOLTIPS, 
+PLUS ENABLED / DISABLED APPEARENCE AND BEHAVIOUR. ENFORCES IH PERMISSION SET BASED RIGHTS
+(REGARDLESS OF ANY CALL BY THE CONTAINER PAGE TO ENABLE / DISABLE PARTICULAR BUTTONS). 
+
+THIS PAGE WILL NOT WORK RELIABLY STANDALONE AND SHOULD BE EMBEDDED INTO A "CONTAINER" PAGE AS FOLLOWS:
+
+- Add to desired "container" page BODY using the tag: <apex:include pageName="IHEditingTools"/>
+        NB: This page must encode (through class member data or local JS handling) 
+        the concept of a current editing "Mode".
+        
+- Include the following Apex markup BELOW the include tag:
+
+        <apex:actionFunction name="doAdd" action="{!}" />
+        <apex:actionFunction name="doEdit" action="{!}" />
+        <apex:actionFunction name="doDelete" action="{!}" />
+        <apex:actionFunction name="doSave" action="{!}" />
+        <apex:actionFunction name="doCancel" action="{!}" />
+
+- In each of the above, complete the action parameters with the names of the controller member functions
+        to be called when adding, editing, deleting, saving and cancelling.
+
+- If desired, use JS to call setTips (as defined below) to override standard tool tip text
+- Use JS to call setButtons (as defined below) to override button availability (default = not available)
+- Use JS to call setMode (as defined below) to have the toolbar respond to container's editing mode
+
+Martin Little for Improved Apps
+August 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="true" showHeader="False" sidebar="False" 
+            controller="ControllerIHEditingTools"
+            action="{!initialise}">
+
+    <head>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />
+
+        <!-- NB: IH main & customer styles included by virtue of containing page -->        
+        <style>
+            .NoHand {cursor: default !important;}
+        </style>
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsToggleHelp.js')}" />
+        
+        <script type='text/javascript'>
+        
+            var wrapTips = new Array('{!GlobalLocalisations['TipGenericAdd']}', '{!GlobalLocalisations['TipGenericEdit']}', '{!GlobalLocalisations['TipGenericDelete']}', '{!GlobalLocalisations['TipGenericOK']}', '{!GlobalLocalisations['TipGenericCancel']}');
+            var wrapBtns = new Array(true, true, true, false, false);
+            
+            
+            // Set tool tips to be used for buttons         
+            function setTips(ary) {
+            
+                try {
+                    var btnA = document.getElementById('btnAdd');
+                    var btnE = document.getElementById('btnEdt');
+                    var btnD = document.getElementById('btnDel');
+                    var btnS = document.getElementById('btnSav');
+                    var btnC = document.getElementById('btnCan');
+                    
+                    var btns = new Array(btnA, btnE, btnD, btnS, btnC);
+                    var i;
+                    
+                    for (i=0; i<btns.length; i++) {
+                        btns[i].title = ary[i];
+                    }
+                                        
+                    wrapTips = ary;
+
+                } catch (e) {
+                    alert('{!JSENCODE(GlobalLocalisations['MessageGenericError'])} - ' + e);
+                }
+                
+                return;
+            }
+            
+            
+            // Control button availability based on "standard" mode settings
+            function setMode(m) {
+                var ary;
+                
+                switch (m.toUpperCase()) {
+                    case 'READ':
+                        ary = new Array(true, true, true, false, false);
+                        break;
+                    
+                    case 'EDIT':
+                        ary = new Array(false, false, false, true, true);
+                        break;
+
+                    case 'NEW':
+                        ary = new Array(false, false, false, true, true);
+                        break;
+
+                    default:
+                        // Do nothing if mode not recognised
+                        return;
+                }
+                
+                setBtns(ary);
+                return;
+            }
+            
+            
+            // Control button availability in accordance with individual array of booleans passed in
+            function setBtns(ary) {
+            
+                try {
+                    var i;
+                    var elem;
+
+                    // Get our buttons to manipulate
+                    var btnA = document.getElementById('btnAdd');
+                    var btnE = document.getElementById('btnEdt');
+                    var btnD = document.getElementById('btnDel');
+                    var btnS = document.getElementById('btnSav');
+                    var btnC = document.getElementById('btnCan');
+                    
+                    // Place in array and loop around this
+                    var btns = new Array(btnA, btnE, btnD, btnS, btnC);
+                    
+                    for (i=0; i<btns.length; i++) {       
+                        
+                        elem = btns[i];
+                        
+                        // NB: regardless of which settings we're given, we always obey 
+                        // permissions, as discovered by our controller class
+                        // AND button control settings passed in by client page
+                        
+                        if (ary[i] == false || (!{!isAuthor} && !{!isAdministrator}) || wrapBtns[i] == false) {
+                            // If button to be disabled, add visual clue classes and set no action                              
+                            elem.title = '';
+                            elem.onclick = '';
+                            if (elem.className.indexOf('Unavailable') == -1) {elem.className += 'Unavailable NoHand';}
+
+                        } else {
+                            // If button to be enabled, remove disabled clues and reset (wrapper) JS action
+                            elem.title = wrapTips[i];
+                            
+                            switch (i) {
+                                case 0:
+                                    elem.onclick = wrapAdd;
+                                    break;
+                                case 1:
+                                    elem.onclick = wrapEdt;
+                                    break;
+                                case 2:
+                                    elem.onclick = wrapDel;
+                                    break;
+                                case 3:
+                                    elem.onclick = wrapSav;
+                                    break;
+                                case 4:
+                                    elem.onclick = wrapCan;
+                                    break;
+                            }
+
+                            elem.className = elem.className.split('Unavailable').join('');
+                            elem.className = elem.className.split('NoHand').join('');
+                            elem.className = stringTrim(elem.className);
+
+                        }
+                    }
+                                    
+                } catch (e) {
+                    alert('{!JSENCODE(GlobalLocalisations['MessageGenericError'])} - ' + e);
+                }               
+
+                return;
+            }
+            
+            
+            // Set global button availability - overriding "standard" mode settings (but not security)
+            function setButtons(ary) {
+                wrapBtns = ary;
+                setBtns (wrapBtns);
+                return;
+            }
+            
+            
+            // Button click handling: setup GUI clues suited to button pressed
+            // and call JS function (to be defined on container page)
+            function wrapAdd() {
+                var ary = new Array(false, false, false, true, true);
+                setBtns(ary);   
+                doAdd();            
+                return;
+            }
+            
+            function wrapEdt() {
+                var ary = new Array(false, false, false, true, true);
+                setBtns(ary);   
+                doEdit();           
+                return;
+            }
+
+            function wrapDel() {
+            
+                // Issue a warning before completing any delete (including any custom deletion implications message)
+                if (!confirm('{!JSENCODE(GlobalLocalisations['MessageDeleteWarning'])}')) return false;
+                
+                var ary = new Array(true, true, true, false, false);
+                setBtns(ary);   
+                doDelete();         
+                return;
+            }
+
+            function wrapSav() {
+                var ary = new Array(true, true, true, false, false);
+                setBtns(ary);   
+                doSave();           
+                return;
+            }
+
+            function wrapCan() {
+                var ary = new Array(true, true, true, false, false);
+                setBtns(ary);   
+                doCancel();         
+                return;
+            }
+            
+        </script>
+        
+    </head>
+
+    <body>
+        <div style="display: {!IF(isAuthor || isAdministrator, 'block', 'none')};">
+
+            <div id="btnAdd" class="IHIcon32 IHIdle IHIconAddUnavailable NoHand" style="margin-right: 5px; float: left;"></div>
+            <div id="btnEdt" class="IHIcon32 IHIdle IHIconEditUnavailable NoHand" style="margin-right: 5px; float: left;"></div>
+            <div id="btnDel" class="IHIcon32 IHIdle IHIconDeleteUnavailable NoHand" style="margin-right: 25px; float: left;"></div>
+            <div id="btnSav" class="IHIcon32 IHIdle IHIconSaveUnavailable NoHand" style="margin-right: 5px; float: left;"></div>
+            <div id="btnCan" class="IHIcon32 IHIdle IHIconCancelBtnUnavailable NoHand" style="margin-right: 25px; float: left;"></div>      
+
+        </div>          
+
+    </body>
+
+
+</apex:page>

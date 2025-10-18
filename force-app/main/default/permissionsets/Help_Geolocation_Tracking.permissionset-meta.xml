@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Track_Interaction_Geolocation</name>
+    </customPermissions>
+    <description>Assign this permission set to Users whose location you wish to track. Alternatively, add the &apos;Track Interaction Geolocation&apos; Custom Permission on selected Profiles. &apos;Help Settings &gt; Tracking &gt; Allow Geolocation Tracking&apos; must also be enabled at org level.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Help Geolocation Tracking</label>
+</PermissionSet>

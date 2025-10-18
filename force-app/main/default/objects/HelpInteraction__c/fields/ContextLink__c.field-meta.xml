@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ContextLink__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Hyperlink to the record or layout the user was on when the interaction was logged</description>
+    <inlineHelpText>Hyperlink to the record or layout the user was on when the interaction was logged</inlineHelpText>
+    <label>Context Link</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

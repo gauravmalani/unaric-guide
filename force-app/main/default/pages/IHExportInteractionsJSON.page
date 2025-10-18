@@ -1,0 +1,16 @@
+<!--
+============================================================================================== 
+PAGE THAT TAKES IMPROVED APPS HELP INTERACTION RECORD DATA AND CONVERTS IT INTO JSON FORM
+FOR EXPORT / ONWARD ANALYSIS IN EXTERNAL SYSTEMS
+
+Martin Little for Improved Apps
+December 2016
+Copyright (c.) Improved Apps Limited 2016. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page controller="zInstallHandler" contentType="txt/json#HelpInteractions.json" cache="true">
+
+    <apex:outputText value="{!ioDataInteractionsJSON}" escape="true"/>
+
+</apex:page>

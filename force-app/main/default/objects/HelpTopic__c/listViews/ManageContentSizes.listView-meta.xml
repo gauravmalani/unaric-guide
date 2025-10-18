@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ManageContentSizes</fullName>
+    <columns>NAME</columns>
+    <columns>CalloutTemplate__c</columns>
+    <columns>CalloutHeight__c</columns>
+    <columns>Template__c</columns>
+    <columns>HeightBeforeScrolling__c</columns>
+    <columns>ImageTitle__c</columns>
+    <columns>ImageHeight__c</columns>
+    <columns>ImageWidth__c</columns>
+    <columns>VideoTitle__c</columns>
+    <columns>VideoHeight__c</columns>
+    <columns>VideoWidth__c</columns>
+    <columns>Active__c</columns>
+    <columns>Visibility__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>Manage Content Sizes</label>
+</ListView>

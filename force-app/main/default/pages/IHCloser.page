@@ -1,0 +1,24 @@
+<!--
+============================================================================================== 
+PAGE DEVELOPED FOR USE WITH THE VF QAM WHEN POPPED OUT:
+THERE ARE TIMES WHEN THE DESIRE IS TO OPEN A POPOUT WHEN THE SIDEBAR VF QAM SCROLLS OUT OF VIEW.
+THIS PAGE MAKES IT POSSIBLE TO CLOSE THE POPPED OUT QAM AUTOMATICALLY (BY NAVIGATING FROM THE 
+VF QAM PAGE TO HERE).
+
+Martin Little for Improved Apps
+May 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False">
+
+<script type="text/javascript">
+window.close();
+</script>
+
+<body>
+...
+</body>
+
+</apex:page>

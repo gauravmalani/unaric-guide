@@ -1,0 +1,189 @@
+<aura:component 
+		implements="lightning:utilityItem,force:hasRecordId,force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+		access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler name="init" value="{!this}" action="{!c.init}" />
+	<aura:handler name="change" value="{!v.RootNode}" action="{!c.init}"/>
+	<aura:handler name="change" value="{!v.ColumnRatio}" action="{!c.setCols}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="recordId" type="Id" access="global" />
+	<aura:attribute name="supportsPopOut" type="Boolean" default="false" access="global" />
+
+    <aura:attribute name="Height" type="integer" required="true" default="-1" access="global" />
+    <aura:attribute name="SuppressHeaders" type="boolean" required="true" default="true" access="global" />
+    <aura:attribute name="SuppressFooters" type="boolean" required="true" default="true" access="global" />
+	<aura:attribute name="SuppressPoweredBy" type="boolean" required="false" default="false" access="public" />	
+    <aura:attribute name="NoDataMessage" type="string" required="false" default="[No Data]" access="global" />
+	<aura:attribute name="ColumnRatio" type="string" required="true" default="50%" access="global" />
+	<aura:attribute name="Col1Cols" type="string" required="true" default="6" access="private" />
+	<aura:attribute name="Col2Cols" type="string" required="true" default="6" access="private" />
+	
+	<aura:attribute name="FormFactor" type="string" required="true" default="Standard" access="global" />
+	<aura:attribute name="HideTree" type="boolean" required="true" default="false" access="private" />
+	<aura:attribute name="HideTopic" type="boolean" required="true" default="false" access="private" />
+
+    <aura:attribute name="RootNode" type="string" required="false" default="" access="global" />	
+	<aura:attribute name="RootNodeTree" type="string" required="false" default="" access="private" />	   
+	<aura:attribute name="RootNodeTopic" type="string" required="false" default="" access="private" />	
+	<aura:attribute name="NumTopicSelects" type="integer" required="false" default="0" access="private" />	
+
+    <aura:attribute name="ToolContext" type="string" required="true" default="[DEFAULT]" access="global" />	
+	<aura:attribute name="ToolContextTree" type="string" required="true" default="[DEFAULT]" access="private" />	
+	<aura:attribute name="ToolContextTopic" type="string" required="true" default="[DEFAULT]" access="private" />	
+
+	<aura:attribute name="UXTheme" type="string" required="false" default="" access="global" />
+	<aura:attribute name="BackgroundStyle" type="string" required="true" default="Coloured" access="global" />
+	
+	<aura:attribute name="Tree" type="Object" required="false" default="" access="global" />
+	<aura:attribute name="Topic" type="Object" required="false" default="" access="global" />
+
+	<aura:attribute name="TreeSuppressListingTools" type="boolean" required="true" default="true" access="global" />
+    <aura:attribute name="TreeNodeIconStyle" type="string" required="true" default="None" access="global" />	
+	<aura:attribute name="TreeMaxListingTools" type="integer" default="3" required="false" access="global" />   
+	<aura:attribute name="TreeDisplayDensity" type="string" required="true" default="Compact" access="global" /> 
+    <aura:attribute name="TreeMaxDepth" type="integer" required="true" default="0" access="global" />	
+    <aura:attribute name="TreeNodeProvider" type="string" required="false" access="global" />	
+	<aura:attribute name="TreeDDAllowed" type="boolean" required="true" default="false" access="global" />
+
+    <aura:attribute name="PopUtilityBar" type="boolean" required="true" default="true" access="global" />
+   	<aura:attribute name="PDLogContextInteraction" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="PDContextCheckInterval" type="integer" required="true" default="0" access="global" />
+    <aura:attribute name="PDPositioningGroup" type="string" required="true" default="" access="global" />
+    <aura:attribute name="PDHelpRecordId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="PDListensTo" type="string" required="false" default="" access="global" />	 
+    <aura:attribute name="ExpandAllNodes" type="Boolean" default="false" />
+
+<!-- 
+================================================
+For manipulation of utility bar if needed by guides etc.
+================================================
+-->
+	<aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+		<lightning:utilityBarAPI aura:id="UtilityBar"/>
+	</aura:if>
+	
+<!-- 
+================================================
+Position detector for guides & context
+================================================
+-->
+	<div id='Utility1PDContainer'>
+		<c:IHPosDetect>
+			<aura:set attribute="Parent" value="{!this}" />
+		    <aura:set attribute="PositioningGroup" value="{!v.PDPositioningGroup}" />
+			<aura:set attribute="ListensTo" value="{!v.PDListensTo}" />	   
+
+			<aura:set attribute="recordId" value="{!v.recordId}" />	    
+		    <aura:set attribute="PositioningRole" value="Help Cue" />
+			<aura:set attribute="ContextCheckInterval" value="{!v.PDContextCheckInterval}" />
+			<aura:set attribute="LogContextInteraction" value="{!v.PDLogContextInteraction}" />	    
+		    <aura:set attribute="HelpRecordId" value="{!v.PDHelpRecordId}" />
+		</c:IHPosDetect>    
+	</div>
+	
+
+	<div class="{! v.PDPositioningGroup + ' slds-grid slds-wrap'}">	
+
+<!-- 
+================================================
+No data message - if root NOT set
+================================================
+-->	
+		<aura:if isTrue="{!v.RootNode == ''}">
+			<div class="NoDataMessage">
+				{!v.NoDataMessage}
+			</div>
+		</aura:if>
+	
+<!-- 
+================================================
+Tree - render only when root set
+================================================
+-->
+        <div aura:id="UtilTreeContainer" class="{! v.HideTree == true ? 'slds-hide' : 'slds-col slds-p-horizontal_x-small slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_' + v.Col1Cols + '-of-12'}">
+			<aura:if isTrue="{!v.RootNodeTree != ''}">
+	            <c:IHTree aura:id="UtilTree">
+					<aura:set attribute="Parent" value="{!this}" />
+	                <aura:set attribute="ComponentId" value="{! v.PDPositioningGroup + '_Tree'}" />
+					<aura:set attribute="ListensTo" value="{! v.PDListensTo == '' ? v.PDPositioningGroup + '_ParentUtility,' + v.PDPositioningGroup + '_Topic' : v.PDPositioningGroup + '_ParentUtility,' + v.PDPositioningGroup + '_Topic,' + v.PDListensTo}" /> 
+
+	                <aura:set attribute="Height" value="{!v.Height}"/>        
+	                <aura:set attribute="SuppressHeader" value="{!v.SuppressHeaders}" />
+	                <aura:set attribute="SuppressFooter" value="{!v.SuppressFooters}" />
+
+	                <aura:set attribute="SuppressPoweredBy" value="{!v.SuppressPoweredBy}" />
+
+					<aura:set attribute="NoDataMessage" value="{!v.NoDataMessage}" />	            
+					<aura:set attribute="OuterContainerClass" value="ResponsiveTree" />	            	                
+			        <aura:set attribute="DDAllowed" value="{!v.TreeDDAllowed}" />	
+					<aura:set attribute="ToolContext" value="{!v.ToolContextTree}" />
+
+					<aura:set attribute="UtilityBarCheckDelay" value="{! v.PDContextCheckInterval}" /> 
+
+					<aura:set attribute="UXTheme" value="{!v.UXTheme}" />
+					<aura:set attribute="BackgroundStyle" value="{!v.BackgroundStyle}" />
+
+	                <aura:set attribute="RootNode" value="{!v.RootNodeTree}" />
+	                <aura:set attribute="SuppressListingTools" value="{!v.TreeSuppressListingTools}" />
+	                <aura:set attribute="NodeIconStyle" value="{!v.TreeNodeIconStyle}" />
+					<aura:set attribute="MaxListingTools" value="{!v.TreeMaxListingTools}" />
+	                <aura:set attribute="DisplayDensity" value="{!v.TreeDisplayDensity}" />
+	                <aura:set attribute="MaxDepth" value="{!v.TreeMaxDepth}" />
+	                <aura:set attribute="NodeProvider" value="{!v.TreeNodeProvider}" />
+                    <aura:set attribute="ExpandAllNode" value = "{!v.ExpandAllNodes}"/>
+	            </c:IHTree>
+			</aura:if>
+        </div>   
+    
+<!-- 
+================================================
+Detail - render only when root set
+================================================
+-->        
+        <div aura:id="UtilTopicContainer" class="{! v.HideTopic == true ? 'slds-hide' : 'slds-col slds-p-horizontal_x-small slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_' + v.Col2Cols + '-of-12'}">
+			<aura:if isTrue="{!v.RootNodeTopic != ''}">        
+				<c:IHDetail aura:id="UtilTopic">        
+					<aura:set attribute="Parent" value="{!this}" />
+	                <aura:set attribute="ComponentId" value="{! v.PDPositioningGroup + '_Topic'}" />
+					<aura:set attribute="ListensTo" value="{! v.PDListensTo == '' ? v.PDPositioningGroup + '_Tree' : v.PDPositioningGroup + '_Tree,' + v.PDListensTo}" /> 
+					<aura:set attribute="CachedRecordSource" value="{! v.PDPositioningGroup + '_Tree'}" /> 
+
+					<aura:set attribute="Height" value="{!v.Height}"/>        
+					<aura:set attribute="SuppressHeader" value="{!v.SuppressHeaders}" />
+					<aura:set attribute="SuppressFooter" value="{!v.SuppressFooters}" />
+					
+	                <aura:set attribute="SuppressPoweredBy" value="{!v.SuppressPoweredBy}" />
+					
+					<aura:set attribute="NoDataMessage" value="{!v.NoDataMessage}" />	            
+					<aura:set attribute="ToolContext" value="{!v.ToolContextTopic}" />
+
+					<aura:set attribute="UtilityBarCheckDelay" value="{! v.PDContextCheckInterval}" /> 
+					
+					<aura:set attribute="UXTheme" value="{!v.UXTheme}" />
+					<aura:set attribute="BackgroundStyle" value="{!v.BackgroundStyle}" />
+
+<!-- 
+					<aura:set attribute="HelpRecordId" value="{!v.RootNodeTopic}" />					
+ -->					
+					<aura:set attribute="HelpRecordId" value="[None]" />					
+
+
+	            </c:IHDetail>
+			</aura:if>            
+        </div>
+    
+    </div>    
+	
+</aura:component>

@@ -1,0 +1,18 @@
+.THIS .IHWizardContainer			{height: CALC(100% - 3em);}
+.THIS .IHWizardColumn				{height: 100%;}
+.THIS .IHWizardCacheArea			{height: 30px;}
+.THIS .IHWizardCacheContainer		{position: absolute; width: 100%; margin-top: -1em;}
+.THIS .IHWizardCacheListing			{text-align: center;}
+.THIS .IHWizardStepToolsArea		{height: 100%;}
+.THIS .IHWizardStepToolsContainer	{height: 100%;}
+
+.THIS .PathContainer 				{height: 3em; overflow: hidden;}
+.THIS .PathSteps 					{height: CALC(100% - 3em);width: 100%;margin: auto;}
+.THIS .SelectedStep 				{height: 100%;overflow: hidden;}
+.THIS .SelectedStepInstructions 	{height: 4em;overflow: hidden;text-align: center;}
+.THIS .SelectedStepUI 				{height: CALC(100% - 4em);width: 100%;margin: auto;overflow: hidden;}
+.THIS .Panel 						{width: CALC(50% - 3em - 10px);height: CALC(100% - 4em);border: solid 1px #cccccc;overflow: auto;}
+.THIS .StepToolsPanel 				{min-width: 4.1em;}
+.THIS .floatArea 					{float: left; padding: 10px;}
+.THIS .SelectableText 				{height: 98%; width: 100%;}
+.THIS .SelectableText::selection 	{background-color: yellow; }

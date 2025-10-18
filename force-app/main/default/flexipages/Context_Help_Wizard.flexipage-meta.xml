@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>Height</name>
+                    <value>-2</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>ListensTo</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>NoDataMessage</name>
+                    <value>Please click the &apos;Upsert Configuration Tools&apos; button on the &apos;Documentation&apos; tab of the Help Settings page to create the Wizard intended for display here...</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>SuppressFooter</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>SuppressHeader</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>WizardName</name>
+                    <value>wizCxtHelp</value>
+                </componentInstanceProperties>
+                <componentName>IHWizard</componentName>
+                <identifier>iahelp_IHWizard</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>Context Help Wizard</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

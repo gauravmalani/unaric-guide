@@ -1,0 +1,208 @@
+<aura:component 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+				extends="IHCard" 
+				access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>   
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+	<aura:handler name="change" value="{!v.recordId}" action="{!c.cueContextHelp}"/>
+    
+    
+    <aura:set attribute="SuppressCardUI" value="true" />
+    <aura:set attribute="ComponentGeneratorInUse" value="true" />
+    <aura:set attribute="Title" value="" />
+	<aura:set attribute="IHCardType" value="PosDetect" />        
+    <aura:set attribute="Icon" value="" />    
+	<aura:set attribute="Height" value="0" />
+    <aura:set attribute="Diags" value="" /> 
+    
+<!-- 
+================================================
+Member data
+================================================
+-->       
+    <!-- user event tracking lwc component attribures -->
+    <aura:attribute name="eventSummary" type="String" />
+    
+    <aura:attribute name="PositioningGroup" type="string" required="true" default="G1" access="global" />
+    <aura:attribute name="PositioningRole" type="string" required="true" default="Unset" access="global" />
+	<aura:attribute name="LogContextInteraction" type="boolean" required="false" default="false" access="global" />
+    <aura:attribute name="FrameBorderColour" type="string" required="false" default="" access="global" />
+    <aura:attribute name="FrameBackgroundColour" type="string" required="false" default="" access="global" />
+
+	<aura:attribute name="ContextCheckInterval" type="integer" default="0" access="global" />
+	<aura:attribute name="ContextCheckTimer" type="integer" default="0" access="private" />
+	<aura:attribute name="Counter" type="integer" default="0" access="private" />
+	<aura:attribute name="LastURL" type="string" default="" access="private" />
+	<aura:attribute name="LastContext" type="string" default="" access="private" />
+	
+    <aura:attribute name="OpMode" type="string" required="true" default="View" access="private" />
+	<aura:attribute name="HelpCueIssued" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="ContextInteractionLogged" type="boolean" required="false" default="false" access="private" />
+
+    <aura:attribute name="ToolsContainerStyle" type="string" required="false" default="" access="private" />
+
+    <aura:attribute name="HelpButtonPosition" type="string" required="false" default="Right" access="global" />
+    <aura:attribute name="HelpButtonStyle" type="string" required="false" default="" access="public" />
+    
+    <aura:attribute name="HelpButtonText" type="string" required="false" default="" access="global" />
+    <aura:attribute name="HelpButtonTx" type="string" required="false" default="" access="public" />
+
+    <aura:attribute name="HelpButtonTextSize" type="string" required="false" default="Small" access="global" />
+    <aura:attribute name="HelpButtonTextSz" type="integer" required="false" default="0.8" access="public" />
+    
+    <aura:attribute name="HelpButtonTextStyle" type="string" required="false" default="Ellipsis" access="global" />
+    <aura:attribute name="HelpButtonTextSt" type="string" required="false" default="" access="public" />
+    
+    <aura:attribute name="HelpButtonTextWidth" type="integer" required="false" default="250" access="global" />
+
+<aura:attribute name="LastSavesHelpInteractionId" type="string" required="false" default="" access="public" />	
+	<!--
+	Extending Card does NOT seem to give us access to jQuery! 
+	 -->
+	 
+    <ltng:require scripts="{!$Resource.IHResources + '/lib/jquery/3.6.0/jquery-3.6.0.min.js'}"/>
+
+
+<!-- 
+================================================
+For manipulation of utility bar if needed by guides etc.
+================================================
+-->
+	<aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+		<lightning:utilityBarAPI aura:id="UtilityBar"/>
+	</aura:if>
+
+<!-- 
+================================================
+DESIGN-TIME ONLY CONTROL INFO
+================================================
+-->
+    <div aura:id="thePosDiv" id="{!globalId + 'PosDiv'}" class="designTimeHidden" >
+    	Improved Help Position Detector ({!v.PositioningGroup} - {!v.PositioningRole})    	
+    </div>
+
+	<div class="slds-hide">
+		{!v.Counter}
+	</div>
+
+<!-- 
+================================================
+GUIDE ENABLE MODE SUPPORT
+================================================
+-->
+	<div aura:id="theGEDiv" 
+			class="theGEDiv GuidableSFElement slds-hide" 
+			onclick="{!c.requestGuidePrompt}" 
+			title="{! 'Position Detector (' + v.PositioningGroup + ' - ' + v.PositioningRole + ')'}">
+		Position Detector ({!v.PositioningGroup} - {!v.PositioningRole})    
+	</div>
+
+
+<!-- 
+================================================
+VISIBILITY DETECTION PROXY FOR THE HELP CUE ROLE
+================================================
+-->
+	<div aura:id='vizCheck' class="vizCheck" />
+
+    
+<!-- 
+================================================
+POSITION DETECTOR HEADER TOOLS (CERTAIN ROLES ONLY)
+NB: NOT available in Edition 1 (Usage Tracker only)
+UNLESS Role is Help Request
+================================================
+-->
+	<aura:if isTrue="{! 
+	
+(	
+			(v.PositioningRole == 'Help Button' || v.PositioningRole == 'Help Request' || v.PositioningRole == 'Component Generator')
+			&amp;&amp; (v.ProductEdition > 1 || v.ProductEdition == -1)
+) || (v.PositioningRole == 'Help Request' &amp;&amp; v.ProductEdition == 1)			
+			
+			}">
+
+		<div id="{!globalId + 'SelectorTools'}" class="SelectorTools">
+		
+			<!-- 
+			NB: If author overrides are in play, these apply to tools AS A WHOLE - not applicable to
+			individual tools at this stage: see also helper.cueContextHelp that actually applies this class dynamically if required  
+			 -->			 
+			<div aura:id="PDToolsContainer" 
+					class="{! 'ToolsContainer ' + v.ToolsContainerStyle + ' ' + v.HelpButtonStyle + ' ' + v.HasAuthorOverridesClass}"
+					style="{!v.HelpButtonStyle == 'ToolButtonInline' ? 'width: CALC(' + v.HelpButtonTextWidth + 'px + 4em);' : ''}">	
+				
+				<aura:iteration items="{!v.HeaderTools}" var="T">
+			    
+			    	<!-- BELOW SPAN REQUIRED TO AVOID BUG IN AURA:ITERATION! PLEASE DO NOT REMOVE! -->
+					<span>   
+
+						<!-- 
+						Button text only for buttons / help requests - 
+						OR the actual help icon if in generator mode (no text for design buttons)
+						-->
+						<aura:if isTrue="{!
+								v.PositioningRole != 'Component Generator'
+								|| (v.PositioningRole == 'Component Generator' &amp;&amp; T.iahelp__ActionCode__c == 'CueContextHelp')
+								}">
+
+					 
+							<div title="{!v.HelpButtonTx}" 
+									id="{! 'ButtonText' + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+									onclick="{!c.menuItemClick}"
+									class="{! v.HelpButtonTx != '' ? 'ToolButtonText ' + v.HelpButtonTextSt : 'slds-hide'}" 
+									style="{! v.HelpButtonTextSt == 'ToolButtonTextEllipsis' || v.HelpButtonTextSt == 'ToolButtonTextWrapSetWidth'?
+											'font-size: ' + v.HelpButtonTextSz + 'rem; color: #' + v.UXThemeColour1  + '; width: ' + v.HelpButtonTextWidth + 'px;' :
+											'font-size: ' + v.HelpButtonTextSz + 'rem; color: #' + v.UXThemeColour1  + ';'}">
+											
+								{!v.HelpButtonTx}
+							</div>		
+						</aura:if>	
+		
+						<span class="{! T.iahelp__ToggleNext__c == 0 
+						                || (v.CurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+						                || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any') 
+						                
+						                ? 'fa-stack fa-lg PDHeaderTool IATool ' + T.iahelp__ToolClass__c : 'slds-hide fa-lg PDHeaderTool IATool ' + T.iahelp__ToolClass__c}" 
+
+									style="{! T.iahelp__ToolClass__c != '' &amp;&amp; T.iahelp__ToolClass__c != null ? '' : 'color: #' + v.UXThemeColour1  + ';'}"
+									aura:id="menuClickable"
+									id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}">
+			
+							<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+			                                
+							<i id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}" 
+			                                	class="{! 'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}" 
+			                                	title="{!T.iahelp__TipText__c}" 
+			                                	onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+				
+							<span class="sr-only">
+							    {!T.iahelp__TipText__c}
+							</span>
+							<span class="fa-stack-1x IHToolIconContent">
+						        {!T.iahelp__IconContent__c}
+						    </span>                                        
+						</span>      
+						
+					</span>    
+				</aura:iteration>
+			</div>			
+		</div>
+	                                
+	</aura:if>
+
+	    	<!-- 
+	================================================
+	LWC Component for Event Tracking(UI less lwc component "IHEventTracker" use for User Event Tracking).
+	================================================
+	-->
+	<iHEventTracker  aura:id="eventTracker"></iHEventTracker>
+    
+</aura:component>

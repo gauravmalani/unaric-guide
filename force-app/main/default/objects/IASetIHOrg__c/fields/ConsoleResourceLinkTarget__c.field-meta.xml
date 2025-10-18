@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ConsoleResourceLinkTarget__c</fullName>
+    <defaultValue>&quot;1&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>When viewing Improved Help via a Console page, controls the target of Resource links</description>
+    <externalId>false</externalId>
+    <inlineHelpText>When viewing Improved Help via a Console page, controls the target of Resource links</inlineHelpText>
+    <label>Console Resource Link Target</label>
+    <length>1</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

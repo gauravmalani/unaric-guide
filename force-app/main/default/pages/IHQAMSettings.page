@@ -1,0 +1,23 @@
+<!--
+============================================================================================== 
+VF PAGE FOR RETRIEVING APPLICATION / SECURITY SETTINGS AND MAKING THESE AVAILABLE CLIENT
+SIDE WITHOUT THE NEED FOR API / WEB SERVICES CALLS.
+THE PAGE RETURNS, VIA ITS CONTROLLER'S Settings MEMBER DATA, A DELIMITED STRING OF
+IMPROVED HELP SETTINGS. REQUIRES THE NAME OF A CALLBACK FUNCTION THAT SHOULD BE FIRED
+CLIENT SIDE TO PROCESS THE RETURNED SETTINGS, PLUS THE FULL URL OF THE CLIENT PAGE
+THAT IS ATTEMPTING TO USE THE SETTINGS, I.E.,
+
+    [SF base URL]/Apex/[VF Page Name]?callback=[Callback function name]&Referer=[Current VF/SF page URL]
+
+Martin Little for Improved Apps
+October 2012
+============================================================================================== 
+ -->
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                controller="ControllerIHQAMSettings" 
+                action="{!LoadSettings}"
+                contenttype="application/javascript">
+
+    {!Settings}
+    
+</apex:page>

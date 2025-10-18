@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BrandCSS__c</fullName>
+    <defaultValue>&quot;http://&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Stylesheet to use as the source of Improved Help customer-specific style overrides</description>
+    <inlineHelpText>Stylesheet to use as the source of Improved Help customer-specific style overrides</inlineHelpText>
+    <label>Brand CSS</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

@@ -1,0 +1,46 @@
+<!--
+============================================================================================== 
+PAGE FOR PRESENTING CERTAIN MESSAGES AND DIAGNOSTICS TO THE USER
+
+EXPECTS THE MESSAGE TO BE PASSED VIA THE Diags PARAMETER, I.E:
+
+    [SF base URL]/Apex/IHMessage?Diags=[Message to the user]
+
+Martin Little for Improved Apps
+February 2014
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="false" sidebar="false" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelInformation']}"  
+                controller="ControllerHelpContent"
+                action="{!initialiseForBookmarks}">
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelInformation']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+
+    <body class='Dialogue'>
+        <apex:form >
+            
+            <div id="MessageDialogue" class='IHDialogue IHPanel'>
+                <div class='IHPanelHeader'><div class='IH-H3'>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelInformation']}</div></div>
+                                                
+                <div class="IHPanelBody" style="padding: 10px;">
+                    <span><apex:outputText value="{!Diags}" escape="true" /></span>
+                </div>
+        
+                <div class="IHPanelFooter" style="height: 16px;">
+                    <!-- NOTE: we don't use internationalised text for link here in case there was any kind of error -->
+                    <apex:outputLink style="text-decoration: none; font-size: 2em;" rendered="{!TRetryLink != '' && TRetryLink != null}" value="{!TRetryLink}">&larr;</apex:outputLink>
+                </div>              
+            </div>
+            
+        </apex:form>        
+    </body>
+
+</apex:page>

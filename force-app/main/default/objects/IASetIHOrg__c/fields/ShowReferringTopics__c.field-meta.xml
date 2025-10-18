@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ShowReferringTopics__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>If checked, portal will always show Topics that refer TO the current one in the Related Help Topics listing</description>
+    <inlineHelpText>If checked, portal will always show Topics that refer TO the current one in the Related Help Topics listing</inlineHelpText>
+    <label>Show Referring Topics</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

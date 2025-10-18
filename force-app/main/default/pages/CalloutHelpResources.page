@@ -1,0 +1,211 @@
+<!--
+============================================================================================== 
+PAGE FOR SHOWING HELP HELP RESOURCES RELATED TO A SPECIFIC HELPED ELEMENT'S HELP TOPIC AS A 
+POPUP TIP WITH LINK TO FURTHER CONTENT / MAINTENANCE OPTIONS AS MAY BE REQUIRED. 
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)
+    
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleResources']}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleResources']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />   
+          
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>     
+            /* Classes particular to mark up on this page */
+            div.CalloutBody             {overflow-y: auto; height: {!(Hlp.CalloutHeight__c - 85)}px !important;}
+            .Summary                    {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}            
+
+            div#CalloutBubbleLUX        {height: {!(Hlp.CalloutHeight__c)}px;}
+            div.CalloutBodyLUX          {height: CALC(100% - 5em); overflow-y: auto; background-color: #ffffff; }
+            .ReadMoreLinkLUX            {padding-top: 0.5em; height: 2.1em; background-color: #ffffff; border-top: 1px solid #d8dde6; text-align: right; padding-right: 20px;}
+            
+            .IHWide {width: 100% !important;}
+.IHCol  {padding-right: 10px;}            
+        </style>
+        
+        
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCommunities.js')}"/>     
+             
+        <script>
+            IHCommunities.IAIHCPrefix = "{!$Site.Prefix}";
+            try {IHCommunities.IAIHInitialiseForCommunities();} catch(e) {}
+        </script>
+        
+        <apex:slds rendered="{!isIHLUX==true}" />        
+    </head>
+
+    <body class="Page {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">     
+        <apex:form >
+        
+<!--   
+===============================================
+CLASSIC TREATMENT
+===============================================
+ -->      
+            <apex:pageBlock rendered="{!!isIHLUX}">       
+                <div id='CalloutHelpResources' class="Callout Bubble {!TCSSClass}">
+                    <div class="CalloutContent">
+                    
+                        <div class="CalloutHeader">
+                            <div title="{!TSummary}" class="IH-H4 Summary" style="width: 98%;">
+                            
+                                <div style="float: left;">
+                                    <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                                </div>
+    
+                                <!-- Share, Like and other tools -->
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </div>              
+                        </div>
+                            
+                        <div class="CalloutBody">
+                            <apex:dataTable width="100%" value="{!Resources}" var="Res" rowClasses="odd,even">
+                            
+                                <apex:column style="padding: 0 10px;">
+                                    <div class='ResourcePreview' style='height:24px; width: 32px; background-image:url({!JSENCODE(Res.PreviewURL)}); background-size:contain; background-repeat:no-repeat;'/>   
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceName'  >
+                                         <apex:commandLink target="_HelpResource" title="{!Res.Summary}" action="{!gotoResource}">
+                                            <apex:param name="SelectedRecord" value="{!Res.HTRID}" assignTo="{!SelectedRecord}" />
+                                            <apex:outputText value="{!Res.Name}" escape="true" />
+                                         </apex:commandLink>
+                                    </div>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceLocation'>{!Res.Location}</div>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceUsageNotes'>{!Res.UsageNotes}</div>
+                                </apex:column>
+                                  
+                                <apex:column >                  
+                                </apex:column>         
+                            </apex:dataTable>                                                
+                        </div>
+                                                   
+                        <div class="CalloutFooter">
+                            <div class="ReadMoreLink">     
+                                <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                value="{!JSENCODE(TMoreLinkHref)}" 
+                                                onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+    
+                                    <div class='MoreLink'>
+                                        <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                    </div>
+                                </apex:outputLink>                        
+                            </div>  
+                        </div>
+    
+                    </div>
+                </div>                
+            </apex:pageBlock>
+
+<!--   
+===============================================
+LIGHTNING TREATMENT
+===============================================
+ -->  
+            <apex:pageBlock rendered="{!isIHLUX}">           
+                <div id="CalloutBubbleLUX" style="padding: 1rem;" class='{!TCSSClass}'>
+                    <section style="height: 100%;" class="{!CustomStyle} {!LUXNubbinClass} slds-popover IHWide IHCustomStyled">
+    
+                        <header class="slds-popover__header">
+                            <h2 class="slds-text-heading_small Summary IHLUXDetailSummary">
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </h2>
+                        </header>
+    
+                        <div class="CalloutBodyLUX slds-popover__body">
+
+                            <!-- Share, Like and other tools -->
+                            <div style="padding-bottom: 2em;">
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                            </div>
+                            
+                            <apex:dataTable width="100%" value="{!Resources}" var="Res" rowClasses="odd,even">
+                            
+                                <apex:column style="padding: 0 10px;">
+                                
+                                    <div class="ResourcePreview" style="height:16px; width: 16px; 
+                                            background-image:url({!IF(!CONTAINS(Res.PreviewURL, 'IHResources/img/IconResource'), URLFOR($Resource.IHResources, '/img/IconResourceImageLUX.png'), SUBSTITUTE(JSENCODE(Res.PreviewURL), '.png', 'LUX.png'))}); 
+                                            background-size:contain; background-repeat:no-repeat;"/>   
+                                
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceName, IHCol' >
+                                         <apex:commandLink target="_HelpResource" title="{!Res.Summary}" action="{!gotoResource}">
+                                            <apex:param name="SelectedRecord" value="{!Res.HTRID}" assignTo="{!SelectedRecord}" />
+                                            <apex:outputText value="{!Res.Name}" escape="true" />
+                                         </apex:commandLink>
+                                    </div>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceLocation, IHCol'>{!Res.Location}</div>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <div class='ResourceUsageNotes'>{!Res.UsageNotes}</div>
+                                </apex:column>
+                                  
+                                <apex:column >                  
+                                </apex:column>         
+                            </apex:dataTable>                                                
+                        </div>
+                                                   
+                        <div class="ReadMoreLinkLUX">
+                            <div class="ReadMoreLink" style="margin-right: 0px;">     
+                                <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                                title="{!JSENCODE(TMoreLinkTitle)}" 
+                                                value="{!JSENCODE(TMoreLinkHref)}" 
+                                                onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                                target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+    
+                                    <div class='MoreLink'>
+                                        <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                    </div>
+                                </apex:outputLink>                        
+                            </div>  
+                        </div>
+                    
+                    </section>
+                </div>
+            </apex:pageBlock>
+
+        </apex:form>
+    </body>
+</apex:page>

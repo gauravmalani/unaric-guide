@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION" 
+    description="Passthrough to be raised by negotiated toolbar menu items when clicked" 
+    access="global">
+    
+    <aura:attribute name="SourceComponent" type="String" default="" 	description="Component raising the pass through" />
+    <aura:attribute name="Parameters" type="String" default="" 			description="Full parameters (including Action code) from negotiated clickable" />
+    <aura:attribute name="Target" type="Object" default="" 				description="Component that should respond / that negotiated the tool" />
+    
+</aura:event>

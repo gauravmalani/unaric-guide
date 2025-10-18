@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SupportingControls__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Definitions of additional controls, such as data entry fields, required to support this clickable</description>
+    <inlineHelpText>Definitions of additional controls, such as data entry fields, required to support this clickable</inlineHelpText>
+    <label>Supporting Controls</label>
+    <length>131072</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

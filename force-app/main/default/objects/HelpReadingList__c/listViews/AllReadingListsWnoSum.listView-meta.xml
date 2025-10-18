@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllReadingListsWnoSum</fullName>
+    <columns>NAME</columns>
+    <columns>FeaturedUntil__c</columns>
+    <columns>Summary__c</columns>
+    <columns>Visibility__c</columns>
+    <columns>ReadingListStatus__c</columns>
+    <columns>NumberOfEntries__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Summary__c</field>
+        <operation>equals</operation>
+    </filters>
+    <label>5. Reading Lists with NO Summary</label>
+</ListView>

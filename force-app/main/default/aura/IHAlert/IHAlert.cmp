@@ -1,0 +1,122 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,lightning:isUrlAddressable"
+				extends="IHCard"
+                access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+	<aura:method name="reInitialiseAlert" action="{!c.reInitialiseAlert}" />
+<!-- 
+================================================
+Member data
+================================================
+-->	
+
+<aura:set attribute="SuppressCardUI" value="true" />
+
+    <aura:attribute name="Message" type="string" required="false" default="" access="global" />
+    <aura:attribute name="Image" type="string" required="false" default="" access="global" />
+    <aura:attribute name="Style" type="string" required="false" default="Two Column" access="global" />
+    <aura:attribute name="BodyTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="componentDef" type="string" required="false" default="" access="global" />
+
+	<div class="DialogueContainer" style="{!v.Height == -1 ? 'xheight: 100%;' : 'height:' + v.Height + 'px;'}">
+	
+
+		<div class="slds-grid slds-gutters">
+
+			<aura:if isTrue="{!v.Style == 'Single Column'}">
+				<div class="slds-col slds-size_1-of-1">
+
+					<div class="DialogueImage" style="{! 'background-image: url(' + v.Image + ');'}" />				
+				
+					<div class="DialogueTitle">
+						{!v.Title}
+					</div>
+	
+					<div class="DialogueMessage">
+						{!v.Message}
+					</div>                    
+                    
+                        <aura:if isTrue="{!v.componentDef != ''}">
+                            <div class="CompGenerator">
+                                 <c:IHComponentGenerator aura:id="CGIHDetail">
+                                                <aura:set attribute="Parent" value="{!this}" />
+                                </c:IHComponentGenerator>
+                            </div>
+                        </aura:if>
+                    <div class="ButtonGroup">
+                        <aura:iteration items="{!v.BodyTools}" var="T">
+                            <div class="DialogueButton" title="{!T.iahelp__TipText__c}" data-actioncode="{!T.iahelp__ActionCode__c}" onclick="{!c.menuItemClick}">
+                                <aura:if isTrue="{!T.iahelp__Label__c == 'TipGenericOK'}">               
+                                  &nbsp;   {!v.TipGenericOK}   &nbsp;
+                                   <aura:set attribute="else">
+        									{!T.iahelp__Label__c}
+                                   </aura:set>
+                                </aura:if> 
+                            </div>
+                        </aura:iteration>
+                    </div>
+				</div>
+			
+			</aura:if>
+	
+	
+			<aura:if isTrue="{!v.Style == 'Two Column'}">
+				<div class="slds-col slds-size_1-of-2">
+					<div class="DialogueTitle">
+						{!v.Title}
+					</div>
+	
+					<div class="DialogueMessage">
+						{!v.Message}
+					</div>
+                    <div class="CompGenerator">
+                        <aura:if isTrue="{!v.componentDef != ''}">
+                             <c:IHComponentGenerator aura:id="CGIHDetail">
+                                            <aura:set attribute="Parent" value="{!this}" />
+                            </c:IHComponentGenerator>
+                        </aura:if>
+                    </div>
+                    <div class="ButtonGroup">
+                        <aura:iteration items="{!v.BodyTools}" var="T">
+                            <div class="DialogueButton" title="{!T.iahelp__TipText__c}" data-actioncode="{!T.iahelp__ActionCode__c}" onclick="{!c.menuItemClick}">
+                              
+                                <aura:if isTrue="{!T.iahelp__Label__c == 'ToggleHistory' || T.iahelp__Label__c == 'BackToTree'}">
+                                    	<aura:if isTrue="{!T.iahelp__Label__c == 'ToggleHistory'}">
+                                    	
+                                        {!v.ToggleHistory} 
+                                        <aura:set attribute="else">
+        								{!v.BacktoTree}
+                                        </aura:set>
+                                        </aura:if> 
+                                 
+                                   <aura:set attribute="else">
+                                       <aura:if isTrue="{!T.iahelp__Label__c == 'TipGenericOK'}">               
+                                          &nbsp; &nbsp;   {!v.TipGenericOK} &nbsp;   &nbsp;
+                                           
+                                           <aura:set attribute="else">
+                                               {!T.iahelp__Label__c}
+                                        </aura:set>
+                                </aura:if> 
+                                 </aura:set>
+                             </aura:if> 
+                            </div>
+                        </aura:iteration>
+                    </div>
+				</div>
+			
+				<div class="slds-col slds-size_1-of-2">
+					<div class="DialogueImage2" style="{! 'background-image: url(' + v.Image + ');'}" />				
+				</div>
+			</aura:if>
+
+		</div>
+		
+	</div>
+</aura:component>

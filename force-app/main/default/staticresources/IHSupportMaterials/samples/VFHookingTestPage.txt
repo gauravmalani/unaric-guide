@@ -1,0 +1,346 @@
+<!--
+============================================================================================== 
+SAMPLE VF PAGE DEMONSTRATING USE OF HELP HOOKS
+
+COPY THIS PAGE MARK UP TO A NEW VISUALFORCE PAGE WITH NAME AND LABEL SET TO "VFHookTest"
+
+Martin Little for Improved Apps 
+January 2014
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ --> 
+
+<apex:page sidebar="false" showHeader="false" standardStylesheets="True" standardcontroller="Opportunity" docType="html-5.0">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/css/help_customer.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/css/help_main.css')}" />
+        
+        <style>
+            h1                {font-size: 20px; font-weight: bold; color: #004080;}
+            h2                {line-height: 30px; font-size: 16px; font-weight: bold; color: #004080;}
+            h3                {line-height: 25px; font-size: 14px; font-weight: bold; color: #004080;}
+            th                {color: #004080;}
+            .Box              {width: 44px; height: 44px; border: 2px solid red;}
+            .Example          {margin-bottom: 10px; background: #eeeeee; border: 1px solid silver; border-radius: 4px; padding: 10px;}
+        </style>
+
+    </head>
+    
+    <body style="padding: 5px;">
+        <apex:form >
+            <apex:include pageName="iahelp__IHQAM"/>
+            
+            <h1>How to Help-Enable Visual Force Pages</h1>
+            <br/>
+            <h2>Overview</h2>
+            <p>Improved Help supports the development of helped Visual Force pages that include Apex form tags in various scenarios:</p>
+            <ul>
+                <li><b>Apex Detail</b>: to embed a virtual standard page layout into the Visual Force page;</li>
+                <li><b>Apex Page Blocks and form tags</b>: to embed partial forms in classic tabular layout;</li>
+                <li><b>Apex 'stand-alone' form tags</b>: to embed data management elements in more free-form pages.</li>                
+            </ul>
+            
+            <b>NOTE: In all cases, the Help Topic Author remains in control of Help Callout template choice and rendered height - 
+            Visual Force page working outside of classic salesforce tabular form layouts need to consider callout container height and overflow accordingly.</b>
+
+            <hr/>
+            
+<!-- ========== Apex Detail tag ========== -->
+                         
+            <br/>
+            <h2>Help-Enabling classic salesforce user interface 'tabular' elements</h2>
+            <br/>
+            <h3>The Apex Detail tag</h3>
+            <br/>
+            In this simplest scenario, the Visual Force page takes on a classic, standard page user interface and layout. 
+            Improved Help standard hooking code recognises the way Apex form tags are rendered and manages help callouts automatically.
+            <br/>
+            <br/>
+            Development tasks:
+            <ul>
+                <li><b>Page-level markup</b>: Include for IHHookpage;</li>
+                <li><b>Element-level markup</b>: None required;</li>
+            </ul>
+            Help Authoring tasks:
+            <ul>
+                <li><b>Helped Page Layout record</b>: required with Identifier = Visual Force page name;</li>
+                <li><b>Helped Element records</b>: Required and can re-use any Help Topics associated with Helped Elements in the standard page;</li>
+                <li><b>Help-Enable Mode</b>: Available to Help Authors if Visual Force page has showHeader = true AND sidebar = true.</li>
+            </ul>
+
+            <div style="width: 90%; margin: auto; border: 1px solid silver; border-radius: 4px;">
+                <apex:detail subject="{!Opportunity.Id}" relatedList="false" title="false"/>
+            </div>
+            <br/>
+
+<!-- ========== Apex Page Blocks and Tabular Form Tags ========== -->
+            
+            <br/>
+            <h3>Apex page blocks containing tabular input / output form tags</h3>
+            <br/>
+            In this scenario, the Visual Force page contains one or more sets of classic Apex tabular page elements contained in page blocks. 
+            Improved Help standard hooking code recognises the way Apex form tags are rendered and manages help callouts automatically.
+            <br/>
+            <br/>
+            Development tasks:
+            <ul>
+                <li><b>Page-level markup</b>: Include for IHHookpage;</li>
+                <li><b>Element-level markup</b>: None required;</li>
+            </ul>
+            Help Authoring tasks:
+            <ul>
+                <li><b>Helped Page Layout record</b>: required with Identifier = Visual Force page name;</li>
+                <li><b>Helped Element records</b>: Required and can re-use any Help Topics associated with Helped Elements in the standard page;</li>
+                <li><b>Help-Enable Mode</b>: Available to Help Authors if Visual Force page has showHeader = true AND sidebar = true. 
+                <b>NOTE: Page Help-Enabling mode for automated help-enabling of Visual Force page block form tags is experimental and not officially supported.
+                Manual Help Element record creation is recommended.</b> If this experimental feature is used, manual record editing can be used to 
+                refine any automatically created records with error conditions.</li>
+            </ul>
+            
+            <div style="width: 90%; margin: auto; border: 1px solid silver; border-radius: 4px;">
+                <apex:pageBlock >
+    
+                    <apex:pageblockButtons >
+                        <apex:commandButton value="Custom View Button" id="CommandButtonPageBlock"/>
+                    </apex:pageBlockButtons>        
+        
+                    <apex:pageBlockSection title="Opportunity Information"  columns="2"  >
+                        
+                        <apex:outputField value="{!Opportunity.owner.Name}"  label="OutputField" id="ViewOutputFieldHoverHelp"/>
+                        
+                        <apex:pageBlockSectionItem >
+                            OutputLink Label: 
+                            <apex:outputLink value="https://improvedapps.com" id="ViewOutputLink">Output Link</apex:outputLink>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:inputField value="{!Opportunity.Name}" required="true"  id="opportunity_name" label="InputField"/>
+                    </apex:pageBlockSection>
+            
+                </apex:pageBlock>
+            
+            </div>
+            <br/>
+            <hr/>
+            <br/>
+
+<!-- ========== General HTML ========== -->
+
+            <h2>Help-enabling general HTML and 'stand-alone' Apex elements</h2>
+            <p>Improved Help supports developers who want to break free from the constraints of the classic salesforce tabular form layout.</p>
+
+<!-- Command Buttons and Links -->
+
+            <h3>Apex Command Buttons</h3>
+            <p>Improved Help hooking code recognises Apex Command buttons and automatically manages Help Callout positioning - 
+            by inserting a table row. So, to use a Command Button, place it in a suitably structured table layout to allow automated callout positioning.
+            If a table layout is not desired, consider using an Apex Action linked to a general HTML tag - see below.</p> 
+
+<!-- Command Buttons Element Starts -->
+                    
+            <div style="width: 40%; margin-left: 5%; background: #ffffff; border: 1px solid silver; border-radius: 4px; padding: 10px;">
+                <table width="100%" border="0">
+                    <tr>
+                        <td>
+                            <apex:commandButton value="Custom View Button" id="CommandButtonStandAlone"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+<!-- Command Buttons Element Ends -->
+                    
+            <p>Development tasks:</p>
+            <ul>
+                <li><b>Tag type</b>: Create a table structure - with nested table, 'tr'and 'td' containers - around the target tag to be helped;
+                The table width will set the width of the Help Callout when opened.</li> 
+                <li><b>Markup - unique ID</b>: Developer decides;</li>
+                <li><b>Styling</b>: The enclosing table width will constrain Help Callout width; 
+                Improved Help hooking code assigns IHHelpedVFElement class when Helped Element record exists.</li>
+            </ul>
+            Help Authoring tasks:
+            <ul>
+                <li><b>Helped Page Layout record</b>: required with Identifier = Visual Force page name;</li>
+                <li><b>Helped Element records</b>: Required, with Helped Element Identifier referencing tag unique ID.</li>
+            </ul>
+            <hr/>
+
+<!-- ========== Callout Management ========== -->
+            
+            <h3>Individual Apex tags: Callout Position and Size</h3>
+            <p>In classic salesforce pages, Help callouts are constrained by the tabular form layout.
+            In more free-form Visual Force page layouts, the page developer can control help callout:</p>
+            <ul>
+                <li>Opening position: relative to the mouse position, relative to the edge of the Helped Element or in a specified div;</li>
+                <li>Direction: extending left or right of the mouse/element;</li>
+                <li>Width: as a percentage of the screen available in the selected direction from the mouse/element.</li>                
+            </ul>
+            <b>NOTE: The Help Author is always in control of Callout height, so ensure that height and overflow parameters are set appropriately for the page design.</b>
+            <br/>
+            <br/>
+            <p>The table below illustrates the callout management options available.</p>
+            
+            <div style='width: 90%; margin: auto; border: solid 1px silver; border-radius: 4px; padding: 10px;' >
+                <table border='0' style='width: 100%;' id="Options">
+                    <tr>
+                        <th>Class</th>
+                        <th>Clickable</th>
+                        <th>Test</th>
+                        <th>Relative to</th>
+                        <th>Direction</th>
+                        <th>Width</th>
+                        <th>Tail</th>
+                        <th>Notes</th>
+                    </tr>                    
+                    <tr>
+                        <td>Helpable</td>
+                        <td>Simple 'div'</td>
+                        <td>
+                            <div id="dHelpable" class="Helpable Box"></div>
+                        </td>
+                        <td>Mouse-click</td>
+                        <td>Both</td>
+                        <td>100%</td>
+                        <td>None</td>
+                        <td>"Default" helpable class for backward compatibility</td>
+                    </tr>                    
+                    <tr>
+                        <td>HelpableL_<i>n</i><br/>...where <i>n</i> is an integer from 1 - 100</td>
+                        <td>HTML Button</td>
+                        <td>
+                            <input type="button" id="dHelpableL" class="HelpableL_25" value="Click Me!"/>
+                        </td>
+                        <td>Mouse-click</td>
+                        <td>Left</td>
+                        <td>n% of <b>total</b> screen width (25%)</td>
+                        <td>Top-Right</td>
+                        <td>Callout appears to the left of click position</td>
+                    </tr>                               
+                    <tr>
+                        <td>HelpableR_<i>n</i><br/>...where <i>n</i> is an integer from 1 - 100</td>
+                        <td>HTML text</td>
+                        <td>
+                            <span id='dHelpableR' class='HelpableR_50'>Click Me for Help!</span>
+                        </td>
+                        <td>Mouse-click</td>
+                        <td>Right</td>
+                        <td>n% of <b>total</b> screen width (50%)</td>
+                        <td>Top-Left</td>
+                        <td>Callout appears to the right of click position</td>
+                    </tr>                    
+                    <tr>
+                        <td>Helpable IHSnapToElement</td>
+                        <td>HTML Image</td>
+                        <td>
+                            <img src="https://improvedapps.com/documentation/images/Concepts/IconTarget.png" id='dHelpable_Snap'
+                            class='Helpable IHSnapToElement' style="width: 48px; height: 48px;"/>
+                        </td>
+                        <td>Helped Element</td>
+                        <td>Both</td>
+                        <td>100%</td>
+                        <td>None</td>
+                        <td>As 'Helpable' (above) but relative to helpable element, not mouse-click</td>
+                    </tr>                    
+                    <tr>
+                        <td>HelpableL_<i>n</i>  IHSnapToElement<br/>...where <i>n</i> is an integer from 1 - 100</td>
+                        <td>Apex OutputText*</td>
+                        <td>
+                            <div id="dHelpableL_Snap" class="HelpableL_75 IHSnapToElement">
+                                <apex:outputText value="{!Opportunity.Name}"  ></apex:outputText>
+                            </div>
+                        </td>
+                        <td>Helped Element</td>
+                        <td>Left</td>
+                        <td>n% of screen width <b>to the left of the element right edge</b> (75%)</td>
+                        <td>Top-Right</td>
+                        <td>As 'HelpableL_<i>n</i>' (above) but relative to helpable element, not mouse-click</td>
+                    </tr>                               
+                    <tr>
+                        <td>HelpableR_<i>n</i>  IHSnapToElement<br/>...where <i>n</i> is an integer from 1 - 100</td>
+                        <td>CSS button</td>
+                        <td>
+                            <div id="dHelpableR_Snap" class="HelpableR_50 IHSnapToElement" style="width: 100px; height: 20px; 
+                            color: white; background: #004080; border-radius: 10px; font-weight: bold; text-align: center; padding-top: 5px;">
+                                Click Me!
+                            </div>
+                        </td>
+                        <td>Helped Element</td>
+                        <td>Right</td>
+                        <td>n% of screen width <b>to the right of the element left edge</b> (50%)</td>
+                        <td>Top-Left</td>
+                        <td>As 'HelpableR_<i>n</i>' (above) but relative to helpable element, not mouse-click</td>
+                    </tr>           
+                    <tr>
+                        <td>HelpableToDiv_<i>id</i><br/>...where <i>id</i> is the ID of a DIV on the hosting page</td>
+                        <td>Text Glyph</td>
+                        <td><span id="dHelpableToDiv" class="HelpableToDiv_HelpTarget" style="font-size: 30px;">?</span></td>
+                        <td>Fixed</td>
+                        <td>Fixed</td>
+                        <td>100% of <b>specified div</b> (but height controlled by Help Topic Author)</td>
+                        <td>Top-Right</td>
+                        <td>Callout iframe appears as the direct child of the DIV with the specified ID</td>
+                    </tr>           
+                </table>
+            </div>
+            <br/>
+
+<!-- Apex tags without on-click events -->
+            
+            <h3>Apex tags with no on-click event</h3>
+            <p>*Tags with no native click event - in tag markup or in any listener function - can be help-enabled directly.
+            The *Apex OutputText* example in the above table shows the behaviour of this approach. As this is not how 
+            Improved Help supports standard salesforce pages, a separate 'click-helper' element - as used for Apex tags with their own 
+            on-click event - could help with creating a uniform, cohesive user experience.</p>  
+            Development tasks:
+            <ul>
+                <li><b>Page-level markup</b>: Include IHHook;</li> 
+                <li><b>Element-level markup</b>: Add enclosing div or span with a unique ID and the addition of the class 'Helpable';</li>
+            </ul>  
+            Help Authoring tasks:
+            <ul>
+                <li><b>Helped Page Layout record</b>: required with Identifier = Visual Force page name;</li>
+                <li><b>Helped Element records</b>: Required, with Helped Element Identifier referencing tag unique ID.</li>
+            </ul>
+
+            <div id="HelpTargetContainer" style="position: fixed; top: 20px; right: 20px; margin: 0; width: 25%; overflow: auto;
+             background:rgba(200, 200, 200, 0.5); text-align: center; border-radius: 10px; box-shadow: 0 4px 10px gray;">
+                <p>Test container for displaying Help Callouts associated with<br/>Helped Elements with class of 'HelpableToDiv_HelpTarget'</p>
+                <div id='HelpTarget' style="position: relative; margin: 10px 10px 10px 10px; height: 245px; overflow: auto;"></div>
+            </div>
+            <br/>                                                                
+
+<!-- Apex tags with on-click events -->
+
+            <h3>Apex tags with existing on-click events</h3>
+            <p>Tags with a click event need a separate 'Click Helper' element to provide the 'Help Available' visual cue and 'Show Help' 
+                click event. If users interact with Improved Help in standard pages, you may elect to replicate the click-helpers seen there: divs or spans 
+                containing labels or icons as background images.</p>
+            Development tasks:
+            <ul>
+                <li><b>Page-level markup</b>: Include IHHook;</li>
+                <li><b>Element-level markup</b>: Add an inline div or span before the target Apex tag, with a unique ID and appropriate 
+                'Helpable' classes and parameter variations, as descibed above, to set the desired Help Callout size and direction.</li>
+            </ul>  
+            Help Authoring tasks:
+            <ul>
+                <li><b>Helped Page Layout record</b>: required with Identifier = Visual Force page name;</li>
+                <li><b>Helped Element records</b>: Required, with Helped Element Identifier referencing tag unique ID.</li>
+            </ul>
+ 
+            <div style="width: 90%; margin: auto; padding: 10px; border: 1px solid silver; border-radius: 4px;">
+
+<!-- Inline Click Helper tag starts -->
+
+                <span id="Element2" class = "HelpableR_92 IHSnapToElement">
+                    <b>OutputText Label: </b>
+                </span>                                                
+
+<!-- Inline Click Helper tag ends -->
+
+                <apex:inputText value="{!Opportunity.Name}" style="width: 200px;" />
+
+            </div>
+            <br/>
+
+        </apex:form>
+    </body>
+</apex:page>

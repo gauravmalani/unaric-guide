@@ -1,0 +1,115 @@
+<!-- 
+================================================
+NOTE: this previously deprecated and unused component
+is now in use as an editing control of various kinds
+================================================
+-->    
+
+<aura:component>
+
+<!-- 
+================================================
+Events and Handlers
+================================================ 
+-->  	
+    <aura:method name="focus" action="{!c.activateTextArea}" />
+    <aura:method name="deleteSelection" action="{!c.deleteSelection}" />
+
+	<aura:handler name="change" value="{!v.FieldValue}" action="{!c.fieldValueChange}"/>
+
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+	<aura:attribute name="TipGenericEdit" type="string" required="false" default="" access="global" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="recordId" type="string" required="true" default="" access="global" />
+    <aura:attribute name="FieldName" type="string" required="true" default="" access="global" />
+    <aura:attribute name="FieldLabel" type="string" required="false" default="" access="global" />
+    <aura:attribute name="FieldValue" type="string" required="true" default="" access="global" />
+    <aura:attribute name="FieldClass" type="string" required="false" default="" access="global" />
+
+	<aura:attribute name="SelectedText" type="string" required="false" default="" access="global" />
+	<aura:attribute name="Rows" type="integer" required="false" default="5" access="global" />
+
+    <aura:attribute name="InputType" type="string" required="true" default="TextArea" access="public" />
+    <aura:attribute name="Mode" type="string" required="true" default="View" access="private" />
+	<aura:attribute name="WidthPixels" type="string" access="private" />
+	<aura:attribute name="WidthChars" type="string" access="private" />
+
+<!-- 
+================================================
+Input type = rich text (eg media listing)
+================================================
+-->	    
+	<aura:if isTrue="{!v.InputType == 'RichText'}">	
+        
+        <lightning:inputRichText 
+			formats="['font', 'size', 'bold', 'italic', 'underline',
+			'strike', 'list', 'indent', 'align',
+            'clean', 'table', 'header', 'color', 'link']"
+                                 
+            value="{!v.FieldValue}" onblur="">
+            
+        </lightning:inputRichText>
+        
+	</aura:if>
+
+    
+<!-- 
+================================================
+Input type = text area (as in certain wizards)
+================================================
+-->	    
+	<aura:if isTrue="{!v.InputType == 'TextArea'}">	
+		<textarea aura:id="theTextArea" 
+					onselect="{!c.recordTextSelection}" 
+					onblur="{!c.setValue}"
+					class="SelectableText TBox" 
+					rows="{!v.Rows}" 			
+					placeholder="Type, copy or drag some or all of your source text here to begin..."	
+                  	style="width: 100%;"
+					value="{!v.FieldValue}" />
+	</aura:if>
+
+
+<!-- 
+================================================
+Input type = input (as in inline editing)
+================================================
+-->	    
+	<aura:if isTrue="{!v.InputType == 'Input'}">	
+	
+		<aura:if isTrue="{!v.Mode == 'View'}">		
+			<span class="XEdTools" title="{!v.TipGenericEdit}">
+				<span onclick="{!c.toggleMode}">
+					<i class="fa fa-pencil" aria-hidden="true"></i>
+				</span>
+			</span>
+	
+			{!v.FieldValue}	    	
+		</aura:if>
+	
+        
+		<aura:if isTrue="{!v.Mode == 'Edit'}">		
+            <input  class="input" type="text" 
+            			id="TagLabel" 
+            			aura:id="theTextBox" 
+						size="{!v.WidthChars}"            			
+						style="{! 'width: ' + v.WidthPixels + 'px;'}"
+            			value = "{!v.FieldValue}" 
+            			onblur="{!c.toggleMode}" 
+            			onkeyup="{!c.setTextboxWidth}" />
+		</aura:if>
+	
+	</aura:if>
+
+	
+</aura:component>

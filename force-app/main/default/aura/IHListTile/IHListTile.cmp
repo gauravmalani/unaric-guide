@@ -1,0 +1,85 @@
+<aura:component>
+	
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+
+	
+	<aura:attribute name="TileId" type="string" default="" required="false" access="global" />
+	<aura:attribute name="Summary" type="string" default="" required="false" access="global" />
+	<aura:attribute name="Description" type="string" default="" required="false" access="global" />
+	<aura:attribute name="Icon" type="string" default="" required="false" access="global" />
+	<aura:attribute name="IconColour" type="string" default="" required="false" access="global" />
+	<aura:attribute name="StyleClass" type="string" default="" required="false" access="global" />
+	<aura:attribute name="Size" type="string" default="Medium" required="true" access="global" />
+    
+    <!--Rebranding for Tile-->
+    <aura:attribute name="UXThemeTileColour1" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXThemeTileColour2" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXThemeTileColour3" type="string" required="true" default="#" access="global" />
+    <aura:attribute name="UXMenuBackgroundColourTile" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXMenuFontColourTile" type="string" required="true" default="#" access="global" />
+    <aura:attribute name="Tileheddercolour" type="string" access="global" />
+	<aura:attribute name="IconSize" type="string" access="private" />
+    <aura:attribute name="UXTheme" default="Light" type="string" access="global"/>
+    <aura:attribute name="ListingRowStyle" type="string" default="Expanded" required="false" access="global" />
+    <aura:attribute name="heightclass" type="string" access="global"/>
+    <aura:attribute name="iconesize" type="string" access="global"/>
+   
+	<div>
+        
+		<!-- 
+		NOTE: In order to ensure click fires the desired list action, regardless of which 
+		mark up element, below, receives the event, we add the incoming (listing specified) Tile ID
+		(which includes the required action codes/parameters etc) to several tags. To keep the IDs HTML
+		'legal' (i.e., unique) we add a further, tag specific marker - but this will be ignored as it comes
+		after a delimiter that ensures it has an irrelevant (unused) index when the array is split...
+		 -->
+		 
+		<div id="{!v.TileId}" class="{! v.StyleClass + ' TileContainer TileContainer' + v.Size}" title="{!v.Description}" >    
+			<article class="TileArticle">
+
+				<div id="{!v.TileId + 'Body'}" class="slds-illustration slds-illustration_small">
+
+					<!-- 
+					NOTE: Item custom style (e.g., from a related Help Topic in the listing)  
+					takes precedence over house brand / global settings colours: if custom
+					styles are applied, these must set colours as desired or risk reversion 
+					to SF-wide page default
+					-->
+					<div  class="{! v.ListingRowStyle == 'Hidden' ? 'container slds-hide' : 'container'}" style="{!v.heightclass}">
+
+						<div id="main2" style="{! 'background-color:#'+ v.UXThemeTileColour1}"> 
+				      		<div id="{!v.TileId + 'Summary'}" class="{! 'Summary' + v.Size + ' TileText'}" style="{!v.UXTheme == 'Light' ? 'color:#'+v.UXMenuBackgroundColourTile + ';' :'color:#'+v.UXMenuFontColourTile + ';'}">
+				      			{!v.Summary}		      			
+				   			</div>
+						</div>
+					
+						<div class="main" style="{! 'background-color:#'+ v.UXMenuBackgroundColourTile}">
+							<aura:if isTrue="{!v.ListingRowStyle == 'Expanded'}">
+					      		<div id="{!v.TileId + 'Description'}" class="{! 'Description' + v.Size + ' TileText'}" style="{!v.UXTheme == 'Light' ? 'color:#'+v.Tileheddercolour + ';' :'color:#'+v.UXMenuFontColourTile + ';'}">
+					      			{!v.Description}
+					   			</div>
+	                             <div class="{! 'IconSize' + v.Size}">
+	                                <lightning:icon iconName="utility:setup_assistant_guide" alternativeText="Approved" title="Approved" size="{!v.iconesize}" style="{! '--sds-c-icon-color-foreground-default:#'+ v.UXThemeTileColour1}" ></lightning:icon>
+	                            </div>
+				   			</aura:if>
+                       </div>
+                       
+			    	</div>
+			    	
+                    <div class="{! v.ListingRowStyle == 'Hidden' ? '' : 'slds-hide'}">
+                      	<div style="{! 'background-color:#'+ v.UXThemeTileColour1}">
+                            <div class="{!'textclass'+v.Size}">
+                     			<div id="{!v.TileId + 'Summary'}" class="{! 'SummarynotExpand' + v.Size + ' TileText'}" style="{!v.UXTheme == 'Light' ? 'color:#'+v.UXMenuBackgroundColourTile + ';' :'color:#'+v.UXMenuFontColourTile + ';'}">                                    
+			      					{!v.Summary}
+                         		</div>     
+                     		</div>    
+			   			</div>
+                    </div>
+                  </div>	
+			  
+			</article>  
+		</div>
+		    
+	</div>   
+
+</aura:component>

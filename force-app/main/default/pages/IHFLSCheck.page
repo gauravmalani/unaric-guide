@@ -1,0 +1,36 @@
+<!--
+============================================================================================== 
+FLS DIAGNOSTICS CHECKING
+
+Martin Little for Improved Apps
+February 2017
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page Controller="ServiceSecurity" action="{!FLSCheck}" sidebar="false">
+
+   <head>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2017. All Rights Reserved.' />     
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_customer.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+
+    <body class='Dialogue'>
+        <apex:form >
+            
+            <div id="MessageDialogue" class='IHDialogue IHPanel'>
+                <div class='IHPanelHeader'><div class='IH-H3'>FLS Checker</div></div>
+                                                
+                <div class="IHPanelBody" style="padding: 10px;">
+                    <span><apex:outputText value="{!Diags}" escape="true" /></span>
+                </div>
+        
+                <div class="IHPanelFooter" style="height: 16px;">
+                </div>              
+            </div>
+            
+        </apex:form>        
+    </body>    
+    
+</apex:page>

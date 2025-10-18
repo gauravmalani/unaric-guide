@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllVideos</fullName>
+    <columns>NAME</columns>
+    <columns>ResourceType__c</columns>
+    <columns>Location__c</columns>
+    <columns>ResourceURL__c</columns>
+    <columns>Preview__c</columns>
+    <columns>Summary__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ResourceType__c</field>
+        <operation>equals</operation>
+        <value>Video</value>
+    </filters>
+    <label>All Video Help Resources</label>
+</ListView>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpReadingListId__c</field>
+    </columns>
+    <columns>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpReadingListSummary__c</field>
+    </columns>
+    <description>Which are the popular Reading Lists being viewed this week?</description>
+    <filter>
+        <criteriaItems>
+            <column>User.iahelp__HelpInteraction__c$CreatedById$HelpReadingList__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpReadingList__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Interaction: Reading Lists This Week</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Help_Interactions_with_User_Analysis__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>User.iahelp__HelpInteraction__c$CreatedById$CreatedDate</dateColumn>
+        <interval>INTERVAL_LAST7</interval>
+    </timeFrameFilter>
+</Report>

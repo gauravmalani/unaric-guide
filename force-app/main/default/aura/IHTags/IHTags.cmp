@@ -1,0 +1,98 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName" 
+				extends="IHCard" 
+				access="global">
+	 
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+    <aura:handler name="change" value="{!v.isInitialised}" action="{!c.reInitialise}"/>
+
+    <aura:set attribute="ToolContext" value="CardTags" />
+    <aura:set attribute="Icon" value="fa-tags" />
+    <aura:set attribute="Title" value="Improved Help" />
+	<aura:set attribute="IHCardType" value="Tags" />    
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="RootNode" type="string" required="false" default="" access="global" />
+    <aura:attribute name="OnArrivalToggleNode" type="string" required="false" default="" access="private" />
+    <aura:attribute name="AllowCloudSelection" type="boolean" required="false" default="false" access="global" />
+    <aura:attribute name="AllowCloudEditing" type="boolean" required="false" default="false" access="global" />    	
+    <aura:attribute name="SelectedStyle" type="string" access="global" />	
+    <aura:attribute name="SelectedTags" type="string[]" required="false" access="global" />
+    <aura:attribute name="TagMode" type="string" default="ANY" required="false" access="global" />
+
+<aura:set attribute="SuppressPoweredBy" value="true" />
+
+<!-- 
+================================================
+SEARCH MODE ONLY - FILTERING OPTIONS AREA
+================================================
+-->
+	<div class="{!v.CardConfig == 'Search' ? 'slds-box slds-box_x-small ModeTools' : 'slds-hide'}" >
+		<span class="slds-text-heading_small">
+			{!v.AdviceLabelTagMode}
+		</span>
+
+		 <ui:inputRadio class="ctlTagMode" labelClass="lblTagMode" text="ALL" label="{!v.FieldLabelTagModeAll}" name="{! globalId + 'optTagMode'}" value="{!v.TagMode == 'ALL'}" change="{!c.selectTagMode}" />
+		 <ui:inputRadio class="ctlTagMode" labelClass="lblTagMode" text="ANY" label="{!v.FieldLabelTagModeAny}" name="{! globalId + 'optTagMode'}" value="{!v.TagMode == 'ANY'}" change="{!c.selectTagMode}" />
+	</div>
+	
+
+<!-- 
+================================================
+ALL MODES - LISTING OF TAGS AVAILABLE IN POOL
+================================================
+-->	
+	<div class="IHTagsContainer" aura:id="theTagPoolContainer" ondragover="{!c.doDragOver}" ondragleave="{!c.doDragLeave}" ondrop="{!c.doDrop}">
+
+<!-- 
+================================================
+NO DATA MESSAGE (IF POOL HAS NO MEMBERS)
+================================================
+-->
+	    <div class="{!v.ListingItems.length == 0 ? 'NoDataMessage' : 'slds-hide'}">
+	        {!v.NoDataMessage}
+	    </div>
+	    
+
+		<aura:iteration items="{!v.ListingItems}" var="LI">
+			<div class="Selector">
+
+				<span id="{! globalId + 'badge_' + LI.Id}" class="{! LI.StyleClass + ' ' + v.SelectedStyle + ' slds-badge'}">
+				
+					<!--
+					NOTE: these are NOT configuration tools: they are clickables that always represent tags.
+					Thus, whilst they are sought and provided via ListingItems member data, only certain data items are required.
+					In particular, ActionCode is IRRELEVANT - the click action varies only by mode (search / associate) NOT by
+					other configuration tool instructions... 
+					 -->
+					<a id="{!LI.Id}" href="javascript:void(0);" title="{!LI.Title}" onclick="{!c.tagClick}" ondragstart="{!c.doDragStart}">
+						{!LI.Label}
+					</a>
+					
+					<!-- 
+					Add a "click to delete from pool" icon for authorised users:
+					Do not include for the 'Un-tagged items' options - which is universal.
+					 -->
+					<a title="{!v.TipGenericDelete}" class="{! v.isAuthor == true &amp;&amp; v.AllowCloudEditing == true &amp;&amp; LI.UntaggedOption + '' == '' ? 'BadgeRemover' : 'slds-hide'}" onclick="{!c.tagDeleteClick}">
+					 	<i class="fa fa-circle fa-stack-1x" aria-hidden="true"></i>					 	
+					 	<i id="{! globalId + 'badgeRemover_' + LI.Id}" class="fa fa-times fa-stack-1x fa-inverse" ></i>		
+					</a>					 			 
+					 
+				</span>
+			</div>			
+		</aura:iteration>
+	</div>
+	
+				
+</aura:component>

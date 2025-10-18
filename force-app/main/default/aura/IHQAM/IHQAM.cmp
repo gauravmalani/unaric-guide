@@ -1,0 +1,243 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName" 
+				access="global">
+ 
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>   
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+    
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="isInitialised" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="StartAutomatically" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="renderUT1" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="renderLST" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="renderSPN" type="boolean" required="false" default="true" access="private" />
+	<aura:attribute name="renderRLV" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="renderSTK" type="boolean" required="false" default="false" access="private" />
+
+    <aura:attribute name="QAMInternationalisations" type="string[]" required="false" access="private" />
+    
+    <aura:attribute name="CardConfig" type="string" required="true" default="AllHelp" access="private" />
+    <aura:attribute name="QAMHandleTip" type="string" required="true" default="Expand Help Quick Access Menu" access="private" />
+
+    <aura:attribute name="QAMHandleLabel" type="string" required="false" default="" access="global" />
+    <aura:attribute name="QAMIconColour" type="string" required="false" default="" access="global" />
+
+    <aura:attribute name="NegotiatedTools" type="ConfigurationItem__c[]" required="false" access="public" />
+    <aura:attribute name="NegotiatedLevel" type="integer" required="true" access="private" default="1" />
+    <aura:attribute name="QAMDelimiter" type="string" required="false" access="private" />
+    <aura:attribute name="QAMToolContext" type="string" required="false" access="private" />
+    <aura:attribute name="QAMCurrentRecordMetadata" type="sObject" required="false" access="public" />
+
+    <aura:attribute name="Height" type="integer" required="true" default="425" access="global" />
+    <aura:attribute name="NoDataMessage" type="string" required="false" default="[No Data]" access="global" />
+    <aura:attribute name="RowLabellingOption" type="string" default="Topic Name" required="false" access="global" />
+    <aura:attribute name="MaxListingTools" type="integer" default="0" required="false" access="global" />
+    <aura:attribute name="NegotiateToolbars" type="boolean" required="false" default="false" access="global" />
+    <aura:attribute name="DialogueMode" type="string" required="true" default="Modal" access="global" />
+    <aura:attribute name="ListingTagFilters" type="string" default="" required="false" access="global" />
+    
+    <aura:attribute name="RootNode" type="string" required="false" default="" access="global" />	
+	<aura:attribute name="FormFactor" type="string" required="true" default="Standard" access="global" />
+	<aura:attribute name="DefaultMenuOption" type="string" required="true" default="Help for this Page" access="global" />	
+
+	<aura:attribute name="GlobalSettings" type="sObject" required="false" access="public" />
+    <aura:attribute name="BrandCSS" type="string" required="false" default="" access="global" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="sObjectName" type="string" />
+
+    <aura:attribute name="theActiveComponent" type="string" required="true" default="QAMListContainer" access="private"/>
+
+<!-- 
+================================================
+QAM Handle
+================================================
+-->
+
+<ltng:require styles="/resource/iahelp__IHResources/lib/FontAwesome463/css/font-awesome.min.css" />
+
+
+    <div aura:id="QAMH" id="QAM" class="ui-draggable ui-draggable-handle IsClosed IsFixed" title="{!v.QAMHandleTip}">	
+        				
+        <span id="QAMHandleTool" onclick="{!c.toggleQAM}" class="fa-stack fa-lg QAM "
+				style="{! v.QAMIconColour != '' ? 'color: #' + v.QAMIconColour + ';' : 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c + ';'}">
+
+            <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+            <i class="fa fa-question fa-stack-1x fa-inverse" aria-hidden="true"></i>
+        </span>          
+
+		<span class="{! v.QAMHandleLabel != '' ? 'QAMHandleLabel' : ''}" onclick="{!c.toggleQAM}">
+			{!v.QAMHandleLabel}
+		</span>
+        
+<!-- 
+................................................
+Including negotiated tools 
+................................................
+-->
+		<aura:iteration items="{!v.NegotiatedTools}" var="T">
+		    
+		    <!-- BELOW SPAN REQUIRED TO AVOID BUG IN AURA:ITERATION! PLEASE DO NOT REMOVE! -->
+			<span>    
+		    
+				<!-- 
+				Actual Header Tool clickable 
+				SHOW TOOL IF:
+		    	Tool is NOT in a toggle group ([NEXT] = 0)
+			    OR Row marks tool as current toggle ( Row marked with "active" marker for this tool)
+		    	OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+				--> 
+		
+				<span class="{! T.iahelp__ToggleNext__c == 0 
+		                || (v.QAMCurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+		                || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any') 
+		                
+		                ? 'fa-stack IATool ' + T.iahelp__ToolClass__c : 'slds-hide IATool ' + T.iahelp__ToolClass__c}" 
+
+						style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}"
+						id="{!v.QAMToolContext + v.QAMDelimiter + T.iahelp__Type__c + v.QAMDelimiter + T.iahelp__DisplayOrder__c + v.QAMDelimiter + 'theQAM'}">
+		
+		            <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+		                               
+					<i id="{! T.iahelp__Type__c + v.QAMDelimiter + T.iahelp__ActionCode__c + v.QAMDelimiter + T.iahelp__DisplayOrder__c + v.QAMDelimiter + T.iahelp__ToggleNext__c}" 
+		              	class="{! 'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}" 
+		              	title="{!T.iahelp__TipText__c}" 
+		               	onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+			
+					<span class="sr-only">
+					    {!T.iahelp__TipText__c}
+					</span>
+					<span class="fa-stack-1x IHIconContent">
+			            {!T.iahelp__IconContent__c}
+					</span>                                        
+				</span>      
+			</span>    
+		</aura:iteration>                                
+ 
+    </div>
+
+<!-- 
+================================================
+Working spinner
+================================================
+-->
+	<aura:if isTrue="{!v.renderSPN}">
+	    <div aura:id="QAMSpinnerContainer" id="QSpinner" class="slds-hide slds-card IsFixed">
+			<div class="CardBody slds-align_absolute-center IASpinner" role="alert">
+			    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+				
+				<!-- 
+				<span class="sr-only">{!v.AdviceLabelWorking}</span>
+				 -->
+			</div>
+		</div>
+	</aura:if>
+
+<!-- 
+================================================
+Utility 1 (Help Index) component 
+================================================
+-->
+	<aura:if isTrue="{!v.renderUT1}">
+	    <div aura:id="QAMUT1Container" id="QUT1Container" class="slds-hide IsFixed IHComponentContainer">
+	    	    	
+	    	<c:IHUtility1 aura:id="QAMUT1">
+				<aura:set attribute="SuppressHeaders" value="false" />
+	            <aura:set attribute="Height" value="{!v.Height}" />
+				<aura:set attribute="NoDataMessage" value="{!v.NoDataMessage}" />	            
+	            <aura:set attribute="ColumnRatio" value="40%" />
+				<aura:set attribute="ToolContext" value="QAMHelpIndex" />
+				<aura:set attribute="RootNode" value="{!v.RootNode}" />
+				<aura:set attribute="FormFactor" value="{!v.FormFactor}" />
+	    	</c:IHUtility1>
+	    	
+		</div>
+	</aura:if>
+    
+<!-- 
+================================================
+Listing component
+================================================
+-->
+    
+	<aura:if isTrue="{!v.renderLST}">
+	    <div aura:id="QAMListContainer" id="QListContainer" class="slds-hide IsFixed IHComponentContainer" >
+	    
+	    	<c:IHList aura:id="QAMComponent">	
+	    	
+	            <aura:set attribute="Height" value="{!v.Height}" />
+	            <aura:set attribute="RowLabellingOption" value="{!v.RowLabellingOption}" />
+	            <aura:set attribute="MaxListingTools" value="{!v.MaxListingTools}" />
+	            <aura:set attribute="NoDataMessage" value="{!v.NoDataMessage}" />
+	            <aura:set attribute="BrandCSS" value="{!v.BrandCSS}" />
+	            <aura:set attribute="recordId" value="{!v.recordId}" />
+	            <aura:set attribute="sObjectName" value="{!v.sObjectName}" />
+				<aura:set attribute="ListingTagFilters" value="{!v.ListingTagFilters}" />
+	            <aura:set attribute="ComponentId" value="theQAM" />
+	            <aura:set attribute="ListensTo" value="" />
+				<aura:set attribute="isInitialised" value="true" />
+	            
+	            <!-- 
+	            For dialogues that we can "in-source" to house within the QAM body as opposed to
+	            a full screen modal (e.g., reading lists), advise list to override its "callout option"
+	            setting and, regardless, issue only a record selected event in these cases (no list-produced callout) 
+	             -->
+	            <aura:set attribute="CalloutOptionSelectiveOverride" value="{! v.DialogueMode != 'Modal'}" />
+	            
+	        </c:IHList>
+	        
+	    </div>
+	</aura:if>
+
+<!-- 
+================================================
+Stickies component
+================================================
+-->
+	<aura:if isTrue="{!v.renderSTK}">	
+	    <div aura:id="QAMStickyContainer" id="QStickyContainer" class="slds-hide IsFixed IHComponentContainer">
+	    
+	        <c:IHNote aura:id="QAMSticky">
+	            <aura:set attribute="Height" value="{!v.Height}" />
+	            <aura:set attribute="BrandCSS" value="{!v.BrandCSS}" />
+	            <aura:set attribute="recordId" value="{!v.recordId}" />
+	            <aura:set attribute="sObjectName" value="{!v.sObjectName}" />
+	            <aura:set attribute="ToolContext" value="Sticky" />
+	            <aura:set attribute="ActionCode" value="NewSticky" />
+	            <aura:set attribute="Icon" value="fa-sticky-note-o" />
+	            <aura:set attribute="ComponentId" value="theQAMSticky" />            
+	        </c:IHNote>
+	        
+	    </div>	
+	</aura:if>
+
+<!-- 
+================================================
+Reading List Viewer component
+================================================
+-->
+	<aura:if isTrue="{!v.renderRLV}">	
+	    <div aura:id="QAMRLVContainer" id="QRLVContainer" class="slds-hide IsFixed IHComponentContainer">
+	    
+	        <c:IHRLViewer aura:id="QAMRLViewer">
+	            <aura:set attribute="Height" value="{!v.Height}" />
+	            <aura:set attribute="MediaWidth" value="75" />
+	            <aura:set attribute="BrandCSS" value="{!v.BrandCSS}" />
+	            <aura:set attribute="ListensTo" value="theQAMRLVMaster" />            
+	            <aura:set attribute="ComponentId" value="theQAMRLViewer" />            
+	        </c:IHRLViewer>
+	        
+	    </div>	    
+	</aura:if>
+    
+</aura:component>

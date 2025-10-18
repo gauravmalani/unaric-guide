@@ -1,0 +1,1009 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+				access="global"  
+				extends="IHCard">
+	
+<!-- 
+================================================
+Events, Handlers, Attribute sets
+================================================
+-->	
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+	<aura:handler name="change" value="{!v.DataMode}" action="{!c.initialiseEditingControls}"/>									
+	<aura:handler name="change" value="{!v.CurrentRecord}" action="{!c.CurrentRecordChange}"/>									
+	<aura:handler name="change" value="{!v.LayoutInfo}" action="{!c.LayoutInfoChange}"/>									
+	<aura:handler name="change" value="{!v.IsNonTopic}" action="{!c.ObjectTypeChange}"/>									
+
+    <aura:attribute name="sHTML" type="string" required="false" default="" access="public" />
+	<aura:method name="getSafeHTML" action="{!c.getSafeHTML}" />
+ 
+    <aura:set attribute="Title" value="Improved Help - Topic Pending" />
+	<aura:set attribute="IHCardType" value="Detail" />    
+    <aura:set attribute="Icon" value="fa-question" />
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelGuideSettings" type="string" required="false" default="" access="private" />
+    <aura:attribute name="AdviceLabelProperties" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonFullSizeImage" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TitleTabImage" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TitleTabVideo" type="string" required="false" default="" access="private" />
+    
+    <aura:attribute name="DesignerCmp" type="Object" required="false" default="" access="private" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+	<aura:attribute name="CurrentRecord" type="sObject" required="false" access="global" />    
+	<aura:attribute name="CachedRecordSource" type="string" required="false" default="" access="global" />
+	
+    <aura:attribute name="TreeContext" type="string" required="false" default="" access="private" />
+    <aura:attribute name="RecentlyAmendedClass" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TemplateObjectId" type="string" required="false" default="" access="private" />
+	<aura:attribute name="KeywordParsedDescription" type="string" required="false" default="" access="public" />
+
+	<aura:attribute name="VideoIframeHeight" type="integer" required="true" default="0" access="private" />
+	<aura:attribute name="MediaCheckTimer" type="integer" required="true" default="0" access="private" />
+    
+    <aura:attribute name="TemplatesC" type="HelpTopicTemplate__c[]" required="false" access="private" />
+    <aura:attribute name="TemplatesF" type="HelpTopicTemplate__c[]" required="false" access="private" />
+    <aura:attribute name="TemplatesL" type="HelpTopicTemplate__c[]" required="false" access="private" />
+    
+    <aura:attribute name="CustomStyles" type="sObject[]" required="false" access="private" />
+    <aura:attribute name="Visibilities" type="sObject[]" required="false" access="private" />
+    <aura:attribute name="VoteSets" type="sObject[]" required="false" access="private" />
+    <aura:attribute name="SelectedVoteSet" type="sObject" required="false" access="private" />
+    <aura:attribute name="GuidedLayouts" type="sObject[]" required="false" access="private" />
+    <aura:attribute name="GuidedElements" type="sObject[]" required="false" access="private" />
+
+    <aura:attribute name="IsHelpTopic" type="boolean" required="true" default="true" access="public" />
+    <aura:attribute name="IsNonTopic" type="boolean" required="true" default="false" access="public" />
+    
+	<aura:attribute name="IsCustomLayout" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="LayoutInfo" type="string" required="false"  default="" access="global" /> 
+	<aura:attribute name="LayoutInfoBackup" type="string" required="false"  default="" access="global" />     
+	<aura:attribute name="LayoutInfoDelimiters" type="string" required="true" default="|¬,^" access="global" />
+	<aura:attribute name="LayoutInfoPrecedence" type="string" required="false" default="Help Topic" access="global" />
+
+	<aura:attribute name="ToolContextAF" type="string" required="true" default="[DEFAULT]" access="private" />	
+    <aura:attribute name="MouseOverDone" type="boolean" default="false" access="public" />
+
+
+
+	<div class="{! v.isDirty == true ? 
+			'isDirty DOLLAR-color-background-alt CardBodyAutoHeight_' + v.AutoCardHeight : 
+			'DOLLAR-color-background-alt CardBodyAutoHeight_' + v.AutoCardHeight}" >
+
+<!-- 
+================================================
+NO DATA MESSAGE (IF ZERO ROWS ARE AVAILABLE)
+================================================
+-->
+	    <div class="{! (v.IsNonTopic == false &amp;&amp; v.CurrentRecord + '' == '') || (v.IsNonTopic == true &amp;&amp; v.HelpRecordId + '' == '')  ? 'NoDataMessage' : 'slds-hide'}">
+	        {!v.NoDataMessage}
+	    </div>
+
+<!-- 
+================================================
+NON-HELP TOPIC MODE
+NB: AF's powered by branding is hidden 
+as it's invasive in these scenarios
+================================================
+-->	    
+		<aura:if isTrue="{!v.IsNonTopic == true}">		
+			<div id="IARecordViewComponentBody">		    	
+				<div class="IARecordViewComponentBody">
+				
+					<c:IHAutoForm aura:id="DetailAF">
+						<aura:set attribute="Height" value="-1" />
+						<aura:set attribute="SuppressHeader" value="true" />
+						<aura:set attribute="SuppressFooter" value="true" />
+						<aura:set attribute="SuppressModeTools" value="true" />
+						<aura:set attribute="sObjectName" value="{!v.sObjectName}" />
+						<aura:set attribute="recordId" value="{!v.HelpRecordId}" />
+						<aura:set attribute="CalloutOption" value="Topic Selected Event plus Topic view" />
+						<aura:set attribute="OnSaveAction" value="Report only" />
+						<aura:set attribute="ComponentId" value="{!v.ComponentId + '_Autoform'}" />
+						<aura:set attribute="ListensTo" value="{!v.ListensTo}" />
+						<aura:set attribute="ToolContext" value="{!v.ToolContextAF}" />
+						<aura:set attribute="DataMode" value="{!v.DataMode}" />
+
+						<aura:set attribute="SuppressPoweredBy" value="true" />                						
+					</c:IHAutoForm>
+					
+				</div>		    	 
+		    </div>
+	    </aura:if>
+
+<!-- 
+================================================
+TOPIC MODE - VIEW
+================================================
+-->
+		
+<aura:if isTrue="{!v.IsHelpTopic == true &amp;&amp; v.DataMode == 'View' || v.DataMode == 'InlineEdit'}">
+
+			<!-- Mouse over ensures we get editing tools - required for vote question text -->
+			<div onmouseover="{!c.initialiseEditingControls}" 
+
+class="{! v.DataMode == 'View' || v.DataMode == 'InlineEdit' ? v.CurrentRecord.iahelp__CustomStyle__c + ' ' + v.RecentlyAmendedClass : 'slds-hide'}">
+
+<!-- 
+................................................
+Layout designer component, if definition provided
+................................................
+-->	            
+				<aura:if isTrue="{!v.LayoutInfo != ''}">
+					<c:IHDetailDesigner aura:id="theDesigner">
+						<aura:set attribute="LayoutInfo" value="{!v.LayoutInfo}" />
+                        <aura:set attribute="LayoutInfoBackup" value="{!v.LayoutInfoBackup}" />
+						<aura:set attribute="Delimiters" value="{!v.LayoutInfoDelimiters}" />
+						<aura:set attribute="CurrentRecord" value="{!v.CurrentRecord}" />		
+						<aura:set attribute="ParentControl" value="{!this}" />		
+					</c:IHDetailDesigner>					
+				</aura:if>
+
+<!-- 
+................................................
+Standard topic layout if NO designer in play
+................................................
+-->	            
+				<aura:if isTrue="{!v.LayoutInfo == ''}">
+	
+<!-- 
+................................................
+Summary
+................................................
+-->	            
+		            <div class="slds-col slds-size_1-of-1 slds-m-vertical_medium slds-p-horizontal_small">
+			            <div class="slds-text-heading_medium">
+
+<aura:if isTrue="{!v.DataMode == 'View'}">			                
+
+			                <p class='Centred IHLUXDetailSummary'>
+			                    <a style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c + ';'}"
+			                    		aura:id="theTopicViewer" 
+			                    		ondragstart="{!c.doDragStart}" 
+			                    		ondragover="{!c.doDragOver}" 
+			                    		ondragleave="{!c.doDragLeave}" 
+			                    		ondrop="{!c.doDrop}" 
+			                    		ondragend="{!c.doDragEnd}">
+			                    	{!v.CurrentRecord.iahelp__Summary__c}
+			                    </a>
+			                </p>	
+
+</aura:if>
+
+<aura:if isTrue="{!v.DataMode == 'InlineEdit'}">
+	<c:IHLTopicSelector>
+		<aura:set attribute="InputType" value="TextArea" />
+		<aura:set attribute="recordId" value="{!v.CurrentRecord.Id}" />
+		<aura:set attribute="FieldName" value="iahelp__Summary__c" />
+		<aura:set attribute="FieldValue" value="{!v.CurrentRecord.iahelp__Summary__c}" />
+		<aura:set attribute="FieldClass" value="Centred IHLUXDetailSummary" />
+	</c:IHLTopicSelector>
+</aura:if>
+
+		                </div>							
+		            </div>
+
+<!-- 
+................................................
+Remaining topic details
+................................................
+-->
+		            <div class="slds-col slds-size_1-of-1 slds-m-vertical_medium slds-p-horizontal_small">
+		
+		                <!-- Media container - responsive, two column container for current full topic template -->
+		                <div class="slds-grid slds-wrap">
+	                        
+							<div class="{! v.CurrentRecord.iahelp__VideoURL__c != null
+									? 'slds-col slds-align_absolute-center slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2' 
+									: 'slds-col slds-align_absolute-center slds-size_1-of-1'}">                                                
+		    
+	                            <!-- Image container -->                    
+								<div class="{! v.CurrentRecord.iahelp__ImageURL__c == null ? 'slds-hide' : 'IHDetailMediaImageContainer'}" >
+	                            
+	                                <div>		
+										<p class="HelpTopic Image Title ViewMode slds-text-align_center slds-text-heading_small">
+			                            	{!v.CurrentRecord.iahelp__ImageTitle__c}
+	
+											<aura:if isTrue="{! v.CurrentRecord.iahelp__ImageURL__c != null &amp;&amp; v.CurrentRecord.iahelp__ImageURL__c != ''}">
+												<span onclick="{!c.doLightBox}" 
+														data-MediaMode="Image"	
+														title="{!v.TipButtonFullSizeImage}" 
+														class="IATool fa-lg slds-float_right"
+														style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+														
+												    <i data-MediaMode="Image" class="{! 'fa fa-external-link'}" aria-hidden="true"></i>
+												</span>
+											</aura:if>
+			                            	
+										</p>
+			                        
+										<div style="{! 'width: ' + v.CurrentRecord.iahelp__ImageWidth__c 
+												+ 'px; height: ' + v.CurrentRecord.iahelp__ImageHeight__c 
+			                                    + 'px; background: url(\'' + v.CurrentRecord.iahelp__ImageURL__c + '\') no-repeat center; ' 
+			                                    + 'background-size: ' + v.CurrentRecord.iahelp__ImageWidth__c + 'px ' + v.CurrentRecord.iahelp__ImageHeight__c + 'px;'}"
+			                                 
+											class="IHDetailMediaImage"		
+			                                 title="{!v.TipButtonFullSizeImage}"
+			                                 data-MediaMode="Image"
+				                             onclick="{!c.doLightBox}">
+				                        </div>
+			                        
+	                                    <div class="slds-text-align_center">
+	                                        {!v.CurrentRecord.iahelp__ImageCaption__c}
+	                                    </div>
+				                    </div>
+								</div>	                    
+							</div>
+	                        
+	                        <div class="{! v.CurrentRecord.iahelp__ImageURL__c != null
+	                                    ? 'slds-col slds-align_absolute-center slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2' 
+	                                    : 'slds-col slds-align_absolute-center slds-size_1-of-1'}">
+	        
+	                            <!-- Video -->
+								<div class="{! v.CurrentRecord.iahelp__VideoURL__c == null ? 'slds-hide' : 'IHDetailMediaVideoContainer'}" >
+	                            
+	                                <div>
+	                            
+	                                    <div class="HelpTopic Video Title ViewMode slds-text-align_center slds-text-heading_small">
+	                                        {!v.CurrentRecord.iahelp__VideoTitle__c}
+	                                        
+											<aura:if isTrue="{! v.CurrentRecord.iahelp__VideoURL__c != null &amp;&amp; v.CurrentRecord.iahelp__VideoURL__c != ''}">
+												<span onclick="{!c.doLightBox}" 
+														data-MediaMode="Video"
+														title="{!v.TipButtonFullSizeImage}" 
+														class="IATool fa-lg slds-float_right"
+														style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+														
+												    <i data-MediaMode="Video" class="{! 'fa fa-external-link'}" aria-hidden="true"></i>
+												</span>
+											</aura:if>
+	                                        
+	                                    </div>
+	                                    
+	                                    <div class="slds-align_absolute-center">
+	                                        <iframe aura:id="TopicVideoIframe"
+	                                        		class="{! v.CurrentRecord.iahelp__VideoURL__c != null ? '' : 'slds-hide'}" 
+	                                        		frameborder="0" 
+	                                        		allowfullscreen="allowfullscreen"
+	                                                src="{!v.CurrentRecord.iahelp__VideoURL__c}" 
+													style="{! 'height: ' + v.VideoIframeHeight + 'px; width: ' + v.CurrentRecord.iahelp__VideoWidth__c + 'px;'}" >
+	                                        </iframe>                                                                 
+	                                    </div>                                
+	                                    
+	                                    <div class="slds-text-align_center">
+	                                        {!v.CurrentRecord.iahelp__VideoCaption__c}
+	                                    </div>
+	                                </div>
+	                            </div>
+							</div>	                    
+		                </div>
+	    		
+		                <!-- 
+		                Topic Description : note that for viewing ONLY we use the keyword parsed version,
+		                i.e., the one containing links to keyword topics...
+		                -->
+		                <div class="slds-col slds-size_1-of-1 slds-m-vertical_medium slds-text-longform HelpTopic Description ViewMode">
+							<aura:unescapedHtml value="{! v.CachedRecordSource == '' ? v.KeywordParsedDescription : v.KeywordParsedDescription != '' ? v.KeywordParsedDescription : v.CurrentRecord.iahelp__Description__c}" />
+                        </div>
+	                
+	                
+						<!-- 
+						Vote Options, where a vote is specified for this Topic:
+						
+						NB: we don't want vote options to appear on their own in advance of any accompanying question text - but
+						the latter is not available until editing controls have been sought (just-in-time loading for performance reasons).
+						However, we cannot render on the basis of question text, as this may or may not actually be in play (some votes
+						do not have question texts). SO: render on the basis of definitive availability of editing controls (and thus 
+						question text where relevant). This can be checked via topic callout pick list values... 
+						 -->
+	
+		                <aura:if isTrue="{!v.TemplatesC.length > 0 &amp;&amp; v.SelectedVoteSet.Id != null}">
+		                
+							<div class="slds-text-body_regular IHDetailVoteSetInfo" >
+
+								<div class="Centred">
+									<div class="slds-text-body_regular slds-m-vertical_small DisplayInline">
+				                    		
+										<img class="{!v.SelectedVoteSet + '' != '' &amp;&amp; v.SelectedVoteSet.iahelp__ImageClass__c + '' != '' ? 'IHDetailVoteSetImage' : 'slds-hide'}" 
+												src="{!v.SelectedVoteSet.iahelp__ImageClass__c}" />
+												
+										<span class="IHDetailVoteQText">
+				                        	{!v.SelectedVoteSet + '' != '' ? v.SelectedVoteSet.iahelp__QuestionText__c : ''}
+										</span>
+		
+				                    </div>
+								</div>	                    		
+		                    </div>
+
+							<div class="Centred IHDetailVoteOptionsContainer">
+				                <aura:iteration items="{!v.VoteOptions}" var="VO">
+									<div class="VoteOption">
+										<a id="{! 'link_' + VO.Id + v.Delimiter + (VO.iahelp__OptionLabel__c == '' || VO.iahelp__OptionLabel__c == null ? VO.Name : VO.iahelp__OptionLabel__c)}"
+					                			class="{!v.theVote == VO.Id ? 'LastVote' : ''}" 
+					                			href="javascript:void(0);" 
+												title="{!v.TipVote + ' - ' + VO.Name}"			                			
+					                			onclick="{!c.castVote}">		                	
+									
+										
+											<span id="{! 'badge_' + VO.Id + v.Delimiter + (VO.iahelp__OptionLabel__c == '' || VO.iahelp__OptionLabel__c == null ? VO.Name : VO.iahelp__OptionLabel__c)}" 
+													class="{!v.theVote == VO.Id ? 'slds-badge slds-badge_lightest slds-theme_inverse' : 'slds-badge slds-badge_lightest'}">
+												
+												<span id="{! 'IconSpan_' + VO.Id + v.Delimiter + (VO.iahelp__OptionLabel__c == '' || VO.iahelp__OptionLabel__c == null ? VO.Name : VO.iahelp__OptionLabel__c)}" 
+														class="slds-icon_container slds-m-right_xx-small" >
+											
+													<img id="{! 'Icon_' + VO.Id + v.Delimiter + (VO.iahelp__OptionLabel__c == '' || VO.iahelp__OptionLabel__c == null ? VO.Name : VO.iahelp__OptionLabel__c)}" 
+														class="{!VO.iahelp__ImageClass__c == '' || VO.iahelp__ImageClass__c == null ? 'slds-hide' : 'IHDetailVoteOption'}" 
+														src="{!VO.iahelp__ImageClass__c}" 
+														alt="{!VO.iahelp__OptionLabel__c}" />
+											
+												</span>
+			
+												{!VO.iahelp__OptionLabel__c}
+											</span>		                	
+										</a> &#32;&nbsp;&#32;
+									</div>
+				                </aura:iteration>
+							</div>
+		                
+		                </aura:if>
+		            </div>
+
+				</aura:if>	<!-- End if standard layout, NOT designer, is in play -->
+
+<!-- 
+................................................
+Optional, template driven sub-component
+................................................
+-->
+					<div class="IHGeneratedChild slds-col slds-size_1-of-1 slds-m-vertical_medium slds-p-horizontal_small">
+						<c:IHComponentGenerator aura:id="CGIHDetail">
+						    <aura:set attribute="Parent" value="{!this}" />
+							<aura:set attribute="SuppressPoweredBy" value="true" />						    
+						</c:IHComponentGenerator>
+					</div>
+
+
+		    </div>		   
+		</aura:if>	<!-- End if data mode = VIEW Help Topic -->
+		
+<!-- 
+================================================
+TOPIC MODE - EDIT
+================================================
+-->
+		<aura:if isTrue="{!v.IsHelpTopic == true &amp;&amp; v.DataMode == 'Edit'}">
+		    <div onmouseover="{!c.initialiseEditingControls}" class="{! v.DataMode == 'Edit' ? 'IHDetailEditorContainer' : 'slds-hide'}" >
+		    
+				<!-- NOTE: need to take body tools height into account here -->		   
+				<div style="{! 'height: Calc(100% - ' + (70 + v.H_BodyTools) + 'px);'}" class="slds-tabs_default HelpTopic EditMode">
+	
+<!-- 
+................................................
+Tab Headers
+................................................
+-->
+	                <div class="IHDetailTabHeaders">                    
+	                	<ul class="slds-tabs_default__nav" role="tablist">
+	                	    
+	                    	<li aura:id="tabSelector1" onclick="{!c.selectTab}" class="slds-tabs_default__item slds-text-heading_label slds-active" title="" role="presentation">
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="HelpTopicEditTab1">
+									{!v.TitleTabVisible}
+	                            </a>
+	                        </li>
+	                    	
+	                    	<li aura:id="tabSelector2" onclick="{!c.selectTab}" class="slds-tabs_default__item slds-text-heading_label" title="" role="presentation">
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="HelpTopicEditTab2">
+									{!v.TitleTabGeneral}
+	                	        </a>
+	                        </li>
+	                        
+	                    	<li aura:id="tabSelector3" onclick="{!c.selectTab}" 
+	                    			class="{! v.CustomFields.length > 0 ? 'slds-tabs_default__item slds-text-heading_label' : 'slds-hide slds-tabs_default__item slds-text-heading_label'}" 
+	                    			title="" role="presentation">
+
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="HelpTopicEditTab3">
+									{!v.TitleTabCustom}
+	                	        </a>
+	                        </li>								  
+                            
+                            <li aura:id="tabSelector4" onclick="{!c.selectTab}" class="slds-tabs_default__item slds-text-heading_label" title="" role="presentation">
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="HelpTopicEditTab4">
+									{!v.TitleTabStatus}
+	                	        </a>
+	                        </li>
+	                
+	                    	<li aura:id="tabSelector5" onclick="{!c.selectTab}" class="slds-tabs_default__item slds-text-heading_label" title="" role="presentation">
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="HelpTopicEditTab5">
+									{!v.TitleTabText}
+	                	        </a>
+	                        </li>
+	    
+	                    	<li aura:id="tabSelector6" onclick="{!c.selectTab}" class="slds-tabs_default__item slds-text-heading_label" title="" role="presentation">
+	                    	    <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="HelpTopicEditTab6">
+									{!v.TitleTabGuides}
+	                	        </a>
+	                        </li>
+	                
+	                     </ul>
+	                </div>
+	    
+<!-- 
+................................................
+Visible fields tab
+................................................
+-->
+		            <div aura:id="HelpTopicEditTab1" class="slds-tabs_default__content slds-show slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab1">
+	                    <div class="slds-grid"  >
+	                        <div class="slds-col slds-p-horizontal_small">
+	                            
+	                            <!-- Name & Summary -->
+	                	        <div class="slds-text-heading_small slds-m-vertical_small">
+									<ui:inputText value="{!v.CurrentRecord.Name}" maxlength="80" placeholder="{!v.FieldLabelName}" change="{!c.setDirty}"/>
+	                	        </div>
+	                	        
+	                            <div class="slds-text-body_regular slds-m-bottom_small">
+                     
+									<lightning:input value="{!v.CurrentRecord.iahelp__Summary__c}" onchange="{!c.setDirty}"
+											variant="label-hidden" type="text"
+											required="true" messageWhenValueMissing="{!v.MessageValueRequired}"
+											placeholder="{!v.FieldLabelSummary}" maxlength="255" />
+											
+	                            </div>
+	                            
+	                            <!-- Media -->
+	                            <div class="slds-grid slds-gutters_x-small slds-wrap">
+	                
+	                                <!-- Image -->
+	                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2">
+	
+                                        <div class="slds-m-vertical_small slds-text-align_center slds-text-heading_small">
+                                            <ui:inputText aura:id="txtImgTitle" value="{!v.CurrentRecord.iahelp__ImageTitle__c}" placeholder="{!v.FieldLabelImageTitle}"  maxlength="255" change="{!c.setDirty}"/>
+                                        </div>                                            
+
+<span onclick="{!c.resetImage}" 
+		data-MediaMode="Image"	
+		title="{!v.TipButtonResetImage}" 
+		class="IATool fa-lg slds-float_right"
+		style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+		
+    <i data-MediaMode="Image" class="fa fa-times" aria-hidden="true"></i>
+</span>
+                                        
+                                        <div style="{! 'width: ' + v.CurrentRecord.iahelp__ImageWidth__c 
+                                                    + 'px; height: ' + v.CurrentRecord.iahelp__ImageHeight__c 
+                                                    + 'px; background: url(\'' + v.CurrentRecord.iahelp__ImageURL__c + '\') no-repeat center; ' 
+                                                    + 'background-size: ' + v.CurrentRecord.iahelp__ImageWidth__c + 'px ' + v.CurrentRecord.iahelp__ImageHeight__c + 'px;'}"
+                                                    
+                                                    class="IHDetailMediaImage">
+                                        </div>
+                                        
+                                        <div class="slds-m-vertical_small slds-text-align_center">
+                                            <ui:inputText aura:id="txtImgCaption" value="{!v.CurrentRecord.iahelp__ImageCaption__c}" placeholder="{!v.FieldLabelImageCaption}" maxlength="255" change="{!c.setDirty}"/>
+                                        </div>
+
+                                                                        
+	                                    <!-- Image detail parameters panel -->
+                                        <div aura:id="ImgEditor" class="slds-section ParameterEditMenu">
+
+											<h3 onclick="{!c.toggleImageEdit}" class="slds-accordion__summary-heading">
+												<button type="button"
+														aria-controls="ImageParameterPanel" 
+														class="slds-button slds-section__title-action"
+														>
+								
+													<lightning:icon aura:id="ImgEditor_Twisty" class="slds-button__icon" size="xx-small" iconName="utility:chevronright"/>
+									
+													<span class="slds-truncate" title="{!v.TipButtonSettings}">
+														{!v.TitleTabImage}: {!v.AdviceLabelProperties}										
+													</span>
+												</button>
+							        		</h3>
+		                                            
+                                            <div aria-hidden="false" class="slds-section__content" id="ImageParameterPanel">
+                                            
+                                                {!v.FieldLabelImageURL}
+                                                <ui:inputText class="" aura:id="txtImgURL" value="{!v.CurrentRecord.iahelp__ImageURL__c}" maxlength="255" change="{!c.setDirty}"/>
+                                                
+                                                {!v.FieldLabelImageALTText} 
+                                                <ui:inputText class="" aura:id="txtImgALTText" value="{!v.CurrentRecord.iahelp__ImageALTText__c}" maxlength="255" change="{!c.setDirty}"/>
+                                                
+                                                {!v.FieldLabelImageWidth} 
+                                                <ui:inputNumber class="" aura:id="txtImgWidth" value="{!v.CurrentRecord.iahelp__ImageWidth__c}" change="{!c.setDirty}"/>  
+                                                
+                                                {!v.FieldLabelImageHeight} 
+                                                <ui:inputNumber class="" aura:id="txtImgHeight" value="{!v.CurrentRecord.iahelp__ImageHeight__c}" change="{!c.setDirty}"/>
+                                                
+                                            </div>
+                                        </div>		                                        
+	                                </div>
+	                                
+	                                <!-- Video -->
+	                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2">
+	                
+                                        <div class="slds-m-vertical_small slds-text-align_center slds-text-heading_small">
+                                            <ui:inputText aura:id="txtVidTitle" value="{!v.CurrentRecord.iahelp__VideoTitle__c}" placeholder="{!v.FieldLabelVideoTitle}" maxlength="255" change="{!c.setDirty}"/>
+                                        </div>                                           
+
+<span onclick="{!c.resetVideo}" 
+		data-MediaMode="Image"	
+		title="{!v.TipButtonResetVideo}" 
+		class="IATool fa-lg slds-float_right"
+		style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+		
+    <i data-MediaMode="Image" class="fa fa-times" aria-hidden="true"></i>
+</span>
+                                        
+                                        <div class="slds-align_absolute-center">
+                                            <iframe class="{! v.CurrentRecord.iahelp__VideoURL__c != null ? '' : 'slds-hide'}" frameborder="0" 
+                                                    src="{!v.CurrentRecord.iahelp__VideoURL__c}" 
+													style="{! 'height: ' + v.CurrentRecord.iahelp__VideoHeight__c + 'px; width: 100%;'}" ></iframe>
+                                        </div>
+                                        
+                                        <div class="slds-m-vertical_small slds-text-align_center">
+                                            <ui:inputText aura:id="txtVidCaption" value="{!v.CurrentRecord.iahelp__VideoCaption__c}" placeholder="{!v.FieldLabelVideoCaption}" maxlength="255" change="{!c.setDirty}"/>
+                                        </div>                                           
+                                           	                
+                                	    <!-- Video detail parameters panel -->
+                                        <div aura:id="VidEditor" class="slds-section ParameterEditMenu">
+
+											<h3 onclick="{!c.toggleVideoEdit}" class="slds-accordion__summary-heading">
+												<button type="button"
+														aria-controls="VideoParameterPanel" 
+														class="slds-button slds-section__title-action"
+														>
+								
+													<lightning:icon aura:id="VidEditor_Twisty" class="slds-button__icon" size="xx-small" iconName="utility:chevronright"/>
+									
+													<span class="slds-truncate" title="{!v.TipButtonSettings}">
+														{!v.TitleTabVideo}: {!v.AdviceLabelProperties}										
+													</span>
+												</button>
+							        		</h3>
+                                           
+                                            <div aria-hidden="false" class="slds-section__content" id="VideoParameterPanel">
+                                            
+                                                {!v.FieldLabelVideoURL} 
+                                                <ui:inputText class="Parameter" aura:id="txtVidURL" value="{!v.CurrentRecord.iahelp__VideoURL__c}" maxlength="255" change="{!c.setDirty}"/>
+
+												{!v.FieldLabelVideoWidth} 
+                                                <ui:inputNumber class="Parameter" aura:id="txtVidWidth" value="{!v.CurrentRecord.iahelp__VideoWidth__c}" change="{!c.setDirty}"/>  
+
+												{!v.FieldLabelVideoHeight}
+                                                <ui:inputNumber class="Parameter" aura:id="txtVidHeight" value="{!v.CurrentRecord.iahelp__VideoHeight__c}" change="{!c.setDirty}"/>                                         
+                                            
+                                            </div>
+                                        </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	            	</div>    
+		
+<!-- 
+................................................
+General tab
+................................................
+-->
+	                <div aura:id="HelpTopicEditTab2" class="slds-tabs_default__content slds-hide slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab2">
+	                    <div class="slds-grid">
+	                        <div class="slds-col slds-p-horizontal_small">
+
+	                            <div class="slds-text-body_regular slds-m-vertical_small">                            
+									{!v.FieldLabelMasterTopicIdentifier} <ui:inputText value="{!v.CurrentRecord.iahelp__MasterTopicIdentifier__c}" maxlength="255" change="{!c.setDirty}"/>
+	                            </div>
+
+	                            <div class="slds-text-body_regular slds-m-vertical_small">                            
+									{!v.FieldLabelSFHelpURL} <ui:inputText value="{!v.CurrentRecord.iahelp__SalesforceHelpURL__c}" maxlength="255" change="{!c.setDirty}"/>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+	                                {!v.FieldLabelCalloutTemplate} <ui:inputSelect aura:id="CalloutTemplate" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.TemplatesC}" var="Opt">
+											<ui:inputSelectOption text="{!Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__CalloutTemplate__c == Opt.Id}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelCalloutHeight} 
+									<lightning:input value="{!v.CurrentRecord.iahelp__CalloutHeight__c}" onchange="{!c.setDirty}"
+											variant="label-hidden" type="number"
+											required="true" messageWhenValueMissing="{!v.MessageValueRequired}" />
+
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+	                                {!v.FieldLabelCalloutMediaChoice} <ui:inputSelect aura:id="CalloutMediaChoice" multiple="false" change="{!c.setDirty}">
+										<ui:inputSelectOption label="Image" text="Image" value="{!v.CurrentRecord.iahelp__CalloutMediaChoice__c == 'Image'}" />
+										<ui:inputSelectOption label="Video" text="Video" value="{!v.CurrentRecord.iahelp__CalloutMediaChoice__c == 'Video'}" />
+	                                </ui:inputSelect>    
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+	                                <a href="javascript:void()" onclick="{!c.previewCallout}" title="{!v.TipButtonPreviewCallout}">
+										{!v.ButtonPreviewCallout} 
+	                                </a>
+	                                
+	                                : : :
+	                                
+									<a href="javascript:void()" onclick="{!c.previewCalloutAsEdited}" title="{!v.TipButtonPreviewCalloutAsEdited}">
+										{!v.ButtonPreviewCalloutAsEdited} 
+									</a>
+	                                
+	                                : : :
+
+									<a href="javascript:void()" onclick="{!c.gotoTemplates}" title="{!v.TipButtonGotoTemplates}">
+										{!v.ButtonGotoTemplates} 
+									</a>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelFullTemplate} <ui:inputSelect aura:id="Template" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.TemplatesF}" var="Opt">
+	                                        <ui:inputSelectOption text="{!Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__Template__c == Opt.Id}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+
+								<div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelLightningTemplate} <ui:inputSelect aura:id="LightningTemplate" multiple="false" change="{!c.setDirty}">
+								    	<aura:iteration items="{!v.TemplatesL}" var="Opt">
+											<ui:inputSelectOption text="{!Opt.Id == null ? v.NullValue : Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__LightningTemplate__c == Opt.Id}" />
+								    	</aura:iteration>        
+									</ui:inputSelect>
+								</div>
+
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelHeightBeforeScrolling} 
+									<lightning:input value="{!v.CurrentRecord.iahelp__HeightBeforeScrolling__c}" onchange="{!c.setDirty}"
+											variant="label-hidden" type="number"
+											required="true" messageWhenValueMissing="{!v.MessageValueRequired}" />
+
+	                            </div>
+	                        </div>
+	                    </div>
+	            	</div>
+		
+<!-- 
+................................................
+Custom fields Tab
+................................................
+-->
+	                <div aura:id="HelpTopicEditTab3" class="slds-tabs_default__content slds-hide slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab3">
+	            	    <div class="slds-grid">
+	            	        <div class="slds-col slds-p-horizontal_small">
+	
+	        	                <aura:iteration items="{!v.CustomFields}" var="CF">
+
+<!-- 
+NEED TO DEAL WITH:
+PICK LIST TYPES
+LOOKUPS
+ -->
+	
+	                                <!--
+	                                As we iterate around custom fields, respond to field type, 
+	                                hiding all but the required control (note text box as default
+	                                when field is not of another known type)
+	                                -->
+	                                <aura:if isTrue="{!CF.CustomField.type != 'boolean' &amp;&amp; CF.CustomField.type != 'currency' 
+	                                                &amp;&amp; CF.CustomField.type != 'date' &amp;&amp; CF.CustomField.type != 'datetime' 
+	                                                &amp;&amp; CF.CustomField.type != 'email' &amp;&amp; CF.CustomField.type != 'url' 
+	                                                &amp;&amp; CF.CustomField.type != 'integer' &amp;&amp; CF.CustomField.type != 'double' 
+	                                                &amp;&amp; CF.CustomField.type != 'textarea'}">
+	                                                
+		                                <div class="slds-text-body_regular slds-m-vertical_small">
+		                                    <ui:inputText aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+		                                </div> 
+	                                </aura:if>       	                    
+	
+									<aura:if isTrue="{! CF.CustomField.type == 'boolean'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputCheckBox aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'currency'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputCurrency aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'date'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputDate aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}" displayDatePicker="true"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'datetime'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputDateTime aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}" displayDatePicker="true"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'email'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputEmail aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'integer' || CF.CustomField.type == 'double'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputNumber aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'textarea'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputTextArea aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+										
+									<aura:if isTrue="{! CF.CustomField.type == 'url'}"	>
+										<div class="slds-text-body_regular slds-m-vertical_small">
+											<ui:inputURL aura:id="CUSTOMFIELD" labelClass="{!CF.CustomField.fieldPath}" label="{!CF.CustomField.label}" value="{!CF.Val}" change="{!c.setDirty}"/>
+										</div>
+									</aura:if>
+	
+	    	                    </aura:iteration>
+	
+	            	        </div>
+	            	    </div>
+	            	</div>
+		
+<!-- 
+................................................
+Status Tab
+................................................
+-->
+	                <div aura:id="HelpTopicEditTab4" class="slds-tabs_default__content slds-hide slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab4">
+	                    <div class="slds-grid">
+	            	        <div class="slds-col slds-p-horizontal_small">
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelActive} <ui:inputCheckbox value="{!v.CurrentRecord.iahelp__Active__c}" change="{!c.setDirty}"/>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelShowReadMore} <ui:inputCheckbox value="{!v.CurrentRecord.iahelp__ShowReadMoreLink__c}" change="{!c.setDirty}"/>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelShowReferringTopics} <ui:inputCheckbox value="{!v.CurrentRecord.iahelp__ShowReferringRelationships__c}" change="{!c.setDirty}"/>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelStatus} <ui:inputSelect aura:id="HelpTopicStatus" multiple="false" change="{!c.setDirty}">
+										<ui:inputSelectOption text="New" label="New" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'New'}"/>
+										<ui:inputSelectOption text="Drafted" label="Drafted" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Drafted'}"/>
+										<ui:inputSelectOption text="Submitted for Approval" label="Submitted for Approval" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Submitted for Approval'}"/>
+										<ui:inputSelectOption text="Approved" label="Approved" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Approved'}"/>
+										<ui:inputSelectOption text="Published" label="Published" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Published'}"/>
+										<ui:inputSelectOption text="Suspended" label="Suspended" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Suspended'}"/>
+										<ui:inputSelectOption text="Obsolete" label="Obsolete" value="{!v.CurrentRecord.iahelp__HelpTopicStatus__c == 'Obsolete'}"/>
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelVisibility} <ui:inputSelect aura:id="Visibility" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.Visibilities}" var="Opt">
+	                                        <ui:inputSelectOption text="{!Opt.Value == null ? v.NullValue : Opt.Value}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__Visibility__c == Opt.Value}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelCustomStyle} <ui:inputSelect aura:id="CustomStyle" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.CustomStyles}" var="Opt">
+	                                        <ui:inputSelectOption text="{!Opt.Value}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__CustomStyle__c == Opt.Value}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelVoteInfo} <ui:inputSelect aura:id="HelpVoteSet" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.VoteSets}" var="Opt">
+	                                        
+	                                        <!-- 
+	                                        NOTE: for "None" drop down entry, we need to use a value that positively
+	                                        specifies "null" - as attempting to use a plain null in an option results in
+	                                        no discernable value, so the drop down entry can never be reliably selected
+	                                        -->
+	                                        <ui:inputSelectOption text="{!Opt.Id == null ? v.NullValue : Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__HelpVoteSet__c == Opt.Id}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+	                               <span class="IHDetailVoteQText">
+	                                   {!v.SelectedVoteSet + '' != '' ? v.SelectedVoteSet.iahelp__QuestionText__c : ''}
+	                               </span>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+	                               <img src="{!v.SelectedVoteSet + '' != '' ? v.SelectedVoteSet.iahelp__ImageClass__c : ''}" class="IHDetailVoteSetImage" />
+	                            </div>
+	
+	            	           <div class="slds-text-body_regular slds-m-vertical_small">
+	                                <a href="javascript:void()" onclick="{!c.maintainVoteSets}">
+										{!v.ButtonGotoVoteSets}
+	                                </a>
+	            	           </div>
+	                        </div>
+	                    </div>
+	            	</div>
+		
+<!-- 
+................................................
+Rich Text
+................................................
+-->
+	                <div aura:id="HelpTopicEditTab5" class="slds-tabs_default__content slds-hide slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab5">
+	                	<div class="slds-grid">
+	                		<div class="slds-col slds-p-horizontal_small">
+			                    <div class="slds-col slds-size_1-of-1 slds-m-vertical_medium slds-p-horizontal_small slds-text-longform HelpTopic Description EditMode">
+									
+									<lightning:inputRichText 
+											formats="['font', 'size', 'bold', 'italic', 'underline',
+									            'strike', 'list', 'indent', 'align',
+									            'clean', 'table', 'header', 'color', 'link']"
+									            
+											value="{!v.CurrentRecord.iahelp__Description__c}" onblur="{!c.setDirty}">
+									
+									</lightning:inputRichText>
+			                    
+			                    </div>
+			
+			                    <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelKeywords} <ui:inputText value="{!v.CurrentRecord.iahelp__Keyword__c}" maxlength="255" change="{!c.setDirty}"/>
+			                    </div>
+		                    </div>
+	                    </div>
+	            	</div>
+	
+<!-- 
+................................................
+Guides Tab
+................................................
+-->
+	            	<div aura:id="HelpTopicEditTab6" class="slds-tabs_default__content slds-hide slds-scrollable_y TabPanel" role="tabpanel" aria-labelledby="HelpTopicEditItemTab6">
+	                    <div class="slds-grid">
+	            	        <div class="slds-col slds-p-horizontal_small">
+	            	        	
+	            	        	<span class='IHError'>
+									{!v.AdviceLabelGuideSettings}	            	        
+	            	        	</span>	            	        
+	            	        
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelStepMode} <ui:inputSelect aura:id="GuideStepMode" multiple="false" change="{!c.setDirty}">
+	                               		<ui:inputSelectOption text="{!v.NullValue}" label="{!v.NullLabel}" value="{!v.CurrentRecord.iahelp__GuideStepMode__c == null}"/>
+											<ui:inputSelectOption text="Automatic" label="Automatic" value="{!v.CurrentRecord.iahelp__GuideStepMode__c == 'Automatic'}"/>
+											<ui:inputSelectOption text="Local" label="Local" value="{!v.CurrentRecord.iahelp__GuideStepMode__c == 'Local'}"/>
+											<ui:inputSelectOption text="Manual" label="Manual" value="{!v.CurrentRecord.iahelp__GuideStepMode__c == 'Manual'}"/>
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelStepLayout} <ui:inputSelect aura:id="GuidedLayout" multiple="false" change="{!c.setDirty}" >
+	                                	<aura:iteration items="{!v.GuidedLayouts}" var="Opt">
+	                                        
+	                                        <!--  
+	                                        NOTE: for "None" drop down entry, we need to use a value that positively
+	                                        specifies "null" - as attempting to use a plain null in an option results in
+	                                        no discernable value, so the drop down entry can never be reliably selected
+	                                        -->
+	                                        <ui:inputSelectOption text="{!Opt.Id == null ? v.NullValue : Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__GuidedLayout__c == Opt.Id}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelStepElement} <ui:inputSelect aura:id="GuidedElement" multiple="false" change="{!c.setDirty}">
+	                                    <aura:iteration items="{!v.GuidedElements}" var="Opt">
+	                                        
+	                                        <!-- 
+	                                        NOTE: for "None" drop down entry, we need to use a value that positively
+	                                        specifies "null" - as attempting to use a plain null in an option results in
+	                                        no discernable value, so the drop down entry can never be reliably selected
+	                                        -->
+	                                        <ui:inputSelectOption text="{!Opt.Id == null ? v.NullValue : Opt.Id}" label="{!Opt.Name}" value="{!v.CurrentRecord.iahelp__GuidedElement__c == Opt.Id}" />
+	                                    </aura:iteration>        
+	                                </ui:inputSelect>
+	                            </div>
+	
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelStepContext} <ui:inputText value="{!v.CurrentRecord.iahelp__GuidedRecord__c}" maxlength="255" change="{!c.setDirty}"/>
+	                            </div>
+	                            
+	                            <div class="slds-text-body_regular slds-m-vertical_small">
+									{!v.FieldLabelShowCallout} <ui:inputCheckbox value="{!v.CurrentRecord.iahelp__GuideCallout__c}" change="{!c.setDirty}"/>
+	                            </div>
+	    	               </div>
+		               </div>
+	                </div>
+	
+	           
+	            </div> <!-- end of edit tabs -->
+		
+<!-- 
+................................................
+Tab Footer: Created / Modified info
+................................................
+-->
+	            <div class="TabFooter slds-p-horizontal_small">
+	                <div class="slds-grid">
+	                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+	                            <div class="slds-text-body_small">
+									{!v.FieldLabelCreatedBy}: {!v.CurrentRecord.CreatedBy.Name}
+									<br/>{!v.FieldLabelCreatedByDT}: <ui:outputDate format="dd-MMM-yy H:mm" value="{!v.CurrentRecord.CreatedDate}" />
+	                            </div>
+	                    </div>
+	                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 ">
+	                            <div class="slds-text-body_small">
+									{!v.FieldLabelModifiedBy}: {!v.CurrentRecord.LastModifiedBy.Name}
+									<br/>{!v.FieldLabelModifiedByDT}: <ui:outputDate format="dd-MMM-yy H:mm" value="{!v.CurrentRecord.LastModifiedDate}" />
+	                            </div>
+	                        </div>
+	                </div>
+	            </div>
+	                
+<!-- 
+................................................
+Save / Cancel controls
+................................................
+-->
+                <div class="slds-grid ">
+                    
+					<div class="slds-col TabFooterTools slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">                    
+                        <span class="fa-stack fa-lg IATool BookmarkAdd">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+							<i id="{! 'Detail' + v.Delimiter + 'Save'}" title="{!v.ButtonSave}" class="fa fa-check fa-stack-1x fa-inverse " onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+                            <span class="sr-only">
+								{!v.ButtonSave}
+                            </span>
+                        </span>                            
+            
+                        <span class="fa-stack fa-lg IATool">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+							<i id="{! 'Detail' + v.Delimiter + 'QuickSave'}" title="{!v.ButtonQuickSave}" class="fa fa-check fa-stack-1x fa-inverse" onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+                            <span class="sr-only">
+								{!v.ButtonQuickSave}
+                            </span>
+                        </span>                            
+
+                        <span class="fa-stack fa-lg IATool">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+							<i id="{! 'Detail' + v.Delimiter + 'Cancel'}" title="{!v.ButtonCancel}" class="fa fa-times fa-stack-1x fa-inverse" onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+                            <span class="sr-only">
+								{!v.ButtonCancel}
+                            </span>
+                        </span>
+
+					</div>
+
+					<div class="slds-col TabFooterTools slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">                        
+                        <div class="slds-text-body_small IHDetailEditorTopicId">
+                        	Id: {!v.CurrentRecord.Id}
+                        </div>
+					</div>                        
+
+                </div>            
+	                
+	
+		    </div> 		<!-- end of Edit Mode -->
+	    
+		</aura:if>    <!-- end of IF date mode = EDIT Help Topic -->
+    
+    </div>
+</aura:component>

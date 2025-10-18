@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DefaultHelpTopicHBS__c</fullName>
+    <defaultValue>400</defaultValue>
+    <deprecated>false</deprecated>
+    <description>The default value to use for Height Before Scrolling when adding new Help Topics in Configuration Mode</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The default value to use for Height Before Scrolling when adding new Help Topics in Configuration Mode</inlineHelpText>
+    <label>Default Height Before Scrolling</label>
+    <precision>3</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

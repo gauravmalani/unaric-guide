@@ -1,0 +1,112 @@
+<design:component label="Improved Help: Auto-form"> 
+ 
+	<design:attribute name="Height" 
+	                label="Component Height" 
+	                description="Display height for this component (pixels). Enter -1 to set height to 100% (i.e., the height required to avoid scrollbars)." 
+                    default="-1" 
+                    required="true" />	
+                    
+	<design:attribute name="SuppressHeader" 
+	                label="Suppress Header" 
+	                description="Check this box to hide the header area of this component." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="SuppressFooter" 
+	                label="Suppress Footer" 
+	                description="Check this box to hide the footer / diagnostics area of this component." 
+	                default="false"
+                    required="false" />	                    
+
+	<design:attribute name="SuppressModeTools" 
+	                label="Suppress Tools Accordion" 
+	                description="Check this box to hide the 'accordion' area that contains the Guides menu etc." 
+	                default="false"
+                    required="false" />	                    
+
+	<design:attribute name="SuppressInlineEdit" 
+	                label="Suppress In-line Editing" 
+	                description="Check this box to hide editing 'pencil' icons / suppress inline editing availability, regardless of CRUD rights." 
+	                default="false"
+                    required="false" />	                    
+
+    <design:attribute name="sObjectName" 
+	                label="Object API Name" 
+	                description="API Name of the object whose data is to be displayed. Leave blank to have Salesforce supply this automatically." 
+					default="" 
+                    required="false" />	    
+
+	<design:attribute name="LayoutName" 
+	                label="Layout Name" 
+	                description="API Name of the page layout to use in creating this form: 
+             			For standard objects, this setting can be left blank if you wish to use the layout applicable to the current user profile and record type. 
+             			For custom objects, a value is required and will often be in the form: '[Object API name]-[Object label] Layout'." 
+					default=""
+                    required="false" />	    
+
+    <design:attribute name="DisplayDensity" 
+                    label="Display Density" 
+                    description="Controls how much white space to display around the fields in this component." 
+                    datasource="Comfy,Compact"
+                    default="Comfy"
+                    required="true" />	
+
+	<design:attribute name="DefaultSectionToggleState" 
+					label="Default Form Section State" 
+					description="Controls whether form sections are expanded or collapsed when first visited by a user (prior to them opening/closing sections as they wish)." 
+					datasource="Collapsed,Expanded"
+					default="Expanded"
+					required="true" />	
+
+	<design:attribute name="InitialSections" 
+					label="Initial Sections to Display" 
+					description="The number of form sections to display when first loading the page. Set a lower number to improve loading speed on lengthy forms. Set to zero to load all sections." 
+					default="0"
+					required="true" />	
+
+	<design:attribute name="CurrentRecTypeId" 
+	                label="Record Type ID" 
+	                description="(New records only) ID of the Record Type to create when adding new records via the Autoform. Leave blank unless creating Autoforms for flows etc and specialised handling is required." 
+					default="" 
+                    required="false" />	    
+
+	<design:attribute name="PopulatedFields" 
+					label="Override Field Values" 
+					description="Enter [Field API Name]¬[Field Value]| to default fields when adding new records." 
+					default=""
+					required="false" />	
+
+	<design:attribute name="LimitFields" 
+					label="Fields to Show" 
+					description="Enter a comma-separated list of field API names to display only those fields, if permitted by the page layout in use." 
+					default=""
+					required="false" />	
+
+    <design:attribute name="CalloutOption" 
+                    label="Callout Option" 
+                    description="Controls how to respond to helped item clicks." 
+                    datasource="Topic Selected Event Only,Topic Selected Event plus Topic view"
+                    default="Topic Selected Event plus Topic view"
+                    required="true" />	
+
+	<design:attribute name="CalloutStyle" 
+                    label="Callout Style" 
+                    description="Controls whether to show callouts embedded in the Autoform or stand alone, filling the full component area until closed." 
+                    datasource="Embedded,Full"
+                    default="Embedded"
+                    required="true" />	
+
+	<design:attribute name="OnSaveAction" 
+	                label="Action on Saving" 
+	                description="Controls the action to take after successfully saving a record on this form." 
+                    datasource="Report only,Navigate to record"
+                    default="Navigate to record" 
+                    required="true" />	                    
+                    
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default="theAutoForm" 
+                    required="true" />                    
+    
+</design:component>

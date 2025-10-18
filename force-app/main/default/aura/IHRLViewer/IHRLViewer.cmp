@@ -1,0 +1,372 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+				extends="IHCard" 
+				access="global">
+ 
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>     
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+    <aura:set attribute="Title" value="Improved Help" />
+    <aura:set attribute="AutoCardHeight" value="true" />
+	<aura:set attribute="IHCardType" value="RLViewer" />
+    
+    
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="MediaWidth" type="string" required="true" default="50" access="global" />
+    <aura:attribute name="VideoAspectRatio" type="string" required="true" default="HD (16:9)" access="global" />
+    <aura:attribute name="ShowDescriptions" type="boolean" required="true" default="true" access="global" />
+    <aura:attribute name="ShowNavBar" type="boolean" required="true" default="true" access="global" />
+	<aura:attribute name="RLStyle" type="string" required="true" default="" access="global" />
+	<aura:attribute name="RLEStyle" type="string" required="true" default="Simple Text" access="global" />
+
+	<aura:attribute name="DefaultLayout" type="string" required="false" default="iahelp__Summary__c^Field^slds-text-heading_medium slds-align_absolute-center slds-m-bottom_small|iahelp__ImageURL__c^Image^|iahelp__Description__c^Field^slds-text-longform" access="global" />
+	
+	<aura:attribute name="RLSummary" type="string" required="true" default="" access="private" />
+    <aura:attribute name="EntriesVisited" type="integer" required="true" default="0" access="private" />
+
+	<aura:attribute name="ActiveCarouselPanel" type="integer" default="0" required="true" access="public" />
+	<aura:attribute name="CarouselSpeed" type="integer" default="4000" required="true" access="global" />
+	<aura:attribute name="CarouselTimer" type="integer" default="6000" required="true" access="public" />
+
+	<aura:attribute name="CurrentRecord" type="sObject" required="false" access="global" />    
+
+<!-- 
+================================================
+NO DATA MESSAGE (IF ZERO ROWS ARE AVAILABLE)
+================================================
+-->
+    <div class="{!v.ListingItems.length == 0 ? 'NoDataMessage' : 'slds-hide'}">
+        {!v.NoDataMessage}
+    </div>
+
+<!-- 
+================================================
+EDIT MODE - U1 WITH RL PROVIDER TO ALLOW DATA ENTRY
+================================================
+-->
+	<aura:if isTrue="{!v.DataMode == 'Edit'}">
+
+		<!-- 
+		Note that height will be overall height of our owner card:
+		We need to adjust this downwards here, so that we occupy only
+		the body area, allowing for header and footer where relevant
+		 -->
+
+		<c:IHUtility1>
+			<aura:set attribute="Height" value="{!v.Height - (v.HasVisibleBodyTools == true ? 50 : 0) - (v.SuppressHeader == false ? v.H_Header : 0) - (v.SuppressFooter == false ? v.H_Footer : 0)}" />
+
+			<aura:set attribute="SuppressHeaders" value="true" />
+			<aura:set attribute="SuppressFooters" value="true" />		
+			<aura:set attribute="ColumnRatio" value="40%" />
+			<aura:set attribute="TreeSuppressListingTools" value="false" />
+			<aura:set attribute="TreeDisplayDensity" value="Compact" />
+			<aura:set attribute="TreeNodeIconStyle" value="Small" />
+			<aura:set attribute="TreeMaxListingTools" value="0" />
+			<aura:set attribute="TreeNodeProvider" value="ServiceIHTrees.TNSReadingLists" />
+			<aura:set attribute="TreeDDAllowed" value="true" />		
+			<aura:set attribute="RootNode" value="{!v.IHContext}" />						
+			<aura:set attribute="ToolContext" value="ReadingListBuilder" />
+			<aura:set attribute="PDPositioningGroup" value="RLPropsU1" />
+		</c:IHUtility1>
+
+	</aura:if>
+	
+<!-- 
+================================================
+READ MODE - NORMAL RL VIEWER HANDLING
+================================================
+-->
+	<aura:if isTrue="{!v.DataMode == 'View'}">    
+
+<!-- 
+================================================
+ADOPTER STYLE
+================================================
+-->
+		<aura:if isTrue="{!v.RLStyle == 'Adopter'}">
+            
+<!-- 
+................................................
+NAVIGATION SERVICE - FOR MULTI PAGE OPS WHERE RL 
+SPECIFIES NAVIGATION
+................................................
+-->
+			<lightning:navigation aura:id="navService"/>
+
+			<div class="DialogueContainer" style="{! v.BackgroundStyle == 'Coloured' ? 'background: #' + v.UXThemeColour2 + ';' : 'background: transparent;'}">
+
+<!-- 
+................................................
+READING LIST INFORMATION
+................................................
+-->
+				<aura:if isTrue="{!v.SuppressHeader == false}">
+					<div class="IHAdopter DialogueTitle">
+						{!v.Title}
+					</div>					
+					
+					<div class="IHAdopter RLSummary">
+						{!v.RLSummary}
+					</div>
+				</aura:if>		
+
+<!-- 
+................................................
+READING LIST ENTRY BULLETS
+................................................
+-->		
+				<div class="RLSteps">
+					<aura:iteration items="{!v.ListingItems}" var="L" indexVar="Idx">
+						<div class="RLStep">
+							<div class="IHAdopter RLStepNumberContainer" style="{! 'background: #' + v.UXThemeColour3 + ';'}">
+								<div class="IHAdopter RLStepNumber">
+									{!Idx + 1}
+								</div>
+							</div>
+							
+							<div id="{!L.Id}" title="{!L.iahelp__HelpTopic__r.Name}" class="IHAdopter RLStepName" style="{! 'background: #' + v.UXThemeColour1 + ';'}" onclick="{!c.toggleStep}">
+								{!L.iahelp__HelpTopic__r.Name}
+								
+								<div class="{!L.Expanded == true? 'IHAdopter Twisty' : 'slds-hide'}">
+									<i class='fa fa-caret-up'></i>
+								</div>
+		
+								<div class="{!L.Expanded == false? 'IHAdopter Twisty' : 'slds-hide'}">
+									<i class='fa fa-caret-down'></i>
+								</div>								
+							</div>
+							
+							<div class="{!L.Expanded == true? 'IHAdopter RLStepSummary' : 'slds-hide'}">
+
+								<aura:if isTrue="{!v.RLEStyle == 'Simple Text'}">
+									{!L.iahelp__HelpTopic__r.iahelp__Summary__c}
+								</aura:if>
+								
+								
+								<aura:if isTrue="{! v.RLEStyle == 'Minimal Topic'}">								
+									<c:IHDetailDesigner aura:id="theDesigner">
+									 	<aura:set attribute="CurrentRecord" value="{!L.iahelp__HelpTopic__r}" />	
+									    <aura:set attribute="ParentControl" value="{!this}" />
+									    <aura:set attribute="LayoutInfo" value="{!L.Layout}" />
+									</c:IHDetailDesigner>								
+								</aura:if>
+								
+								
+								<aura:if isTrue="{! v.RLEStyle == 'Topic Viewer' &amp;&amp; (L.Expanded == true || L.Rendered == true)}">
+									<c:IHDetail>
+										<aura:set attribute="SuppressHeader" value="true" />
+										<aura:set attribute="SuppressFooter" value="true" />
+										<aura:set attribute="Height" value="-1" />								
+										<aura:set attribute="HelpRecordId" value="{!L.iahelp__HelpTopic__c}" />
+									</c:IHDetail>
+								</aura:if>
+
+<!-- 
+................................................
+NAVIGATION BUTTON WHERE STEP SPECIFIES THIS
+(Desktop clients only)
+................................................
+-->		
+								<aura:if isTrue="{! v.BrowserFormFactor == 'DESKTOP' &amp;&amp; L.iahelp__NavigationType__c != null &amp;&amp; L.iahelp__NavigationType__c != null &amp;&amp; L.iahelp__NavigationType__c + '' != 'undefined' }">
+									
+									<div class="ToolBar">
+										<div class="IHClickable Button" 
+											title="{!v.QAMTitleButtonGotoNextStep}"
+											data-PDef="{! L.iahelp__NavigationType__c + '^' + L.iahelp__NavigationDetails__c}"
+											onclick="{!c.setStep}" 
+											style="{! 'background: #' + v.UXThemeColour3  + ';'}">
+
+											{!v.TipGoto}
+										</div>
+									</div>	
+									
+								</aura:if>
+								
+							</div>							
+						</div>				
+					</aura:iteration>
+				</div>
+			</div>
+		</aura:if>
+
+<!-- 
+================================================
+STANDARD STYLE
+================================================
+-->
+		<aura:if isTrue="{!v.RLStyle == 'Standard'}">
+	
+			<!-- NOTE: force media re-sizing on any mouse entry of component -->
+			<div id="IAListComponentBody" onmouseenter="{!c.finalInitialise}">
+
+<!-- 
+................................................
+NAVIGATION PROGRESS BAR
+................................................
+-->
+				<div id="{! globalId + 'RLNav'}" class="{! v.ShowNavBar == true ? '' : 'slds-hide'}">
+					<div class="slds-progress">
+					
+						<ol class="slds-progress__list">
+							<aura:iteration items="{!v.ListingItems}" var="L">
+					
+								<li id="{! 'NavItem' + globalId + L.Id}" class="slds-progress__item">
+									<a href="" onclick="{!c.NavTo}" title="{!L.iahelp__HelpTopic__r.Name}">				
+										<button id="{! 'NAVTo' + globalId + L.Id}" class="slds-button slds-progress__marker">
+											<span class="slds-assistive-text">{!L.iahelp__HelpTopic__r.Name}</span>
+										</button>
+									</a>					
+								</li>
+					
+							</aura:iteration>
+						</ol>
+	
+						<div class="slds-progress-bar"></div>
+					
+					</div>
+				</div>
+	
+<!-- 
+................................................
+READING LIST ENTRY TILES
+................................................
+-->
+				<div id="{!globalId  + '_Tiles'}" class="{! v.ShowNavBar == true ? 'IHRLVWithNav' : 'IHRLVWithoutNav'}"	>
+		
+					<!--
+					Add a DIV sized as media (width) so we can get rendered width 
+					(needs to be outside of RL Entry loop)
+					 -->
+					<div id="{!globalId + 'Sizer'}" class="{! 'MediaWidth_' + v.MediaWidth}"></div>
+		
+		
+					<ul class="slds-m-top_small HelpListItemsNarrow">
+						<aura:iteration items="{!v.ListingItems}" var="L" indexVar="Idx">
+							<li class="Help slds-has-dividers_top">
+			
+				                <div class="slds-grid">
+									<div id="{!globalId + L.Id}" class="slds-col_padded ListItemLink">
+									    <h3 class="slds-truncate RLEName" >
+									    	{!L.iahelp__HelpTopic__r.Name}
+										</h3>
+									</div>
+								</div>
+								
+			                    <div class="slds-text-body_small">
+			                        <p aura:id="Compact" class="Expanded slds-m-horizontal_small ">
+			                        	<div class="RLESummary">
+			                        		{!L.iahelp__HelpTopic__r.iahelp__Summary__c}
+			                        	</div>
+			
+			                        	<div class="{! v.ShowDescriptions == true ? 'RLEDescription' : 'slds-hide'}">
+		                    				<aura:unescapedHtml value="{!L.iahelp__HelpTopic__r.iahelp__Description__c}" />
+			                        	</div>   
+			
+			                       	</p>                     	
+			                       	
+									<div onclick="{!c.doLightBox}" class="{!L.iahelp__HelpTopic__r.iahelp__ImageURL__c != '' &amp;&amp; L.iahelp__HelpTopic__r.iahelp__ImageURL__c != null ? 'CentredMedia MediaWidth_' + v.MediaWidth : 'slds-hide'}">
+				                       	<img class="{! 'RLTile_' + Idx}" src="{!L.iahelp__HelpTopic__r.iahelp__ImageURL__c}" />
+			                       	</div>
+			                       	
+			                       	<div id="{! 'RLEVideo' + globalId + L.Id}" class="{!L.iahelp__HelpTopic__r.iahelp__VideoURL__c != '' &amp;&amp; L.iahelp__HelpTopic__r.iahelp__VideoURL__c != null ? 'CentredMedia MediaWidth_' + v.MediaWidth : 'slds-hide'}">
+				                       	<iframe aura:id="RLEVideo" class="RLEVideo" src="{!L.iahelp__HelpTopic__r.iahelp__VideoURL__c}" />
+			                       	</div>
+			
+			                       	<hr/>
+			                    </div>
+								
+							</li>
+						</aura:iteration>
+					</ul>
+				</div>
+		    </div>
+
+		</aura:if>
+
+<!-- 
+================================================
+CAROUSEL STYLE
+================================================
+-->
+		<aura:if isTrue="{!v.RLStyle == 'Carousel'}">
+
+<!-- 
+................................................
+Selector Lozenges
+................................................
+-->		
+			<div style="height: 2em; overflow: hidden;">
+				<ul class="slds-carousel__indicators" role="tablist" style="text-align: center;">				
+					<aura:iteration items="{!v.ListingItems}" var="L" indexVar="Idx">
+					
+						<li class="slds-carousel__indicator" role="presentation">
+						
+							<a id="{! globalId + 'carouselSelector_' + Idx}" 
+							
+									class="{! Idx == 0 ? 'slds-carousel__indicator-action slds-is-active' : 'slds-carousel__indicator-action'}" 
+									href="javascript:void(0);" 
+									onclick="{!c.carouselSelectorClick}"
+									role="tab" 
+									tabindex="0" 
+									aria-selected="true" 
+									aria-controls="content-id-01" 
+									title="{!L.iahelp__HelpTopic__r.Name}">
+			
+								<span class="slds-assistive-text">
+									{!L.iahelp__HelpTopic__r.Name}
+								</span>
+								
+							</a>
+						</li>	
+									
+					</aura:iteration>					
+				</ul>
+			</div>
+
+<!-- 
+................................................
+RL Entry tiles
+................................................
+-->			
+			<div class="slds-carousel" style="display: inline; height: 100%;" disableAutoScroll="false">
+				<div class="slds-carousel__stage">			
+			 		<div class="slds-carousel__panels" style="{! 'height: 100%; transform:translateX(-' + (v.ActiveCarouselPanel * 100) + '%);'}" >
+			
+						<aura:iteration items="{!v.ListingItems}" var="L" indexVar="Idx">
+			
+							<div class="slds-carousel__panel" role="tabpanel" aria-hidden="true" 
+										aria-labelledby="{! globalId + 'carouselSelector_' + Idx}"
+										style="height: 100%;"	
+										title="{!L.iahelp__HelpTopic__r.Name}"						
+										>
+			 
+								<c:IHDetailDesigner aura:id="theDesigner">
+								 	<aura:set attribute="CurrentRecord" value="{!v.CurrentRecord}" />	
+								    <aura:set attribute="ParentControl" value="{!this}" />
+								</c:IHDetailDesigner>
+			
+							</div>				
+						</aura:iteration>
+			
+					</div>
+				</div>					
+			</div>			
+			
+		</aura:if>
+
+    
+	</aura:if>  
+	  
+</aura:component>

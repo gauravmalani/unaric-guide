@@ -1,0 +1,28 @@
+.THIS .Overlay 									{position: absolute; top: -80vh; width: 100vw;}
+.THIS .OnPage 									{position: absolute; top: 0; right: 0; width: 100vw; z-index: 1000;}
+.THIS .IHOnTop 									{position: fixed; z-index: 1000; width: 100vw; padding: 15px;}
+
+
+.THIS .DesignMode * div.ComponentContainer 		{border: dotted 1px silver;}
+
+.THIS .GridCellLabel							{cursor: pointer; 
+												background: #eeeeee; 
+												padding: 3px; 
+												border-radius: 3px; 
+												display: inline; 
+												position: fixed; 
+												z-index: 10;}
+
+.THIS .ToolBar									{position: absolute; top: -20px; right: 0px;}
+												
+.THIS.Button, .THIS .Button						{background: #3c97dd; color: white; margin-left: 0.3rem;}
+.THIS.Button:hover, .THIS .Button:hover			{background: #ff0062 !important;}
+												
+.THIS .Toggle_false								{background: #ff6666; color: white;}												
+.THIS .Toggle_true								{background: #ccff66;}												
+
+.THIS .ToBeHelped								{background: #ccff66; font-style: italic; color: #008000;}	
+.THIS .Guided									{border: solid 1px red;}
+
+.THIS .CloseGuideButton							{display: inline;}
+.THIS .CloseGuideButton:hover					{color: #ff0062 !important;}

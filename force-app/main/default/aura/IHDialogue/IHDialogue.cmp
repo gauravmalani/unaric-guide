@@ -1,0 +1,120 @@
+<aura:component implements="force:appHostable" access="global">
+  
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+<aura:method name="requestClose" action="{!c.requestClose}" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="ComponentId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="Title" type="string" required="true" default="Improved Help" access="public" />
+    <aura:attribute name="Diags" type="string" required="true" default="- - -" access="private" />
+    
+    <aura:attribute name="FrameType" type="string" required="true" default="VF" access="public" />
+    <aura:attribute name="FrameSource" type="string" required="true" default="" access="public" />
+    <aura:attribute name="FrameAttributes" type="object" required="true" default="" access="global" />
+    <aura:attribute name="FrameHeight" type="integer" required="true" default="150" access="global" />
+	<aura:attribute name="AllowScroll" type="boolean" required="true" default="false" access="global" />
+    <aura:attribute name="LargeMode" type="boolean" required="true" default="false" access="global" />
+    <aura:attribute name="ShowFooter" type="boolean" required="true" default="true" access="public" />
+    <aura:attribute name="ShowHeader" type="boolean" required="true" default="true" access="public" />
+    <aura:attribute name="FooterTools" type="ConfigurationItem__c[]" required="false" access="public" />
+    <aura:attribute name="isInitialised" type="boolean" required="false" default="false" access="public" />
+    <aura:attribute name="theLUXComp" type="sObject" required="false" access="public" />
+
+<aura:attribute name="DialogueActionCode" type="string" required="false" default="" access="global" />
+
+
+	<aura:attribute name="TipButtonClose" type="string" required="false" default="" access="global" />
+    
+    <aura:attribute name="renderLST" type="boolean" required="false" default="false" access="public" />
+
+
+    <div role="dialog" tabindex="-1" aria-labelledby="modalTitle" class="{! v.LargeMode == true ? 'slds-modal slds-fade-in-open slds-modal_large' : 'slds-modal slds-fade-in-open'}">
+        <div class="slds-modal__container">
+
+<!-- 
+================================================ 
+Header and dialogue close button
+================================================
+-->         
+			<div class="{! v.ShowHeader == true ? 'slds-modal__header' : 'slds-hide'}" >
+                
+				<div onclick="{!c.requestClose}" class="slds-button slds-modal__close slds-button_icon-inverse" title="{!v.TipButtonClose}">
+    
+                    <span class="fa-stack fa-lg IATool">
+                        <i class="fa fa-times fa-stack-1x" aria-hidden="true"></i>
+                    </span>					
+    
+					<span class="slds-assistive-text"></span>
+				</div>
+            
+                <h2 id="modalTitle" class="slds-text-heading_medium">
+                    {!v.Title}                
+                </h2>
+               </div>
+            
+            
+<!-- 
+================================================
+Dialogue body - iframe or component content
+================================================
+-->
+            <div aura:id="DlgContainer" class="{! v.ShowHeader == true ? 'slds-modal__content IHDlgContainer' : 'slds-modal__content IHDlgHeaderless'}"> 
+
+				<div aura:id="IHDlgPending" style="{! v.FrameHeight == -1 ? 'width: 100%; height: 100%;' : 'width: 100%; height: ' + v.FrameHeight + 'px;'}" class='IHTipPending'>
+                   
+					<aura:if isTrue="{! v.FrameType == 'VF'}">  
+						<iframe aura:id="dfrm" onload="{!c.hideDlgSpinner}" src="{!v.FrameSource}"
+								frameborder="0" scrolling="{!v.AllowScroll == true ? 'yes' : 'no'}" 
+								style="{! v.FrameHeight == -1 ? 'width: 100%; height: CALC(100% - 10px); padding: 0 10px;' : 'width: 100%; height: ' + (v.FrameHeight - 10) + 'px; padding: 0 10px;'}" />
+					</aura:if>	
+					<aura:if isTrue="{! v.FrameType == 'LUX'}">       
+							<div aura:id="ddiv" style="{! v.FrameHeight == -1 ? 'width: 100%; height: 100%;' : 'width: 100%; height: ' + v.FrameHeight + 'px;'}">
+		                        {!v.body}
+		                    </div>
+					</aura:if>
+					<aura:if isTrue="{! v.FrameType == 'Alert'}">       
+							<div aura:id="IHAlertCompContainer" class="slds-hide">
+	                            <c:IHAlert aura:id="IHAlertComp">       	
+	                            </c:IHAlert>
+		                    </div>                    
+					</aura:if>  
+                </div>
+            </div>
+
+<!-- 
+================================================
+Optional footer, including footer tool buttons
+================================================
+-->
+            <div class="{! v.ShowFooter == true ? 'slds-modal__footer' : 'slds-hide'}">
+                <aura:iteration items="{!v.FooterTools}" var="T">
+                    {!T.iahelp__Label__c}
+                    <button title="{!T.iahelp__TipText__c}" class="slds-button slds-button_neutral">{!T.iahelp__Label__c}</button>
+                </aura:iteration>
+            </div>
+            
+        </div>
+    </div>
+    
+
+<!--  
+================================================
+Modal background
+================================================
+-->
+     <div class="IHDialogueModalBackground slds-backdrop slds-backdrop_open"></div>       
+    
+    
+</aura:component>

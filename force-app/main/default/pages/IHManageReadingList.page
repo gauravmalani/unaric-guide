@@ -1,0 +1,137 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO ALLOW USERS TO MANAGE THE ENTRIES ON A GIVEN READING LIST:
+(FOR MANIPULATION OF RL PROPERTIES, SEE IHReadingListProperties)
+
+REQUIRES A READING LIST ID, i.e:
+
+    [SF base URL]/Apex/IHManageReadingList?RList=[reading list id]
+    
+Martin Little for Improved Apps
+September 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}" 
+                controller="ControllerRListInfo"
+                action="{!getReadingList}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}</title>
+
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>    
+
+    <body class='Dialogue'>             
+        
+        <apex:include pageName="IHHook"/>
+        
+        <div id="ReadingListEntriesDialogue" class='IHPanel'>
+            <apex:form >
+                            
+                <div class='IHPanelBody'>
+                    <div id='ReadingListEntries' style='height: 430px;'>               
+                
+                        <!--
+                        IF NO READING LIST IS PRESENT, SHOW PLACEHOLDER CONTENT 
+                         -->
+                        <apex:pageBlock rendered="{!RList.Entries == null}">
+                            <div class="IH-H4">
+                                <div style="margin: 20px;">
+                                    {!DialogueLocalisations['AdviceLabelRLNotFound']}
+                                </div>
+                            </div>
+                        </apex:pageBlock>
+    
+                        <!-- 
+                        OTHERWISE, CREATE A LIST OF THIS RL'S ENTRIES
+                         -->
+                        <apex:pageBlock rendered="{!RList.Entries != null}">
+                            <apex:dataTable value="{!RList.Entries}" var="Entry" rowClasses="odd,even">
+                                <apex:column >
+                                    <apex:outputLink target="_HelpTopic" title="{!DialogueLocalisations['TipGotoTopic']}" value="iahelp__{!PortalPage}?HTID={!Entry.EntryRecord.HelpTopic__c}" style="padding-left: 10px;">
+                                        <apex:outputText value="{!Entry.EntryName}" escape="true"></apex:outputText>
+                                    </apex:outputLink>                     
+                                </apex:column>         
+            
+                                <apex:column >
+                                    <apex:commandLink title="{!DialogueLocalisations['TipMoveEntryUp']}" action="{!RList.moveUp}">
+                                        <apex:param name="clrMover" value="{!Entry.EntryRecord.Id}" assignTo="{!clrMover}" ></apex:param>
+                                        
+                                        <apex:outputPanel rendered="{!Entry.MoveUpIcon != ''}" >
+                                            <div class="IHIcon IHIconNavUp"></div>
+                                        </apex:outputPanel>
+                                        
+                                    </apex:commandLink>
+                                </apex:column>         
+            
+                                <apex:column >
+                                    <apex:commandLink title="{!DialogueLocalisations['TipMoveEntryDown']}" action="{!RList.moveDown}">
+                                        <apex:param name="clrMover" value="{!Entry.EntryRecord.Id}" assignTo="{!clrMover}" ></apex:param>
+                                        
+                                        <apex:outputPanel rendered="{!Entry.MoveDownIcon != ''}" >
+                                            <div class="IHIcon IHIconNavDown"></div>
+                                        </apex:outputPanel>
+
+                                    </apex:commandLink>
+                                </apex:column>       
+    
+                                <!--
+                                NB: DELETE ENTRY LINK NEEDS TO VARY DEPENDING ON WHETHER THIS
+                                IS THE LAST ENTRY: IF NOT, OFFER SIMPLE ENTRY DELETE... 
+                                 -->
+    
+                                <apex:column rendered="{!IF(RList.Entries.size > 1, true, false)}">                       
+                                    <apex:commandLink title="{!DialogueLocalisations['TipDeleteEntry']}" action="{!RList.deleteItem}" onclick="if (!confirm('{!JSENCODE(GlobalLocalisations['MessageDeleteWarning'])}')) return false">
+                                        <apex:param name="clrMover" value="{!Entry.EntryRecord.Id}" assignTo="{!clrMover}" ></apex:param>
+                                        
+                                        <apex:outputPanel rendered="{!Entry.DeleteIcon != ''}" >                                        
+                                            <div class="IHIcon IHIconUnlink"></div>
+                                        </apex:outputPanel>
+                                        
+                                    </apex:commandLink>
+                                </apex:column>         
+    
+        
+                                <!-- 
+                                IF THIS IS THE LAST ENTRY, DELETE THE READING LIST (AND THUS
+                                ITS LAST ENTRY)
+                                 -->
+    
+                                <apex:column rendered="{!IF(RList.Entries.size == 1, true, false)}">                       
+                                    <apex:commandLink title="{!DialogueLocalisations['TipDeleteEntry']}" action="{!deleteReadingList}" onclick="if (!confirm('{!JSENCODE(DialogueLocalisations['MessageConfirmDeleteEntryAndRL'])}')) return false">
+                                        <apex:param name="clrMover" value="{!Entry.EntryRecord.Id}" assignTo="{!clrMover}" ></apex:param>
+                                        
+                                        <apex:outputPanel rendered="{!Entry.DeleteIcon != ''}" >                                        
+                                            <div class="IHIcon IHIconUnlink"></div>
+                                        </apex:outputPanel>
+                                        
+                                    </apex:commandLink>
+                                </apex:column>         
+        
+                            </apex:dataTable>
+                        </apex:pageBlock>
+                    </div>  
+                    
+                    <div class="IHPanelFooter">
+                        <apex:outputPanel rendered="{!RList.NewEntryLink != ''}" >
+                            <a href="{!$Page.IHSearchResults}?RLID={!RList.RLID}&Opts=2" title="{!DialogueLocalisations['TipbtnAddRLEntries']}">
+                                <div class="IHIcon32 IHIdle IHIconLink"></div>
+                            </a>
+                        </apex:outputPanel>
+                    </div>
+
+                    <apex:outputText value="{!RList.Diags}" escape="true"></apex:outputText>
+                    
+                </div>
+                
+            </apex:form>
+        </div>
+                
+    </body>
+    
+</apex:page>

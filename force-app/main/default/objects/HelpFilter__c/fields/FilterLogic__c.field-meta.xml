@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FilterLogic__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Rules governing the grouping of individual Criteria within a Filter</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Rules governing the grouping of individual Criteria within a Filter</inlineHelpText>
+    <label>Filter Logic</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

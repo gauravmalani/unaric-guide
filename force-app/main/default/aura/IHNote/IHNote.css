@@ -1,0 +1,7 @@
+.THIS .stickyContainer		{padding: 1em; height: 100%;}
+.THIS .stickyTitle			{padding-bottom: 0.3em; text-align: center; Xoverflow: hidden; Xtext-overflow: ellipsis; Xwhite-space: nowrap;}
+.THIS .stickyInput     		{width: 100%; height: CALC(100% - 0.8em); background-color: #fdffe6;}
+.THIS div.uiInputTextArea	{}
+
+/* Styling for the actual text of the note */
+.THIS .Hand1				{font-family: comic sans ms; font-size: 1.5em; font-style: italic; color: navy; }

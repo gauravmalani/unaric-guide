@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Locally_defined_items</fullName>
+    <booleanFilter>1 or 2</booleanFilter>
+    <columns>NAME</columns>
+    <columns>ActionCode__c</columns>
+    <columns>Label__c</columns>
+    <columns>Description__c</columns>
+    <columns>SkipImportOverwrite__c</columns>
+    <columns>SkipExport__c</columns>
+    <columns>ToolContext__c</columns>
+    <columns>Type__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>SkipExport__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>SkipImportOverwrite__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Locally defined items</label>
+</ListView>

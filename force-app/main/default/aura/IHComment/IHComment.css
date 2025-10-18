@@ -1,0 +1,79 @@
+.THIS .IACommentComponent		{height: 100%;}
+
+.THIS .CommentListingArea		{height: 100%;}
+.THIS .CommentListing			{height: 95%;}
+.THIS .CommentDetails			{height: 100%; overflow: auto;}
+
+
+.THIS .hideclass{    
+    float: right;
+    visibility: hidden;
+    margin-right: 5px;
+}
+
+.THIS .unhide{
+    float: right;
+    margin-right: 5px;
+}
+
+.THIS .marginclass{
+    margin-top: 10px;
+     float: right;
+}
+
+.THIS .textColorBlue{
+    color: #004080;
+    font-weight: bold;
+}
+.THIS .commentBoxStyle{
+    width: 100%;
+    height: 100%;
+}
+.THIS .userName{
+    border-bottom: 3px double; 
+}
+.THIS .slds-textarea{
+        height: 200px;
+}
+.THIS .cardCSS{
+             border-radius: 25px;
+    border-style: solid;
+    border-color: #009eed;
+    height: 322px;
+    width: 190px;
+    margin-top: 8px;
+}
+.THIS .listCSS{ 
+    height: 377px;
+    border-style: 5px solid;
+    border-color: rgb(243 243 243);
+    border-radius: 18px;
+    
+}
+.THIS .squareButtons{
+    height: 30px; 
+    width: 30px; 
+   
+    
+    float: right;
+    margin-left: 5px;
+    background-color : #009EED;
+    border: 5px solid #ffffff;
+}
+.THIS .heightclass{
+        height: 60px;
+        background-color : #009EED;
+}
+.THIS .cardCSS{
+    background-color:rgba(207, 233, 254, 1) ; 
+    border-width: 5px; 
+    border: rgba(30, 157, 214, 1) solid;
+}
+
+.THIS .scroller{
+    overflow: scroll;
+    
+}
+.THIS .scroller::-webkit-scrollbar{
+  display: none;
+}

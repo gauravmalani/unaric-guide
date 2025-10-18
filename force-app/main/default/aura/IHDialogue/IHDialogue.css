@@ -1,0 +1,4 @@
+.THIS .IATool			{display: inline-block;}   
+.THIS .IHDlgContainer	{overflow: hidden; border-radius: 0 0 5px 5px;}
+.THIS .IHDlgHeaderless	{overflow: hidden !important; border-radius: 5px;}
+.THIS .squareButtons	{height: 30px; width: 30px; border-style: solid;border-color: #0070d2;float: right;margin-left: 5px;}

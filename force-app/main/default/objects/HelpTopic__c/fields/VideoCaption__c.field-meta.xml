@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VideoCaption__c</fullName>
+    <deprecated>false</deprecated>
+    <description>A caption to display below any video clip selected for this Help Topic</description>
+    <externalId>false</externalId>
+    <inlineHelpText>A caption to display below any video clip selected for this Help Topic</inlineHelpText>
+    <label>Video Caption</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

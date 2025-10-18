@@ -1,0 +1,254 @@
+<!--
+============================================================================================== 
+PAGE FOR VIEWING/MANIPULATING A HEPLED ELEMENT RECORD.
+
+REQUIRES A HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL).
+ALSO REQUIRES MODE TO SETUP THE INCLUDED EDITING TOOLBAR CORRECTLY, I.E:
+
+    [SF base URL]/Apex/IHHelpedElement?ElemId=[element identifier]&HPL=[Layout identifier]&Mode=[New|Edit|Read]
+
+OPTIONALLY, PASS THE ID (NOT THE IDENTIFIER) OF THE ELEMENT RECORD THAT IS "CURRENT" / SELECTED
+FROM THE LIST OF THOSE AVAILABLE, I.E:
+
+    ...&ActiveId=[element Id]
+
+Martin Little for Improved Apps
+July 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TipButtonEdit']} - {!HE.Name}"
+                controller="ControllerHelpContent"
+                action="{!getHelpedElement}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TipButtonEdit']} - {!HE.Name}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />
+                
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <style>
+            .IHLUX.IHPanelHeader        {display: none;}
+            .IHLUXIHDialogue * table    {width: 100%;}
+            .IHLUXIHDialogue            {background: #eeeeee;}
+        </style>
+        
+        <apex:slds rendered="{!isIHLUX==true}" /> 
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}" />
+        
+        <script type="text/javascript">
+
+            // Prepare page for use         
+            function initialise() {
+
+                // Bind tips to our editing tools
+                var ary = new Array ('{!DialogueLocalisations['TipButtonAdd']}', '{!DialogueLocalisations['TipButtonEdit']}', '{!DialogueLocalisations['TipButtonDelete']}', '{!DialogueLocalisations['TipButtonSave']}', '{!GlobalLocalisations['TipGenericCancel']}');
+                setTips(ary);
+                                
+                // Set button availability
+                ary = new Array (true, true, true, true, true);
+                setButtons(ary);
+                
+                // Set tools mode to match our own
+                setMode('{!JSENCODE(Mode)}');
+                
+                // Report back to the user with confirmations of any action just completed
+                IHEditHelp.confirmComplete(null, '{!JSENCODE(Diags)}');                                                          
+                
+                return;
+            }
+            
+            
+            function DFWarning(elem) {
+                if (elem.checked == true) {
+                    alert('{!JSENCODE(DialogueLocalisations['MessageUseForNew'])}');
+                }
+                return;
+            }
+            
+        </script>  
+        
+    </head>
+   
+    
+    <body class="Dialogue" onload='javascript:initialise();' >
+    
+        <apex:include pageName="IHHook"/>
+        
+        <div class="{!IF(isIHLUX==true, 'IHLUX', '')}IHDialogue{!IF(isIH1UX==true || isIHLUX==true, '', ' IHPanel')} ToolsEditor">
+            <apex:form >
+                <div class="{!IF(isIHLUX==true, 'IHLUX ', '')}IHPanelHeader">
+                    <div class='IH-H3'>
+                        {!DialogueLocalisations['TitleDialogueTitle']}
+                    </div>              
+                </div>
+                
+                <div class="IHPanelBody">
+
+<!--   
+===============================================
+ALL MODES: HELPED ELEMENT LISTING
+===============================================
+ -->    
+                        
+                    <div style='float: left; width: 58%; margin: 1%; font-size: 0.9em;'>
+                        <apex:dataTable value="{!allHEs}" var="Elems" rowClasses="odd,even">                        
+                            <apex:column styleClass="{!IF(Elems.Id == HE.Id, 'Active', '')}">
+                                <apex:facet name="header">
+                                    <div class="IHListColumnHeading">
+                                        {!DialogueLocalisations['ColumnLabelName']}
+                                    </div>
+                                </apex:facet>  
+                                                           
+                                <a href='{!TRootLink}/apex/iahelp__IHHelpedElement?Mode=Read&ElemId={!Elems.Identifier__c}&HPL={!Elems.HelpedPageLayout__r.PageLayoutIdentifier__c}&ActiveId={!Elems.Id}&IH1UX={!isIH1UX}&IHLUX={!isIHLUX}'>
+                                    {!Elems.Name}
+                                </a>
+                            </apex:column>
+                        
+                            <apex:column styleClass="{!IF(Elems.Id == HE.Id, 'Active', '')}">
+                                <apex:facet name="header">
+                                    <div style="width: 100%; text-align: center;" class="IHListColumnHeading">
+                                        {!DialogueLocalisations['ColumnLabelVisibility']}
+                                    </div>
+                                </apex:facet>    
+                                
+                                <div style="width: 100%; text-align: center;">
+                                    {!Elems.Visibility__c}
+                                </div>                           
+                            </apex:column>
+                        
+                            <apex:column styleClass="{!IF(Elems.Id == HE.Id, 'Active', '')}">
+                                <apex:facet name="header">
+                                    <div class="IHListColumnHeading">                                
+                                        {!DialogueLocalisations['ColumnLabelFilter']}
+                                    </div>
+                                </apex:facet>
+                                                               
+                                {!Elems.DataDrivenFilter__c}
+                            </apex:column>                      
+
+                            <apex:column styleClass="{!IF(Elems.Id == HE.Id, 'Active', '')}">
+                                <apex:facet name="header">
+                                    <div style="width: 100%; text-align: center;" class="IHListColumnHeading">                                
+                                        {!DialogueLocalisations['ColumnLabelUseForNew']}
+                                    </div>
+                                </apex:facet>
+                                                                 
+                                <div style="width: 100%; text-align: center;">
+                                    <span style="color: {!IF(Elems.UseForNew__c == true, 'DarkGreen', 'Red')};">
+                                        <apex:outputText value="{!IF(Elems.UseForNew__c == true, 'Yes', 'No')}" escape="true" />
+                                    </span>
+                                </div>                                 
+                            </apex:column>                      
+
+                        </apex:dataTable>                               
+                    </div>
+                            
+                    <div style='float: right; width: 40%;'>
+                        <apex:pageBlock >
+        
+<!--   
+===============================================
+READ MODE: HELPED ELEMENT PROPERTIES
+===============================================
+ -->     
+                            <apex:tabPanel activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="IHSettingsHeader" headerSpacing="5" contentClass="IHTabContent" switchType="client" width="100%">
+                                <apex:tab label="{!DialogueLocalisations['TitleTabGeneral']}" name="General" styleClass="IHTab" >
+
+                                    <apex:PageBlockSection rendered="{!IF(Mode == 'Read', true, false)}" columns="1" showHeader="false">
+                                        <apex:outputText value="{!HE.Name}" label="{!DialogueLocalisations['FieldLabelName']}"/>
+                                        <apex:outputText value="{!HE.ElementType__c}" label="{!DialogueLocalisations['FieldLabelType']}" />
+                                        <apex:outputText value="{!HE.HelpedPageLayout__r.Name}" label="{!DialogueLocalisations['FieldLabelLayout']}" />
+                                        <apex:outputText value="{!HE.Identifier__c}" label="{!DialogueLocalisations['FieldLabelIdentifier']}"/>
+        
+                                        <apex:outputText value="" label="{!DialogueLocalisations['FieldLabelHelpTopic']}">
+                                            <apex:outputLink title="{!DialogueLocalisations['TipHelpTopicLink']}" value="{!TRootLink}/apex/iahelp__{!PortalPage}?HTID={!HE.HelpTopic__c}" target="_blank">
+                                                {!HE.HelpTopic__r.Name}
+                                            </apex:outputLink>
+                                        </apex:outputText>
+                                        
+                                        <apex:outputText value="{!HE.Visibility__c}" label="{!DialogueLocalisations['FieldLabelVisibility']}"/>
+                                        <apex:outputText value="{!HE.DataDrivenFilter__c}" label="{!DialogueLocalisations['FieldLabelDataDrivenFilter']}"/>
+                                        <apex:outputText value="{!HE.UseForNew__c}" label="{!DialogueLocalisations['FieldLabelUseForNew']}" />
+                                                                        
+                                    </apex:pageBlockSection>
+                                
+<!--   
+===============================================
+EDIT MODE: DATA ENTRY FIELDS
+===============================================
+ -->    
+                                    <apex:PageBlockSection rendered="{!IF(Mode != 'Read', true, false)}" columns="1" showHeader="false">
+                                        <apex:inputField value="{!HE.Name}" label="{!DialogueLocalisations['FieldLabelName']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.ElementType__c}" label="{!DialogueLocalisations['FieldLabelType']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.HelpedPageLayout__c}" label="{!DialogueLocalisations['FieldLabelLayout']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.Identifier__c}" label="{!DialogueLocalisations['FieldLabelIdentifier']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.HelpTopic__c}" label="{!DialogueLocalisations['FieldLabelHelpTopic']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.Visibility__c}" label="{!DialogueLocalisations['FieldLabelVisibility']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.DataDrivenFilter__c}" label="{!DialogueLocalisations['FieldLabelDataDrivenFilter']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                                        <apex:inputField value="{!HE.UseForNew__c}" label="{!DialogueLocalisations['FieldLabelUseForNew']}" onkeydown="javascript:return IHSearch.checkEnter('', event);" onchange="javascript:DFWarning(this);" />
+                                    </apex:PageBlockSection>
+                                </apex:tab>
+
+
+<!--   
+===============================================
+FILTERS TAB / OMNI FILTER CONTROL
+1.31 - check ops with Opportunities / apparent schema errors 
+before re-enabling? - "Missing dependent object: Field: Opportunity.HasOpenActivity" etc? 
+===============================================
+    
+                                <apex:tab disabled="false" label="{!DialogueLocalisations['TitleTabFilters']}" name="Filters" styleClass="IHTab" >
+                                    <apex:PageBlockSection rendered="{!IF(Mode == 'Read', true, false)}" columns="1" showHeader="false">
+                                        <c:IHOmniFilter theFilteredObjectIdentifier="{!HE.HelpedPageLayout__r.PageLayoutIdentifier__c}" theFilterIdentifier="{!HE.Id}" Mode="Read" />
+                                    </apex:PageBlockSection>
+
+                                    <apex:PageBlockSection rendered="{!IF(Mode != 'Read', true, false)}" columns="1" showHeader="false">
+                                        <c:IHOmniFilter theFilteredObjectIdentifier="{!HE.HelpedPageLayout__r.PageLayoutIdentifier__c}" theFilterIdentifier="{!HE.Id}" Mode="Edit" />
+                                    </apex:PageBlockSection> 
+                                </apex:tab>
+-->
+
+                            </apex:tabPanel>
+                        </apex:pageBlock>            
+                    </div>                        
+                </div>
+                
+                <div class='IHPanelFooter' >
+
+<!--   
+===============================================
+COMMON EDITING TOOLS
+===============================================
+ -->    
+
+                    <div style="float: right;">
+                        <apex:include pageName="IHEditingTools"/>
+                    </div>
+                    
+                    <apex:actionFunction name="doAdd" action="{!navHEToNewMode}" />
+                    <apex:actionFunction name="doEdit" action="{!navHEToEditMode}" />
+                    <apex:actionFunction name="doDelete" action="{!deleteHelpedElement}" />
+                    <apex:actionFunction name="doSave" action="{!saveHelpedElement}" />
+                    <apex:actionFunction immediate="true" name="doCancel" action="{!cancelHelpedElementChanges}" />
+
+                    <div class="IHStatusBox">
+                        <div class="IHStatusMessage">
+                            &nbsp;{!JSENCODE(Diags)}
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </apex:form>
+        </div>
+
+                         
+    </body>
+
+</apex:page>

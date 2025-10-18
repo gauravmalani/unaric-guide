@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Draft_Layouts</fullName>
+    <columns>NAME</columns>
+    <columns>PageType__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>PageLayoutIdentifier__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>AllowComments__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>NAME</field>
+        <operation>contains</operation>
+        <value>Draft</value>
+    </filters>
+    <label>Draft Layouts (Newly &apos;Help-Enabled&apos;)</label>
+</ListView>

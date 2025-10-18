@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RelatedHelpTopics__c</fullName>
+    <deprecated>false</deprecated>
+    <inlineHelpText>Rolled-up Summary field showing the number of Help Topics referencing this Help Resource</inlineHelpText>
+    <label>Related Help Topics</label>
+    <summaryForeignKey>HelpTopicResource__c.HelpResource__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

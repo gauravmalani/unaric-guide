@@ -1,0 +1,118 @@
+<!--
+============================================================================================== 
+HELP TOPIC TEMPLATE. REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) 
+PLUS HELPED PAGE LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+IN ADDITION, IF DESIRED SUPPLY THE IH1UX PARAMETER TO SWITCH STYLE TO SUIT THE Salesforce1 ENVIRONMENT, IE
+
+    [address as above]&IH1UX=true
+
+Martin Little for Improved Apps
+July 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>
+
+    <body class="Page{!IF(isIH1UX==true, ' IH1UX', '')}{!CustomStyle}">    
+    
+        <apex:include pageName="IHHook"/>
+    
+        <apex:form >
+            <div id="TopicTemplate" >
+                <table id='Content'>
+                    <tr>
+                        <td>
+                            <!-- Share, Like and other tools -->
+                            <div style="margin-left: 10px;">
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" />
+                            </div>
+                            
+                            <div id='TopicName' class='IHSnapToElement IH-H3'>
+                                <apex:outputText rendered="{!!isIH1UX}" value="{!TName}" escape="true"></apex:outputText> 
+                            </div>                          
+                        </td>                           
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="IHContainer">
+                                <div id='TopicSummary' class='IHSnapToElement TopicSummary TopicText'>
+                                    <span class='{!MessageClass}'>
+                                        <apex:outputText value="{!TSummary}" escape="true"></apex:outputText>
+                                    </span>
+                                </div>              
+                            </div>
+                        </td>
+                    </tr>
+    
+                    <tr>                
+                        <td>
+
+                            <div id="IHWrapper"> 
+                            
+                                <div class="{!IF(THasMedia == false , '', IF(TDescription == '', '','Col1'))}" style="{!IF(THasMedia == false , 'height: 0', '')}">               
+                                    <div id='ContentMedia' >
+                            
+                                        <div id='TopicImageTitle' class='IHSnapToElement IH-H4'>
+                                            <apex:outputText value="{!TImageTitle}" escape="true"></apex:outputText>
+                                        </div>
+                                                                                        
+                                        <div id='TopicImage' style="width:{!TImageWidth}px;">
+                                            <a class='lightbox_trigger' title='Click to see full size image...' href='{!TImageURL}'>                            
+                                                <apex:image alt="{!TImageTitle}" url="{!TImageURL}" width="{!TImageWidth}" height="{!TImageHeight}" style="border: none;'"></apex:image>
+                                            </a>
+                                        </div>
+                                                                
+                                        <div id='TopicImageCaption' class='IHSnapToElement MediaCaption'>
+                                            <apex:outputText value="{!TImageCaption}" escape="true"></apex:outputText>
+                                        </div>
+                                                                
+                                        <div id='TopicVideoTitle' class='IHSnapToElement IH-H4'>
+                                            <apex:outputText value="{!TVTitle}" escape="true"></apex:outputText>
+                                        </div>
+                                                                                                                
+                                        <div id='TopicVideo' style="width:{!TVWidth}px;"> 
+                                            <iframe width="{!TVWidth}" height="{!TVHeight}" src="{!TVURL}" frameborder="0" ></iframe>
+                                        </div>
+                                        
+                                        <div id='TopicVideoCaption' class='IHSnapToElement MediaCaption'>
+                                            <apex:outputText value="{!TVCaption}" escape="true"></apex:outputText> 
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="{!IF(THasMedia == false, '', 'Col2')}">                             
+                                    <div id="ContentDesc" class="IHContainer{!IF(TDescription + '' != '<br>' && TDescription != '', '', 'IHHidden')}">                          
+                                        <div id='TopicDescription' class='TopicText'>
+                                            <apex:outputText value="{!TDescription}" escape="false" />                                        
+                                        </div>                                                                                      
+                                    </div>
+                                </div>                          
+
+                            </div>                          
+                        </td> 
+                    </tr>
+                </table>
+
+            </div>
+            
+        </apex:form> 
+    </body> 
+</apex:page>

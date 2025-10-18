@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ImageUploadFolder__c</fullName>
+    <deprecated>false</deprecated>
+    <description>ID of the Document Folder to use when uploading images for Help Topics</description>
+    <externalId>false</externalId>
+    <inlineHelpText>ID of the Document Folder to use when uploading images for Help Topics</inlineHelpText>
+    <label>Image Upload Folder</label>
+    <length>20</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

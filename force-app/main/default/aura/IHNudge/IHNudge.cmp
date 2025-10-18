@@ -1,0 +1,103 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+				extends="IHCard"
+				access="global" >
+	
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+	
+<!-- 
+================================================
+SET CARD VARIABLES TO "HIDE" UNNECESSARY ITEMS
+================================================
+-->	
+	<aura:set attribute="IHCardType" value="Nudge" />    
+
+	<aura:set attribute="Height" value="0" />
+    <aura:set attribute="Title" value="" />	
+    <aura:set attribute="ToolContext" value="NoSuch" />
+    <aura:set attribute="SuppressHeader" value="true" />
+    <aura:set attribute="SuppressFooter" value="true" />
+    <aura:set attribute="SuppressPoweredBy" value="true" />
+    
+<!-- 
+================================================
+OUR OWN CONTROL PARAMETERS
+================================================
+-->    
+    <aura:attribute name="RootNode" type="string" access="global" />	
+    <aura:attribute name="SelectedStyle" type="string" required="true" default="Alert" access="global" />	
+    <aura:attribute name="SelectedPalette" type="string" required="true" default="Info" access="global" />	
+    <aura:attribute name="NudgeClass" type="string" required="true" default="NudgeArea slds-notify slds-notify_toast slds-theme_info" access="private" />	    
+    <aura:attribute name="YMax" type="integer" default="100" required="true" access="global" />
+    <aura:attribute name="AnimationSpeed" type="integer" default="1000" required="true" access="global" />
+    <aura:attribute name="AutoHideTime" type="integer" default="0" required="true" access="global" />
+
+    <aura:attribute name="MaxNudges" type="integer" default="0" required="true" access="global" />
+    <aura:attribute name="NudgePeriod" type="integer" default="0" required="true" access="global" />
+    <aura:attribute name="NudgesLogged" type="integer" default="0" required="false" access="public" />
+
+    <aura:attribute name="CurrentTName" type="string" default="" access="global" />
+    <aura:attribute name="CurrentTSummary" type="string" default="" access="global" />    	
+    <aura:attribute name="CurrentIndex" type="integer" default="0" required="true" access="private" />
+    <aura:attribute name="CurrentHTID" type="string" default="" required="true" access="private" />
+
+    <aura:attribute name="FixedMode" type="boolean" default="false" required="true" access="private" />	
+    
+    	
+<!-- 
+================================================
+CONTAINER DIV CLASSES GOVERNS OVERALL STYLE
+================================================
+-->
+	<div aura:id="NudgeContainer" class="slds-notify_container slds-is-relative">
+		<div aura:id="NudgeContent" id="{!v.ComponentId + '_NudgeArea'}" class="{! v.NudgeClass}" role="alert">
+			
+			<span class="slds-assistive-text">
+				{!v.CurrentTName} : {!v.CurrentTSummary}
+			</span>
+		  
+<!-- 
+================================================
+"READ MORE" TYPE LINK / NUDGE TOPIC INFO
+================================================
+-->		  
+		  	<div class="ReadMoreLink" title='{!v.FixedMode == true ? v.TipButtonClose : v.TipReadMoreLinkUsers}' onclick='{!c.navToNudge}'>
+				<h2>
+					<span class="NudgeName">
+						{!v.CurrentTName} 
+					</span>
+					<br/>
+					<span class="NudgeSummary">
+						{!v.CurrentTSummary}			
+					</span>
+					
+					<!-- Show nudge stats only if a maximum applies -->
+					<aura:if isTrue="{! v.MaxNudges != 0}">
+						<br/>
+						<span class="NudgeDiags">
+							{!v.Diags}			
+						</span>
+					</aura:if>
+				</h2>		  	
+			</div>	
+
+<!-- 
+================================================
+MANUAL CLOSE BUTTON
+================================================
+-->			
+			<button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" onclick="{!c.hideNudge}" title="{!v.TipButtonClose}">
+				<lightning:icon iconName="action:close" size="x-small" alternativeText="{!v.TipButtonClose}" />	
+		    	<span class="slds-assistive-text">
+					{!v.TipButtonClose}
+		    	</span>
+			</button>
+		</div> 
+	</div>
+ 	
+</aura:component>

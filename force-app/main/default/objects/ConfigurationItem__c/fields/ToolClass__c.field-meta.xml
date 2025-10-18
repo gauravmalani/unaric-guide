@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ToolClass__c</fullName>
+    <deprecated>false</deprecated>
+    <description>A class name to apply to this Configuration Item&apos;s on-screen control as a whole</description>
+    <externalId>false</externalId>
+    <inlineHelpText>A class name to apply to this Configuration Item&apos;s on-screen control as a whole</inlineHelpText>
+    <label>Tool Class</label>
+    <length>50</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

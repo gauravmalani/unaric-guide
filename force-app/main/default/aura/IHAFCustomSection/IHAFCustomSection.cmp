@@ -1,0 +1,47 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:hasRecordId,force:hasSObjectName"
+				access="global" >
+
+<!-- 
+================================================
+Events, Handlers, Attribute sets
+================================================
+-->	
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+	
+<!-- 
+================================================
+Member data
+================================================
+-->
+	<aura:attribute name='ParentControl' type='Object' required='true' access='public' />
+	<aura:attribute name='LookupSectionHeading' type='string' required='false' default='' access='public' />
+	<aura:attribute name='LookupItemLabel' type='string' required='false' default='' access='public' />
+	<aura:attribute name='LookupItemComponentType' type='string' required='false' default='' access='public' />
+	<aura:attribute name="CommunityRoot" type="string" required="false" default="" access="public" />
+
+	<aura:attribute name='frmU' type='string' required='false' default='' access='private' />
+	<aura:attribute name='frmW' type='string' required='false' default='' access='private' />
+	<aura:attribute name='frmH' type='string' required='false' default='' access='private' />
+	<aura:attribute name='frmS' type='string' required='false' default='' access='private' />
+	
+	<aura:attribute name='linkU' type='string' required='false' default='' access='private' />
+	<aura:attribute name='linkT' type='string' required='false' default='' access='private' />
+	<aura:attribute name='linkL' type='string' required='false' default='' access='private' />
+
+<!-- 
+================================================
+Render a VF page iframe or link as required
+================================================
+-->
+	<aura:if isTrue="{! v.frmU != '' &amp;&amp; v.frmS != ''}">
+		<iframe frameborder="0" scrolling="{! v.frmS + '' == 'true' ? 'yes' : 'no'}" style="{! 'width: ' + v.frmW + '; height: ' + v.frmH + ';'}" src="{!v.frmU + '?Id=' + v.recordId}" />
+	</aura:if>
+	
+	<aura:if isTrue="{! v.linkU != ''}">
+		<a href="{!v.linkU}" target="{!v.linkT}">
+			{!v.linkL}
+		</a>
+	</aura:if>
+	
+</aura:component>

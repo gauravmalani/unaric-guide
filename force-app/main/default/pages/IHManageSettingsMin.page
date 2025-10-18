@@ -1,0 +1,291 @@
+<!--
+============================================================================================== 
+CUT DOWN VERSION OF THE MANAGED SETTINGS PAGE FOR USE WHERE A SIMPLE 'SETTINGS INITIALISER'
+UI IS DESIRED, AS OPPOSED TO ALL SETTINGS, SUCH AS ON AN APP WELCOME PAGE.
+
+NO PARAMETERS REQUIRED OR USED.
+
+Martin Little for Improved Apps
+September 2019
+Copyright (c.) Improved Apps Limited 2019. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="false" sidebar="false" controller="ControllerSettings" action="{!initialiseMSMinPage}">
+    
+    <head>
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />    
+        <apex:slds />
+        
+        <style>
+            body                {color: #13235b !important; text-align: center; xbackground: #f0f9fd !important;}
+            .LargeLabel         {font-size: 1.4rem;}
+            .AdviceLabel        {font-size: 1rem; padding-top: 0.5rem !important; color: #009ee0;} 
+            .Padded             {padding-bottom: 1rem;}           
+            .SmallLabel         {font-weight: bold; margin-top: 0.5rem;}
+            .Small              {font-size: 0.8rem;}
+            .ActionBtn          {font-size: 1.5rem !important; background: #fff; color: navy !important; border: 1px solid navy; border-radius: 0.3rem;}
+            .ActionBtn:hover    {background: #eee;}
+            .ButtonWide         {width: 85%;}
+            .Container          {padding: 0.5rem;}
+            .Section            {border: solid 1px silver; border-radius: 0.4rem; width: 90%; margin: 0.4rem auto; background: #fff;}
+            
+            .RSInfo             {display: inline-block; margin: 1rem 0;}
+            .RSURL              {float: left; padding: 0.3rem; font-weight: bold;}
+            .Clickable          {float: right; border: solid 1px silver; padding: 0.3rem; border-radius: 0.3rem; cursor: pointer; background: #eee;}
+            .Clickable:hover    {background: #fff; color: blue;}
+            .discreet           {font-size: 1px !important; position: absolute; top: -20px;}
+            
+            .SetupImage         {width: 90%; 
+                                margin: 1rem;
+                                height: 400px; 
+                                background-repeat: no-repeat;
+                                background-size: contain;
+                                background-position-x: center;}
+
+            .IRemoteSite        {background-image: url({!URLFOR($Resource.IHResources, '/img/grabs/SetupRemoteSite.png')});}
+            .ISettings          {background-image: url({!URLFOR($Resource.IHSupportMaterials, '/img/StockImages/011A.svg')});}
+            .IConfigItems       {background-image: url({!URLFOR($Resource.IHResources, '/img/grabs/users.png')});}
+            .IAdopter           {background-image: url({!URLFOR($Resource.IHSupportMaterials, '/img/StockImages/013B.svg')});}
+            .IGlass             {background-image: url({!URLFOR($Resource.IHResources, '/img/grabs/magnify-glass.svg')});}
+
+        </style>
+        
+        <script>
+        
+            // Check for remote site on an ongoing basis until we have one
+            if ({!RESTEnabled} == false || {!SettingsInitialised} == false) {
+                window.setInterval("retestMetadata()", 5000);           
+            }
+        
+            // Open the remote site settings page
+            function showRSSettings() {
+                var U = "{! LEFT($CurrentPage.URL, FIND('/apex', $CurrentPage.URL) -1) + '/lightning/setup/SecurityRemoteProxy/home'}";
+                window.open(U);
+            }
+            
+            // Copy desired remote site url to clipboard
+            function copyToClipboard() {
+                var txt = document.getElementById('RSSPath');
+                txt.select();
+                document.execCommand("copy");
+                alert('{!DialogueLocalisations['MessageCreateRemoteSite']}');
+            }
+            
+        </script>
+    </head>
+    
+    <body style="background: #{!Settings.BrandColour1__c};">
+        <apex:form >
+            <apex:actionFunction name="retestMetadata" action="{!reloadPage}" />
+
+<!--   
+===============================================
+REMOTE SITE SETUP
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!RESTEnabled == false}">
+                
+                <span class="slds-text-heading--large">
+                    {!DialogueLocalisations['TitleCreateRemoteSite']}
+                </span>
+            
+                 <p class='AdviceLabel'>
+                    {!DialogueLocalisations['TitleSubtitleCreateRemoteSite1']}
+                 </p>
+            
+                <div class="RSInfo Small">
+                    <div class="RSURL">
+                        {! LEFT($CurrentPage.URL, FIND('/apex', $CurrentPage.URL) -1)}            
+                    </div>
+                    
+                    <div class="Clickable" onclick="javascript:copyToClipboard();" title="{!GlobalLocalisations['TipButtonCopy']}">
+                        {!GlobalLocalisations['ButtonCopy']}
+                    </div>
+                </div>
+            
+                <a href="#" onclick="javascript:showRSSettings();" title="{!DialogueLocalisations['TipButtonCreateRemoteSite']}" >
+            
+                    <div class="SetupImage IRemoteSite" />
+                    
+                    <p class="Small">
+                        {!DialogueLocalisations['TitleSubtitleCreateRemoteSite2']}
+                    </p>
+                    
+                </a>    
+            
+                <input class="discreet" id="RSSPath" type="text" value="{! LEFT($CurrentPage.URL, FIND('/apex', $CurrentPage.URL) -1)}" />      
+            
+            </apex:pageBlock>       
+
+<!--   
+===============================================
+POST REMOTE SITE SETUP
+===============================================
+ -->            
+            <apex:pageBlock rendered="{!RESTEnabled == true}">
+
+<!--   
+...............................................
+Upsert Configuration tools
+...............................................
+ -->            
+                <apex:pageBlock rendered="{!ConfigItemsCurrent == false}">
+                
+                    <span class="slds-text-heading--large">
+                        <p>
+                            {!DialogueLocalisations['ButtonUpsertConfig']}
+                        </p>
+                    </span>
+                            
+                    <div class="Section">
+                        <p class='AdviceLabel'>{!DialogueLocalisations['AdviceLabelUploadDownloadConfig']}</p>
+                        
+                        <div class="Container">
+                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                action="{!seedConfigFromUserDoc}" 
+                                     oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                     value="{!DialogueLocalisations['ButtonUpsertConfig']}" 
+                                     title="{!DialogueLocalisations['TipButtonUpsertConfig']}" 
+                                     styleClass="ActionBtn ButtonWide" 
+                                     disabled="{!DisableOpts}" />        
+                             </div>
+                         </div>
+                         
+                    <div class="SetupImage IConfigItems" />
+                                            
+                </apex:pageBlock>
+
+<!--   
+...............................................
+Initialise global settings
+...............................................
+ -->            
+                <apex:pageBlock rendered="{!SettingsInitialised == false && ConfigItemsCurrent == true}">
+                    <span class="slds-text-heading--large">
+                        <p>
+                            {!DialogueLocalisations['TitleSubtitleInitialiseSettings']}
+                        </p>
+                    </span>
+                        
+                    <div class="Section">
+                        <p class='AdviceLabel'>{!DialogueLocalisations['AdviceLabelInitialiseSettings']}</p>
+                        
+                        <div class="Container">
+                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                action="{!seedHelpSettings}" 
+                                oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                value="{!DialogueLocalisations['ButtonInitialiseSettings']}" 
+                                title="{!DialogueLocalisations['TipButtonInitialiseSettings']}" 
+                                styleClass="ActionBtn ButtonWide" 
+                                disabled="{!DisableOpts}" />                                                                           
+                        </div> 
+                          
+                    </div> 
+                        
+                    <div class="SetupImage ISettings" />
+                          
+                </apex:pageBlock>            
+
+<!--   
+...............................................
+POST ALL SETUP / BAU
+...............................................
+ -->   
+                <apex:pageBlock rendered="{!SettingsInitialised == true && ConfigItemsCurrent == true && selectedCategory != 'GetMetadata'}">
+                
+                    <span class="slds-text-heading--large">
+                        <p>
+                            {!DialogueLocalisations['TitleInitialisationComplete']}                         
+                        </p>
+                    </span>
+
+
+                    <div class="Section">
+                        <p class='AdviceLabel'>
+                            {!DialogueLocalisations['TitleSubtitleInitialisationComplete']}                         
+                        </p>                          
+                    </div> 
+                        
+                    <div class="SetupImage IAdopter" />
+
+                    <div class='SmallLabel'>
+                        {!DialogueLocalisations['TitleSubtitleDocumentationFAQs']}
+                    </div>
+                    <p>
+                        {!DialogueLocalisations['AdviceLabelFAQs']}&nbsp;
+
+                        <a title="{!DialogueLocalisations['TipTipButtonFAQs']}" href='#' onclick="javascript:window.open('{!BrandingLocalisations['FAQsLink']}');">
+                            {!DialogueLocalisations['ButtonFAQs']}
+                        </a>
+                    </p>
+
+                            
+                    <div class='SmallLabel'>
+                        {!DialogueLocalisations['TitleSubtitleDocumentationSupport']}
+                    </div>
+                    <p>
+                        {!DialogueLocalisations['AdviceLabelSupportGeneral']}
+                        <a target='_Blank' title="{!DialogueLocalisations['TipButtonSupportGeneral']}" href="{!BrandingLocalisations['ContactUsLink']}">
+                            {!DialogueLocalisations['ButtonSupportGeneral']}</a>.&nbsp;
+                        
+                        {!DialogueLocalisations['AdviceLabelSupportTechnical']}
+                        <a title="{!DialogueLocalisations['TipButtonSupportTechnical']}" href="{!BrandingLocalisations['SupportEmail']}">
+                            {!BrandingLocalisations['SupportEmail']}
+                        </a>
+                    </p>
+                    
+                </apex:pageBlock> 
+
+<!--   
+...............................................
+POST ALL SETUP / Metadata ops for AutoForm
+...............................................
+ -->   
+                <apex:pageBlock rendered="{!SettingsInitialised == true && ConfigItemsCurrent == true && selectedCategory == 'GetMetadata'}">   
+
+                    <span class="slds-text-heading--large">
+                        {!DialogueLocalisations['ButtonRefreshLayoutMetadata']}
+                    </span>
+
+                    <div class="Section">
+                        <p class='LargeLabel'>
+                            {!DialogueLocalisations['AdviceLabelRefreshLayoutMetadata']}
+                        </p>
+                                            
+                        <div class='slds-grid slds-grid_align-center'>
+                        
+                            <div class="Container slds-col slds-size_1-of-3">
+                                <apex:selectList styleClass="dataEntry" label="Select Objects" value="{!objIds}" multiselect="true" size="30" >
+                                    <apex:selectOptions value="{!objData}"/>
+                                </apex:selectList> 
+                            </div>
+                            
+                            <div class="Container slds-col slds-size_2-of-3">
+                                <p class='AdviceLabel Padded'>
+                                    {!DialogueLocalisations['TipButtonRefreshLayoutMetadata']}
+                                </p>
+                                
+                                <apex:commandButton action="{!getLayoutMetadata}" 
+                                        styleClass="ActionBtn" 
+                                        value="{!DialogueLocalisations['ButtonRefreshLayoutMetadata']}"
+                                        title="{!DialogueLocalisations['TipButtonRefreshLayoutMetadata']} "
+                                        disabled="{!objData.size = 0}" />
+                            
+    
+                                <br/>{!Diags}
+                                
+                                <div class="SetupImage IGlass" />
+                                
+                            </div>      
+                        </div>                      
+                        
+                    </div>
+
+                </apex:pageBlock>
+                
+            </apex:pageBlock>
+        </apex:form>
+    </body>
+
+</apex:page>

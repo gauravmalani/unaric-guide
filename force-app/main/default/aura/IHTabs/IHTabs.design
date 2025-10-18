@@ -1,0 +1,73 @@
+<design:component label="Improved Help: Tabset">
+ 
+	<design:attribute name="WizardName" 
+	                label="Fixed Tab Set: Tool Context" 
+	                description="FOR FIXED TABS ONLY: the name (Configuration Item Tool Context) of the collection to display in this component." 
+	                default=""
+                    required="false" />	
+
+    <design:attribute name="HelpRecordId" 
+                    label="Related Tab Set: Help Topic Id" 
+                    description="FOR RELATED TABS ONLY: the Id of the Help Topic whose relatives will define the tabs to display in this component." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListCardConfig" 
+                    label="Related Tab Set: related Listing Type" 
+                    description="FOR RELATED TABS ONLY: the related Help record type to feature." 
+                    datasource="Child Help,Only Related Help,Reading Lists,Related Help,Resources,Unfeatured Reading Lists"
+                    default="Child Help"
+                    required="false" /> 
+
+    <design:attribute name="TemplateActionCode" 
+                    label="Related Tab Set: tab content definition" 
+                    description="FOR RELATED TABS ONLY: the Action Code of a Help Configuration Item record (Type = Header, Tool Context = '[Template]') whose Supporting Controls data defines the component(s) to add to each Tab." 
+                    default="TabsOf_IHDetail"
+                    required="false" />
+
+	<design:attribute name="SuppressLabels" 
+	                label="Suppress Tab Labels" 
+	                description="Check this box to hide the text label accompanying each tab (setting ignored if Icon Style is 'None')." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no tabs matching the specified collection are found." 
+	                default=""
+                    required="false" />	
+                    
+	<design:attribute name="NodeIconStyle" 
+	                label="Icon Style" 
+	                description="Controls the appearance of icons against the text of each tab in the tabset." 
+                    datasource="None,Small,Large"
+                    default="Small" 
+                    required="true" />	 
+                    
+    <design:attribute name="ConfigAllowed" 
+                    label="Enable Tabset Editing" 
+                    description="If checked, allows Authors to enter tabset design mode to add, edit and delete tabs, as well as defining content." 
+                    default="true" 
+                    required="true" />                                       
+
+	<design:attribute name="Treatment" 
+	                label="Component Style" 
+	                description="Selects between standard tabs and utility bar button styling" 
+                    datasource="Standard,Utility"
+                    default="Standard" 
+                    required="true" />	                    
+
+	<design:attribute name="TabWidth" 
+	                label="Utility Tab Width" 
+	                description="FOR UTILITY STYLE ONLY: Sets the width of each tab in pixels."
+                    default="500" 
+                    required="false" />	                    
+
+	<design:attribute name="UXTheme" 
+	                label="Utility Colour Scheme" 
+	                description="FOR UTILITY STYLE ONLY: Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+
+</design:component>

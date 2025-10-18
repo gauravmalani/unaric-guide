@@ -1,0 +1,56 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+				access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+
+    <aura:method name="initialiseCrumbs" action="{!c.initialiseCrumbs}" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="ComponentId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="ListensTo" type="string" required="false" default="" access="global" />
+    <aura:attribute name="HelpRecordId" type="string" required="false" access="global" />
+    <aura:attribute name="RootNode" type="string" access="global" />	
+    <aura:attribute name="CrumbColour" type="string" required="true" default="ffffff" access="global" />	
+    
+    <aura:attribute name="Diags" type="string" required="false" access="public" />
+    <aura:attribute name="CrumbTrails" type="sObject[]" required="false" access="public" />
+
+	
+   	<aura:iteration items="{!v.CrumbTrails}" var="Trail" indexVar="idxT">
+
+		<!--
+		If a limiting root has been specified, show only trails with that root
+		 -->
+		<aura:if isTrue="{! (v.RootNode == '' || v.RootNode == null) || Trail.Crumbs[0].Id == v.RootNode}">
+
+			<nav role="navigation" aria-label="Breadcrumbs" class="IHCrumb">
+				<ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+				
+		    		<aura:iteration items="{!Trail.Crumbs}" var="Crumb" indexVar="idxC">
+			    		<li class="slds-breadcrumb__item slds-text-title_caps" style="{! 'color: #' + v.CrumbColour + ';'}">
+			    			<a id="{!Crumb.Id}" data-trailIndex="{!idxT}" title="{!Crumb.Title}" style="{! 'color: #' + v.CrumbColour + ';'}" href="javascript:void(0);" onclick="{!c.crumbClick}">
+			    				{!Crumb.Label}
+		    				</a>
+			    		</li>
+		    		</aura:iteration>
+				</ol>
+			</nav>
+			
+		</aura:if>
+
+   	</aura:iteration>
+   	  	
+	{!v.Diags}
+	
+</aura:component>

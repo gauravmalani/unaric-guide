@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User$Country</field>
+    </columns>
+    <columns>
+        <field>User$LanguageLocaleKey</field>
+    </columns>
+    <columns>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpTopic__c</field>
+    </columns>
+    <description>Votes by User Role and by Help Topic</description>
+    <filter>
+        <criteriaItems>
+            <column>User.iahelp__HelpInteraction__c$CreatedById$HelpInteractionType__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Vote</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$CreatedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>User$UserRole</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>User.iahelp__HelpInteraction__c$CreatedById$HelpVoteOption__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Interaction: Votes by User Role</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Help_Interactions_with_User_Analysis__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>User$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

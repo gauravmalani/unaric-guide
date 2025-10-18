@@ -1,0 +1,48 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+				access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="Diags" type="string" required="true" default="" access="public" />
+    <aura:attribute name="Height" type="integer" required="true" default="425" access="global" />
+    <aura:attribute name="ComponentId" type="string" required="false" default="" access="global" />
+	<aura:attribute name="CSVTreeIDs" type="string" required="false" default="" access="global" />
+	<aura:attribute name="CSVTreeNames" type="string" required="false" default="" access="global" />
+	<aura:attribute name="CSVNodeProviders" type="string" required="false" default="" access="global" />
+	<aura:attribute name="Trees" type="Object[]" required="false" default="" access="public" />
+
+	<aura:attribute name="UniqueIdent" type="string" required="false" default="" access="global" />
+	
+	
+	<div id="IATreeSelectorComponentBody" class="slds-card__body" style="{! 'height: ' + v.Height + 'px;'}">
+		<div class="slds-col slds-size_1-of-1 slds-m-vertical_medium slds-p-horizontal_small IATSContainer">
+		
+			<aura:iteration items="{!v.Trees}" var="Tree">
+				<div class="Selector">
+					<span id="{! 'badge_' + Tree.Id}" class="slds-badge">
+						<a id="{!Tree.Id}" href="javascript:void(0);" onclick="{!c.selectTree}">
+							{!Tree.Name}
+						</a>
+					</span>
+				</div>			
+			</aura:iteration>
+			
+			<span class="DiagsText" onclick="{!c.reportDiags}">
+			    {!v.Diags}
+			</span>
+			
+		</div>
+	</div>
+	
+</aura:component>

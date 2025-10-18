@@ -1,0 +1,150 @@
+<aura:component controller="ControllerLUXOps" 
+                implements="force:hasRecordId,force:hasSObjectName,force:appHostable"
+                access="global" 
+                extends="IHCard" extensible="true">
+     
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassthroughs}"/>
+    <aura:method name="initialiseComment" action="{!c.initialiseComment}" />
+
+	<aura:set attribute="AutoCardHeight" value="false" />    
+    
+<!-- 
+================================================
+Internationalised values for use in mark-up
+================================================
+-->
+    <aura:attribute name="DialogueTitle" type="string" access="global" />
+    <aura:attribute name="ButtonSubmit" type="string" access="global" />
+    <aura:attribute name="TipButtonSubmit" type="string" access="global" />
+    <aura:attribute name="AdviceLabelEnterFeedback" type="string" access="global" />
+    <aura:attribute name="TitleDialogueTitle" type="string" access="global" />
+    <aura:attribute name="ToolLabelRelatedHelp" type="string" access="global" />
+    <aura:attribute name="ToolLabelComment" type="string" access="global" />
+    
+<!-- 
+================================================
+IHComment member data
+================================================
+-->
+    <!--Attribute for storing comment data--> 
+    <aura:attribute name="commentData" type="string" access="public" />
+    <!--set up flag for disable and enable submit button-->
+    <aura:attribute name="buttonIsEnable" type="boolean"  access="public" />
+    <aura:attribute name="GenRecordId" type="string" required="false" default="" access="global" />
+    <!--Help Topic Id-->
+    <aura:attribute name="HelpTopicId" type="string" required="false" default="" access="global" />
+    <!--Reading List Id-->
+    <aura:attribute name="RLId" type="string" required="false" default="" access="global" />
+    <!--PageLayoutIdentifier-->
+    <aura:attribute name="PLIdentifier" type="string" required="false" default="" access="global" />
+    <!--Reading List Id-->
+    <aura:attribute name="PLId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="togglelist" type="boolean"  access="public" default="false"/>
+    <aura:attribute name="commentListingItem" type="Object"  access="public"/> 
+    <aura:attribute name="GenericId" type="string" required="false" default="" access="global" />
+    <aura:attribute name="pageDomain" type="string"  access="public"/>
+    
+    
+    <div class="IACommentComponent"> 
+    
+<!-- 
+================================================
+Comment entry mode
+================================================
+-->    
+        <div class="{!v.togglelist == false ?'':'slds-hide'}">
+            <div class="slds-modal__content slds-p-around_medium ">
+                
+                <ui:outputText class="textColorBlue" value="{!v.DialogueTitle}"/>
+                
+                <lightning:textarea name="comment" style="width: 100%; height: 100%;" onchange="{!c.onCommentInput}" value="{!v.commentData}"></lightning:textarea>
+                
+                <aura:if isTrue="{!not(v.buttonIsEnable)}">                    
+                    {!v.AdviceLabelEnterFeedback}                    
+                </aura:if>
+                
+                <div>
+                    <div class="{!v.buttonIsEnable == false ?'hideclass':'unhide'}">
+                        <lightning:button variant="brand"
+                                          label="{!v.ButtonSubmit}"
+                                          title="{!v.TipButtonSubmit}"
+                                          onclick="{!c.submitComment}"
+                                          class="marginclass"
+                                          />
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+<!-- 
+================================================
+Comment listing mode - list
+================================================
+-->        
+        <aura:if isTrue="{!v.togglelist}">
+            <div class="slds-grid slds-p-top_small CommentListingArea">
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small CommentListing">
+                
+                    <c:IHList aura:id="ListComponent" >
+                        <aura:set attribute="CardConfig" value="CommentsAll" />
+                        <aura:set attribute="recordId" value="{!v.GenericId}" />
+                        <aura:set attribute="ToolContext" value="CardComment_Listing" /> 
+                        <aura:set attribute="SuppressFooter" value="true" />
+                        <aura:set attribute="SuppressPoweredBy" value="true" /> 
+                        <aura:set attribute="ComponentId" value="theComment" />
+                        <aura:set attribute="Height" value="-1" />                        
+                    </c:IHList>
+                    
+                </div>
+                
+
+<!-- 
+================================================
+Comment listing mode - details of selected comment
+================================================
+-->                
+                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small CommentDetails" >
+                
+					<aura:if isTrue="{! ! v.commentListingItem}">
+					    <div class="NoDataMessage">
+					        {!v.NoDataMessage}
+					    </div>
+					</aura:if>
+					
+                 
+					<aura:if isTrue="{!v.commentListingItem}">
+                            
+	                    <b>{!v.FieldLabelCreatedByDT}:</b>
+	                    <br></br>
+	                    {!v.commentListingItem.commentDate}
+	                    <br></br>
+	                    <br></br>
+	                    
+	                    <b>{!v.ToolLabelRelatedHelp}:</b>
+	                    <br></br>
+	                    <a target="_Blank" href="{! v.pageDomain+v.commentListingItem.iahelp__HelpTopic__r.Id}">{!v.commentListingItem.iahelp__HelpTopic__r.Name}</a>
+	                    <a target="_Blank" href="{! v.pageDomain+v.commentListingItem.iahelp__HelpReadingList__r.Id}">{!v.commentListingItem.iahelp__HelpReadingList__r.Name}</a>
+	                    <a target="_Blank" href="{! v.pageDomain+v.commentListingItem.iahelp__HelpedPageLayout__r.iahelp__PageLayoutIdentifier__c}">{!v.commentListingItem.iahelp__HelpedPageLayout__r.Name}</a>
+	                    <br></br>
+	                    <br></br>
+	
+						<b>{!v.ToolLabelComment}:</b>
+	                    <br></br>
+	                    {!v.commentListingItem.iahelp__Description__c}
+                            
+					</aura:if>                    
+                </div>
+            </div>
+            
+        </aura:if>
+        
+    </div>
+</aura:component>

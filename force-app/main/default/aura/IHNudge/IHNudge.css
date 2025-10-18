@@ -1,0 +1,9 @@
+.THIS .NudgeArea			{text-align: center; position: fixed; top: -100px; left: 0px;}
+.THIS .NudgeName			{font-size: 1.3rem;}
+.THIS .NudgeSummary			{}
+.THIS .NudgeDiags			{font-size: 0.5rem; position: absolute; top: 0.1rem; left: 0.3rem;}
+.THIS .ReadMoreLink			{cursor: pointer;}
+
+.THIS .slds-card__footer {border: none;} 
+.THIS .slds-card.HelpList.ui-resizable {border: none;} 
+.THIS .slds-card__header {height: 0px; padding: 0; margin: 0;}

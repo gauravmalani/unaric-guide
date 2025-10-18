@@ -1,0 +1,683 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO LIST RESULTS OF ONE OF VARIOUS KINDS OF SEARCH.
+
+REQUIRES EITHER A HELP TOPIC ID, A SALESFORCE OBJECT ID OR A READING LIST ID.
+IN ADDITION, AN OPTIONAL SEARCH TERM CAN BE SUPPLIED, IE:
+
+    [SF base URL]/Apex/IHSearchResults?HTID=[topic id][&Term=[text search term]]
+    ...OR...
+    [SF base URL]/Apex/IHSearchResults?RLID=[reading list id][&Term=[text search term]]
+    ...OR...
+    [SF base URL]/Apex/IHSearchResults?objID=[3 letter SF object ID][&Term=[text search term]]
+    
+IN ADDITION TO ALL OF THE ABOVE, AN "OPTIONS" SWITCH CAN BE USED TO CONTROL THE VISIBILITY
+OF CERTAIN PAGE FEATURES. THESE FEATURES ARE OFF BY DEFAULT.
+TO SWITCH THEM ON, ADD "Opts=n" TO THE DESIRED URL, WHERE n IS AS FOLLOWS:
+
+1 = Show an "Add related help" link against (help topic) results
+2 = Show an "Add this topic to the current reading list" link against (help topic) results
+3 = Show an "Add this Resource to current help topic" against (help resource) results
+4 = Show an "Add current topic to a Reading List" link against (reading list) results
+5 = Show list of "Guide" type RLs as results
+6 = Show list of Helped Elements relating to current topic
+7 = Show a "select / copy this ID" link against (help topic) results
+8 = Show a list of RLs and place selected one in a VF cookie on click
+
+WHEN IN GUIDES MODE (Opts=5) A RECORD CONTEXT SHOULD ALSO BE PROVIDED TO MAKE THE GUIDE 
+AWARE OF THE PAGE FROM WHICH THE USER OPENED IT, PLUS A FURTHER SEARCH TYPE: I.E., 
+
+    [SF base URL]/Apex/IHSearchResults?objID=[3 letter SF object ID]&Opts=5&IHContext=[Page URL]&Srch=n
+
+WHEN IN SITUATIONS WHERE SELECTION OF A RECORD IS TO BE SUPPORTED (E.G., Opts=7) SUPPLY
+THE IDENTIFIER OF A REFERRING CONTROL THAT IS AWAITING THE SELECTION, I.E.,
+
+    [SF base URL]/Apex/IHSearchResults?Opts=7&Referrer=[Control identifier to pass back in selection msg]
+
+OPTIONALLY, CONTROL OVERALL LOOK & FEEL WITH ADDITIONAL PARAMETER: IHLUX=true
+
+Martin Little for Improved Apps
+August 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['ButtonSearch']}"
+                controller="ControllerSearch"
+                action="{!showSearchResults}" >
+
+    <head> 
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['ButtonSearch']}</title>
+
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <apex:slds rendered="{!isIHLUX}" />   
+        
+        <style>
+            .IHShimmed          {padding: 10px 10px 0 10px;}
+            .SearchWidget       {position: relative; top: -22px; right: 40px;}
+            .SearchWidgetLUX    {margin: 5px;}
+            .ResultLabelLUX     {padding: 0.5em;}
+            .IHPanelLUX         {border-radius: 5px; box-shadow: 0px 2px 5px #A3C0DA;}
+            .IHSubPanelLUX      {padding: 0.5em 0.5em 0; margin: 0.5em 4px 0;}
+            .IHButtonLUX        {color: #ffffff;}
+        </style>     
+        
+        <apex:includeScript value="/support/console/28.0/integration.js"/>        
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}" /> 
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}" />
+
+        <script type='text/javascript'>
+            
+            var referrer;
+            
+            function initialise() {
+            
+                // Set focus to search text box on load
+                document.getElementById('txtSearchTerm').focus();
+                
+                // Ensure tools buttons adopt IH look and feel for tasks in progress
+                IHEditHelp.initialiseButtons();    
+                
+                // Note window sizing information for Guides (set by RL Viewer in Guides mode
+                // with co-ordinates variables and retrieval defined in jsSettings
+                // which is included via IHHook
+                getGuideCoords();
+                
+                
+                // Add function to extract a named parameter from the address of this page
+                $IAIHj.urlParam = function(name){
+                    try {
+                        var results = new RegExp('[\\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
+                        return results[1] || 0;
+                    } catch (e) {
+                        return null;
+                    }
+                }                           
+                
+
+                // Get the identifier of any particular control with which this 
+                // results page is associated (from the "Referrer" query parameter)             
+                referrer = $IAIHj.urlParam('Referrer');
+                
+                // Select appropriate search mode, where applicable
+                if (document.getElementById('optsSearch')){
+                    S = document.getElementById('optsSearch');
+                    S.selectedIndex = {!JSENCODE(UserSort)} - 1;            
+                }
+                
+                
+                // Force diagnostics for guide enable mode / guide selection (as we cannot return diags from the select RL call)
+                if ('{!JSENCODE(Opts)}' == '8' && '{!JSENCODE(SearchResultId)}' != 'null' && '{!JSENCODE(SearchResultId)}' != '') {
+                    window.location.href='iahelp__IHMessage?Diags={!DialogueLocalisations['MessageRecordSelected']}';
+                }
+                
+                return;         
+            }
+            
+            
+            // Send the ID of a search result to the window that opened us
+            function sendRecordId(RecId) {
+
+                // NB: control variable used below defined and set in jsSettings anonymous function
+                if (supportsPostObject == true) {
+                    // Inter-window messaging needs to be available to do this: 
+                    var O = document.location.origin;
+                    window.opener.postMessage('Opt7HTID=' + RecId + '{!D1}' + referrer, O);
+                } 
+
+                // Show a dialogue allowing user to copy ID to clipboard, in case messaging fails
+                window.prompt ("{!JSENCODE(DialogueLocalisations['MessageCopyTopicID'])}", RecId);
+                                
+                return;
+            }
+            
+            
+            // Select all text in the element of the given ID (to ease copying)
+            function selectAll(elemId) {
+                if (document.selection) {
+                    var range = document.body.createTextRange();
+                    range.moveToElementText(document.getElementById(elemId));
+                    range.select();
+                } else if (window.getSelection) {
+                    var range = document.createRange();
+                    range.selectNode(document.getElementById(elemId));
+                    window.getSelection().addRange(range);
+                }
+                
+                return;
+            }                       
+            
+        </script>
+                
+    </head>    
+    
+    <body class='Dialogue' onload='javascript:initialise();'>     
+        
+        <apex:include pageName="IHHook"/>
+        
+        <div id="SearchResultsDialogue" class="{!IF(isIHLUX, '', 'IHDialogue IHPanel')}">
+            <apex:form onkeydown="javascript:return IHSearch.checkEnter('InSitu', event);">                
+                <div class="{!IF(isIHLUX, '', 'IHPanelHeader')}">
+                    <div class="IH-H3">
+                        <apex:outputText rendered="{!!isIHLUX}" value="{!IF(Opts=='5', DialogueLocalisations['TitleDialogueTitleOpt5'], IF(Opts=='6', DialogueLocalisations['TitleDialogueTitleOpt6'], IF(Opts=='8', DialogueLocalisations['TitleDialogueTitleOpt8'], DialogueLocalisations['TitleDialogueTitleOpt0'])))}" />
+                    </div>               
+                                             
+<!--  
+===============================================
+SEARCH TOOLS (WHERE AVAILABLE)
+===============================================
+ -->    
+                    <div id="SearchWidget" class="{!IF(isIHLUX, 'SearchWidgetLUX', 'SearchWidget')}" style="display: {!IF(Opts=='5' || Opts=='6', 'none', 'block')}; ">                    
+                        <a title="{!DialogueLocalisations['TipButtonSearch']}" href='#' onclick='javascript:IHSearch.doSearch();'>                       
+                            <div id="SearchButton{!IF(Opts=='5' || Opts=='6', '5or6', '')}" class="{!IF(isIHLUX, 'IHButtonLUX', 'IHButton')}">
+                                {!GlobalLocalisations['ButtonSearch']}
+                            </div>
+                        </a>                            
+                        <div id="SearchInput{!IF(Opts=='5' || Opts=='6', '5or6', '')}">
+                            <input type="text" 
+                                    id="txtSearchTerm{!IF(Opts=='5' || Opts=='6', '5or6', '')}" 
+                                    maxlength='20' size='20' style='border: 0px solid; margin: 4px 4px 0 5px; overflow: hidden;' 
+                                    value="{!Term}" 
+                                    title="{!GlobalLocalisations['TipInputTextbox']}" 
+                                    onfocus="javascript:IHSearch.checkSearchTerm(this);" />
+                        </div>                                             
+                    </div>
+                    
+                    <div style="display: {!IF(Opts=='5', 'block', 'none')}; position: relative; top: -22px; right: 40px;">
+                        <div style='float: right; Xwidth: 550px;'>
+                            {!DialogueLocalisations['FieldLabelShow']}:
+                            <select id="optsSearch{!IF(Opts !='5', '5', '')}">
+                                <option value='1'>{!DialogueLocalisations['ValueAllGuides']}</option>
+                                <option value='2'>{!DialogueLocalisations['ValueGuidesIOwn']}</option>
+                                <option value='3'>{!DialogueLocalisations['ValueGuidesForThisPage']}</option>
+                            </select>
+                                                        
+                            &nbsp;{!DialogueLocalisations['FieldLabelContainingKeyword']}:
+                            <a href='#' onclick='javascript:IHSearch.doSearch();'>                       
+                                <div id="SearchButton{!IF(Opts !='5', '5', '')}" class='IHButton'>
+                                    {!GlobalLocalisations['ButtonSearch']}
+                                </div>
+                            </a>                            
+                            <div id="SearchInput{!IF(Opts !='5', '5', '')}">
+                                <input type="text" 
+                                id="txtSearchTerm{!IF(Opts !='5', '5', '')}" 
+                                maxlength='20' size='20' style='border: 0px solid; margin: 4px 4px 0 5px; overflow: hidden;' 
+                                value="{!Term}" 
+                                title="{!GlobalLocalisations['TipInputTextbox']}" 
+                                onfocus="javascript:IHSearch.checkSearchTerm(this);" />
+                            </div>                                             
+
+                        </div>               
+                    </div>
+                    
+                </div>                                                                  
+<!--  
+===============================================
+SEARCH BODY
+===============================================
+ -->            
+                <div class="{!IF(isIHLUX, 'ResultLabelLUX', 'IH-H4')}" style="display: {!IF(Opts=='6', 'none', 'block')}; margin-bottom: 5px;" >
+                    <span class="slds-text-heading--small">                
+                        {!DialogueLocalisations['AdviceLabelResultsFor']} 
+                        &nbsp;&lsquo;<apex:outputText value="{!Term}" escape="true" style="overflow-x: auto;"/>&rsquo;&nbsp;
+                        ({!FieldHelp.size}{!IF(FieldHelp.size >= 1000, '+' , '')})  
+                    </span>                    
+                </div>
+
+                
+                <!--
+                The following in-line formula sets dialogue body height for different circumstances.
+                Change the numbers at the end of each line in the {!code block} to set height for:
+                    Opt 1  = Add Related Help Topic (search for existing or add New)
+                    Opt 2  = Add topic to CURRENT reading list      
+                    Opt 3  = Add Resource to current help topic         
+                    Opt 4  = Add CURRENT topic to a Reading List
+                    Opt 5  = Guides
+                    Opt 6  = Elements for Topic 
+                    Opt 7  = Lookup Help Topic (and get ID)
+                    Opt 8  = Select RL 
+                    No Opt = Plain search
+                 -->
+                                                  
+                <div class="IHPanelBody" style="height: 
+                    {!IF(Opts=='1', '370px;'
+                    , IF(Opts=='2', '338px;'
+                    , IF(Opts=='3', '400px;'
+                    , IF(Opts=='4', '220px;'
+                    , IF(Opts=='5', '220px;'
+                    , IF(Opts=='6', '355px;'
+                    , IF(Opts=='7', '210px;'
+                    , IF(Opts=='8', '330px;'
+                    , '210px;'))))))))}
+                padding: 0; margin: 0; overflow-y: auto;" >
+                
+<!--  
+===============================================
+RESULTS LIST
+===============================================
+ -->            
+                    <div class="IHSearchResultsList" style="height:
+                        {!IF(Opts=='1', '190px;'
+                        , IF(Opts=='2', '168px;'
+                        , IF(Opts=='3', '165px;'
+                        , IF(Opts=='4', '215px;'
+                        , IF(Opts=='5', '215px;'
+                        , IF(Opts=='6', '330px;'
+                        , IF(Opts=='7', '99%;'
+                        , IF(Opts=='8', '280px;'
+                        , '99%;'))))))))}">
+
+                       <apex:dataTable value="{!FieldHelp}" var="Fd" rowClasses="odd, even" columnClasses="IHCol1, IHCol2, IHCol3, IHCol4, IHCol5, IHCol6">
+
+    <!--
+    OPTION SPECIFIC LISTING TOOLS:
+     -->  
+                           <apex:column rendered="{!OptionalFeatures1Rendered}">
+                                <div class='{!OptionalFeatures1Class}' style="padding-right: 10px;">
+                                    <apex:commandLink action="{!addRelatedHelp}" 
+                                        title="{!DialogueLocalisations['TipLinkTopicToCurrentTopic']}" 
+                                        oncomplete="IHSearch.reportStatusThenSearch('{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}')">
+                                       
+                                       <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id}"></apex:param>
+                                       <div class='IHIcon IHIconLink'></div>
+                                   </apex:commandLink>
+                               </div>
+                           </apex:column>      
+    
+                           <apex:column rendered="{!OptionalFeatures2Rendered}">
+                                <div class='{!OptionalFeatures2Class}' style="padding-right: 10px;">
+                                    <apex:commandLink action="{!addRLEntry}" 
+                                        title="{!DialogueLocalisations['TipLinkTopicToCurrentRL']}" 
+                                        oncomplete="IHSearch.reportStatusThenSearch('{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}')">
+                                       
+                                       <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id}"></apex:param>
+                                       <div class='IHIcon IHIconLink' ></div>
+                                   </apex:commandLink>
+                               </div>
+                           </apex:column> 
+    
+                           <apex:column rendered="{!OptionalFeatures3Rendered}">
+                                <div class='{!OptionalFeatures3Class}' style="padding-right: 10px;">
+                                    <apex:commandLink action="{!addRelatedResource}" 
+                                        title="{!DialogueLocalisations['TipLinkResourceToCurrentTopic']}" 
+                                        oncomplete="IHSearch.reportStatusThenSearch('{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}')">
+                                       
+                                       <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id}"></apex:param>
+                                       <div class='IHIcon IHIconLink' ></div>
+                                   </apex:commandLink>
+                               </div>
+                           </apex:column> 
+    
+                           <apex:column rendered="{!OptionalFeatures4Rendered}">
+                                <div class='{!OptionalFeatures4Class}' style="padding-right: 10px;">
+                                    <apex:commandLink action="{!addTopicToRL}" 
+                                        title="{!DialogueLocalisations['TipLinkRLToCurrentTopic']}" 
+                                        oncomplete="IHSearch.reportStatusThenSearch('{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}')">
+
+                                       <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id}"></apex:param>
+                                       <div class='IHIcon IHIconLink' ></div>
+                                   </apex:commandLink>
+                               </div>
+                           </apex:column>
+                           
+                           <apex:column rendered="{!OptionalFeatures7Rendered}">
+                                <div class='{!OptionalFeatures7Class}' style="padding-right: 10px;">
+                                    <a title="{!DialogueLocalisations['TipSelectTopic']}" href="javascript:void(0);" onclick="javascript:sendRecordId('{!Fd.Id}');">
+                                        <div class='IHIcon IHIconLink' ></div>
+                                    </a>
+                               </div>
+                           </apex:column> 
+                           
+    <!--
+    LINK TO RESULT ITEM:
+     -->                                                
+                            <apex:column styleClass="{!IF(Fd.Id == SearchResultId && Opts != '6', 'Active', '')}">                          
+                                <apex:facet name="header">
+                                    <div class="IHListColumnHeading{!IF(Opts=='6', '', ' IHHidden')}" style="margin-left:8px;">
+                                        {!DialogueLocalisations['ColumnLabelHelpedElementName']}
+                                    </div>
+                                </apex:facet>
+                                
+                                <div style="display: {!IF(Opts != '5' && Opts != '6' && Opts != '8', 'block', 'none')};">
+                                    <!--
+                                    NB: JS function abstracts target of search result link:
+                                    Could be a browser or console tab depending on context...
+                                     -->                                   
+                                    <a title="{!DialogueLocalisations['TipClickToOpen']}" href="javascript:void(0)" onclick="javascript:IHQAMenu.DoTab('{!JSENCODE(Fd.Link)}', '_HelpTopic', '{!JSENCODE(Fd.Name)}');" >
+                                        <p><b>{!Fd.Name}</b></p>
+                                    </a>
+                                </div>
+                                
+                                <div style="display: {!IF(Opts == '5', 'block', 'none')};">                              
+                                    <a title="{!DialogueLocalisations['TipClickToLaunchGuide']}" href="javascript:void(0)" onclick="javascript:IHQAMenu.DoDialogue('{!JSENCODE(Fd.Link)}', guideX, guideY, guideW, guideH, '_Guide');">
+                                         <p><b>{!Fd.Name}</b></p>
+                                     </a>
+                                </div>                          
+
+                                <div style="display: {!IF(Opts == '6', 'block', 'none')};">
+                                    <a title="{!DialogueLocalisations['TipClickToOpen']}" href="{!Fd.Link}">
+                                        <p><b>{!Fd.Name}</b></p>
+                                    </a>
+                                </div>
+
+                                <div style="display: {!IF(Opts == '8', 'block', 'none')};">
+                                    <apex:commandLink title="{!DialogueLocalisations['TipClickToCreateGuideSteps']}" action="{!selectReadingList}" >
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id}"></apex:param>
+                                         <p><b>{!Fd.Name}</b></p>
+                                    </apex:commandLink>
+                                </div>
+
+                           </apex:column>  
+
+    <!--
+    ADDITIONAL SEARCH RESULT INFO (SUMMARY TEXT):
+     -->  
+                           <apex:Column >
+                                <apex:facet name="header">
+                                    <div class="IHListColumnHeading{!IF(Opts=='6', '', ' IHHidden')}">
+                                        {!DialogueLocalisations['ColumnLabelHEInfo']}
+                                    </div>
+                                </apex:facet>
+                           
+                                <div Class="{!IF(Fd.Id == SearchResultId && Opts != '6', 'Active', '')}">
+                                
+                                    <!--  Summary is mostly plain text -->
+                                    <apex:outputPanel rendered="{!Opts != '6'}">
+                                        <apex:outputText escape="true" value="{!Fd.Summary}" />
+                                    </apex:outputPanel>
+
+
+                                    <!--  However, it's more complex when dealing with results for helped elements (opt 6) -->
+                                    <apex:outputPanel rendered="{!Opts == '6'}">
+                                        
+                                        <!-- Cannot use VIP for page or H&T links help as these do not use callouts -->
+                                        <div style="display: {!IF(Fd.HelpedE.ElementType__c == 'Page Help Link' || Fd.HelpedE.ElementType__c == 'Help and Training Link', 'none', 'block')};">
+                                            <a title="{!DialogueLocalisations['TipClickToVIP']}" href="{!Fd.VIPLink}" target="_Blank">
+                                                <div style="float: right; margin: 2px 5px 0px 0px;" class="IHIcon16 IHIconModeView"></div>
+                                            </a>
+                                        </div>
+                                    
+                                        <div style="float: left; margin: 2px 5px 2px 0px;" title="{!Fd.HelpedE.ElementType__c}" class="IHIcon16 IHIcon{!SUBSTITUTE(Fd.HelpedE.ElementType__c, ' ', '')}"></div>
+                                                        
+                                    
+                                        <div style="float: left; padding-top: 4px;">
+                                            <apex:outputText escape="true" 
+                                                value="{!DialogueLocalisations['ValueComponentLayout']} {!Fd.HelpedE.HelpedPageLayout__r.Name  + ': ' + Fd.HelpedE.Identifier__c + IF(Fd.HelpedE.DataDrivenFilter__c == null, ': [' + DialogueLocalisations['ValueComponentUnfiltered'] + ']', ': ' + DialogueLocalisations['ValueComponentFilter'] + ' = ' + Fd.HelpedE.DataDrivenFilter__c)}" />
+                                        </div>
+                                    
+                                    </apex:outputPanel>
+                                </div>
+                           </apex:Column> 
+                           
+                           
+                       </apex:dataTable>  
+
+                    </div>
+<!--  
+===============================================
+CREATE AND LINK OPTIONS
+===============================================
+ -->                                                  
+                    <div class="{!OptionalFeatures1Class} {!IF(isIHLUX, 'IHPanelLUX IHSubPanelLUX', 'IHPanel IHSubPanel')}" >
+                        <div class="{!IF(isIHLUX, '', 'IHPanelHeader')}" >
+                            <div class="{!IF(isIHLUX, '', 'IH-H4 Helpable')}" id='CLHelpTopic'>
+                                <span class="slds-text-heading--small">
+                                    {!DialogueLocalisations['TitleDialogueSubtitleOpt1']}
+                                </span>                            
+                            </div>
+                        </div>
+
+                        <div class='IHPanelBody IHShimmed'>
+                            <table width="100%">
+                                <tr>
+                                    <td width='30%' style="labelCol">
+                                        {!DialogueLocalisations['FieldLabelNewHTName']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                    <td>
+                                        <apex:inputText id="RelHelpName" value="{!fld1}" maxlength="80" rendered="{!OptionalFeatures1Rendered}" style="width: 94%;" />
+                                    </td>
+                                </tr>    
+                                <tr>
+                                    <td style="labelCol">
+                                        {!DialogueLocalisations['FieldLabelNewHTSummary']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 3.6em;'/></td>
+                                    <td>
+                                        <apex:inputText id="RelHelpSummary" value="{!fld2}" maxlength="255" rendered="{!OptionalFeatures1Rendered}" style="width: 94%; height: 3em;" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class='IHPanelFooter' >
+                            <apex:commandButton rendered="{!!isIHLUX}"
+                                                onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                styleClass="IHIcon24 IHIdle IHIconAdd" 
+                                                image="{!URLFOR($Resource.IHResources, '/img/IconAdd.png')}" 
+                                                action="{!createRelatedHelp}" 
+                                                title="{!DialogueLocalisations['TipButtonCreateAndRelateOpt1']}" 
+                                                oncomplete="IHEditHelp.confirmComplete(this, '{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}');" 
+                                                />  
+
+                            <apex:actionFunction name="doCreateRelatedHelp" action="{!createRelatedHelp}" oncomplete="IHEditHelp.confirmComplete(this, '{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}');" />
+                                                        
+                            <button onclick="javascript:doCreateRelatedHelp();" 
+                                    style="{!IF(isIHLUX, '', 'display: none;')}" 
+                                    title="{!DialogueLocalisations['TipButtonCreateAndRelateOpt1']}"
+                                    class="slds-button slds-button_neutral">
+                                {!DialogueLocalisations['ButtonCreateAndRelate']}
+                            </button>
+                            
+                        </div>
+                    </div>
+
+
+                    <div class="{!OptionalFeatures2Class} {!IF(isIHLUX, 'IHPanelLUX IHSubPanelLUX', 'IHPanel IHSubPanel')}" >
+                        <div class="{!IF(isIHLUX, '', 'IHPanelHeader')}" >
+                            <div class="{!IF(isIHLUX, '', 'IH-H4 Helpable')}" id='CLReadingListEntry'>
+                                <span class="slds-text-heading--small">
+                                    {!DialogueLocalisations['TitleDialogueSubtitleOpt2']}
+                                </span>                                
+                            </div>
+                        </div>
+
+                        <div class='IHPanelBody'> 
+                            <table>
+                                <tr>
+                                    <td width='30%'>
+                                        {!DialogueLocalisations['FieldLabelNewHTName']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                    <td><apex:inputText value="{!fld1}" maxlength="80" rendered="{!OptionalFeatures2Rendered}" style="width: 95%;"  /></td>
+                                </tr>   
+                                <tr>
+                                    <td>
+                                        {!DialogueLocalisations['FieldLabelNewHTSummary']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                    <td><apex:inputText value="{!fld2}" maxlength="255" rendered="{!OptionalFeatures2Rendered}" style="width: 95%;" /></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class='IHPanelFooter' >    
+                        
+                            <table><tr>
+                                <td style='width: 30%;'>
+                                    <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                        styleClass="IHIcon24 IHIdle IHIconAdd" 
+                                                        image="{!URLFOR($Resource.IHResources, '/img/IconAdd.png')}" 
+                                                        action="{!createRLEntry}" 
+                                                        title="{!DialogueLocalisations['TipButtonCreateAndRelateOpt2']}" 
+                                                        oncomplete="IHEditHelp.confirmComplete(this, '{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}');" 
+                                                        />  
+                                    
+
+                                    <a title="{!DialogueLocalisations['TipLinkBackOpt2']}" href='{!$Page.IHManageReadingList}?RList={!RLID}'>
+                                        <div class='IHIcon32 IHIdle IHIconNavPrevious' style='float:left;'></div>
+                                    </a>
+                                </td>
+
+                                <td>
+                                </td>
+                            </tr></table>                           
+                            
+                        </div>
+                    </div>
+
+
+                    <div class="{!OptionalFeatures3Class} {!IF(isIHLUX, 'IHPanelLUX IHSubPanelLUX', 'IHPanel IHSubPanel')}" >
+                        <div class="{!IF(isIHLUX, '', 'IHPanelHeader')}" >
+                            <div class="{!IF(isIHLUX, '', 'IH-H4 Helpable')}" id='CLHelpResource'>
+                                <span class="slds-text-heading--small">
+                                    {!DialogueLocalisations['TitleDialogueSubtitleOpt3']}
+                                </span>                                
+                            </div>
+                        </div>
+
+                        <div class='IHPanelBody IHShimmed'> 
+
+                            <table>
+                                <tr>
+                                    <td width='30%'>
+                                        {!DialogueLocalisations['FieldLabelNewResourceName']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                    <td><apex:inputText value="{!fld1}" maxlength="80" rendered="{!OptionalFeatures3Rendered}" style="width: 95%;" /></td>
+                                </tr>
+    
+                                <tr>
+                                    <td>
+                                        {!DialogueLocalisations['FieldLabelNewResourceSummary']}
+                                    </td>
+                                    <td></td>
+                                    <td><apex:inputText value="{!fld2}" maxlength="255" rendered="{!OptionalFeatures3Rendered}" style="width: 95%;" /></td>
+                                </tr>
+    
+                                <tr>
+                                    <td>
+                                        {!DialogueLocalisations['FieldLabelNewResourceURL']}
+                                    </td>
+
+                                    <td width='2px'><div class="requiredBlock" style='height: 1.8em;'/></td>
+                                    <td><apex:inputText value="{!fld3}" maxlength="255" rendered="{!OptionalFeatures3Rendered}" style="width: 95%;" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        {!DialogueLocalisations['FieldLabelNewResourceType']}
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <apex:selectList value="{!fld4}" multiselect="false" size="1" rendered="{!OptionalFeatures3Rendered}">
+                                            <apex:selectOption itemValue="Document" itemLabel="{!DialogueLocalisations['ValueDocument']}"/>
+                                            <apex:selectOption itemValue="Image" itemLabel="{!DialogueLocalisations['ValueImage']}"/>
+                                            <apex:selectOption itemValue="Video" itemLabel="{!DialogueLocalisations['ValueVideo']}"/>
+                                            <apex:selectOption itemValue="Web-page" itemLabel="{!DialogueLocalisations['ValueWebPage']}"/>
+                                        </apex:selectList>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        {!DialogueLocalisations['FieldLabelNewResourceLocation']}
+                                    </td>
+
+                                    <td width='2px'><div class="" style='height: 1.8em;'/></td>
+                                    <td><apex:inputText value="{!fld5}" maxlength="50" rendered="{!OptionalFeatures3Rendered}" style="width: 95%;" /></td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                        <div class='IHPanelFooter'>                         
+                            <apex:commandButton rendered="{!!isIHLUX}"
+                                                onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                styleClass="IHIcon24 IHIdle IHIconAdd" 
+                                                image="{!URLFOR($Resource.IHResources, '/img/IconAdd.png')}"                                                 
+                                                action="{!createRelatedResource}" 
+                                                title="{!DialogueLocalisations['TipButtonCreateAndRelateOpt3']}" 
+                                                oncomplete="IHEditHelp.confirmComplete(this, '{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}');" 
+                                                />  
+                            
+                            <apex:actionFunction name="doCreateRelatedResource" action="{!createRelatedResource}" oncomplete="IHEditHelp.confirmComplete(this, '{!IF(IsError == false, Diags + '\n\n' + GlobalLocalisations['MessageRefreshForChangesManual'], Diags)}');" />
+                                                        
+                            <button onclick="javascript:doCreateRelatedResource();" 
+                                    style="{!IF(isIHLUX, '', 'display: none;')}" 
+                                    title="{!DialogueLocalisations['TipButtonCreateAndRelateOpt3']}"
+                                    class="slds-button slds-button_neutral">
+                                {!DialogueLocalisations['ButtonCreateAndRelate']}
+                            </button>
+                            
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="{!OptionalFeatures8Class} {!IF(isIHLUX, 'IHSubPanelLUX', 'IHSubPanel')}">
+                        <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                            styleClass="IHIcon24 IHIdle IHIconAdd" 
+                                            image="{!URLFOR($Resource.IHResources, '/img/IconAdd.png')}"                                                 
+                                            action="{!enableNewGuide}" 
+                                            title="{!DialogueLocalisations['TipButtonCreateNewGuide']}" 
+                                            oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                            />  
+
+<!-- LOCALISATION / WHITE LABEL NEEDED BELOW! -->
+                        <div style='float: right;'>
+                            <a title="{!DialogueLocalisations['TipButtonGuideAuthoringTips']}"                     
+href='#'
+                                target='_Blank'>
+                                
+                                {!DialogueLocalisations['ButtonGuideAuthoringTips']}
+                            </a>
+                        </div>                     
+                       
+                       
+                       <div style='position: relative; display: inline; padding-left: 10px; top: -10px;'>
+                            {!Diags}
+                        </div>
+                    </div> 
+                    
+                </div>
+
+<!--  
+===============================================
+FOOTER / DIAGS
+===============================================
+ -->    
+
+                <div class="IHPanelFooter" style="
+                        {!IF(Opts=='1', 'height: 10px;'
+                        , IF(Opts=='2', 'height: 0px;'
+                        , IF(Opts=='3', 'height: 0px;'
+                        , IF(Opts=='4', 'height: 5px;'
+                        , IF(Opts=='5', 'height: 5px;'
+                        , IF(Opts=='6', 'height: 5px;'
+                        , IF(Opts=='7', 'height: 5px;'
+                        , IF(Opts=='8', 'display: none;'
+                        , 'height: 5px;'))))))))} padding: 0;">
+                    <div class="IHStatusBox">
+                        <div class="IHStatusMessage">
+                            {!Diags}
+                        </div>
+                    </div>
+                </div> 
+                                                        
+            </apex:form>            
+        </div>
+                              
+    </body>
+    
+</apex:page>

@@ -1,0 +1,5 @@
+.THIS  .TBox				{width: 100%;}
+
+.THIS.EdTools				{float: right; cursor: pointer; font-size: 1.0rem; color: #dddddd;}
+.THIS.EdTools span			{padding: 0.3rem;}
+.THIS.EdTools span:hover	{color: grey;}

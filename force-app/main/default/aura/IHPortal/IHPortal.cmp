@@ -1,0 +1,205 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:hasRecordId,force:hasSObjectName,lightning:actionOverride">
+    
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+<!-- 
+================================================
+Internationalised values for use in mark-up
+================================================
+-->
+    <aura:attribute name="TBrandTitle" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TBrandSubTitle" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TBrandImage" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TBrandToolColour" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonConfigureSettings" type="string" required="false" default="" access="private" />
+    <aura:attribute name="TipButtonHelpHome" type="string" required="false" default="" access="private" />
+
+    <aura:attribute name="TitleAllRelatedHelp" type="string" required="false" default="Related Help" access="private" />
+    <aura:attribute name="TitleReadingLists" type="string" required="false" default="Reading Lists" access="private" />
+    <aura:attribute name="TitleAllResources" type="string" required="false" default="Resources" access="private" />
+    <aura:attribute name="TitleQuickLinks" type="string" required="false" default="Links" access="private" />
+    
+<!-- 
+================================================
+Member data
+================================================
+-->	
+	<aura:attribute name="DefaultHelpTopic" type="string" required="true" default="" access="private" />
+    <aura:attribute name="recordId" type="Id" />
+	
+	<aura:attribute name="isUser" type="boolean" required="true" default="false" access="private" />
+	<aura:attribute name="isAnalyst" type="boolean" required="true" default="false" access="private" />
+	<aura:attribute name="isAuthor" type="boolean" required="true" default="false" access="private" />
+	<aura:attribute name="isAdministrator" type="boolean" required="true" default="false" access="private" />
+
+    
+    <div class="slds-grid slds-gutters_direct-x-small slds-wrap" >
+        
+        <!-- main body container -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12 ">
+
+<!-- 
+================================================
+Portal Header
+================================================
+-->           
+	        <div class="slds-grid slds-m-bottom_small slds-p-top_x-small IHPortalHeader">
+                        
+<!-- 
+................................................
+Brand image - with and without "Home" link
+................................................
+-->
+				<aura:if isTrue="{!v.DefaultHelpTopic != 'undefined'}">
+	                <div class="slds-col slds-size_1-of-6 slds-medium-size_1-of-6 slds-large-size_1-of-12 slds-p-horizontal_small IHPortalBrandImageContainer">
+						<a href="{! '/' + v.DefaultHelpTopic}" title="{!v.TipButtonHelpHome}">
+		                    <div class="slds-global-header__logo">
+		                        <div class="ToolsBrandImage IF(TBrandImage=='', '', 'X') ToolsBrandImageDefault">
+		                            <img class='IHBranded' id="IHBrandImage" src='{!v.TBrandImage}' alt='{!v.TipButtonHelpHome}' />
+		                        </div>
+		                    </div>
+						</a>
+	                </div>
+				</aura:if>
+
+				<aura:if isTrue="{!v.DefaultHelpTopic == 'undefined'}">
+	                <div class="slds-col slds-size_1-of-6 slds-medium-size_1-of-6 slds-large-size_1-of-12 slds-p-horizontal_small IHPortalBrandImageContainer">
+	                    <div class="slds-global-header__logo">
+	                        <div class="ToolsBrandImage IF(TBrandImage=='', '', 'X') ToolsBrandImageDefault">
+	                            <img class='IHBranded' id="IHBrandImage" src='{!v.TBrandImage}' alt='{!v.TBrandTitle}' />
+	                        </div>
+	                    </div>
+	                </div>
+				</aura:if>
+            
+<!-- 
+................................................
+Brand title & subtitle
+................................................
+-->
+                <div class="slds-col slds-size_4-of-6 slds-medium-size_4-of-6 slds-large-size_10-of-12">
+                   <div class="slds-text-align_center">
+                        <h1 class="slds-page-header__title slds-truncate slds-align-middle">
+                            {!v.TBrandTitle}
+                        </h1>
+                        <p class="slds-text-body_small slds-line-height_reset">
+                            {!v.TBrandSubTitle}
+                        </p>
+                    </div>                                
+                </div>
+
+<!-- 
+................................................
+Portal Tools
+................................................
+-->
+            	<div class="slds-col slds-col_bump-left slds-size_1-of-6 slds-medium-size_1-of-6 slds-large-size_1-of-12 slds-p-right_small">
+					<a class="{! v.isAdministrator ? '' : 'slds-hide'}" href="/apex/iahelp__IHManageSettings?Cat=QuickLinks" target="Qlink" role="menuitem" title="{!v.TipButtonConfigureSettings}" >            	
+	                	<div class="IHPortalHeaderTools" style="{! 'color: #' + v.TBrandToolColour + ';'}">
+	                    	<i class="fa fa-2x fa-cog"></i>
+	                    </div>
+                	</a>
+                </div>
+            </div>       
+                 
+<!-- 
+================================================
+Help Topic Detail
+================================================
+-->
+            <c:IHDetail aura:id="ctlTopic">
+                <aura:set attribute="ComponentId" value="Topic" />
+                <aura:set attribute="HelpRecordId" value="{!v.recordId}" />
+                <aura:set attribute="SuppressHeader" value="false" />
+                <aura:set attribute="SuppressFooter" value="true" />
+                <aura:set attribute="ListensTo" value="HelpRelationships" />
+                <aura:set attribute="Height" value="-1" />
+            </c:IHDetail>
+        </div>
+        
+<!-- 
+================================================
+Related Help Lists
+================================================
+-->
+        <!-- 'Right sidebar' container -->
+        <div class="slds-card slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                
+            <lightning:tabset>
+            
+                <!-- Help Relationships -->                       
+                <lightning:tab title="" label="{!v.TitleAllRelatedHelp}">
+                    <c:IHList aura:id="ctlHelpRelationships">
+		                <aura:set attribute="Height" value="-1" />
+                        <aura:set attribute="SuppressHeader" value="false" />
+						<aura:set attribute="SuppressFooter" value="true" />
+                        <aura:set attribute="ListingStyle" value="Narrow" />
+                        <aura:set attribute="ListingRowStyle" value="Hidden" />
+                        <aura:set attribute="ListensTo" value="Topic" />
+                		<aura:set attribute="recordId" value="{!v.recordId}" />
+                        <aura:set attribute="ComponentId" value="HelpRelationships" />
+                        <aura:set attribute="CardConfig" value="Related Help" />
+                        <aura:set attribute="CalloutOption" value="" />
+                    </c:IHList>
+                </lightning:tab>
+                
+                
+                <!-- Reading Lists -->
+                <lightning:tab title="" label="{!v.TitleReadingLists}" >
+                    <c:IHList aura:id="ctlReadingLists">
+		                <aura:set attribute="Height" value="-1" />
+                        <aura:set attribute="SuppressHeader" value="false" />
+						<aura:set attribute="SuppressFooter" value="true" />
+                        <aura:set attribute="ListingStyle" value="Narrow" />
+                        <aura:set attribute="ListingRowStyle" value="Hidden" />
+                        <aura:set attribute="ListensTo" value="Topic" />
+                		<aura:set attribute="recordId" value="{!v.recordId}" />
+                        <aura:set attribute="ComponentId" value="ReadingLists" />
+                        <aura:set attribute="CardConfig" value="Reading Lists" />
+                    </c:IHList>                    
+                </lightning:tab>
+
+                
+                <!-- Help Resources -->
+                <lightning:tab title="" label="{!v.TitleAllResources}">
+                    <c:IHList aura:id="ctlResources">
+		                <aura:set attribute="Height" value="-1" />
+                        <aura:set attribute="SuppressHeader" value="false" />
+						<aura:set attribute="SuppressFooter" value="true" />
+                        <aura:set attribute="ListingStyle" value="Narrow" />
+                        <aura:set attribute="ListingRowStyle" value="Hidden" />
+                        <aura:set attribute="ListensTo" value="Topic" />
+                		<aura:set attribute="recordId" value="{!v.recordId}" />
+                        <aura:set attribute="ComponentId" value="Resources" />
+                        <aura:set attribute="CardConfig" value="Resources" />
+                    </c:IHList>                    
+                </lightning:tab>
+
+                
+                <!-- Quick-Links -->
+                <lightning:tab aura:id="tabQuickLinks" title="" label="{!v.TitleQuickLinks}">
+                    <c:IHList aura:id="ctlQuickLinks">
+		                <aura:set attribute="Height" value="-1" />
+                        <aura:set attribute="SuppressHeader" value="false" />
+						<aura:set attribute="SuppressFooter" value="true" />
+                        <aura:set attribute="ListingStyle" value="Narrow" />
+                        <aura:set attribute="ListingRowStyle" value="Hidden" />
+                        <aura:set attribute="ListensTo" value="Topic" />
+                        <aura:set attribute="ComponentId" value="QuickLinks" />
+                        <aura:set attribute="CardConfig" value="QuickLinks" />
+                        <aura:set attribute="ToolContext" value="IHPortal" />
+                    </c:IHList>                    
+                </lightning:tab>
+                
+            </lightning:tabset>                
+         
+        </div>
+	</div>
+	
+</aura:component>

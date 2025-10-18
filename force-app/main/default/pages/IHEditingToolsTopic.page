@@ -1,0 +1,270 @@
+<!--
+============================================================================================== 
+STAND-ALONE (APPROXIMATE) COPY OF THE TOPIC EDITING PANEL FROM IHTOOLS.
+BEING A COPY WITH THE SAME CONTROLLER, PARAMETERS SHOULD BE AS PER THE TOOLS PAGE.
+
+Martin Little for Improved Apps
+October 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName} - {!GlobalLocalisations['TipGenericEdit']}"
+                standardcontroller="HelpTopic__c"
+                extensions="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName} - {!GlobalLocalisations['TipGenericEdit']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />
+                
+        <apex:stylesheet value="{!BrandCSS}" />     
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}" />
+        
+        <script type='text/javascript'>
+            // Prepare page for use
+            // Bind a "before unload" function to check on pending edits
+            window.onbeforeunload = function() {
+                var dirtWarning = IHEditHelp.IHjsEditCheckDirty();
+                
+                if (dirtWarning != '') {
+                    return dirtWarning;
+                } else {
+                    return;
+                }
+            }
+        </script>
+    </head>
+                
+    <apex:form >
+        <apex:include pageName="IHHook"/>
+
+        <div id='ToolsEditor' class='ToolsEditor'>
+                                
+            <!--
+            This action function allows enter key to fire record saves when on this form:
+            Works in conjunction with the hooking of keystrokes (see "onkeypress" attribute
+            of each affected control in the editor, below, to call jsSearch.checkEnter) 
+            NB: for now, checkEnter does NOT call doSave, so enter key is effectively ignored
+             -->                             
+            <apex:actionFunction name="doSave" action="{!saveHelp}"></apex:actionFunction>
+                            
+            <!--
+            This action function ensures that callout height responds to changes
+            in the selected callout template - and re-enters edit mode as it does so
+             --> 
+            <apex:actionFunction name="doCalloutTemplateChange" action="{!calloutTemplateChange}"></apex:actionFunction>
+                            
+
+            <div class='IHPanelFooter'>
+                <table width='100%' border='0'>
+                    <tr>
+                        <td>
+                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                styleClass="IHIcon24 IHIdle IHIconQuickSave" 
+                                                rerender="pbsGeneral1, pbsStatus1, pbsImage, pbsVideo, pbsGuides" 
+                                                image="{!URLFOR($Resource.IHResources, '/img/IconQuickSave.png')}" 
+                                                action="{!saveHelp}" 
+                                                title="{!DialogueLocalisations['TipButtonQuickSave']}" 
+                                                oncomplete="IHEditHelp.IHjsEditIsDirty=false; alert('{!JSENCODE(Diags)}');" 
+                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;" />  
+                                                                                                        
+                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                styleClass="IHIcon24 IHIdle IHIconSave" 
+                                                rerender="pbsGeneral1, pbsStatus1, pbsImage, pbsVideo, pbsGuides" 
+                                                image="{!URLFOR($Resource.IHResources, '/img/IconSave.png')}" 
+                                                action="{!saveHelp}" 
+                                                title="{!DialogueLocalisations['TipButtonSave']}" 
+                                                oncomplete="IHEditHelp.IHjsEditIsDirty=false; alert('{!JSENCODE(Diags)}');" 
+                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;" />
+                        </td>
+
+                        <td width='5%'>
+                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                immediate="true"
+                                                styleClass="IHIcon24 IHIdle IHIconCancelBtn" 
+                                                image="{!URLFOR($Resource.IHResources, '/img/IconCancelBtn.png')}" 
+                                                action="{!cancelHelpChanges}" 
+                                                title="{!DialogueLocalisations['TipButtonCancel']}"                                                                 
+                                                style="padding: 0; margin: 5px; height: 24px; width: 24px;"  />
+                        </td>
+                    </tr>
+                </table>                            
+            </div>                          
+
+                            
+            <apex:PageBlock >
+                <apex:tabPanel activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="IHPanelHeader" headerSpacing="2" contentClass="IHTabContent IHTabBody" switchType="client" selectedTab="tbGeneral" width="100%">
+                          
+                    <apex:tab label="{!DialogueLocalisations['TitleTabGeneral']}" name="tbGeneral" styleClass="IHTab">
+                                    
+                        <apex:PageBlockSection id="pbsGeneral1" columns="1" showHeader="false">
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelName']}" value="{!Hlp.Name}" style="width:98%;" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                                      
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelSummary']}" value="{!Hlp.Summary__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelMasterTopicIdentifier']}" value="{!Hlp.MasterTopicIdentifier__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                           
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelSFHelpURL']}" value="{!Hlp.SalesforceHelpURL__c}" style="width: 98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            
+                            <apex:selectList onchange="javascript:doCalloutTemplateChange();" label="{!DialogueLocalisations['FieldLabelCalloutTemplate']}" value="{!Hlp.CalloutTemplate__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                <apex:selectOptions value="{!TemplatesC}"/>
+                            </apex:selectList> 
+                            
+                            <apex:inputField id="fldCalloutHeight" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCalloutHeight']}" value="{!Hlp.CalloutHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            
+                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCalloutMediaChoice']}" value="{!Hlp.CalloutMediaChoice__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                <apex:selectOption itemValue="Image" itemLabel="{!DialogueLocalisations['ValueMediaChoiceImage']}"/>
+                                <apex:selectOption itemValue="Video" itemLabel="{!DialogueLocalisations['ValueMediaChoiceVideo']}"/>
+                            </apex:selectList>
+
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel />                                                                                        
+                                <a title="{!DialogueLocalisations['TipButtonPreviewCallout']}" target='PreviewCallout' href='{!TRootLink}/apex/iahelp__IHPreviewCallout?HTID={!THelpId}'>
+                                    {!DialogueLocalisations['ButtonPreviewCallout']}
+                                </a>
+                                
+                                <!-- 
+                                NOTE: PREVIEW CALLOUT AS EDITED LINK NOT SUITABLE FOR USE
+                                IN THE GUIDE WINDOW WHERE THIS CONTROL COMMONLY FEATURES - SO 
+                                NOT INCLUDED HERE...
+                                 -->
+
+                                <div style="margin-top: 10px;">
+                                    <a target="_Blank" title="{!GlobalLocalisations['TipButtonGotoTemplates']}" href="{!TemplatesLink}">
+                                        {!GlobalLocalisations['ButtonGotoTemplates']}
+                                    </a>                                    
+                                </div>
+                            </apex:pageBlockSectionItem>
+                                                                                        
+                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelFullTemplate']}" value="{!Hlp.Template__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                <apex:selectOptions value="{!TemplatesF}"/>
+                            </apex:selectList>                                              
+    
+                            <apex:inputField id="fldHeightBeforeScrolling" onchange="javascript:synchHBS(this);" label="{!DialogueLocalisations['FieldLabelHeightBeforeScrolling']}" value="{!Hlp.HeightBeforeScrolling__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+    
+                            <!-- NB: put this hidden input here so we can get required IFRAME height after edits client side...  -->
+                            <input id='HBS' type='text' style='display: none;' value='{!Hlp.HeightBeforeScrolling__c}' />                                               
+                        </apex:PageBlockSection>
+                                    
+                    </apex:tab>
+                                    
+
+                    <apex:tab label="{!DialogueLocalisations['TitleTabCustom']}" name="tbCustom" styleClass="IHTab" rendered="{!CustomFields != null}">
+                        <apex:PageBlockSection id="pbsCustom" columns="1" showHeader="false">
+                            <apex:repeat: value="{!CustomFields}" var="f">
+                                <apex:inputField value="{!Hlp[f.fieldPath]}" />
+                            </apex:repeat:>
+                        </apex:PageBlockSection>
+                    </apex:tab>
+
+    
+                    <apex:tab label="{!DialogueLocalisations['TitleTabStatus']}" name="tbStatus" styleClass="IHTab">                                              
+                        <apex:PageBlockSection id="pbsStatus1" columns="1" showHeader="false">
+                            
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelActive']}" value="{!Hlp.Active__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                             
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowReadMore']}" value="{!Hlp.ShowReadMoreLink__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                   
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowReferringTopics']}" value="{!Hlp.ShowReferringRelationships__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                                                                 
+
+                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStatus']}" value="{!Hlp.HelpTopicStatus__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                <apex:selectOption itemValue="New" itemLabel="{!DialogueLocalisations['ValueTopicStatusNew']}"/>
+                                <apex:selectOption itemValue="Drafted" itemLabel="{!DialogueLocalisations['ValueTopicStatusDrafted']}"/>
+                                <apex:selectOption itemValue="Submitted for Approval" itemLabel="{!DialogueLocalisations['ValueTopicStatusSubmittedforApproval']}"/>
+                                <apex:selectOption itemValue="Approved" itemLabel="{!DialogueLocalisations['ValueTopicStatusApproved']}"/>
+                                <apex:selectOption itemValue="Published" itemLabel="{!DialogueLocalisations['ValueTopicStatusPublished']}"/>
+                                <apex:selectOption itemValue="Suspended" itemLabel="{!DialogueLocalisations['ValueTopicStatusSuspended']}"/>
+                                <apex:selectOption itemValue="Obsolete" itemLabel="{!DialogueLocalisations['ValueTopicStatusObsolete']}"/>
+                            </apex:selectList>
+
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVisibility']}" value="{!Hlp.Visibility__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+
+                            <apex:selectList onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelCustomStyle']}" value="{!Hlp.CustomStyle__c}" multiselect="false" size="1" onkeydown="javascript:return IHSearch.checkEnter('', event);" >
+                                <apex:selectOptions value="{!CustomStyles}"/>
+                            </apex:selectList>                                                  
+                            
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVoteInfo']}" value="{!Hlp.HelpVoteSet__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                             
+                            <apex:outputText label="{!DialogueLocalisations['FieldLabelVoteInfoSetText']}" value="{!IF(Hlp.HelpVoteSet__r.QuestionText__c == '' || Hlp.HelpVoteSet__r.QuestionText__c == null, GlobalLocalisations['AdviceLabelQuestionTextNotSet'], Hlp.HelpVoteSet__r.QuestionText__c)}" escape="true" />
+                                            
+                            <apex:image height="16" width="16" value="{!IF(Hlp.HelpVoteSet__r.ImageClass__c == '' || Hlp.HelpVoteSet__r.ImageClass__c == null, '', Hlp.HelpVoteSet__r.ImageClass__c)}" />
+
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel />                                                                                        
+                                    <a target="_Blank" title="{!DialogueLocalisations['TipButtonGotoVoteSets']}" href="{!TVoteSetsLink}">
+                                        {!DialogueLocalisations['ButtonGotoVoteSets']}
+                                    </a>                                    
+                                </apex:pageBlockSectionItem>
+                            
+                            </apex:PageBlockSection>
+                                                                                                        
+                    </apex:tab>
+                                    
+                                    
+                    <apex:tab label="{!DialogueLocalisations['TitleTabImage']}" name="tbImage" styleClass="IHTab">                                              
+                        <apex:PageBlockSection id="pbsImage" columns="1" showHeader="false">
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageURL']}" value="{!Hlp.ImageURL__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />     
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageTitle']}" value="{!Hlp.ImageTitle__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageCaption']}" value="{!Hlp.ImageCaption__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageALTText']}" value="{!Hlp.ImageALTText__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageWidth']}" value="{!Hlp.ImageWidth__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelImageHeight']}" value="{!Hlp.ImageHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel />                                                                                        
+                                    <a title="{!GlobalLocalisations['TipButtonUploadImage']}" href='javascript:void(0);' onclick='javascript:IHWebToolTips.DoTips("dfrm", "{!$Page.IHUploadTopicImage}?HTID={!JSENCODE(Hlp.Id)}", "7", 100, 180, event);'>
+                                        {!GlobalLocalisations['ToolLabelButtonUpload']}
+                                    </a>
+                                </apex:pageBlockSectionItem>
+                            </apex:PageBlockSection>
+                        
+                        <apex:commandButton value="{!DialogueLocalisations['ButtonResetImage']}" 
+                            title="{!DialogueLocalisations['TipButtonResetImage']}" 
+                            action="{!resetTopicImage}" rerender="pbsImage" oncomplete="IHEditHelp.ReNav(this, '', '{!THelpId}');" />
+                    </apex:tab>
+                
+                
+                    <apex:tab label="{!DialogueLocalisations['TitleTabVideo']}" name="tbVideo" styleClass="IHTab">                                              
+                        <apex:PageBlockSection id="pbsVideo" columns="1" showHeader="false">
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoURL']}" value="{!Hlp.VideoURL__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoTitle']}" value="{!Hlp.VideoTitle__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoCaption']}" value="{!Hlp.VideoCaption__c}" style="width:98%" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoWidth']}" value="{!Hlp.VideoWidth__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelVideoHeight']}" value="{!Hlp.VideoHeight__c}" onkeydown="javascript:return IHSearch.checkEnter('', event);" />                                 
+                        </apex:PageBlockSection>
+                        
+                        <apex:commandButton value="{!DialogueLocalisations['ButtonResetVideo']}" 
+                            title="{!DialogueLocalisations['TipButtonResetVideo']}" 
+                            action="{!resetTopicVideo}" rerender="pbsVideo" oncomplete="IHEditHelp.ReNav(this, '', '{!THelpId}');" />                                       
+                    </apex:tab>
+            
+            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabText']}" name="tbText" styleClass="IHTab">                                               
+                        <apex:PageBlockSection id="pbsRichText" columns="1" showHeader="false">
+                            <apex:inputField label="" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" value="{!Hlp.Description__c}" />
+                            <apex:inputField label="{!DialogueLocalisations['FieldLabelKeywords']}" onchange="javascript:IHEditHelp.IHjsEditSetDirty();" value="{!Hlp.Keyword__c}" />
+                        </apex:PageBlockSection>
+                    </apex:tab>
+
+
+                    <apex:tab label="{!DialogueLocalisations['TitleTabGuides']}" name="tbGuides" styleClass="IHTab">
+                        <apex:PageBlockSection id="pbsGuides" columns="1" showHeader="false">
+                            <span class='IHError'>
+                                {!DialogueLocalisations['AdviceLabelGuideSettings']}
+                            </span>
+                    
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepMode']}" value="{!Hlp.GuideStepMode__c}" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepLayout']}" value="{!Hlp.GuidedLayout__c}" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepElement']}" value="{!Hlp.GuidedElement__c}" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelStepContext']}" value="{!Hlp.GuidedRecord__c}" />
+                            <apex:inputField onchange="javascript:IHEditHelp.IHjsEditSetDirty();" label="{!DialogueLocalisations['FieldLabelShowCallout']}" value="{!Hlp.GuideCallout__c}" />
+                    
+                        </apex:PageBlockSection>
+                    </apex:tab>
+                                    
+                </apex:tabPanel>
+                
+            </apex:PageBlock>
+
+        </div>                              
+    </apex:form>                    
+</apex:page>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LightningPresentationStyle__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Defines the overall styling to use when displaying this Reading List via the Improved Help Reading List Viewer Lightning component</description>
+    <label>Lightning Presentation Style</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Adopter</fullName>
+                <default>false</default>
+                <label>Adopter</label>
+            </value>
+            <value>
+                <fullName>Adopter - Minimal Topic</fullName>
+                <default>false</default>
+                <label>Adopter - Minimal Topic</label>
+            </value>
+            <value>
+                <fullName>Adopter - Topic Viewer</fullName>
+                <default>false</default>
+                <label>Adopter - Topic Viewer</label>
+            </value>
+            <value>
+                <fullName>Carousel</fullName>
+                <default>false</default>
+                <label>Carousel</label>
+            </value>
+            <value>
+                <fullName>Standard</fullName>
+                <default>false</default>
+                <label>Standard</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

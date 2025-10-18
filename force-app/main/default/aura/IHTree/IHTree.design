@@ -1,0 +1,114 @@
+<design:component label="Improved Help: Tree View">
+  
+	<design:attribute name="Height" 
+	                label="Component Height" 
+	                description="Initial display height for this component (pixels)." 
+                    default="-1" 
+                    required="true" />	
+
+	<design:attribute name="SuppressHeader" 
+	                label="Suppress Header" 
+	                description="Check this box to hide the header area of this component." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="SuppressFooter" 
+	                label="Suppress Footer" 
+	                description="Check this box to hide the footer / diagnostics area of this component." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="SuppressListingTools" 
+	                label="Suppress Node Tools" 
+	                description="Check this box to offer a simplified tree presentation with node-level clickables hidden." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="DisplayDensity" 
+                    label="Display Density" 
+                    description="Controls how much white space to display around the nodes of this tree." 
+                    datasource="Comfy,Compact"
+                    default="Comfy"
+                    required="false" />	
+
+	<design:attribute name="NodeIconStyle" 
+	                label="Node Icon Style" 
+	                description="Controls the appearence of icons against each node on the Tree." 
+                    datasource="None,Small,Large"
+                    default="Small" 
+                    required="true" />	
+
+	<design:attribute name="MaxListingTools" 
+                    label="Collapse Tools At" 
+                    description="The maximum number of tools to show against each node on the Tree before collapsing them into an Ellipsis. 0 = always collapse, -1 = never collapse." 
+                    default="0"
+                    required="false" />
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present." 
+                    default="[No Data]" 
+                    required="false" />	
+
+    <design:attribute name="RootNode" 
+                    label="Default Tree" 
+                    description="Id of the record to be used as the 'root' of this Tree. Enter '[None]' to begin with a blank tree." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="NodeProvider" 
+                    label="Node Provider" 
+                    description="[OPTIONAL] The name of a 'node provider' implementation that can be used to render locally-defined trees." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="MaxDepth" 
+                    label="Max. Depth" 
+                    description="The maximum number of levels to display on the Tree. 0 = show all available levels." 
+                    default="0"
+                    required="true" />
+                    
+    <design:attribute name="PrintView" 
+                    label="Display Printable View" 
+                    description="If checked, displays a version of the Tree designed for printing its contents rather than navigating content hierarchies." 
+                    default="false" 
+                    required="true" />
+
+    <design:attribute name="LevelIndentation" 
+                    label="Print view: Level Indentation" 
+                    description="For printable view only: Amount of indentation to apply to each level of the Tree. Higher numbers result in greater level indentation." 
+                    default="0"
+                    required="true" />                    
+
+    <design:attribute name="DDAllowed" 
+                    label="Enable Drag and Drop" 
+                    description="If checked, allows Authors to use Drag and Drop to add and re-arrange tree nodes, where supported by the node provider." 
+                    default="false" 
+                    required="true" />
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'."
+                    default="" 
+                    required="false" />
+	
+</design:component>

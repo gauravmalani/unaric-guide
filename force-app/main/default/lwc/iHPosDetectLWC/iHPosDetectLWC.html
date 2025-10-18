@@ -1,0 +1,66 @@
+<template>
+    
+ <article class="slds-card custom-transparent-card">
+    
+     <div class={hasAuthorOverridesClass}>
+        <!-- Visibility check element -->
+        <div class="vizCheck"></div>
+    </div>
+    
+    <!-- Always render this hidden design-time element -->
+    <div class="designTimeHidden" id={computedDivId}>
+        Improved Help Position Detector ({positioningGroup} - {positioningrole})
+    </div>
+    
+    <c-i-h-event-tracker></c-i-h-event-tracker>
+
+
+    <!-- Render only if Role is 'Help Button' -->
+    <template if:true={showHelpButton}>
+        <div class={positioningClass}>
+            <!-- variant (label present) -->
+            <template if:true={hasLabel}>
+                <div class={toolsContainerClass}
+                     onclick={handleClick}
+                     title={tooltipText}
+                     style={helpButtonContainerStyle}>
+
+                    <!-- icon in the top-right corner -->
+                    <div class="icon-wrapper" style={computedColor}>
+                        <lightning-icon
+                            icon-name="utility:question"
+                            variant="inverse"
+                            size="x-small"
+                            class="help-icon"
+                            alternative-text="Help for this area.">
+                            onclick={handleClick}
+                        </lightning-icon>
+                    </div>
+
+                    <!-- wrapped text -->
+                    <div class={bubbleTextClass} style={textSizeStyle}>{label}</div>
+                </div>
+            </template>
+
+            <!-- Stand-alone icon (label empty / undefined) -->
+            <template if:false={hasLabel}>
+                <div class="standalone-wrapper"
+                     onclick={handleClick}
+                     title={tooltipText}>
+                    <div class="standalone-icon" style={computedColor}>
+                        <lightning-icon
+                            icon-name="utility:question"
+                            variant="inverse"
+                            size="x-small"
+                            class="help-icon"
+                            alternative-text="Help for this area.">
+                        </lightning-icon>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+</article>
+<c-i-h-geolocation></c-i-h-geolocation>
+</template>

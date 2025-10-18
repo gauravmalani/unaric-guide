@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ElementType__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The type of page element that is being helped</description>
+    <inlineHelpText>The type of page element that is being helped</inlineHelpText>
+    <label>Element Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Button</fullName>
+                <default>false</default>
+                <label>Button</label>
+            </value>
+            <value>
+                <fullName>Context Tree Root</fullName>
+                <default>false</default>
+                <label>Context Tree Root</label>
+            </value>
+            <value>
+                <fullName>Contextual Flow</fullName>
+                <default>false</default>
+                <label>Contextual Flow</label>
+            </value>
+            <value>
+                <fullName>Custom Link</fullName>
+                <default>false</default>
+                <label>Custom Link</label>
+            </value>
+            <value>
+                <fullName>Custom Section Label</fullName>
+                <default>false</default>
+                <label>Custom Section Label</label>
+            </value>
+            <value>
+                <fullName>Detail Section Label</fullName>
+                <default>false</default>
+                <label>Detail Section Label</label>
+            </value>
+            <value>
+                <fullName>Field</fullName>
+                <default>true</default>
+                <label>Field</label>
+            </value>
+            <value>
+                <fullName>Help and Training Link</fullName>
+                <default>false</default>
+                <label>Help and Training Link</label>
+            </value>
+            <value>
+                <fullName>Page Help Link</fullName>
+                <default>false</default>
+                <label>Page Help Link</label>
+            </value>
+            <value>
+                <fullName>Record Title</fullName>
+                <default>false</default>
+                <label>Record Title</label>
+            </value>
+            <value>
+                <fullName>Related List Column Label</fullName>
+                <default>false</default>
+                <label>Related List Column Label</label>
+            </value>
+            <value>
+                <fullName>Related List Help Link</fullName>
+                <default>false</default>
+                <label>Related List Help Link</label>
+            </value>
+            <value>
+                <fullName>Related List Label</fullName>
+                <default>false</default>
+                <label>Related List Label</label>
+            </value>
+            <value>
+                <fullName>Signature Element</fullName>
+                <default>false</default>
+                <label>Signature Element</label>
+            </value>
+            <value>
+                <fullName>Visualforce Element</fullName>
+                <default>false</default>
+                <label>Visualforce Element</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

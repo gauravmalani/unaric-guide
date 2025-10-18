@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DashboardFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <folderShares>
+        <accessLevel>Manage</accessLevel>
+        <sharedTo>simon.thompson@improvedapps.com.ih.dev2</sharedTo>
+        <sharedToType>User</sharedToType>
+    </folderShares>
+    <name>Improved Usage Tracker Dashboards</name>
+</DashboardFolder>

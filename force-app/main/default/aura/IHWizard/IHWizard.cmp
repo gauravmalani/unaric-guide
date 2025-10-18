@@ -1,0 +1,272 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+				extends="IHCard" 	
+				access="global" > 
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>     
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+	<aura:set attribute="IHCardType" value="Wizard" />    
+	
+<!-- 
+================================================
+Member data
+================================================
+-->
+	<aura:set attribute="ComponentId" value="theWizard" />	
+
+	<aura:attribute name="WizardName" type="string" required="true" default="" access="global" />
+	<aura:attribute name="StepNum" type="integer" required="true" default="0" access="private" />
+
+	<aura:attribute name="CachedSelections" type="string[]" required="false" default="" access="private" />
+	<aura:attribute name="CachedRecords" type="sObject[]" required="false" access="private" />
+	<aura:attribute name="CachedRecNum" type="integer" required="true" default="0" access="private" />
+			
+<!-- Grid start -->
+	<div class="slds-grid">
+    	<div class="slds-col slds-p-horizontal_small slds-p-vertical_medium">
+
+
+<!-- 
+================================================
+NO DATA MESSAGE (IF ZERO ROWS ARE AVAILABLE)
+================================================
+-->
+		    <div class="{!v.WizardSteps.length == 0 ? 'NoDataMessage' : 'slds-hide'}">
+		        {!v.NoDataMessage}
+		    </div>
+            
+<!-- 
+========================================================
+PATH
+========================================================
+-->
+            <div class="PathContainer">
+                <div class="slds-path">
+                    <div class="slds-grid slds-path__track">
+                        <div class="slds-grid slds-path__scroller-container">
+                            <div class="slds-path__scroller" role="application">
+                                <div class="slds-path__scroller_inner">
+                                    <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                        
+                                        <aura:iteration items="{!v.WizardSteps}" var="WS" indexVar="Idx">
+											<li title="{!WS.iahelp__TipText__c}" class="{! v.StepNum == Idx ? 'slds-path__item slds-is-current slds-is-active' : 'slds-path__item slds-is-incomplete'}" role="presentation">
+												<a aria-selected="{! v.StepNum == Idx}" class="slds-path__link" href="javascript:void(0);" onclick="{!c.setStep}" id="{!'WizPathLink_' + Idx}" role="option" >
+
+                                                    <span class="slds-path__stage">
+                                                        <span class="slds-assistive-text">
+                                                            {!WS.iahelp__TipText__c}
+                                                        </span>
+                                                    </span>
+                                                    
+                                                    <span id="{!'WizPathLabel_' + Idx}" class="slds-path__title">
+                                                        {!WS.iahelp__Label__c}
+                                                    </span>
+
+                                                </a>
+                                            </li>
+                                        </aura:iteration>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+			<!-- Wizard container -->
+			<div class="slds-grid IHWizardContainer" >
+                <div class="slds-col IHWizardColumn" >
+                    
+<!-- 
+========================================================
+Steps
+========================================================
+-->	
+					<aura:iteration items="{!v.WizardSteps}" var="WS" indexVar="Idx">
+
+                    	<div class="{!v.StepNum == Idx ? 'SelectedStep slds-grid' : 'slds-hide'}" >
+                        	<div class="slds-col IHWizardColumn">
+                            
+<!-- 
+........................................................
+Step header / instructions
+........................................................
+ -->			
+                                <div class="slds-box">
+                                        
+                                    <!-- Step Header Tools -->
+                                        
+                                    <!-- Step Header Text -->
+                                    <div class="slds-text-heading_small">
+                                        {!WS.iahelp__TipText__c}
+                                    </div>
+                                    <div class="slds-text-body_regular">
+                                        {!WS.iahelp__Description__c}
+                                    </div>					
+                                        
+                                </div>
+                            
+                            
+<!-- 
+........................................................
+Step cache pagination
+........................................................
+ -->			
+                                <div class="IHWizardCacheArea">
+                                    
+                                    <!-- Step Footer tools [Wizard cache navigation tools] -->                                    
+                                    
+                                	<div class="{! WS.iahelp__HasDivider__c == true ? 'IHWizardCacheContainer' : 'slds-hide'}" >
+                                        
+                                        <ul class="slds-carousel__indicators IHWizardCacheListing" role="tablist" >
+                                            <aura:iteration items="{!v.CachedRecords}" var="Rec" indexVar="Idx">
+                                                <li class="slds-carousel__indicator" role="presentation">
+                                                    <a id="{! 'topicSelector' + Idx}" 
+                                                       class="{! v.CachedRecNum == Idx ? 'slds-carousel__indicator-action slds-is-active' : 'slds-carousel__indicator-action'}" 
+                                                       href="javascript:void(0);" 
+                                                       onclick="{!c.setCachedRecord}"
+                                                       role="tab" 
+                                                       tabindex="0" 
+                                                       aria-selected="true" 
+                                                       title="{!Rec.Name}">
+                                                        
+                                                        <span class="slds-assistive-text">
+                                                            {!Rec.Name}
+                                                        </span>
+                                                    </a>
+                                                </li>				
+                                            </aura:iteration>
+                                        </ul>
+                                        
+                                    </div>
+                               </div>
+                                
+<!-- 
+........................................................
+Step body
+........................................................
+ -->			
+	                            <div class="slds-grid slds-wrap slds-scrollable">
+                               
+<!-- 
+........................................................
+Step-level component 1 area
+........................................................
+ -->			
+                                    <div class="slds-col slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+                                            
+                                        <div>
+                                                
+                                            <!-- Component Header -->
+                                                
+                                            <!-- [Reuse card header structure - possible bump-left col class needed] -->
+                                                
+                                            <div class="slds-grid slds-gutters">
+                                                    
+                                                <div class="slds-col slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                                    <!-- Header Text -->
+                                                </div>
+                                                    
+                                                <div class="slds-col slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                                    <!-- Header Tools -->
+                                                    <!-- Ellipsis Tools -->
+                                                </div>
+                                            </div>
+                                                
+                                            <!-- Component Body -->
+                                            <div class="slds-col ">
+                                                <c:IHComponentGenerator aura:id="LComp">
+                                                    <aura:set attribute="ComponentDef" value="{!WS.LeftComponent}" />
+                                                    <aura:set attribute="Parent" value="{!this}" />
+													<aura:set attribute="SuppressPoweredBy" value="true" />                                                    
+                                                </c:IHComponentGenerator>
+                                            </div>
+                                                
+                                            <!-- Component Footer -->
+                                        </div>
+                                            
+                                    </div>
+                                                              
+<!-- 
+........................................................
+Step-level body tools
+........................................................
+ -->			                             
+                                    <div class="slds-col slds-col slds-size_1-of-1 slds-medium-size_2-of-12 IHWizardStepToolsArea" >
+                                        
+                                        <div class="slds-align_absolute-center IHWizardStepToolsContainer" >
+                                        
+                                        <!-- [Tools horizontal vs vertical] -->
+                                            <aura:iteration items="{!v.WizardStepBodyTools}" var="T" indexVar="idxT">
+                                                
+                                                <!-- Show only tools intended for current, selected step -->						
+                                                <span class="{! T.iahelp__DisplayGrouping__c == '' + (v.StepNum + 1) ? '' : 'slds-hide'}"
+                                                      style="{! 'color: #' + v.UXThemeColour3 + ';'}" >
+                                                    
+                                                    <span class="{!'fa-stack fa-lg IATool ' + T.iahelp__ToolClass__c}" 
+                                                          id="">
+                                                        <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                                                        
+                                                        <i id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+                                                           class="{!'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}" 
+                                                           title="{!T.iahelp__TipText__c}" 
+                                                           onclick="{!c.menuItemClick}" aria-hidden="true" ></i>
+                                                        
+                                                        <span class="sr-only">
+                                                            title="{!T.iahelp__Description__c}"
+                                                        </span>
+                                                    </span>
+                                                    <br/>
+                                                </span>
+                                                
+                                            </aura:iteration>
+                                        </div>
+                                        
+                                        
+                                    </div>
+
+<!-- 
+........................................................
+Step-level component 2 area
+........................................................
+ -->			
+                                    <div class="slds-col slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+                                        <c:IHComponentGenerator aura:id="RComp"> 
+                                            <aura:set attribute="ComponentDef" value="{!WS.RightComponent}" />
+                                            <aura:set attribute="Parent" value="{!this}" />
+											<aura:set attribute="SuppressPoweredBy" value="true" />                                            
+                                        </c:IHComponentGenerator>
+                                    </div>
+                                        
+	                            </div>
+                            
+<!-- 
+........................................................
+Step footer
+........................................................
+ -->			
+	                            <div class="slds-grid">
+	                        		<div class="slds-col">
+	                        			                                    	                                    
+	                                </div>
+	                            </div>    
+	                                                 
+	                        </div>
+	                    </div> 				<!-- Step container end -->
+					</aura:iteration>       <!-- Steps iteration end -->          
+					   
+                </div>   					<!-- Main wizard column end -->         
+           	</div> 							<!-- Wizard container grid end -->
+           	
+        </div>								<!-- Component column end -->
+    </div> 									<!-- Component Grid End -->
+    
+            
+</aura:component>

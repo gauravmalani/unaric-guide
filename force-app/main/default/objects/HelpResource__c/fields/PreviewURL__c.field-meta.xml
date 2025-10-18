@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PreviewURL__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Auto-generated value representing the URL of a suitable preview image for this Help Resource</description>
+    <externalId>false</externalId>
+    <formula>IF( ISPICKVAL( ResourceType__c , &quot;Document&quot;) , 
+    &quot;/resource/iahelp__IHResources/img/IconResourceDocument.png&quot;,
+IF( ISPICKVAL( ResourceType__c , &quot;Web-Page&quot;),
+     &quot;/resource/iahelp__IHResources/img/IconResourceWebPage.png&quot;,
+IF( ISPICKVAL( ResourceType__c , &quot;Video&quot;),
+    &quot;/resource/iahelp__IHResources/img/IconResourceVideo.png&quot;,
+ResourceURL__c) ))</formula>
+    <inlineHelpText>Auto-generated value representing the URL of a suitable preview image for this Help Resource</inlineHelpText>
+    <label>Preview URL</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

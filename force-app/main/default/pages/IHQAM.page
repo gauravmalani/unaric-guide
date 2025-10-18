@@ -1,0 +1,242 @@
+<!--
+============================================================================================== 
+PAGE FOR PROVIDING THE QAM WITHOUT INJECTION
+USAGE IS SUPPORTED IN ONE OF TWO SUPPORTED SCENARIOS:
+
+    - AS AN <APEX INCLUDE> ON VISUAL FORCE PAGES TO PROVIDE QAM PLUS HELP FUNCTIONALITY
+    - AS A CUSTOM CONSOLE COMPONENT (by referencing this VF page)
+
+NOTE: page no longer supported as sidebar QAM
+    
+Martin Little for Improved Apps
+June 2014
+Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page showheader="false" sidebar="false" standardstylesheets="true" 
+                controller="ControllerIHQAMSettings" >
+
+    <head>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2014. All Rights Reserved.' />     
+
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+    
+        <script src="/soap/ajax/25.0/connection.js"></script>
+        <script src="/soap/ajax/25.0/apex.js"></script> 
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/CryptoJSv312AES/aes.js')}" />
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        
+        <script>
+            // NB: JS var is defined in jsQAMenu - included via IHHook 
+            isConsolePage = {!isConsolePage};            
+        </script>
+                        
+    </head>
+
+    <body>
+        <apex:include pageName="IHHook"/>
+
+<!--   
+===============================================
+STANDARD QAM COPY BEYOND HERE
+with certain exceptions as marked
+===============================================
+ -->            
+
+<!--
+-----------------------------------------------
+Console switch on style:
+    - Non-console -> QAM is fixed position (with QAM handle etc)
+    - Console ->
+            Leave in-situ position, but hide altogether if we're embedded in another page
+            I.e., show if we ARE the console QAM, otherwise HIDE
+            NB - the "show" part for Console is handled by script, below 
+-----------------------------------------------
+-->
+        <div class="{!IF(isIHLUX==true, 'IHLUX', '')}" style="{!IF(isConsolePage, 'display: none;', 'position: fixed;')}" id="IHQAM">
+            <div id="IAIHQAMBody" class="QAMBody" style="{!IF(isConsolePage, 'width: 100%;', '')}">
+            
+                <div style="display: none;" id="QAMRowHome" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowHome]']}" onclick="javascript:IHQAMenu.showHelpHome()">
+                    <div class="QAMCellL">
+                        <div class="IHIcon16 IHIconHelpHome"></div>
+                    </div>
+                    
+                    <div class="QAMCellR">
+                        {!QAMLocalisations['[QAMRowHome]']}
+                    </div>
+                </div> 
+            
+                <div class="QAMRow" title="{!QAMLocalisations['[QAMTipRowSearch]']}" onclick="javascript:IHQAMenu.showHelp(event)">
+                    <div class="QAMCellL">
+                        <div class="IHIcon16 IHIconSearchHelp"></div>
+                    </div>
+                    
+                    <div class="QAMCellR">
+                        {!QAMLocalisations['[QAMRowSearch]']}
+                    </div>
+                </div> 
+            
+                <div class="QAMRow" title="{!QAMLocalisations['[QAMTipRowBookmarks]']}" onclick="javascript:IHQAMenu.showBookmarks(event);">
+                    <div class="QAMCellL">
+                        <div class="IHIcon16 IHIconBookmarkList"></div>
+                    </div>
+                    
+                    <div class="QAMCellR">
+                        {!QAMLocalisations['[QAMRowBookmarks]']}
+                    </div>
+                </div> 
+            
+                <div style="display: none;" id="QAMRowComment" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowComment]']}" onclick="javascript:IHQAMenu.pageComment(event);">
+                    <div class="QAMCellL">
+                        <div class="IHIcon16 IHIconComment"></div>
+                    </div>
+                    
+                    <div class="QAMCellR">
+                        {!QAMLocalisations['[QAMRowComment]']}
+                    </div>
+                </div> 
+            
+                <div style="display: none;" id="QAMRowGuides">
+                    <div class="QAMSpacer"></div>
+                    <div class="QAMRow" title="{!QAMLocalisations['[QAMTipRowGuides]']}" onclick="javascript:IHQAMenu.showGuides(event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconGuide"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowGuides]']}
+                        </div>
+                    </div> 
+                    
+                    <div class="QAMRow" id="QAMGuideStepInfo" style="display: none;"></div>
+                </div> 
+            
+            
+                <div style="display: none;" id="QAMConfigurationTools">
+                    <div class="QAMSpacer"></div>
+                    <div class="QAMSectionTitle">
+                        {!QAMLocalisations['[QAMAdviceLabelMode]']}
+                    </div>
+            
+                    <div id="QAMRowModeSave" class="QAMRow Active" disabled="" title="{!QAMLocalisations['[QAMTipRowView]']}" onclick="javascript:configurePage('Saved', event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconModeView"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowView]']}
+                        </div>
+                    </div> 
+            
+                    <div id="QAMRowModeHelp" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowHelpEnable]']}" onclick="javascript:configurePage('Configure', event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconHelpEnable"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowHelpEnable]']}
+                        </div>
+                    </div> 
+            
+                    <div id="QAMRowModeReCon" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowReconfigure]']}" onclick="javascript:configurePage('Recon', event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconEdit"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowReconfigure]']}
+                        </div>
+                    </div> 
+
+<!--  
+-----------------------------------------------
+GE Mode Cannot be supported in VF land as at 1.20
+-----------------------------------------------
+ -->            
+
+<!-- 
+                    <div id="QAMRowModeGEnable" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowGuideEnable]']}" onclick="javascript:configurePage('GEnableEntry', event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconGuideEnable"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowGuideEnable]']}
+                        </div>
+                    </div> 
+ -->
+
+                    <div id="QAMRowModeGEnable" class="QAMRow">
+                    </div>
+
+<!--  
+-----------------------------------------------
+ -->            
+                    <div id="QAMRowModeStat" class="QAMRow" title="{!QAMLocalisations['[QAMTipRowAnalyse]']}" onclick="javascript:configurePage('Stats', event);">
+                        <div class="QAMCellL">
+                            <div class="IHIcon16 IHIconModeAnalyse"></div>
+                        </div>
+                        
+                        <div class="QAMCellR">
+                            {!QAMLocalisations['[QAMRowAnalyse]']}
+                        </div>
+                    </div> 
+              
+                </div>
+            
+            
+                <div id="QAMRowModeConf" class="QAMRow" style="display: none;" title="{!QAMLocalisations['[QAMTipRowSettings]']}" onclick="javascript:IHQAMenu.showSettings();">
+                    <div class="QAMSpacer"></div>
+                
+                    <div class="QAMCellL">
+                        <div class="IHIcon16 IHIconSettings"></div>
+                    </div>
+                    
+                    <div class="QAMCellR">
+                        {!QAMLocalisations['[QAMRowSettings]']}
+                    </div>
+                </div> 
+                        
+            </div>
+
+        
+<!--
+-----------------------------------------------
+Console switch on style 
+-----------------------------------------------
+-->
+            <a style="{!IF(isConsolePage, 'display: none;' , '')}" id="QAMHandleLink" title="{!QAMLocalisations['[QAMTipHandle]']}" onclick="javascript:IHQAMenu.moveQAM();" href="javascript:void(0)">
+                <div class="QAMHandleShadow">
+                    <div id="IAIHQAMHandle" class="QAMHandleClosed">
+                        <div class="QAMHandleIcon IHIcon20"></div>
+                    </div>
+                </div>
+            </a>
+        
+        </div>
+        
+        
+        <div id="IAIHOversubscribed" style="display: none;">
+        </div>
+
+<!--
+-----------------------------------------------
+Settings DIV removed here (not needed as IHHook creates this)
+Scripts including "root" derivation also removed
+-----------------------------------------------
+-->
+
+        <script>
+            // In console scenarios, mark-up will have hidden the QAM (see above)
+            // So: show it on load in these circumstances IF AND ONLY IF we ARE the console QAM...            
+            if (isConsolePage == true && document.location.pathname.toUpperCase().indexOf('IHQAM') != -1) {
+                document.getElementById('IHQAM').style.display = 'block';
+            }       
+        </script>
+
+    </body>
+
+</apex:page>

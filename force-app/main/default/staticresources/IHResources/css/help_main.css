@@ -1,0 +1,813 @@
+﻿/*==========================================================*/
+/* Stylesheet for Improved Apps Improved Help */
+/* Martin Little for Improved Apps */
+/* May 2012 */
+/* Copyright (c.) Improved Apps Limited 2012. All Rights Reserved. */
+/*==========================================================*/
+
+/*==========================================================*/
+/* Improved Help-specific styles */
+/*==========================================================*/
+
+body.Page					{margin: 0px; padding: 0px; width: 100%; height: 100%; font-size: 0.8em; font-family: arial;} /* Templates and Callouts */
+body.Dialogue				{margin: 0px; padding: 0px; width: 100%; height: 100%; font-size: 0.8em; font-family: arial; background-color: transparent; overflow: hidden;}
+body.Dialogue.lightbox		{overflow: auto;}
+body.HookPage				{margin: 0px; padding: 0px;}
+body.ToolsPage				{margin: 0px; padding: 0px; width: 100%; height: 100%; font-size: 0.8em; font-family: arial;}
+
+div.Featured				{font-weight: bold; font-style: italic;}
+.IHHidden					{display: none;}
+.IAIHWaiting				{background: url(/resource/iahelp__IHResources/img/loading.gif); background-repeat: no-repeat; background-position-x: center; background-position-y: 30px;}
+
+.requiredBlock				{float: left; position: relative; left: 4px; width: 3px; overflow: visible; margin: 0; padding: 0; border-left: 1px solid red; background: #cc0000; } /* input form required field marker (left border) */
+.errorMsg					{color: red;} /* Salesforce inbuilt field validation error messages */
+
+/*==========================================================*/
+/* Improved Help Icons */
+/*==========================================================*/
+
+/* Icon sizing - no overrides in help_customer.css*/
+div.IHIcon					{height: 16px; width: 16px; background-size: 16px 16px; background-repeat: no-repeat;}
+
+div.IHIconSmall				{height: 16px; width: 16px; background-size: 16px 16px; margin: 0 4px; float: left;} /* */
+
+div.IHIcon16				{height: 16px; width: 16px; background-size: 16px 16px; background-repeat: no-repeat;} /* New standard - check icons on Tools, Template, Search, pages */
+div.IHIcon20				{height: 20px; width: 20px; background-size: 20px 20px; background-repeat: no-repeat;} /* QAM handle icon */
+div.IHIcon24				{height: 24px; width: 24px; background-size: 24px 24px; background-repeat: no-repeat;} /* Dialogue footer tools */
+div.IHIcon32				{height: 32px; width: 32px; background-size: 32px 32px; background-repeat: no-repeat;} /* Help Setup Page icon */
+input.IHIcon32				{height: 32px; width: 32px; background-size: 32px 32px; background-repeat: no-repeat;} /* Reading List Properties footer tools*/
+
+
+/* Helped User-facing icons can be branded and so are controlled in help_customer.css. */
+/* Permanent Icons - not seen by Helped Users and so no overrides in help_customer.css.*/
+.IHIconCancel				{background:url("/resource/iahelp__IHResources/img/IconCancel.png")}
+.IHIconCancelUnavailable	{background:url("/resource/iahelp__IHResources/img/IconCancelUnavailable.png")}
+
+.IHIconCancelBtn				{background:url("/resource/iahelp__IHResources/img/IconCancelBtn.png")}
+.IHIconCancelBtnUnavailable		{background:url("/resource/iahelp__IHResources/img/IconCancelUnavailable.png")}
+
+
+.IHIconClone				{background:url("/resource/iahelp__IHResources/img/24/IconClone24px.png")}
+.IHIconCloneUnavailable		{background:url("/resource/iahelp__IHResources/img/24/IconCloneUnavailable24px.png")}
+.IHIconClose				{background:url("/resource/iahelp__IHResources/img/IconClose.png")}
+.IHIconCloseUnavailable		{background:url("/resource/iahelp__IHResources/img/IconCloseUnavailable.png")}
+.IHIconCommentUnavailable	{background:url("/resource/iahelp__IHResources/img/IconCommentUnavailable.png")}
+.IHIconDelete				{background:url("/resource/iahelp__IHResources/img/IconDelete.png")}
+.IHIconDeleteUnavailable	{background:url("/resource/iahelp__IHResources/img/IconDeleteUnavailable.png")}
+.IHIconEdit					{background:url("/resource/iahelp__IHResources/img/IconEdit.png")}
+.IHIconEditUnavailable		{background:url("/resource/iahelp__IHResources/img/IconEditUnavailable.png")}
+.IHIconEditList				{background:url("/resource/iahelp__IHResources/img/IconEditList.png")}
+.IHIconEditListUnavailable	{background:url("/resource/iahelp__IHResources/img/IconEditListUnavailable.png")}
+.IHIconEntryActive			{background:url("/resource/iahelp__IHResources/img/IconEntryActive.png")}
+.IHIconEntryFeatured		{background:url("/resource/iahelp__IHResources/img/IconEntryFeatured.png")}
+.IHIconEntryInactive		{background:url("/resource/iahelp__IHResources/img/IconEntryInactive.png")}
+.IHIconExportDocXML			{background:url("/resource/iahelp__IHResources/img/IconExportDocXML.png")}
+.IHIconGuideEnable			{background:url("/resource/iahelp__IHResources/img/IconGuideEnable.png")}
+.IHIconHelpedElement		{background:url("/resource/iahelp__IHResources/img/IconHelpedElement.png")}
+.IHIconHelpEnable			{background:url("/resource/iahelp__IHResources/img/IconHelpEnable.png")}
+.IHIconHistory				{background:url("/resource/iahelp__IHResources/img/IconHistory.png");}
+.IHIconHistoryUnavailable	{background:url("/resource/iahelp__IHResources/img/IconHistoryUnavailable.png")}
+.IHIconLink					{background:url("/resource/iahelp__IHResources/img/IconLink.png")}
+.IHIconModeAnalyse			{background:url("/resource/iahelp__IHResources/img/IconModeAnalyse.png")}
+.IHIconModeAnalyseUnavailable	{background:url("/resource/iahelp__IHResources/img/IconModeAnalyseUnavailable.png")}
+.IHIconModeView				{background:url("/resource/iahelp__IHResources/img/IconModeView.png")}
+.IHIconNavDown				{background:url("/resource/iahelp__IHResources/img/IconNavDown.png")}
+.IHIconNavUp				{background:url("/resource/iahelp__IHResources/img/IconNavUp.png")}
+.IHIconQuickSave			{background:url("/resource/iahelp__IHResources/img/IconQuickSave.png")}
+.IHIconSalesforceHelp		{background:url("/resource/iahelp__IHResources/img/IconSalesforceHelp.png")}
+.IHIconSalesforceHelpNone	{background:url("/resource/iahelp__IHResources/img/IconSalesforceHelpNone.png")}
+.IHIconSave					{background:url("/resource/iahelp__IHResources/img/IconSave.png")}
+.IHIconSaveUnavailable		{background:url("/resource/iahelp__IHResources/img/IconSaveUnavailable.png")}
+.IHIconSettings				{background:url("/resource/iahelp__IHResources/img/IconSettings.png")}
+.IHIconShare				{background:url("/resource/iahelp__IHResources/img/IconShare.png")}
+.IHIconTab					{background:url("/resource/iahelp__IHResources/img/IconTab.png")}
+.IHIconTabUnavailable		{background:url("/resource/iahelp__IHResources/img/IconTabUnavailable.png")}
+.IHIconUnlink				{background:url("/resource/iahelp__IHResources/img/IconUnlink.png")}
+
+/* CSS Graphical Buttons */
+/* Button styles can be branded and are controlled in help_customer.css*/ 
+.IHButton					{height: 19px; padding: 5px 10px 0 10px; cursor: pointer; font-size: 12px; border-radius: 12px;}
+.IHButton a:link			{text-decoration: none;}
+.IHButton a:hover			{text-decoration: none;}
+.IHButton a:visited			{text-decoration: none;}
+
+/* Apex CommandButton style overrides */
+
+/* Apex CommandLink style overrides */
+.IHLinkButton				{height: 32px; width: 32px; background-size: 32px 32px; padding: 4px;}
+.IHLinkButton.Left			{float: left;}
+.IHLinkButton.Right			{float: right;}
+
+/* Generic 'waiting for Salesforce' or other web services */
+.IHIdle						{border-radius: 4px; border-top: 1px solid #ddd; border-left: 2px solid #ddd; border-right: 2px solid #999; border-bottom: 3px solid #666;}
+.IHIdle:hover 				{cursor: pointer;}
+.IHWaiting		 			{border-radius: 4px; border-top: 2px solid #666; border-left: 2px solid #999; border-right: 2px solid #ddd; border-bottom: 2px solid #ddd; cursor: wait;} 
+
+/* Search Widget Used in Tools Page and Search Results Page - branding styles in help_customer.css*/
+div#SearchWidget			{float: right; display: inline; margin-right: 10px;}
+div#SearchInput				{float: right; display: inline; height: 24px; border-radius: 10px 0 0 10px;}
+div#SearchButton			{float: right; display: inline; margin-right: 5px; padding: 5px 10px 0 10px; border-radius: 0 10px 10px 0;}
+
+/*----------------------------------------------------------*/
+/* Panels - Used in Dialogue pages and Tools Page Related Lists - styling in help_customer.css */
+
+.IHPanel					{border-radius: 10px;}
+.IHPanelHeader				{height: 28px; padding: 15px 0 0 20px; margin: 0; border: none; border-radius: 10px 10px 0px 0px; background-repeat: repeat-x; background-size: 100% 100%;}
+.IHPanelBody				{width: 100%; margin: 0px; padding: 0; overflow: hidden; font-size: 100%;}
+.IHPanelBody * .bPageBlock	{border-color: transparent !important; background: transparent !important;} /* suppresses salesforce classic page block styling */
+.IHPanelBody .apexp .bPageBlock.apexDefaultPageBlock .pbBody	{margin: 0;}
+.IHPanelBody tr				{border: 0px;}
+.IHPanel * table			{width: 100%}
+.IHPanel * p				{margin: 0; padding: 3px 10px;}		
+.IHPanel * div.IHIcon		{margin: 2px 3px;}
+.IHPanelFooter				{margin:0; padding: 10px; border-radius: 0 0 10px 10px;}
+.IHListColumnHeading		{color: #004080;}
+
+/* Sub-Panels within dialogues */
+.IHSubPanel					{margin: 10px auto 0 auto; padding: 0; width: 95%;}
+.IHSubPanel .IHPanelHeader	{width: 96.5%; height: 20px; margin: 0; padding: 8px 2% 0 2%;}
+.IHSubPanel .IHPanelHeader .IH-H4	{margin: 0; padding: 0;}
+.IHSubPanel .IHPanelBody	{padding: 5px 1.5%;}
+.IHSubPanel .IHPanelFooter	{width: 96.5%; height: auto; margin: 0; padding: 2px 2%;}
+
+/*----------------------------------------------------------*/
+/* Tabs Used in Settings page and Help Tools page - no overrides in help_customer.css*/
+
+.IHTabPanel					{background-color: transparent;}
+
+/* Salesforce standard tab styles - ignored */
+td.rich-tab-header			{}
+table.rich-tabpanel			{}
+td.rich-tab-bottom-line		{}
+td.rich-tabhdr-cell-active	{}
+
+/* Salesforce standard tab styles - overridden */
+td.rich-tabhdr-side-border img	{display: none;} /* hides tab separator line */
+td.rich-tabhdr-side-cell	{border: none;} /* Hides secondary border around tabs */
+td.rich-tab-disabled		{background-image: none; background-color: #ccc !important; color: #666;}
+
+/* Improved Help tab styles */
+.IHTabActive				{padding: 5px 5px 0 5px; margin: 0; width: auto !important; cursor: pointer; font-size: 12px; color: #ffffff !important; border: none; border-radius: 4px 4px 0 0; font-weight: bold;  background-color: #004080; background-image: none;}
+.IHTabInactive				{padding: 5px 5px 0 5px; margin: 0; width: auto; cursor: pointer; font-size: 12px; color: #004080; border: none; border-radius: 4px 4px 0 0; background-color: #ffffff; background-image: none;}
+.IHTabInactive:hover		{color: #FF8000}
+.IHTab						{margin: 10px; border: none; overflow: hidden; box-shadow: 0 0 5px #A3C0DA;}
+.IHTab * .IH-H4				{margin: 5px 0 2px 2px;}
+.IHTabBody					{overflow: hidden;} /* Constrains tab body structure */			
+.IHTabContent				{background-color: #ffffff; border: 0px;}
+.IHTabContent *				{font-size: 10px;}
+.IHTabContent p				{margin-left: 10px;}
+.IHTabContent td			{font-size: 10px;}
+.IHTabContent td .IH-H4		{margin: 3px 20px 0 8px;}
+
+/*----------------------------------------------------------*/
+/* Salesforce Form Input / Output Field styles and overrides */
+
+/* Form labels: <apex:outputLabel> */
+body.Dialogue *.labelCol *, body.Dialogue *.labelCol, body.ToolsPage .labelCol, body.ToolsPage * .labelCol *	{font-size: 11px; color: #004080 !important;} /* Salesforce overrides */
+
+/* Form fields <apex;inputField> or <apex:outputField> */
+body.Dialogue * .dataCol, body.ToolsPage * .dataCol, body.ToolsPage * .data2Col	{font-size: 11px;}
+
+/* Improved Apps styled containers for (un-styled) <apex:outputText> used */
+.IHDataCol					{width: 98%; margin:5px auto 0 auto; padding: 5px 2%; border-radius: 5px; box-shadow: 0 0 5px #888;} 
+
+/*----------------------------------------------------------*/
+/* Status and Diagnostics feedback messages - message text styled in help_customer.css*/
+
+div.IHStatusBox				{}
+div.IHStatusMessage			{margin: 10px; font-weight: bold;}
+.IHError					{text-align: left;}
+
+/* Styling that only Authors and above see */
+.Authoring, a:link.Authoring	{color: red; font-style: italic;}
+
+/*==========================================================*/
+/* ManageSettings Page */
+/*==========================================================*/
+
+#IHSettings *				{font-size: 12px;}
+#IHSettings * .IH-H3		{font-size: 14px;}
+#IHSettings * .IH-H4		{margin: 5px 10px 0 10px;}
+#IHSettings * .IH-H4.grid	{margin: 0 10px;}
+#IHSettings * p				{margin: 5px 0 0 10px;}
+#IHSettings .IHTabActive	{padding: 5px; border-radius: 5px 5px 0 0;}
+#IHSettings .IHTabInactive	{padding: 5px; border-radius: 5px 5px 0 0;}
+#IHSettings .IHTabBody		{height: 550px !important; padding: 10px; overflow-y: auto;}
+.IHSettingsHeader			{border: none; border-radius: 4px 4px 0 0;} 
+.IHScreenShot				{border-radius: 10px; padding: 10px;}
+
+/*==========================================================*/
+/* Helped Page Layouts and Elements */
+/*==========================================================*/
+
+/*  Helped Elements and Hooking on Visualforce pages */
+.Helpable					{}
+
+/* Fields on the tools page editor */
+div.ToolsEditor * *.IHHelpedSFElement {padding-left: 20px;}
+
+
+/*  Helped Elements and Hooking on Salesforce standard pages */
+.HelpableSFElement			{box-shadow: 0 0 2px 2px #ffff00 inset; border-radius: 4px !important;} /* Salesforce standard page elements that can be helped  */
+.HelpableSFElement.IHHelpedSFElement  	{box-shadow: none;} /* 'Off' switch for elements already helped */
+
+/* Helped Elements on Helped Page Layouts - style overrides in help_customer.css */
+table.detailList * td.labelCol.IHHelpedSFElement {padding-left: 20px;} /* Field Label */
+#InlineEditDialogContent * .labelCol	{padding-left: 20px;} /* Field Label - dependent pick lists */
+h1.pageType.IHHelpedSFElement	{padding-left: 20px !important;}	/* Record Title */
+h2.mainTitle.IHHelpedSFElement	{padding-left: 20px;}	/* Detail Section Header */
+h3.IHHelpedSFElement	{padding-left: 20px;}	/* Custom Section Header */
+h3.IHHelpedSFElement.IHHighlight {padding-left: 40px;}	/* Custom section header special padding when highlighted*/
+td.pbTitle h3.IHHelpedSFElement {padding-left: 35px;}	/* Related List Label*/
+td.pbHelp span.help.IHHelpedSFElement 	{padding-left: 20px;}	/* Related List Object help */
+.IHPageHelpLink.IHHelpedSFElement	{} /* Help for this Page link */
+table.customLinks * a.IHHelpedSFElement	{} /* Custom Links */
+
+
+/* Reconfigure mode helped element counters */
+a.brandZeronaryFgr div.IHHelpedSFElementX2,
+a.brandZeronaryFgr div.IHHelpedSFElementX3,
+a.brandZeronaryFgr div.IHHelpedSFElementX4,
+a.brandZeronaryFgr div.IHHelpedSFElementX5	{display: inline; padding-left: 40px;} /* Help & Training Link */
+
+span.helpLink a div.IHHelpedSFElementX2,
+span.helpLink a div.IHHelpedSFElementX3,
+span.helpLink a div.IHHelpedSFElementX4,
+span.helpLink a div.IHHelpedSFElementX5		{display: inline; padding-left: 40px;} /* Help for this Page link */
+
+h1.pageType.IHHelpedSFElementX2,	
+h1.pageType.IHHelpedSFElementX3,	
+h1.pageType.IHHelpedSFElementX4,	
+h1.pageType.IHHelpedSFElementX5				{padding-left: 45px !important; }	/* Record Title */
+
+h2.mainTitle.IHHelpedSFElementX2,
+h2.mainTitle.IHHelpedSFElementX3,
+h2.mainTitle.IHHelpedSFElementX4,
+h2.mainTitle.IHHelpedSFElementX5			{padding-left: 45px;}	/* Detail Section Header */
+
+h3.IHHelpedSFElementX2,
+h3.IHHelpedSFElementX3,
+h3.IHHelpedSFElementX4,
+h3.IHHelpedSFElementX5						{padding-left: 45px;}	/* Custom Section Header*/
+
+td.pbTitle h3.IHHelpedSFElementX2,
+td.pbTitle h3.IHHelpedSFElementX3,
+td.pbTitle h3.IHHelpedSFElementX4,
+td.pbTitle h3.IHHelpedSFElementX5			{padding-left: 70px;}	/* Related List Label*/
+
+td.pbHelp span.help.IHHelpedSFElementX2,
+td.pbHelp span.help.IHHelpedSFElementX3,
+td.pbHelp span.help.IHHelpedSFElementX4,
+td.pbHelp span.help.IHHelpedSFElementX5 	{padding-left: 45px;}	/* Related List Object help */
+
+th.zen-deemphasize.IHHelpedSFElementX2,
+th.zen-deemphasize.IHHelpedSFElementX3,
+th.zen-deemphasize.IHHelpedSFElementX4,
+th.zen-deemphasize.IHHelpedSFElementX5		{padding-left: 40px !important;}	/* Related List Column help */
+
+.IHClickHelper.IHHelpedSFElementX2,
+.IHClickHelper.IHHelpedSFElementX3,
+.IHClickHelper.IHHelpedSFElementX4,
+.IHClickHelper.IHHelpedSFElementX5			{width: 45px;}		/* Buttons & Links */
+
+
+/*  Hover behaviour in all cases */
+.IHHelpedSFElement:hover,
+.IHHelpedSFElementX2:hover,
+.IHHelpedSFElementX3:hover,
+.IHHelpedSFElementX4:hover,
+.IHHelpedSFElementX5:hover	{cursor: pointer;}
+
+
+
+/* Error behaviours in all cases */
+.IHHelpedSFElementError		{color: red !important; border: 3px dotted red !important;}
+.IHDDFFailElement			{border: 3px dotted blue !important;}
+.IHDDFFailElement:hover		{cursor: pointer;}
+
+/* Suppress Visual Cues in Related List Hover lists */
+body.rlHoverFrame * td.pbTitle h3.IHHelpedSFElement {padding-left: 0px !important; background-image: none !important;}	/* Related List Object link */
+body.rlHoverFrame * td.pbTitle h3.IHHelpedSFElement:hover {cursor: auto; background-color: transparent !important;}
+body.rlHoverFrame * th.zen-deemphasize.IHHelpedSFElement	{color: black !important; font-style: normal !important; }	/* Related List Column Label*/
+body.rlHoverFrame * th.zen-deemphasize.IHHelpedSFElement:hover	{cursor: auto; box-shadow: none !important;}
+body.rlHoverFrame * span.help .IHHelpedSFElement	{padding-left: 0px !important; background-image: none !important;}	/* Related List Object help */
+body.rlHoverFrame * span.help .IHHelpedSFElement:hover	{background-color: transparent !important;}
+body.rlHoverFrame * .IHHelpedSFElement	{font-style: normal; color: #262626 !important; box-shadow: none;} /* Custom button */
+body.rlHoverFrame * .IHClickHelper	{background-image: none; height:0; width: 0;} /* Related List button click helper */
+
+
+/* Analyse Mode: not seen by Helped Users - no overrides in help_customer.css */
+body.IHAnalyseMode			{background:url("/resource/iahelp__IHResources/img/BGAnalyseMode.png") repeat;}
+.IHHelpStats				{background:url("/resource/iahelp__IHResources/img/IconModeAnalyse12px.png") 1% no-repeat; border: none;}
+.IHHelpStats:hover			{background-color: #E0E6F7; cursor: pointer;}
+table.detailList * td.labelCol.IHHelpStats {padding-left: 20px; background-position: 1% 4px;} /* Field Label */
+
+span.itemLabel.IHHelpStats, span.slds-form-element__label.IHHelpStats {padding-left: 20px; background-position: 1% 4px;} /* Field Labels - LUX Out */
+
+h1.pageType.IHHelpStats		{padding-left: 30px !important;}	/* Record Title */
+h2.mainTitle.IHHelpStats	{padding-left: 20px;}	/* Detail Section Header */
+h3.IHHelpStats				{padding-left: 20px;}	/* Custom Section Header */
+td.pbTitle h3.IHHelpStats 	{padding-left: 35px; background:url("/resource/iahelp__IHResources/img/IconModeAnalyse.png") 20px no-repeat; background-size: 12px 12px;}	/* Related List Label*/
+td.pbHelp span.help.IHHelpStats		{padding-left: 20px;}	/* Related List Object help */
+a.brandZeronaryFgr.IHHelpStats div.IHPageHelpLink	{display: inline; margin-left: 2px; background: url("/resource/iahelp__IHResources/img/IconModeAnalyse.png") 0px no-repeat; background-size: 12px 12px;} /* Help & Training Portal link */
+.IHPageHelpLink.IHHelpStats	{display: inline; margin-left: 2px; background: url("/resource/iahelp__IHResources/img/IconModeAnalyse.png") 0px no-repeat; background-size: 12px 12px;} /* Help for this Page link */
+.btn.IHHelpStats			{color: #004080 !Important; font-style: italic; box-shadow: 0 0 5px #A3C0DA;} /* Standard / Custom Button*/
+.btn.IHHelpStats:hover		{background-color: #F4F4F4 !important; color: box-shadow: 0 0 5px #1666B4;}
+.menuButtonButton.IHHelpStats	{color: #004080 !Important; font-style: italic; box-shadow: 0 0 5px #A3C0DA;} /* Menu Button (drop-down) */
+.menuButtonButton.IHHelpStats:hover	{background-color: #F4F4F4 !important; color: box-shadow: 0 0 5px #1666B4;}
+.pbButton .IHHelpStats		{width: 16px; margin: 0 5px 0 10px;} /* Button (Click Helper) */
+.pbButton * .IHHelpStats	{width: 16px; margin: 0 5px 0 10px;} /* Menu Button (Click Helper) */
+table.customLinks * .IHHelpStats	{width: 16px; margin: 0 5px 0 10px;} /* Custom Link (Click Helper) */
+
+/* Help-Enable Mode: not seen by Helped Users - no overrides in help_customer.css */
+body.IHHelpEnableMode		{background:url("/resource/iahelp__IHResources/img/BGHelpEnableMode.png") repeat;}
+.ToBeHelped					{background-color: #CCFF66; color: #008000 !important; font-style: italic;}
+.btn.ToBeHelped				{color: #008000 !important; font-style: italic;}
+.ToBeUnhelped				{background-color: #FF0000 !important; color: white !important; font-style: italic;}
+.btn.ToBeUnhelped			{color: red !important; font-style: italic;}
+.menuButtonButton.ToBeUnhelped	{color: red !important; font-style: italic;}
+.IHPageHelpLink				{display: inline; margin-left: 2px; padding-left: 16px; background:url("/resource/iahelp__IHResources/img/IconImprovedHelp.png") left no-repeat; background-size: 12px 12px;}
+.IHPageHelpLink:hover		{background-color: #E0E6F7;}
+.IHPageHelpLink:active		{border: 1px solid #1666B4;}
+
+/* Help-Reconfigure Mode: not seen by Helped Users - no overrides in help_customer.css */
+body.IHReconfigureMode		{background:url("/resource/iahelp__IHResources/img/BGReconfigureMode.png") repeat;}
+.IHHelpRecon				{box-shadow: 0 0 2px 2px #FFCC66 inset; border-radius: 4px !important;}
+.IHHelpedSFElement.IHHelpRecon:hover	{box-shadow: 0 0 2px 2px #FF8000 inset; background-color: #FFCC66 !important; cursor: pointer;}
+.IHClickHelper.IHHelpRecon:hover	{box-shadow: 0 0 2px 2px #FF8000 inset; background-color: #FFCC66 !important; cursor: pointer;}
+
+/* Guide-Enable Mode: not seen by Helped Users - no overrides in help_customer.css */
+body.IHGuideEnableMode		{background:url("/resource/iahelp__IHResources/img/BGGuideEnableMode.png") repeat;}
+.ToBeGuided					{color: #CF5668 !important; background-color: #F7E6E8; font-style: italic !important;}
+#IHGEHelper					{background-color: #e6e6e6; border-radius: 5px; box-shadow: 0 5px 5px #666666;}
+.GuidableSFElement			{box-shadow: 0 0 2px 2px #ff6666 inset; border-radius: 4px !important;} /* Salesforce standard page elements that can be helped  */
+
+/* Suppress Visual Cues in Related List Hover lists */
+body.rlHoverFrame * .GuidableSFElement	{box-shadow: none;}
+
+
+/*----------------------------------------------------------*/
+/* Quick Access Menu */
+
+div#IHQAM					{z-index:+1; top: 84px; right: -148px;}
+div.QAMHandleClosed			{width: 20px; padding: 3px; border-radius: 5px 0px 0px 5px;}
+div.QAMHandleOpen			{width: 30px; padding: 3px; border-radius: 5px 0px 0px 5px;}
+div.QAMHandleShadow			{float: right; display: inline; padding: 10px 0px 10px 10px; overflow-x: hidden; overflow-y: visible;}
+
+div.QAMBody					{float: right; display: inline; margin-top: 10px; width: 140px; padding: 3px;}
+div.QAMBody *	 			{text-decoration: none;}
+div.QAMRow:not(.Active):not(.Unavailable):hover	{cursor: pointer;}
+div.QAMCellL				{float: left; clear: both; padding: 3px 5px; }
+div.QAMCellL img			{height: 16px; width: 16px; margin: 4px 10px 4px 4px; vertical-align: middle;}
+div.QAMCellR				{height: 20px; padding-top: 5px;}
+
+/* Unseen in Helped User View mode - no overrides in help_customer.css */
+div.QAMSectionTitle			{font-weight: bold; color: #004080; padding: 5px;}
+div.QAMSpacer				{max-height: 1px; border-top: solid 1px #bbbbbb;}
+
+/* 1.41+ : in-QAM guides listing */
+ul.QAMGuideList				{padding: 0; margin: 0.3rem 0; position: absolute; right: 30px; width: 100%; background: #ffffff; box-shadow: rgba(0, 0, 0, 0.4) 0 2px 3px;}
+li.QAMGuideListing			{cursor: pointer; margin: 0; padding: 0.2rem 0 0.3rem 0.4rem; border-bottom: 1px solid #eeeeee; list-style: none; color: #004080;}
+li.QAMGuideListing:hover	{background-color: #E0E6F7;}
+
+/* 1.41+ : deprecation marker */
+.QAMRow.Deprecated			{color: #bbbbbb; font-style: italic;}
+
+/*==========================================================*/
+/* Help Callout Templates */
+/*==========================================================*/
+
+/* Lightning style option / rich text: fix for bullet/number lists */
+.sfdc_richtext ul, .sfdc_richtext * ul {list-style: unset !important; padding-left: 2rem !important;}
+.sfdc_richtext ol, .sfdc_richtext * ol {list-style-type: decimal !important; padding-left: 2rem !important;}
+
+/* Help Callout structure - style overrides in help_customer.css */
+div.Callout					{width: 100%; height: 100%; border-radius: 10px;} /* All Callouts - outer container */
+div.CalloutContent			{width: 98%; height:100%; margin: 5px auto;} /* All Callouts except Stats */
+div.CalloutHeader			{width: 98%; height: 20px; margin: 0; padding: 10px 1% 0 1%; overflow: hidden; white-space: nowrap;}
+div.CalloutHeader .IH-H4	{width: 98%; padding-right: 1%;}
+div.CalloutBody				{width: 98%; margin: 5px auto 0 auto;} /*  defaults contain Topic Details or related Reading List / Help Resource content */
+div.CalloutFooter			{width: 100%; margin-right: 10px; height: 16px; padding: 5px 10px; clear: both;} /* Default templates contain any explicit 'Read More...' link */
+
+/* Callout basic formatting */
+div.Callout .IHIcon			{float:left; margin: 0 5px;}
+div.Callout * a img			{border: 0; outline: none;}
+.CalloutImage				{padding: 5px; height: 100px; overflow: hidden;}
+.CalloutVideo				{padding: 5px;}
+div.ReadMoreLink			{float: right; margin-right: 20px;}
+
+div.MoreLink{}
+
+/* Callout: Speech Bubble styling - style overrides in help_customer.css */
+div.Bubble					{position: relative; margin: 1em 0 3em;}
+
+/* Speech Bubble pointer positioning: */
+/* bottom/top: NNpx; value = - border-top-width - border-bottom-width */
+/* right/left: NNpx; controls horizontal position */
+/* border-width: 10px 10px 0; values change the angle of the vertex */
+/* style overrides in help_customer.css */
+
+.Bubble:after				{content: ""; position: absolute;}
+.Bubble.BL:after			{bottom: -15px; left: 28%; border-width: 15px 15px 0;}
+.Bubble.BR:after			{bottom: -15px; right: 50px; border-width: 15px 15px 0;}
+.Bubble.TL0:after			{border-style: solid; display: block; width: 0; top: -10px;	left: 15px;	bottom: auto; border-width: 0 10px 10px;}
+.Bubble.TR0:after			{border-style: solid; display: block; width: 0; top: -10px;	right: 15px; bottom: auto; left: auto; border-width: 0 10px 10px;}
+.Bubble.TL1:after			{border-style: solid; display: block; width: 0; top: -10px; left: 13%; bottom: auto; border-width: 0 10px 10px;}
+.Bubble.TR1:after			{border-style: solid; display: block; width: 0; top: -10px; right: 34%; bottom: auto; left: auto; border-width: 0 10px 10px;}
+
+/* Popped out / embedded QAM (Callout Mode) Callout Template area specialisation */
+.CalloutMode div.Bubble              {position: static; margin: 0; padding: 0;}
+.CalloutMode #CalloutTopicDetails    {width: 100%; margin: 0; padding: 0;}
+.CalloutMode .Callout                {box-shadow: none; border-radius: 0;}
+.CalloutMode * .CalloutContent       {width: 100%; margin: 0;}
+.CalloutMode * .CalloutHeader        {width: 100%; margin: 0; padding: 5px;}
+.CalloutMode * .CalloutBody          {width: 100%; margin: 0; box-shadow: none;}
+
+/* Callout: Summary Only */
+div#CalloutSummaryOnly		{width: 99%; margin-left: 0.75%;}
+.CalloutOneLiner			{width: 100%; height: 20px; padding: 5px 0 0px 0px; cursor:pointer; overflow: hidden;}
+
+/* Callout: Topic Details */
+div#CalloutTopicDetails		{width: 99%; margin-left: 0.75%;}
+div#CalloutTopicDetails td	{}
+div.CalloutText				{height: 100%; width: 99%; margin: 0px auto; padding: 0px 5px; overflow-y: auto;}
+div.CalloutMedia			{float: right; padding: 5px; vertical-align: top;}
+
+/* Callout: Topic Text */
+div#CalloutTopicText		{width: 99%; margin-left: 0.75%;}
+
+/* Callout: Reading List Gallery - style overrides in help_customer.css*/
+div#CalloutReadingList		{width: 99%; height: 100%; margin-left: 0.75%}
+div.GalleryRowNav			{float: left; padding: 5px; display: inline;}
+div.navButton				{float: left; height: 10px; width: 10px; margin: 1px; padding: 4px 3px 3px 3px; cursor: pointer; border-radius: 2px; box-shadow: 1px 1px 3px #888; overflow: hidden;}
+div.arrowDown				{width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;} /* border-top color in help_customer.css */
+div.arrowUp					{width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;} /* border-bottom color in help_customer.css */
+div.ListItem				{width: 100%; height: 100%;}
+
+div.GalleryRowNav.arrow		{float: left; padding: 5px; display: inline;}
+
+/*----------------------------------------------------------*/
+/* Callout: Related Resources - style overrides in help_customer.css */
+div#CalloutHelpResources							{height: 100%; width: 99%; margin-left: 0.75%;}
+div#CalloutHelpResources div.CalloutContent			{height: 100%;}
+div#CalloutHelpResources div.CalloutBody			{height: 100%; overflow-y: auto;}
+div#CalloutHelpResources div.ResourceName			{padding-right: 10px;}
+div#CalloutHelpResources div.ResourcePreview		{padding: 0;}
+div#CalloutHelpResources div.ResourceLocation		{}
+div#CalloutHelpResources div.ResourceUsageNotes		{padding: 0 5px;}
+
+/*----------------------------------------------------------*/
+/*Callout Inline Stats Page - style overrides in help_customer.css */
+div#CalloutStats			{width: 99%; height: 100%; margin-top: 10px;}
+div.Panel					{float:left; display:inline; margin: 5px; padding: 10px; width: 97%; overflow: hidden; border-radius: 10px;}
+
+.InlineStatsNarrative		{float:left; display:inline;}
+.InlineStatsNarrativeLine	{}
+.InlineStatsTip				{float:right; display:inline; margin-right:5px;}
+
+/*==========================================================*/
+/* Dialogue popups: Bookmarks, Comments, Manage Reading Lists, Search  */
+/*==========================================================*/
+
+/* Dialogue wrapping and closure control (in hosting page, outside iframe) - style overrides in help_customer.css */
+div#IHDialogueWrapper		{margin: 10px 0 10px 10px; padding: 0; overflow: visible; border-radius: 10px;} /* iframe container in 'host' page */
+div#IHDialogueWrapper div.IHIconClose	{position: absolute; right: -12px; top: -12px; height: 24px; width: 24px; border-radius: 12px; background-size: 24px 24px; cursor: pointer;}
+
+
+/* Dialogue container*/
+div.IHDialogue 				{margin: 20px 5px 30px 27px;}
+div.IHDialogue .IH-H4		{margin: 10px 0 0 10px;}
+
+/* Bookmarks Dialogue */
+div#BookmarkList			{min-height: 0; height: 155px; overflow: auto; padding: 0 3px 3px 3px;}
+div#BookmarkList * td		{margin:0; padding-left: 10px;}
+
+/* Comment Dialogue - style overrides in help_customer.css */
+div#IHCommentBody			{padding: 10px 10px 0 10px;}
+div#IHCommentBody .Container	{width: 95.3%; margin: 10px auto 0px auto; padding: 5px; border-radius: 10px;}
+div#IHCommentBody .Container:after {content: ''; display: block; position: absolute; top: 90px; left: 71px; width: 0; height: 0; border-style: solid; border-width: 10px;}
+div#IHCommentBody .Container:before {content: ''; display: block; position: absolute; top: 87px; left: 70px; width: 0; height: 0; border-style: solid; border-width: 11px;}​
+div#IHCommentFooter .IHButton	{margin: 0 20px 0 5px;}
+
+/*----------------------------------------------------------*/
+/*Search Dialogue - style overrides in help_customer.css */
+
+div.IHSearchInput			{margin: 10px; border: 0px; display: inline;}
+div.IHSearchResultsList		{border-top: solid 1px #E0E6F7; overflow: auto;}
+div.IHSearchResultsList	* tr	{border: 0px;}
+div.IHSearchResultsList * tr.even	{}
+div.IHSearchResultsList * p	{margin: 0px; padding: 2px 0px 0px 8px; font-size: 0.9em;}
+div.IHSearchResultsList * .IHCol1	{width: 25%;}
+
+/* The selected row in a listing*/
+.Active						{border: 1px solid silver; background-color: #ffff99;}
+
+/*----------------------------------------------------------*/
+/* Dialogue Reading List Properties*/
+div#ReadingListProperties	{}
+div#ReadingListProperties div.IHIcon	{float: left; margin: 0 10px ; height: 24px; width: 24px; background-size: 24px 24px;}
+
+/*----------------------------------------------------------*/
+/* Manage Reading List Dialogue*/
+div#ReadingListEntries			{height: 300px; border-top: solid 1px #E0E6F7; overflow: auto;}
+
+/*----------------------------------------------------------*/
+/* Confirm Actions Dialogue*/
+
+.IHConfirm * .IHListColumnHeading	{padding-left: 10px;}
+
+/*==========================================================*/
+/* Tools page */
+/*==========================================================*/
+
+/* Overall Page Structure */
+div#ToolsHeader				{margin: 0 auto 8px auto; width: 99%; height: 75px; border-radius: 0 0 10px 10px;}
+div#ToolsBodyFrame			{margin: 0; width: 100%; padding: 0px; clear: both;}
+div#ToolsContentFrame		{float: left; width: 65%; margin: 0; padding: 0; overflow-x: hidden;}
+div#ToolsSidebarFrame		{float: right; width: 34.9%; margin: 0; padding: 0; background: transparent; overflow: hidden; vertical-align: top;}
+div#ToolsFooterFrame		{margin: 0 auto; padding: 0px; clear: both;}
+
+/*----------------------------------------------------------*/
+/* ToolsHeader block */
+
+/* Branding panel - style overrides in help_customer.css */
+div.ToolsBrand				{padding: 10px 0px 0px 220px;}
+div.ToolsBrandImage			{position: absolute; top: -10px; left: 10px; width: 200px; height: 112px; background-size: 200px 112px; z-index: +10;}
+div.ToolsBrandImageDefault	{background:url("/resource/iahelp__IHResources/img/LogoToolsPage.png") no-repeat;}
+div#ToolsTitle				{clear: left; float: left;}
+div#ToolsSubtitle			{clear: left; float: left; padding-top: 5px;}
+
+/* Help Links and Utilities - style overrides in help_customer.css */
+div#ToolsLinks				{float:right; margin-right: 10px; height: 24px; font-size: 0.9em; position: relative; top: -10px;}
+div#ToolsLinks	li			{float: right; margin: 0 2px; padding-right: 7px; list-style: none; display: inline;}
+div#ToolsLinks	li a		{}
+div#ToolsLinks	li :hover	{}
+div.ToolsUtilities			{float: right; height: 24px; padding-right: 10px;}
+div.ToolsUtilities div.IHIcon	{float: right; height: 24px; width: 24px; background-size: 24px 24px; border-radius: 5px;}
+div.ToolsUtilities div.IHIcon:hover	{}			
+
+/*----------------------------------------------------------*/
+/* Main Content block */
+
+/* Vertical gradient background behind Toolbar and Template - style overrides in help_customer.css*/
+div#ToolsContentBackground	{width: 98.5%; min-height: 50px; margin: 4px 0.5% 8px 1%; padding: 5px 0px; border: 0px; border-radius: 10px;} 
+
+/* Topic Toolbar - style overrides in help_customer.css */
+div.ToolsToolbar			{height: 24px; margin: 5px 0 10px 210px; min-width: 400px;}
+div.ToolsToolbar div.IHIcon	{float: left; margin: 0 4px; width: 24px; height: 24px; background-size: 24px 24px; border-radius: 5px;}
+div.ToolsToolbar div.IHIcon:hover	{}
+div.ToolsToolbarSpacer		{float: left; height: 24px; width: 8px;}
+div.ToolbarLinks			{float: left; margin: 5px 4px 0 4px; font-size: 0.8em;}
+div.ToolbarLinks a:hover	{}
+div#ToolsSFHelp				{float: right; margin-right: 2px;}
+
+/* Topic Template container - style overrides in help_customer.css */
+div.ToolsContent			{width: 98%; margin: 4px auto; padding-bottom: 5px; border-radius: 10px;}
+
+/*----------------------------------------------------------*/
+/* JQuery LightBoxes - style overrides in help_customer.css */
+
+#lightbox {position:fixed; top:0px; left:1%; width:98%; height:98.5%; text-align:center; border-radius: 10px;}
+#lightbox p	{}		
+#lightbox img {padding: 10px; border-radius: 10px; max-height:400px;}
+
+/*----------------------------------------------------------*/
+/* Sidebar */	
+
+/* Editor Panel */
+div#ToolsEditor				{margin: 4px auto; width: 97%; border-radius: 10px; background-color: #ffffff; box-shadow: 0px 2px 5px 1px red;}
+div#ToolsEditor .bPageBlock {border-top: 0px !important;} /* Suppresses Salesforce top border */
+div#ToolsEditor .IHTabBody	{height: 300px;}
+div#TEdit_SalesforceHelpLink	{float:right; box-shadow: 0px 0px 5px 1px red;}
+
+/* Related Help Topics */
+div#RelatedHelpTopics		{margin: 4px auto 8px auto; width: 97%; clear: both;}
+div#RelatedHelpTopics * p	{margin:0; padding-left: 5px;}
+
+/* Reading Lists */
+div#ReadingLists			{margin: 4px auto 8px auto; width: 97%; clear: both;}
+div#ReadingLists * p		{margin:0; padding: 0px;}
+div#ReadilgLists div.Featured p		{}
+div.ReadingListNav			{overflow: hidden;}
+div.ReadingListNav .IHIcon	{display: inline-block;}
+div.IHNavSlides				{display: inline-block;}
+
+/*----------------------------------------------------------*/
+/* Tools Page Footer */
+
+/* Related Help Resources */
+div#ResourceList			{margin: 4px auto 0 auto; width: 99%;}
+div.HelpResourcePreview		{height: 32px; width: 48px; background-size: contain; background-position: center center; background-repeat:no-repeat;}
+
+/* Improved Apps Branding */
+div#IHPowered				{float: right; clear: both; margin: 20px 0.5%; color: #004080; font-size: 0.7em;}
+#IHStrap					{color: #666666;}
+
+/*----------------------------------------------------------*/
+/* Preview Callout page */
+div#CalloutWrapper			{margin: 8px; border-radius: 10px; background-color: #ffffff; box-shadow: 0px 0px 5px 1px red; overflow: hidden;}
+
+/*==========================================================*/
+/* Manage Settings Page */
+/*==========================================================*/
+
+#ServiceUnavailable.IHDialogue	{margin: 10px;}
+
+/*==========================================================*/
+/* Manage Settings Page */
+/*==========================================================*/
+
+div#IHSettings				{margin: 8px; border-radius: 10px; background-color: #ffffff; box-shadow: 0px 2px 5px 1px #004080;}
+div#IHSettings .IHTabBody .IH-H3		{margin: 10px;}
+div#IHSettings th			{padding: 0 10px;}
+div#IHSettings td			{padding: 0;}
+div#IHSettings .IHCheckbox	{padding-left: 5px;}
+div#IHSettings .IHTabBody	{height: 490px; overflow-y: auto;}
+
+/*==========================================================*/
+/* Templates */
+/*==========================================================*/
+
+/* Help Topic Printable View */
+div#PrintableView			{margin: 50px;}
+.PrintableViewContent		{margin: 10px; border: 1px solid #A3C0DA; border-radius: 10px;}
+.PrintableViewWarning		{margin: 10px; color: red;}
+div#PrintableView *			{margin: 10px;}
+div#PrintableView * p		{margin: 10px;}
+div#PrintableView .IH-H1	{color: #004080; width: 100%; text-align: center;}
+div#PrintableView .IH-H2	{color: #004080; width: 100%; font-weight: bold;}
+ 
+/* Full Topic Templates (displayed within Help Portal / Tools page - in classic and IH1 UX) */
+div#TopicTemplate			{}
+
+#Content					{width: 100%;}	    	
+.ColSingle					{}
+.Col1						{float: left; height: auto;}
+.Col2						{height: auto;}
+
+@media only screen and (max-width:767px) {
+	.ColSingle,.Col1,.Col2	{float: left; width: 100%;}
+}
+			
+@media only screen and (min-width:768px) {
+	.ColSingle				{float: left; width: 100%;}
+	.Col1					{float: left; width: 50%;}
+	.Col2					{float: right; width: 50%;}	
+}
+
+#IHWrapper					{float: left; width: 100%; margin-top: 5px;}
+	
+.IHContainer				{margin: 0 10px; background: white; xborder: 1px solid silver; border-radius: 5px; box-shadow: 0px 0px 5px #888888; height: auto;}
+.TopicText					{padding: 10px;}
+#ContentMedia				{height: auto; width: 100%;}
+#TopicImage,#TopicVideo		{height: auto; width: auto; margin: 0 auto;}
+#TopicImageTitle,#TopicImageCaption,#TopicVideoTitle,#TopicVideoCaption	{text-align: center;}
+.TopicDesc					{box-shadow: none;}
+#TopicDescription			{padding-top: 5px;}
+
+div#TopicTemplate * .IH-H3	{margin: 0 0 10px 10px;}
+div#TopicTemplate * .IH-H4	{margin: 15px 10px 5px;}
+#TopicImage,#TopicVideo				{box-pack:center; box-align:center;}
+div#TopicTemplate * .MediaCaption	{margin: 5px 10px 15px;}
+
+xdiv#TopicTemplate * #TopicSummary	{margin: 0 0 10px; padding: 10px; border-radius: 5px; box-shadow: 0px 0px 5px #888888;}
+xdiv#TopicDescription		{xmargin: 10px 10px 15px 10px; padding: 10px; border-radius: 5px; vertical-align: top; xbox-shadow: 0px 0px 5px #888888;}
+
+/*==========================================================*/
+/* Salesforce1 User Experience style overrides */
+/*==========================================================*/
+
+/* Salesforce1 icons */
+.IHIcon30					{height: 30px; width: 30px; background-size: 30px 30px; border-radius: 4px;}
+        				
+.IH1IconHelpTopic			{background:url('/resource/iahelp__IHResources/img/IconHelpTopicIH1.png') no-repeat; background-size: 30px 30px; }
+.IH1IconRelatedHelpTopic	{background:url('/resource/iahelp__IHResources/img/IconRelatedHelpTopicIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconQuickLinkIH1			{background:url('/resource/iahelp__IHResources/img/IconQuickLinkIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconHelpListIH1			{background:url('/resource/iahelp__IHResources/img/IconHelpListIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconHelpHomeIH1			{background:url('/resource/iahelp__IHResources/img/IconHelpHomeIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconBookmarksIH1			{background:url('/resource/iahelp__IHResources/img/IconBookmarksIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconSearchIH1			{background:url('/resource/iahelp__IHResources/img/IconSearchIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconCollapseIH1			{background:url('/resource/iahelp__IHResources/img/IconCollapseIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconExpandIH1			{background:url('/resource/iahelp__IHResources/img/IconExpandIH1.png') no-repeat; background-size: 30px 30px;}
+.IH1IconRelatedHelpTopic	{background:url('/resource/iahelp__IHResources/img/IconRelatedHelpTopicIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconReadingListIH1		{background:url('/resource/iahelp__IHResources/img/IconReadingListIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconHelpResourceIH1		{background:url('/resource/iahelp__IHResources/img/IconHelpResourceIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconQuickLinkIH1			{background:url('/resource/iahelp__IHResources/img/IconQuickLinkIH1.png') no-repeat; background-size: 30px 30px;}
+.IH1IconBookmarkAdd			{background:url('/resource/iahelp__IHResources/img/IconBookmarkAddIH1.png') no-repeat; background-size: 30px 30px;}
+.IH1IconComment				{background:url('/resource/iahelp__IHResources/img/IconCommentIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconBookmarksIH1			{background:url('/resource/iahelp__IHResources/img/IconBookmarksIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconViewIH1				{background:url('/resource/iahelp__IHResources/img/IconViewIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconListViewIH1			{background:url('/resource/iahelp__IHResources/img/IconListViewIH1.png') no-repeat; background-size: 30px 30px;}
+
+/* Salesforce1 Pages */
+body.IH1UX					{margin: 0; padding: 0; background: #f0f1f2; font-size: 110%; font-family: "ProximaNovaSoft-Regular", Calibri, "Gill Sans", "Gill Sans MT", Candara, Segoe, "Segoe UI", Arial, sans-serif;}
+body.IH1UX * a				{color:#333435;}
+
+#IH1Container				{float: left; width: 100%; margin: 0; padding: 0; }
+#IH1Container * a:link		{text-decoration: none;}
+.IH1Header					{float: left; width: 100%; height: 50px; background: white;}
+.IH1HeaderIcon				{float: left; width: 30px; height: 30px; margin: 10px;}
+
+#IH1Branding				{float: left;}
+.IH1ToolsBrandImage			{}
+.IH1ToolsBrandImage img		{width: 71px; height: 40px; margin: 0;}
+.IH1HeaderText				{float: left; margin-top: 8px; color: #004080;}
+.IH1HeaderText *			{overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.IH1HeaderSuperscript		{font-size: 13px;}
+.IH1HeaderTitle				{font-size: 16px; height: 20px; margin: 0;}
+.IH1HeaderTitleText			{}
+.IH1Utilities				{float: right; margin: 10px 10px 10px 0;}
+
+#IH1NavBar					{float: left; width: 100%; background: transparent; height: 50px; clear: both;}
+.IH1NavBarItem				{float: left; height: 50px; background: transparent;}
+.IH1NavButtonIcon			{height: 30px; width: 30px; margin: 10px auto;}
+.IH1NavBarItem.IHActive 	{background: #e0e6f7;}
+.IH1NavBarItem.IHActive .IH1NavButtonIcon {box-shadow: none;}
+
+.IH1Panel					{float: left; width: 100%; }
+.IH1PanelBar				{float: left; width: 100%; background: #dddddd; color: #004080; font-size: 14px; }
+.IH1PanelBarName			{float: left; color: #004080; font-size: 15px; text-alignment: center;}
+.IH1PanelBody				{float: left; width: 100%; height: 100%;}
+.IH1PanelItem,.IH1ListItem	{margin-top: 10px; background: white; border: solid 1px silver; border-radius: 5px; text-align: left;}
+
+.IH1ListView				{float: left; height: auto; width: 100%; padding: 0; vertical-align: middle; background: #E0E6F7; Xborder-top: 1px solid silver; border-bottom: 1px solid silver;}
+.IH1ListViewLabel			{display: block; float: left; margin: 10px 0 10px 10px;}
+.IH1List					{width: 100%; overflow: auto;}
+.IH1ListItem				{font-size: 110%; font-family: "ProximaNovaSoft-Regular", Calibri, "Gill Sans", "Gill Sans MT", Candara, Segoe, "Segoe UI", Arial, sans-serif;}
+
+.IH1ListItem.Collapsed		{margin: 0; background: transparent; border: none;}
+.IH1ListItemHeader,.IH1PanelItemHeader	{padding: 10px; font-size: 16px; border-bottom: solid 1px silver;}
+.IH1ListItemHeader.Collapsed,.IH1PanelItemHeader.Collapsed	{border: none;}
+.IH1ListItemLabel			{font-weight: bold;}
+.IH1ListItemFirstLine		{padding: 10px; font-size: 14px;}
+.IH1ListItemLine			{padding: 0 10px 10px 10px; font-size: 14px;}
+
+.IH1Tools * .IH1PanelItem,.IH1Tools * .IH1ListItem	{margin: 10px 10px 0 10px;}
+.IH1ToolList                {float: left; width: 100%; margin: 0; padding: 0;}
+.IH1Toolbar					{margin-top: 10px; background: silver; font-size: 16px; color: #004080; padding-left: 10px; line-height: 44px; cursor: pointer;}
+
+/* Salesforce1 Quick Access Menu Page */
+.IH1NoReadMore				{color: grey; font-style: italic;}
+.IH1QuickLink ul			{margin:0; padding: 0;}
+.IH1QuickLink ul li			{margin:0; padding: 0; list-style-type: none;}
+.IH1QuickLink ul li:last-child	{display: none;}
+ 			
+.IH1Input {padding: 2px; font-size: 16px; line-height: 25px; background-color: white; color: #004080; border: 1px solid silver; border-radius: 5px; x-webkit-appearance: none;}
+
+/* Salesforce1 Portal/Tools Page */
+.IH1ToolsContent						{background-color: transparent; }
+#IH1Container * .IHIconBookmarkAdd		{margin: 10px auto; background:url('/resource/iahelp__IHResources/img/IconBookmarkAddIH1.png') no-repeat; background-size: 30px 30px;}
+#IH1Container * .IHIconBookmarkRemove	{margin: 10px auto; background:url('/resource/iahelp__IHResources/img/IconBookmarkRemoveIH1.png') no-repeat; background-size: 30px 30px;}
+
+/* Comment Dialogue */
+.IH1UX .IHDialogue			{margin: 0; padding: 0; border: none; }
+.IH1UX #CommentDialogue		{border-radius: none !important; }
+.IH1UX * .IHPanelHeader		{display: none;}
+.IH1UX * .IHPanelBody		{border: none; border-radius: none;}
+.IH1UX * .IHCommentBody .Container {width: auto; margin: 0 10px;}
+
+/* Reading List Viewer Page */
+.IH1UX .RLViewerHeader		{background-color: transparent; box-shadow: none;}
+.IH1UX * .RLSummary			{width: 100%;}
+#IHRLVBody					{background-color: #ffffff;}
+
+/* Topic Templates */
+.IH1UX * .Content			{width: 100%; padding: 0;}
+.IH1UX * .IHContainer		{margin-bottom: 5px; border: solid 1px silver; box-shadow: none; }
+
+/* Dialogue container*/
+.IH1Tools .IHDialogue 		{margin: 0 10px;}
+.IH1QAM .IHDialogue 		{margin: 0;}
+
+/* Panels: Used in Dialogue pages and Tools Page Related Lists */
+.IH1UX .IHPanel				{background-color: white; border: solid 1px silver; border-radius: none; box-shadow: none;}
+.IH1UX * .IHPanelHeader		{height: 20px; margin: 0; padding: 10px; font-size: 15px; color: #004080; background-color: white; background-image: none; border-bottom: 1px solid silver;}
+.IH1UX * .IHPanelHeader .IH-H4	{font-size: 12px; color: black;}
+
+/* Comment Dialogue */
+.IH1UX * #IHCommentBody		{margin: 0; padding: 0;}
+.IH1UX * #IHCommentBody .Container	{margin: 0 auto; width: 96%; background-color: #ffffff; color: #000; border: solid 1px silver; border-radius: 5px;} /* Comment text box */
+.IH1UX * div#IHCommentBody .Container:before,.IH1UX * div#IHCommentBody .Container:after 	{display: none;} ​/* Speech bubble pointer 'border' colour */
+
+@media only screen and (max-width:599px) {
+	.IH1HeaderTitle			{max-width: 230px;}
+	.IH1ToolsBrandImage		{margin: 5px 0 0 5px;}
+	.IH1HeaderText			{max-width: 230px;}
+	.IH1PanelBar			{padding: 5px 0;} 
+} 			
+
+@media only screen and (min-width:600px) {
+	#IH1Branding			{float: left; margin: 5px 0 0 15px;}        		
+	.IH1PanelBar			{padding: 10px 0;} 				
+}   	
+
+@media only screen and (max-width:767px) {
+	.IH1UX * #IHCommentBody .Container	{width: 85%;}
+}
+			
+@media only screen and (min-width:768px) {
+	.IH1UX * #IHCommentBody .Container	{width: 718px;}
+}
+
+.IHWorking					{position: fixed; width: 100%; height: 100%; z-index: 10; background:rgba(255,255,255,0.75); display: none;}
+.IHLoading					{width: 55px; height: 55px; margin: 150px auto;}

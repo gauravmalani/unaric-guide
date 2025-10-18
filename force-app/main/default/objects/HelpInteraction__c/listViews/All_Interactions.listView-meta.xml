@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Interactions</fullName>
+    <columns>NAME</columns>
+    <columns>HelpInteractionType__c</columns>
+    <columns>Description__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>Context__c</columns>
+    <columns>ComponentId__c</columns>
+    <columns>ContextObjectName__c</columns>
+    <columns>ContextObjectLabel__c</columns>
+    <columns>ContextLink__c</columns>
+    <columns>HelpTopic__c</columns>
+    <columns>HelpedElement__c</columns>
+    <columns>HelpedPageLayout__c</columns>
+    <columns>HelpReadingList__c</columns>
+    <columns>HelpResource__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All: All Time</label>
+</ListView>

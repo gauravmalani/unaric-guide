@@ -1,0 +1,878 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens"
+				extends="IHCard"
+				access="global" >
+ 	  
+<!-- 
+================================================
+Events, Handlers, Attribute sets
+================================================
+-->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>   
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+	<aura:handler name="change" value="{!v.GuidedFields}" action="{!c.updateGuideSteps}"/>			
+	<aura:handler name="change" value="{!v.OpMode}" action="{!c.setOpModeStyling}"/>			
+
+    <aura:method name="doCancel" action="{!c.doCancel}" />
+	<aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+	<aura:set attribute="Title" value="" />
+	<aura:set attribute="IHCardType" value="AutoForm" />
+    <aura:set attribute="AutoCardHeight" value="false" />
+
+<!-- 
+================================================
+(Form-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelGEInstructions" type="string" required="false" default="Modified" access="public" />
+	<aura:attribute name='AdviceLabelProperties' type='string' required='false' default='' access='public' />
+	<aura:attribute name='AdviceLabelSteps' type='string' required='false' default='' access='public' />
+    <aura:attribute name="TipButtonCreateNewGuide" type="string" required="false" default="" access="public" />
+    <aura:attribute name="TitleDialogueTitleOpt8" type="string" required="false" default="" access="public" />
+
+<!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="SuppressModeTools" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressSectionToggles" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressInlineEdit" type="boolean" required="false" default="false" access="global" />				<!-- Page author option to suppress -->
+    <aura:attribute name="AllowEdits" type="string" required="false" default="false" access="private" />						<!-- Editability from CRUD rights/server -->
+	<aura:attribute name="CalloutStyle" type="string" required="true" default="Embedded" access="global" />
+
+	<aura:attribute name="DefaultSectionToggleState" type="string" required="false" default="Expanded" access="global" />
+	<aura:attribute name="InitialSections" type="integer" required="true" default="0" access="global" />
+    <aura:attribute name="LayoutName" type="string" required="false" default="" access="global" />
+    <aura:attribute name="OName" type="string" required="true" default="" access="public" />
+    <aura:attribute name="OLabel" type="string" required="true" default="" access="public" />
+    <aura:attribute name="OCode" type="string" required="true" default="" access="public" />    
+	<aura:attribute name="PopulatedFields" type="string" required="false" default="" access="global" />
+	<aura:attribute name="LimitFields" type="string" required="false" default="" access="global" />
+
+    <aura:attribute name="SelectedFields" type="List" required="false" default="[]" access="public" />
+    <aura:attribute name="AvailableFields" type="List" required="false" default="[]" access="public" />
+    <aura:attribute name="PersonalFormView" type="boolean" required="true" default="false" access="public" />
+    <aura:attribute name="PersonalFormDef" type="boolean" required="true" default="false" access="public" />
+
+    <aura:attribute name="CurrentGuide" type="string" required="false" default="" access="private" />
+    <aura:attribute name="CurrentGuideType" type="integer" required="false" default="1" access="private" />
+    <aura:attribute name="GuidedFields" type="List" required="false" default="[]" access="private" />
+	<aura:attribute name="GuidePromptNames" type="List" required="false" default="[]" access="private" />    
+    <aura:attribute name="ExternalPromptControls" type="List" required="false" default="[]" access="public" />
+    <aura:attribute name="OriginalGuideEntries" type="HelpReadingListEntry__c[]" required="false" access="private" />
+    <aura:attribute name="isGuideDirty" type="boolean" required="false" default="false" access="private" />
+    <aura:attribute name="isGuidePromptDirty" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="GuidesInUse" type="boolean" required="false" default="false" access="private" />
+
+    <aura:attribute name="CurrentHTID" type="string" required="false" default="" access="private" />
+	<aura:attribute name="CurrentRecTypeId" type="string" required="false" default="" access="global" />
+	<aura:attribute name="DefaultRecTypeId" type="string" required="false" default="" access="private" />
+	
+    <aura:attribute name="CurrentFieldName" type="string" required="false" default="" access="private" />
+    <aura:attribute name="CurrentFieldEditingControl" type="string" required="false" default="" access="private" />
+
+	<aura:attribute name="RelOName" type="string" required="false" default="" access="private" />
+	<aura:attribute name="RelRecordId" type="string" required="false" default="" access="private" />
+
+    <aura:attribute name="OnSaveAction" type="string" required="true" default="Navigate to record" access="global" />
+    <aura:attribute name="DataModeStyle" type="string" required="false" default="" access="private" />
+    <aura:attribute name="OpMode" type="string" required="true" default="View" access="private" />
+    <aura:attribute name="OpToolTip" type="string" required="true" default="{!v.TitleHelpedElement}" access="private" />
+    <aura:attribute name="OpStyle" type="string" required="true" default="" access="private" />
+    <aura:attribute name="OpModeIconClass" type="string" required="true" default="fa-question-circle" access="private" />
+    <aura:attribute name="FrameBorderColour" type="string" required="false" default="ffffff" access="global" />
+    <aura:attribute name="IsLayoutOverride" type="boolean" required="true" default="false" access="private" />
+
+	<aura:attribute name="FloatButtonBar" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="FloatButtonBarW" type="integer" required="true" default="300" access="private" />
+	<aura:attribute name="H_Accordion" type="integer" required="true" default="0" access="public" />
+	<aura:attribute name="H_MyForm" type="integer" required="true" default="0" access="public" />
+
+
+<!-- 
+================================================
+NAVIGATION SERVICE - FOR RESPONSE TO RECORD EDITS ETC 
+================================================
+-->
+	<lightning:navigation aura:id="navService"/>
+
+
+<!-- 
+<aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+	<lightning:quickActionAPI aura:id="quickActionAPI" />
+</aura:if>
+ -->
+
+
+
+<!-- 
+================================================
+AutoForm-area container - toggles when callouts are full screen
+================================================
+-->   
+	<div aura:id="AFContainer" class="IHFullHeightAF">
+   
+<!-- 
+================================================
+Personal form - definition
+================================================
+-->    		
+		<div class="{! v.PersonalFormDef == true ? 'PersonalFormDefPanel' : 'slds-hide'}" >
+			
+			<div class="slds-col slds-size_1-of-1 slds-p-horizontal_small FormArea PersonalForm">
+				<div class="FormDefTools"> 
+				
+					<div class="slds-text-heading_medium PersonalFormDefTitle" >
+						{!v.TitleSelectFields}
+					</div>
+		
+					<lightning:dualListbox aura:id="formFields"  
+						label= "{!v.AdviceLabelSelectFields}" 
+						sourceLabel="{!v.FieldLabelAvailable}" 
+						selectedLabel="{!v.FieldLabelSelected}" 
+						options="{!v.AvailableFields}" 
+						value="{!v.SelectedFields}" 
+						/>
+				
+				</div>
+		
+				<div class="slds-text-body_regular slds-m-vertical_small FormDefSaveTools">
+					<lightning:button variant="brand" class="slds-m-top_small" onclick="{!c.savePersonalForm}" type="button" label="{!v.ButtonSave}" title="{!v.TipButtonSave}" />
+	            </div>
+			</div>
+		</div>
+
+<!-- 
+================================================
+Mode-specific tools accordion
+================================================
+-->  
+		<div aura:id="ModeTools" class="{! v.SuppressModeTools == false &amp;&amp; v.PersonalFormDef == false &amp;&amp; (v.OpMode == 'GuideEnable' || v.OpMode == 'View') ? 'ModeSpecificTools slds-theme_shade' : 'slds-hide'}">		
+			
+			<ul class="slds-accordion">
+	
+				<!-- NB: controlled by 'guides in use' member data: allows for just in time loading on form mouse over etc. -->
+				<aura:if isTrue="{! (v.OpMode == 'GuideEnable' || v.OpMode == 'View') &amp;&amp; v.GuidesInUse == true}">
+			
+					<li class="slds-accordion__list-item">
+						<section aura:id="GuideList_Section" class="slds-accordion__section">    	
+				      		<div id="GuideList_Summary" class="slds-accordion__summary" onclick="{!c.toggleAccordionSection}">
+
+<!-- 
+................................................
+Guide accordion label and twisty
+................................................
+-->			      		
+						        <h3 class="slds-text-heading_small slds-accordion__summary-heading">
+									<button type="button"
+											aria-controls="accordion-details-01" 
+											class="slds-button slds-button_reset slds-accordion__summary-action"
+											>
+									
+										<lightning:icon aura:id="GuideList_Twisty" class="slds-button__icon" size="xx-small" iconName="utility:chevronright"/>
+										
+										<span class="slds-truncate" title="{!v.TitleGuides}" 
+												style="{! 'color: #' + v.UXMenuFontColour + ';'}">
+
+											{!v.TitleTabGuides}
+										</span>
+									</button>
+				        		</h3>
+				        		
+				      		</div>
+				      		
+				      		<div aria-hidden="false" class="slds-accordion__content IHToolPanel" id="accordion-details-01">
+				
+								<div class="slds-grid slds-gutters">
+									<div class="{! v.OpMode == 'GuideEnable' ? 'slds-col slds-size_1-of-3' : 'slds-col slds-size_1-of-1'}">	
+
+<!-- 
+................................................
+Guide enable mode only: instructions label
+................................................
+-->			      					
+										<aura:if isTrue="{! v.OpMode == 'GuideEnable'}">
+											<div class='AdviceLabelGEInstructions'>
+												{!v.AdviceLabelGEInstructions}
+											</div>
+										</aura:if>
+			
+<!-- 
+................................................
+All modes: Guides list
+................................................
+-->			      		
+										<c:IHList aura:id="IHAFGuideList">
+											<aura:set attribute="ComponentId" value="{! 'AFGuideList_' +  v.ComponentId}" />
+											<aura:set attribute="Height" value="200" />
+											<aura:set attribute="ListingStyle" value="Narrow" />
+											<aura:set attribute="CardConfig" value="BlankList" />
+											<aura:set attribute="ListensTo" value="{! 'AFSelectedGuide_' +  v.ComponentId}" />
+											
+											<!-- Keep the same list but vary tool context based on operational mode -->
+											<aura:set attribute="ToolContext" value="{! v.OpMode == 'GuideEnable' ? 'GuideEnableMode' : 'AutoFormGuideListing'}" />
+											
+											<aura:set attribute="SuppressHeader" value="true" />
+											<aura:set attribute="SuppressFooter" value="{! v.OpMode != 'GuideEnable'}" />
+											<aura:set attribute="MaxListingTools" value="0" />										
+										</c:IHList>
+										
+									</div>
+		
+<!-- 
+................................................
+Guide enable mode only: steps / properties tabs
+................................................
+-->			      		
+									<aura:if isTrue="{! v.OpMode == 'GuideEnable'}">
+										<div class="slds-col slds-size_2-of-3">
+											
+											<!-- Please select message (when no guide chosen) plus vertical spacing shim -->
+											<div class="{!v.CurrentGuide == '' ? 'IHFullHeight NoDataMessage' : 'slds-hide'}">
+												<div class="AdviceLabelGEInstructions" />
+												{!v.TitleDialogueTitleOpt8}
+											</div>
+	
+											<div class="{!v.CurrentGuide != '' ? 'IHFullHeight GEModeTabs' : 'slds-hide'}">
+	
+												<lightning:tabset>
+													<lightning:tab label="{!v.AdviceLabelProperties}">	
+														<c:IHComponentGenerator aura:id="GuideProperties">
+														    <aura:set attribute="Parent" value="{!this}" />
+														</c:IHComponentGenerator>
+													</lightning:tab>
+												    
+													<lightning:tab label="{!v.AdviceLabelSteps}">
+														<div class="slds-col">												
+															<lightning:dualListbox aura:id="guideSteps"  
+																	class= "GuideStepList" 
+																	sourceLabel="{!v.FieldLabelAvailable}" 
+																	selectedLabel="{!v.FieldLabelSelected}" 
+																	options="{!v.AvailableFields}" 
+																	value="{!v.GuidedFields}" 
+																	/>         
+														</div>
+																													
+														<div class="slds-theme_shade slds-align_absolute-center ButtonBar">
+															<lightning:button disabled="{!v.isGuideDirty == false}" class="slds-m-around_xx-small" variant="brand" onclick="{!c.saveGuide}" type="button" label="{!v.AdviceLabelSteps + ': ' + v.ButtonSave}" title="{!v.TipButtonSave}" />
+															<lightning:button disabled="{!v.isGuideDirty == false}" class="slds-m-around_xx-small" type="button" onclick="{!c.cancelGuideChanges}" label="{!v.ButtonCancel}" title="{!v.TipGenericCancel}" />   	
+											            </div>
+													</lightning:tab>
+													
+												</lightning:tabset>
+	
+										    </div>	
+										    
+										</div>
+								  	</aura:if>  			
+								</div>			
+		
+				      		</div>
+				    	</section>
+				  	</li>
+			  	</aura:if>
+			  	
+			</ul>					
+		</div>
+				            
+<!-- 
+================================================
+Personal form - output (non-override, view operational mode only)
+================================================
+-->   
+		<div aura:id="MyForm" class="{! v.PersonalFormView == true &amp;&amp; v.PersonalFormDef == false &amp;&amp; v.OpMode == 'View' &amp;&amp; v.IsLayoutOverride == false ? 'PersonalForm' : 'slds-hide'}">
+			<aura:if isTrue="{! v.PersonalFormView == true &amp;&amp; v.PersonalFormDef == false &amp;&amp; v.OpMode == 'View' &amp;&amp; v.IsLayoutOverride == false}">			
+				
+				<lightning:recordViewForm  
+						objectApiName="{!v.OName}" 
+						recordId="{!v.recordId}" 
+						>
+					
+					<article class="slds-tile">
+						<div class="slds-tile__detail">
+		
+							<aura:iteration items="{!v.SelectedFields}" var="SF">
+								<dl class="slds-list_horizontal slds-wrap">
+		       						<dt class="slds-item_label slds-text-color_weak slds-truncate" >
+		       							<lightning:outputField class="PersonalFieldLBL" fieldName="{!SF}" />
+		   							</dt>
+		      							
+		       						<dd class="slds-item_detail slds-truncate">
+		       							<lightning:outputField class="PersonalField" variant="label-hidden" fieldName="{!SF}" />
+		   							</dd>
+		       					</dl>
+		  					</aura:iteration>
+		
+						</div>
+					</article>		
+						
+				</lightning:recordViewForm>	
+				
+			</aura:if>
+		</div>	
+
+<!-- 
+================================================
+Form - view mode
+================================================
+--> 
+		<aura:if isTrue="{! v.DataMode == 'View' &amp;&amp; v.PersonalFormDef == false}">   	
+			<div style="{! 'height: CALC(100% - ' + (v.H_Accordion + v.H_MyForm) + 'px);'}">
+		
+				<lightning:recordViewForm aura:id="recordEditForm"
+						objectApiName="{!v.OName}" 
+						recordId="{!v.recordId}" 
+						class="{! 'IHAutoForm DataModeView ' + v.OpMode}">
+						
+					<div onmouseover="{!c.completeFormBuild}" aura:id="recordEditFormBody" class="slds-col slds-size_1-of-1 FormArea">
+		
+						<!-- Shims to force data form NOT to underlie (floating) accordion tools when in affected modes -->
+						<div aura:id="ModeToolShim" class="{! v.OpMode == 'GuideEnable' &amp;&amp; v.IsLayoutOverride == true &amp;&amp; v.SuppressModeTools == false ? 'ModeSpecificToolsGuideEnable' : 'slds-hide'}" />
+						<div aura:id="ModeToolShim" class="{! v.OpMode == 'View' &amp;&amp; v.IsLayoutOverride == true &amp;&amp; v.SuppressModeTools == false ? 'ModeSpecificToolsView' : 'slds-hide'}" />
+		
+			            <lightning:messages />
+
+<!-- 
+................................................
+"Listing items" (the auto form definition)
+................................................
+-->
+						<aura:iteration items="{!v.ListingItems}" var="L">
+							<div class="{! v.DisplayDensity + 'Analogue full forcePageBlock forceRecordLayout'}">
+								<div class="slds-section  slds-is-open full forcePageBlockSection forcePageBlockSectionEdit">
+								
+<!-- 
+................................................
+Sections
+................................................
+-->			            
+									<aura:iteration items="{!L.Sections}" var="S" indexVar="idxS" end="{! v.InitialSections > 0 ? v.InitialSections : 999}">
+									
+										<!-- Sections should NOT display if they contain no items -->
+										<div class="{! S.Rows.length > 0 ? '' : 'slds-hide'}">	
+																		
+											<h3 id="{!idxS}" onclick="{!c.toggleFormSection}" class="{! S.Section.detailHeading == true ? 'slds-section__title slds-theme_shade primaryPaletteBorder IHPaddedSection' : 'slds-hide'}">
+												<lightning:icon aura:id="Section_Twisty" class="{! S.Expanded == true || v.SuppressSectionToggles == true ? 'nodeExpanded slds-button__icon slds-m-right_x-small' : 'slds-button__icon slds-m-right_x-small'}" size="xx-small" iconName="utility:chevronright"/>
+												{!S.Section.label}
+			 								</h3>
+											
+											<!-- Entire section displays only if expanded -->
+											<aura:if isTrue="{! S.Expanded == true || v.SuppressSectionToggles == true || S.Section.detailHeading == false}">	
+												<div class="slds-section__content section__content slds-p-top_none">
+													<div class="slds-form">
+
+<!-- 
+................................................
+Section rows / section row items
+................................................
+-->			            											
+										                <aura:iteration items="{!S.Rows}" var="R" indexVar="idxR">
+															<div class="slds-col">
+			    	                                        	<div class="slds-grid full forcePageBlockSectionRow IHPaddedRow">
+									                				<aura:iteration items="{!R.Items}" var="I" indexVar="idxI">
+
+<!-- 
+................................................
+Non-blanks - fields, help icon, guide prompt
+................................................
+-->		
+                                                                        <aura:if isTrue="{! v.FormFactorVal == 1}">		
+                                                                 
+                                                                                    <aura:iteration items="{!R.Items}" var="I" indexVar="rid">		
+                                                                                        <aura:if isTrue="{! rid == 0}">
+                                                                                       		 <div aura:id="CalloutContainer" id="{!I.Item.field + '_CalloutContainer'}" 
+                                                                                                  class="CalloutContainer IHTipPending slds-grid full forcePageBlockSectionRow" 
+                                                                                               	  onmouseover="{!c.hideTipBusy}"																			
+                                                                                                  style="{! 'background-color: #' + v.FrameBorderColour + ';'}" />
+                                                                                        </aura:if>		
+                                                                                    </aura:iteration>
+                                                                   
+																		</aura:if>	
+                                                                        
+																		<aura:if isTrue="{! I.Item != null &amp;&amp; I.Item.emptySpace != true}">
+					
+																			<div aura:id="FieldContainer" id="{! I.Item.field + '_FieldContainer_' + v.ComponentId}" 
+																					class="{! I.HelpAvailable == true ? 
+																						'slds-has-flexi-truncate full forcePageBlockItem ' + v.DataModeStyle + ' ' + v.OpStyle + ' IHCol IHCol' + idxI + ' IHHelpedSFElement ' + I.StyleClass :
+																						'slds-has-flexi-truncate full forcePageBlockItem ' + v.DataModeStyle + ' ' + v.OpStyle + ' IHCol IHCol' + idxI}"
+																					onclick="{!c.formFieldAreaClick}" >
+			
+										<!-- Guide enable mode - prompt editor -->	
+																				<aura:if isTrue="{!v.GuidesInUse}"> 																			
+																					<div aura:id="GuidePromptEditor" id="{! I.Item.field + '_GuidePromptEditor_' + v.ComponentId}" class="GuidePromptEditor slds-hide">
+																						<c:IHCalloutPrompt aura:id="GuidePromptCtl">
+																							<aura:set attribute="Parent" value="{!this}" />																		
+																							<aura:set attribute="ComponentId" value="{! I.Item.field + '_GuidePromptCtl'}" />
+																							<aura:set attribute="GuidedFields" value="{!v.GuidePromptNames}" />
+																							<aura:set attribute="CurrentField" value="{!I.FieldLabel}" />
+						
+																							<aura:set attribute="AdviceLabelModified" value="{!v.AdviceLabelModified}" />
+																							<aura:set attribute="FieldLabelName" value="{!v.FieldLabelName}" />
+																							<aura:set attribute="FieldLabelSummary" value="{!v.FieldLabelSummary}" />
+																							<aura:set attribute="FieldLabelImageURL" value="{!v.FieldLabelImageURL}" />
+																							<aura:set attribute="FieldLabelVideoURL" value="{!v.FieldLabelVideoURL}" />
+																							<aura:set attribute="TipButtonClose" value="{!v.TipButtonClose}" />
+																							<aura:set attribute="TipGenericEdit" value="{!v.TipGenericEdit}" />
+																							<aura:set attribute="TipView" value="{!v.TipView}" />
+																							<aura:set attribute="QAMAdviceLabelGuideStepCounter1" value="{!v.QAMAdviceLabelGuideStepCounter1}" />
+																							<aura:set attribute="QAMAdviceLabelGuideStepCounter2" value="{!v.QAMAdviceLabelGuideStepCounter2}" />
+																							<aura:set attribute="QAMTitleButtonGotoNextStep" value="{!v.QAMTitleButtonGotoNextStep}" />
+																							<aura:set attribute="QAMButtonGotoNextStep" value="{!v.QAMButtonGotoNextStep}" />
+																						</c:IHCalloutPrompt>
+																					</div>																														
+																				</aura:if> 
+                                                                                
+										<!-- Click helper icon: class name used to indicate column positioning (x of y) -->
+																				<div class="slds-grid">
+																				    <div class="slds-col IHColTool">
+																						<div id="{!I.Item.field}" 
+																								class="{! I.HelpAvailable == true ? (idxI + 1) + 'of' + R.Items.length + ' IHClickHelper fa ' + v.OpModeIconClass + ' ' + I.StyleClass : ''}"
+																								style="{! 'color: #' + v.UXThemeColour3 + ';'}"																								 
+																								onclick="{!c.requestHelp}"
+																								title="{!v.OpToolTip}">																				
+																						</div>
+					    															</div>
+	    															
+										<!-- Field area - including underlining in read mode for ordinary fields only -->																
+																					<div class="{! I.Item.customLink == null &amp;&amp; I.Item.page_x == null ? 'slds-col IHColField IHUnderlined' : 'slds-col IHColField'}">
+	    
+										<!-- 
+										Standard fields in read mode, with in-line edit icon, where permitted.
+										Special handling required for certain fields as they can't be edited but will not be marked read only:
+										Treat as per view mode (i.e., output control only) 
+										
+										LAYOUT 'behaviour' values are:
+										Readonly 	= no editing
+										Edit 		= can be edited
+										Required 	= can be edited and is mandatory
+										
+										1.43.10+ 
+										SCHEMA editability must also be considered: this is trapped in the SchemaUpdateable member:
+										-->
+
+																						<aura:if isTrue="{! I.Item.field != null}">
+
+																							<!-- 
+																							Special handling for created / modified: if 'by' field present, add related date/time field
+																							 -->
+																							<lightning:outputField class="{! (I.Item.field == 'CreatedById' || I.Item.field == 'LastModifiedById') ? (idxI + 1) + 'of' + R.Items.length + ' IHFieldPart1' : (idxI + 1) + 'of' + R.Items.length}" fieldName="{!I.Item.field}" />
+	
+																							<aura:if isTrue="{!I.Item.field == 'CreatedById'}">
+																								<lightning:outputField variant="label-hidden" class="{! (idxI + 1) + 'of' + R.Items.length + ' IHFieldPart2'}" fieldName="CreatedDate" />
+																							</aura:if>
+																							
+																							<aura:if isTrue="{!I.Item.field == 'LastModifiedById'}">
+																								<lightning:outputField variant="label-hidden" class="{! (idxI + 1) + 'of' + R.Items.length + ' IHFieldPart2'}" fieldName="LastModifiedDate" />
+																							</aura:if>
+	
+	
+																							<aura:if isTrue="{! I.Item.behavior != 'Readonly' &amp;&amp; I.SchemaUpdateable == true &amp;&amp; I.SpecialReadOnly == false &amp;&amp; v.AllowEdits == 'true' &amp;&amp; v.SuppressInlineEdit == false}">
+																								<div aria-controls="{!I.Item.field}" class="{! v.FormFactorVal == 3 ? 'InlineEditTool' : 'slds-hide'}" title="{!v.TipGenericEdit}" onclick="{!c.gotoEditMode}">
+																									<i aria-controls="{!I.Item.field}" class="fa fa-pencil" aria-hidden="true"></i>		
+																								</div>
+																							</aura:if>
+	
+											                    						</aura:if>
+										                    						
+										<!-- Special treatment via sub-component for custom links -->
+																						<aura:if isTrue="{! I.Item.customLink != null &amp;&amp; v.GuidesInUse == true}">
+																							<c:IHAFCustomSection>
+																								<aura:set attribute="ParentControl" value="{!this}" />	
+																								<aura:set attribute="CommunityRoot" value="{!v.CommunityRoot}" />	
+																								<aura:set attribute="sObjectName" value="{!v.sObjectName}" />	
+																								<aura:set attribute="recordId" value="{!v.recordId}" />	
+																								<aura:set attribute="LookupSectionHeading" value="{!S.Section.label}" />
+																								<aura:set attribute="LookupItemLabel" value="{!I.Item.customLink}" />
+																								<aura:set attribute="LookupItemComponentType" value="CustomLink" />
+																							</c:IHAFCustomSection>
+																						</aura:if>
+	
+										<!-- Special treatment via sub-component for VF page sections -->
+																						<aura:if isTrue="{! I.Item.page_x != null &amp;&amp; v.GuidesInUse == true}">
+																							<c:IHAFCustomSection>
+																								<aura:set attribute="ParentControl" value="{!this}" />	
+																								<aura:set attribute="CommunityRoot" value="{!v.CommunityRoot}" />	
+																								<aura:set attribute="sObjectName" value="{!v.sObjectName}" />	
+																								<aura:set attribute="recordId" value="{!v.recordId}" />	
+																								<aura:set attribute="LookupSectionHeading" value="{!S.Section.label}" />
+																								<aura:set attribute="LookupItemLabel" value="{!I.Item.page_x}" />
+																								<aura:set attribute="LookupItemComponentType" value="VisualforcePage" />
+																							</c:IHAFCustomSection>
+																						</aura:if>
+                                                                                        
+                                    
+
+<!-- 
+................................................
+Non-blanks - help enable mode support
+................................................
+-->	
+																						<!-- Help enable mode for helped elements only: delete topic check box -->																
+																						<div class="{! v.OpMode == 'HelpEnable' &amp;&amp; I.HelpAvailable == true ? 'HETools' : 'slds-hide'}" >
+																							{!v.ColumnLabelDeleteAssociatedTopic}<br/>
+																							<input type="checkbox" id="{! I.Item.field + '_ChkDeleteTopic'}" onchange="{!c.nullifyStateToggle}" />
+																						</div>																
+																						
+																						<!-- Help enable mode for NON elements only: lookup topic text box -->
+																						<div class="{! v.OpMode == 'HelpEnable' &amp;&amp; I.HelpAvailable == false ? 'HETools' : 'slds-hide'}" >
+																							{!v.ColumnLabelUseExistingTopic}<br/>
+																							<input onclick="{!c.nullifyClick}" type="text" id="{! I.Item.field + '_txtExistingTopic'}"  class="slds-input" />
+																						</div>	    
+			    
+																				    </div>			<!-- End IHColField -->
+																				</div>			<!-- End form element grid -->
+																			</div>			<!-- End FieldContainer -->							                											                    		
+									                    				</aura:if>		<!-- End if non-blank -->
+				                    								                    				
+<!-- 
+................................................
+Blanks in the form - no input or output
+................................................
+-->			            											
+									                    				<aura:if isTrue="{! I.Item == null || I.Item.emptySpace == true}">
+																			<div class="slds-has-flexi-truncate slds-p-horizontal_x-small full blank forcePageBlockItem forcePageBlockItemView" />
+									                    				</aura:if>
+									                				
+										                			</aura:iteration>
+										                		</div>	
+
+<!-- 
+................................................
+Section row items - callout container
+................................................
+-->			            					<aura:if isTrue="{! v.FormFactorVal == 3}">		
+                                                                 
+																<aura:iteration items="{!R.Items}" var="I">	
+																	<div aura:id="CalloutContainer" id="{!I.Item.field + '_CalloutContainer'}" 
+																			class="CalloutContainer IHTipPending slds-grid full forcePageBlockSectionRow" 
+																			onmouseover="{!c.hideTipBusy}"																			
+																			style="{! 'background-color: #' + v.FrameBorderColour + ';'}" />
+																</aura:iteration>
+                                                                   
+											</aura:if>	
+                                                                
+                                        	<aura:if isTrue="{! v.FormFactorVal == 1}">		
+                                                                 
+																<aura:iteration items="{!R.Items}" var="I" indexVar="rid">		
+                                                                    <aura:if isTrue="{! rid == 0}">
+                                                                        <aura:if isTrue="{! R.Items.length == 1}">
+																	<div aura:id="CalloutContainer" id="{!I.Item.field + '_CalloutContainer'}" 
+																			class="CalloutContainer IHTipPending slds-grid full forcePageBlockSectionRow" 
+																			onmouseover="{!c.hideTipBusy}"																			
+																			style="{! 'background-color: #' + v.FrameBorderColour + ';'}" />
+                                                                          </aura:if>                                                               
+                                                                          </aura:if>		
+																</aura:iteration>
+                                                                   
+											</aura:if>	
+                                            <aura:if isTrue="{! v.FormFactorVal == 1}">		
+                                                                 
+																<aura:iteration items="{!R.Items}" var="I" indexVar="rid">		
+                                                                    <aura:if isTrue="{! rid == 1}">
+                                                                        
+																	<div aura:id="CalloutContainer" id="{!I.Item.field + '_CalloutContainer'}" 
+																			class="CalloutContainer IHTipPending slds-grid full forcePageBlockSectionRow" 
+																			onmouseover="{!c.hideTipBusy}"																			
+																			style="{! 'background-color: #' + v.FrameBorderColour + ';'}" />
+                                                                                                                                        
+                                                                          </aura:if>		
+																</aura:iteration>
+                                                                   
+											</aura:if>	
+															</div>						                		
+								                		</aura:iteration>	<!-- End Rows -->
+								                	</div>          
+												</div>
+		
+											</aura:if>	<!-- End if section is expanded -->			
+															
+										</div>										
+									</aura:iteration>	<!-- End Sections -->		
+								</div>			
+							</div>							
+						</aura:iteration>	<!-- End Listing Items -->
+					</div>
+				</lightning:recordViewForm>
+	
+			</div>					
+	 	</aura:if>				            
+
+<!-- 
+================================================
+Form - edit mode
+================================================
+-->    	
+		<aura:if isTrue="{! v.DataMode == 'Edit' &amp;&amp; v.PersonalFormDef == false}">   	
+			<div style="{! 'height: CALC(100% - ' + (v.H_Accordion + v.H_MyForm) + 'px);'}">
+								
+				<lightning:recordEditForm aura:id="recordEditForm" 
+						objectApiName="{!v.OName}" 
+						recordId="{!v.recordId}" 
+						recordTypeId="{!v.CurrentRecTypeId}"					
+						onload="{!c.setOverriddenFields}"					
+						onsubmit="{!c.doSubmit}"				
+						onsuccess="{!c.reportSuccess}" 
+						onerror="{!c.reportError}"
+						class="{! 'IHAutoForm DataModeEdit ' + v.OpMode}">
+		
+					<div onmouseover="{!c.completeFormBuild}" aura:id="recordEditFormBody" class="slds-col slds-size_1-of-1 FormArea">
+		
+						<!-- Shims to force data form NOT to underlie (floating) accordion tools when in affected modes -->
+						<div aura:id="ModeToolShim" class="{! v.OpMode == 'GuideEnable' &amp;&amp; v.IsLayoutOverride == true &amp;&amp; v.SuppressModeTools == false ? 'ModeSpecificToolsGuideEnable' : 'slds-hide'}" />
+						<div aura:id="ModeToolShim" class="{! v.OpMode == 'View' &amp;&amp; v.IsLayoutOverride == true &amp;&amp; v.SuppressModeTools == false ? 'ModeSpecificToolsView' : 'slds-hide'}" />
+				
+			            <lightning:messages />
+ 
+<!-- 
+................................................
+"Listing items" (the auto form definition)
+................................................
+-->
+						<aura:iteration items="{!v.ListingItems}" var="L">
+							<div class="{! v.DisplayDensity + 'Analogue full forcePageBlock forceRecordLayout'}">
+								<div class="slds-section  slds-is-open full forcePageBlockSection forcePageBlockSectionEdit">
+								
+<!-- 
+................................................
+Sections
+................................................
+-->			            
+									<aura:iteration items="{!L.Sections}" var="S" indexVar="idxS" end="{! v.InitialSections > 0 ? v.InitialSections : 999}">
+									
+										<!-- Sections should NOT display in edit mode if they contain only special, system (R/O) fields -->
+										<div class="{! S.Rows.length > 0 &amp;&amp; S.SROOnly == false ? '' : 'slds-hide'}">	
+		
+											<h3 id="{!idxS}" onclick="{!c.toggleFormSection}" class="{! S.Section.detailHeading == true ? 'slds-section__title slds-theme_shade primaryPaletteBorder IHPaddedSection' : 'slds-hide'}">
+												<lightning:icon aura:id="Section_Twisty" class="{! S.Expanded == true || v.SuppressSectionToggles == true ? 'nodeExpanded slds-button__icon  slds-m-right_x-small' : 'slds-button__icon  slds-m-right_x-small'}" size="xx-small" iconName="utility:chevronright"/>
+												{!S.Section.label}
+			 								</h3>
+			 								
+			 								<!-- Entire section displays only if expanded -->
+											<aura:if isTrue="{! S.Expanded == true || v.SuppressSectionToggles == true || S.Section.detailHeading == false}">	
+												<div class="slds-section__content section__content slds-p-top_none">
+													<div class="slds-form">
+
+<!-- 
+................................................
+Section rows / section row items
+................................................
+-->			            											
+										                <aura:iteration items="{!S.Rows}" var="R" indexVar="idxR">
+															<div class="slds-col slds-p-horizontal_medium">
+			    	                                        	<div class="slds-grid full forcePageBlockSectionRow IHPaddedRow">
+									                				<aura:iteration items="{!R.Items}" var="I" indexVar="idxI">
+			                						
+<!-- 
+................................................
+Non-blanks - fields, help icon, guide prompt
+................................................
+-->		
+								                						<aura:if isTrue="{! I.Item != null &amp;&amp; I.Item.emptySpace != true}">
+					
+																			<div aura:id="FieldContainer" id="{! I.Item.field + '_FieldContainer_' + v.ComponentId}" 
+																					class="{! I.HelpAvailable == true ? 
+																							'slds-has-flexi-truncate full forcePageBlockItem ' + v.DataModeStyle + ' Dirty_' + I.isDirty + ' ' + v.OpStyle + ' IHCol IHCol' + idxI + ' IHHelpedSFElement ' + I.StyleClass :
+																							'slds-has-flexi-truncate full forcePageBlockItem ' + v.DataModeStyle + ' Dirty_' + I.isDirty + ' ' + v.OpStyle + ' IHCol IHCol' + idxI}"
+																					onclick="{!c.formFieldAreaClick}" >
+			
+										<!-- Guide enable mode - prompt editor -->
+																				<aura:if isTrue="{!v.GuidesInUse}"> 																																							
+																					<div aura:id="GuidePromptEditor" id="{! I.Item.field + '_GuidePromptEditor_' + v.ComponentId}" class="GuidePromptEditor slds-hide">
+																						<c:IHCalloutPrompt aura:id="GuidePromptCtl">
+																							<aura:set attribute="Parent" value="{!this}" />																		
+																							<aura:set attribute="ComponentId" value="{! I.Item.field + '_GuidePromptCtl'}" />
+																							<aura:set attribute="GuidedFields" value="{!v.GuidePromptNames}" />
+																							<aura:set attribute="CurrentField" value="{!I.FieldLabel}" />
+																											
+																							<aura:set attribute="AdviceLabelModified" value="{!v.AdviceLabelModified}" />
+																							<aura:set attribute="FieldLabelName" value="{!v.FieldLabelName}" />
+																							<aura:set attribute="FieldLabelSummary" value="{!v.FieldLabelSummary}" />
+																							<aura:set attribute="FieldLabelImageURL" value="{!v.FieldLabelImageURL}" />
+																							<aura:set attribute="FieldLabelVideoURL" value="{!v.FieldLabelVideoURL}" />
+																							<aura:set attribute="TipButtonClose" value="{!v.TipButtonClose}" />
+																							<aura:set attribute="TipGenericEdit" value="{!v.TipGenericEdit}" />
+																							<aura:set attribute="TipView" value="{!v.TipView}" />
+																							<aura:set attribute="QAMAdviceLabelGuideStepCounter1" value="{!v.QAMAdviceLabelGuideStepCounter1}" />
+																							<aura:set attribute="QAMAdviceLabelGuideStepCounter2" value="{!v.QAMAdviceLabelGuideStepCounter2}" />
+																							<aura:set attribute="QAMTitleButtonGotoNextStep" value="{!v.QAMTitleButtonGotoNextStep}" />
+																							<aura:set attribute="QAMButtonGotoNextStep" value="{!v.QAMButtonGotoNextStep}" />
+																						</c:IHCalloutPrompt>
+																					</div>			
+																				</aura:if>																											
+	    
+										<!-- Click helper icon: class name used to indicate column positioning (x of y) -->
+																				<div class="slds-grid">
+																				    <div class="slds-col IHColTool">
+																						<div id="{!I.Item.field}" 
+																								class="{! I.HelpAvailable == true ? (idxI + 1) + 'of' + R.Items.length + ' IHClickHelper fa ' + v.OpModeIconClass + ' ' + I.StyleClass : ''}"
+																								style="{! 'color: #' + v.UXThemeColour3 + ';'}"																								 																								 
+																								onclick="{!c.requestHelp}"
+																								title="{!v.OpToolTip}">
+																						</div>
+					    															</div>
+	    															
+										<!-- Field area - NO underlining in edit mode -->																
+																					<div class="slds-col IHColField">
+	    
+																						<!-- 
+																						NB: 
+																						I.Item.behavior 		= LAYOUT level behaviour (NOT schema editability)
+																						I.SchemaUpdateable 		= SCHEMA level / CRUD editability
+																						I.SpecialReadOnly		= certain never editable fields (e.g., modified date / time)
+																						v.AllowEdits			= Autoform record-level editability setting
+													
+																						Standard fields in edit mode - where input control is necessary 
+																						1.43.3+ : field required status is specifically set here to ensure it respects both schema required
+																						flag for the field AND layout level required tick box
+																						-->
+	
+																						<aura:if isTrue="{! I.Item.behavior != 'Readonly' &amp;&amp; I.SchemaUpdateable == true &amp;&amp; I.SpecialReadOnly == false &amp;&amp; I.Item.field != null}">
+																							<lightning:inputField aura:id="editCtl" fieldName="{!I.Item.field}" required="{!I.Item.behavior == 'Required'}" onmouseenter="{!c.markInitialised}" onchange="{!c.setDirty}" />
+											                    						</aura:if>
+	
+	
+																						<!-- 
+																						Standard fields in edit mode:
+																						Special handling required for certain fields as they can't be edited but will not be marked read only:
+																						Treat as per view mode (i.e., output control only) 
+																						-->
+																						<aura:if isTrue="{! (I.Item.behavior == 'Readonly' || I.SpecialReadOnly == true || I.SchemaUpdateable == false) &amp;&amp; I.Item.field != null}">
+																							<lightning:outputField class="{! (idxI + 1) + 'of' + R.Items.length}" fieldName="{!I.Item.field}" />
+											                    						</aura:if>
+
+<!-- 
+<aura:if isTrue="{!I.Item.field == 'OwnerId'}">
+	<div class="IHFieldSupportButton" onclick="{!c.doOwnerChange}">
+		{!v.TipGenericEdit}
+	</div>
+</aura:if>											                    						
+ -->
+											                    					
+
+<!-- 
+................................................
+Non-blanks - help enable mode support
+................................................
+-->	
+																						<!-- Help enable mode for helped elements only: delete topic check box -->																
+																						<div class="{! v.OpMode == 'HelpEnable' &amp;&amp; I.HelpAvailable == true ? 'HETools' : 'slds-hide'}" >
+																							{!v.ColumnLabelDeleteAssociatedTopic}<br/>
+																							<input type="checkbox" id="{! I.Item.field + '_ChkDeleteTopic'}" onchange="{!c.nullifyStateToggle}" />
+																						</div>																
+																						
+																						<!-- Help enable mode for NON elements only: lookup topic text box -->
+																						<div class="{! v.OpMode == 'HelpEnable' &amp;&amp; I.HelpAvailable == false ? 'HETools' : 'slds-hide'}" >
+																							{!v.ColumnLabelUseExistingTopic}<br/>
+																							<input onclick="{!c.nullifyClick}" type="text" id="{! I.Item.field + '_txtExistingTopic'}"  class="slds-input" />
+																						</div>	    
+			    
+																				    </div>			<!-- End IHColField -->
+																				</div>			<!-- End form element grid -->
+																			</div>			<!-- End FieldContainer -->							                											                    		
+									                    				</aura:if>		<!-- End if non-blank -->
+				                    								                    				
+<!-- 
+................................................
+Blanks in the form - no input or output
+................................................
+-->			            											
+									                    				<aura:if isTrue="{! I.Item == null || I.Item.emptySpace == true}">
+																			<div class="slds-has-flexi-truncate slds-p-horizontal_x-small full blank forcePageBlockItem forcePageBlockItemView" />
+									                    				</aura:if>
+									                				
+										                			</aura:iteration>
+										                		</div>	
+
+<!-- 
+................................................
+Section row items - callout container
+................................................
+-->			            											
+																<aura:iteration items="{!R.Items}" var="I">							                		
+																	<div aura:id="CalloutContainer" id="{!I.Item.field + '_CalloutContainer'}" 
+																			class="CalloutContainer IHTipPending slds-grid full forcePageBlockSectionRow"
+																			onmouseover="{!c.hideTipBusy}"																																						 
+																			style="{! 'background-color: #' + v.FrameBorderColour + ';'}" />
+																</aura:iteration>
+															</div>						                		
+								                		</aura:iteration>
+			                                        
+								                	</div>          
+												</div>
+		
+											</aura:if>	<!-- End if section is expanded -->										
+										</div>										
+									</aura:iteration>	<!-- End Sections -->		
+								</div>			
+						                    
+							</div>							
+						</aura:iteration>	<!-- End Listing Items -->
+					</div>
+	
+<!-- 
+................................................
+Button bar
+................................................
+-->      
+				    <!-- This element stays put as the viewport/Utility bar interception test-->
+					<div aura:id="ButtonBarMarker" class="ButtonBarMarker" />			
+					
+	                <!-- Actual button bar container styled conditionally based on need to float or not -->
+	                <div id="ButtonBarContainer" class="{! v.FloatButtonBar == true ? 'ButtonBarContainerFloating' : 'ButtonBarContainerFixed'}">
+	                                                    
+	                    <div aura:id="ButtonBar" 
+								class="{! v.FloatButtonBar == true ? 
+									'slds-theme_shade slds-p-vertical_x-small ButtonBar ButtonBarFloating' : 
+									'slds-theme_shade slds-p-vertical_x-small ButtonBar ButtonBarFixed'}"
+
+								style="{! v.FloatButtonBar == true ?                 
+									'width: ' + v.FloatButtonBarW + 'px; bottom: ' + v.H_UtilityBar + 'px;' :
+									''}">
+	                        
+	                        <div class="ButtonContainer slds-align_absolute-center">
+	                        
+	                            <!-- Data modification ops are only allowed when operational mode (as opposed to data mode) = View -->
+	                            <lightning:button disabled="{!v.OpMode != 'View'}" class="slds-m-around_xx-small" type="submit" label="{!v.ButtonSave}" title="{!v.ButtonSave + ' ' + v.OLabel}" variant="brand" />
+	                            <lightning:button disabled="{!v.OpMode != 'View'}" class="slds-m-around_xx-small" type="button" label="{!v.ButtonCancel}" title="{!v.TipGenericCancel}" onclick="{!c.doCancel}" />
+	                        </div>
+	                    </div>
+	                    
+						<div id="UtilityBarShim" 
+								class="{! v.FloatButtonBar == true &amp;&amp; v.hasUtilityBar == true ? 'slds-theme_shade ButtonBarUBShimFloating' : 'slds-theme_shade ButtonBarUBShimFixed'}"
+								style="{! v.FloatButtonBar == true &amp;&amp; v.hasUtilityBar == true ? 
+									'width: ' + v.FloatButtonBarW + 'px;' :
+									''}" />                        
+
+	                </div>
+		    
+				</lightning:recordEditForm>
+	
+			</div>
+		</aura:if>    
+
+	</div>		<!-- Close Autoform toggle container area -->
+
+
+<!-- 
+================================================
+Help callout facility (moves around DOM in use)
+================================================
+-->
+	<!-- Embedded style only, callouts of VF-type only -->			            														
+	<div>
+		<iframe aura:id="AutoFormFrame" class="AFCalloutFrame slds-hide" scrolling="no" frameborder="0" onmouseout="{!c.tipMouseOut}" onload="{!c.hideTipBusy}" />	
+	</div>  
+	
+	<!-- All non-VF callout types (regardless of embedded or full-screen styles) -->
+	<div aura:id="TVContainer" class="xTVContainerActive">
+		<c:IHComponentGenerator aura:id="TopicViewer">
+		    <aura:set attribute="Parent" value="{!this}" />
+		</c:IHComponentGenerator>
+	</div>
+	  
+	  
+
+</aura:component>

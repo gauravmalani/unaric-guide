@@ -1,0 +1,230 @@
+<!--
+============================================================================================== 
+UTILITIES/TOOLS AVAILABLE FROM TOPIC CALLOUTS AND SUCH LIKE
+
+Martin Little for Improved Apps
+May 2015
+Copyright (c.) Improved Apps Limited 2015. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:component controller="ControllerHelpContent" allowDML="true" >
+
+    <apex:attribute name="theTopic" description="Help Topic featured on containing page" type="HelpTopic__c" required="true" assignTo="{!Hlp}" />
+    <apex:attribute name="theHElem" description="Helped Element if any associated with Topic" type="HelpedElement__c" required="true" assignTo="{!HE}" />
+    <apex:attribute name="GlobalLocalisations" description="Global localisations map" type="map" required="true" />
+    <apex:attribute name="IsConsolePage" description="Pass through flag" type="boolean" required="true" />
+    <apex:attribute name="isIH1UX" description="Pass through flag" type="boolean" required="true" />
+    <apex:attribute name="isIHLUX" description="Pass through flag" type="boolean" required="true" />
+
+    <apex:stylesheet value="{!BrandCSS}" />     
+    <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSettings.js')}"/>       
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>       
+
+    <style>
+        .XLastVote                   {border: 1px solid red !important; border-radius: 2px;}
+        .XLastVote *                 {color: red !important;}
+        .XLastVote * img             {height: {!IF(isIH1UX, 22, 14)}px !important;}      
+        .XIHUtils                    {background: #eeeeee; border: 1px solid #dddddd; border-radius: 4px;}
+        .IH1UX * .IHUtils           {background: transparent; border: 1px solid transparent;}
+        .IHUtilsClosed              {border: 1px solid transparent;}
+        .IHVoteSetTextMin           {max-width: 100px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+        .IH1UX * #IHVoteUtils       {margin: 10px;}
+        .IHUtilGroupControl         {cursor: pointer;}
+        .VoteAreaLabel              {float:left; margin-left: 2px;}
+        
+.VoteSetQuestion    {padding: 0.3rem;}
+.VoteAreaLabel      {color: orange !important;}        
+        
+        /* "House" branding styles derived from global settings (c.f. IHCard for LUX components) */
+        .HouseLEXBrand * .IHLUXDetailSummary, .HouseLEXBrand.IHCustomStyled 
+            {background-color: #{!Settings.BrandColour1__c} !important;}    
+            
+        tr.HouseLEXBrand * a, li.HouseLEXBrand * a, tr.HouseLEXBrand * p, li.HouseLEXBrand * p, 
+                .HouseLEXBrand * .IHLUXDetailSummary, .HouseLEXBrand * .IHLUXDetailName         
+            {color: #{!Settings.BrandColour1Text__c};}  
+                
+    </style>
+    
+    <apex:slds />
+    
+    <script type="text/javascript">
+    
+        // Show / Hide the list of available tools    
+        function toggleIHUtils() {
+            if ($IAIHj + '' == 'undefined') {
+                $IAIHj = jQuery.noConflict(true);
+            }
+        
+            if($IAIHj('#IHTopicUtils').is(":visible")) {
+                $IAIHj('#IHTopicUtils').hide(400);
+                $IAIHj('#IHShowHideUtils').attr("title", "{!GlobalLocalisations['TipTabTools']}");
+                $IAIHj('#IHUtils').removeClass('IHUtils');
+                $IAIHj('#IHShowHideUtils').addClass('IHUtilsClosed');
+                
+            } else {
+                $IAIHj('#IHTopicUtils').show(400);
+                $IAIHj('#IHShowHideUtils').attr("title", "{!GlobalLocalisations['TipHideTools']}");
+                $IAIHj('#IHUtils').addClass('IHUtils');
+                $IAIHj('#IHShowHideUtils').removeClass('IHUtilsClosed');
+            }
+        }
+
+
+        // Show / Hide the list of voting options
+        function toggleVotingArea() {
+            if ($IAIHj + '' == 'undefined') {
+                $IAIHj = jQuery.noConflict(true);
+            }
+        
+            if($IAIHj('#IHVoteUtils').hasClass("IHUtils")) {                
+                $IAIHj('#IHVoteUtils').removeClass('IHUtils');
+                $IAIHj('.VoteAreaLabel').addClass('IHVoteSetTextMin');
+                $IAIHj('#VotingArea').hide(400);
+                $IAIHj('#IHVoteUtils').addClass('IHUtilsClosed');
+                $IAIHj('.VoteSetQuestion').attr('title', '{!GlobalLocalisations["TipVote"]}');
+            } else {                
+                $IAIHj('#IHVoteUtils').addClass('IHUtils');
+                $IAIHj('.VoteAreaLabel').removeClass('IHVoteSetTextMin');
+                $IAIHj('#VotingArea').show(400);
+                $IAIHj('#IHVoteUtils').removeClass('IHUtilsClosed');
+                $IAIHj('.VoteSetQuestion').attr('title', '{!GlobalLocalisations['TipHideVotes']}');
+            }
+        }
+
+    </script>
+                                
+
+<!--   
+===============================================
+TOOLS CONTAINER
+===============================================
+ -->      
+    <!-- 
+    For this release, hide tools portion of utils altogether if we're not in a callout: the only tool we have is
+    the share icon and that is not relevant in a full topic view. Likewise, for this release, hide
+    if we're in console or LUX
+     -->
+
+    <div id="IHUtils" style="display: {!IF(PageName == Hlp.CalloutTemplate__r.PageURL__c && isIHLUX == false && isConsolePage == false, '', 'none')};float: left; margin-right: 5px;">
+
+        <!--
+        -----------------------------------------------
+        Show / hide tools icon
+        -----------------------------------------------
+         -->                                            
+        <div id="IHShowHideUtils" class="IHIconSmall IHIconHelpMenuIH1 IHUtilGroupControl IHUtilsClosed" style="height: 16px; width: 16px; margin: 0;" title="{!GlobalLocalisations['TipTabTools']}" onclick="javascript:toggleIHUtils();"></div>   
+          
+        <!--
+        -----------------------------------------------
+        Individual Tools
+        -----------------------------------------------
+         -->                                            
+
+        <div id="IHTopicUtils" class="" style="display: none; height: 16px; float: left; margin-right: 5px;">
+    
+            <!-- VIP link is always shown (unless in console or LUX where we cannot service it) -->
+            <a style="display: {!IF(IsConsolePage || isIHLUX, 'none', '')};" title="{!GlobalLocalisations['TipShareLink']}" href="javascript:void(0);" onclick="javascript:IHQAMenu.requestVIPLink(self, encodeURI('{!JSENCODE(HE.Identifier__c + D1 + HE.ElementType__c)}'));">
+                <div class="IHIconSmall IHIconShare" ></div>
+            </a>
+                 
+        </div>
+    
+    </div>
+
+<!--   
+===============================================
+VOTES CONTAINER
+===============================================
+ -->            
+
+    <div id="IHVoteUtils" class="{!IF(VoteOptions == null, '', 'IHUtils')}" style="float: left; margin-right: 5px;">
+
+        <!--
+        -----------------------------------------------
+        Vote Set
+        -----------------------------------------------
+         -->                                            
+    
+        <!-- Name and icon of Vote Set (invitation to vote): only if votes being tracked! -->
+        <apex:commandLink rendered="{!Hlp.HelpVoteSet__c != '' && VotingAllowed == true && VoteOptions == null}" title="{!GlobalLocalisations['TipVote']}" action="{!initialiseVoteOptions}">
+            <img class='IHBranded' 
+                src="{!Hlp.HelpVoteSet__r.ImageClass__c}"
+                alt="{!Hlp.HelpVoteSet__r.QuestionText__c}" 
+                style="float: left; height: {!IF(isIH1UX, 24, 16)}px; border: 1px solid transparent; {!IF(Hlp.HelpVoteSet__r.ImageClass__c == '' || Hlp.HelpVoteSet__r.ImageClass__c == null, 'display: none;', '')}"></img>
+
+            <div class="VoteAreaLabel IHVoteSetTextMin">{!Hlp.HelpVoteSet__r.QuestionText__c}</div>
+        </apex:commandLink> 
+        
+        <!-- If vote options have already been located, clicking invitation to vote again should toggle voting visibility -->
+        <a class="VoteSetQuestion" title="{!GlobalLocalisations['TipHideVotes']}" style="float: left; display: {!IF(VoteOptions == null, 'none', 'inline')};" href="javascript: void(0);" onclick="javascript:toggleVotingArea();">         
+            <img class='IHBranded' 
+                src="{!Hlp.HelpVoteSet__r.ImageClass__c}" 
+                alt="{!Hlp.HelpVoteSet__r.QuestionText__c}" 
+                style="float: left; height: {!IF(isIH1UX, 24, 16)}px; border: 1px solid transparent; {!IF(Hlp.HelpVoteSet__r.ImageClass__c == '' || Hlp.HelpVoteSet__r.ImageClass__c == null, 'display: none;', '')}"></img>
+            
+            <div class="VoteAreaLabel">{!Hlp.HelpVoteSet__r.QuestionText__c}</div>
+        </a>
+
+        <!--
+        -----------------------------------------------
+        Voting Options
+        -----------------------------------------------
+         -->                                            
+        <div id="VotingArea" style="float: left;">
+        
+            <!-- Voting options list -->
+            <div class="VoteOptionsList" style="float: left;">
+            
+                <apex:repeat var="VO" value="{!VoteOptions}">
+                    <div class="VoteOption {!IF(VO.Id == theVote,'LastVote', '')}" style="float: left; border: 1px solid transparent; margin: 0 {!IF(isIH1UX, 10, 2)}px 0 {!IF(isIH1UX, 10, 2)}px;">
+                        <apex:commandLink title="{!GlobalLocalisations['TipVote']} - {!VO.Name}" action="{!CastVote}">
+                            <apex:param name="theVote" value="{!VO.Id}" assignTo="{!theVote}" />
+                                               
+<!-- 
+                                <img class='IHBranded' 
+                                    src="{!VO.ImageClass__c}" 
+                                    alt="{!VO.OptionLabel__c}" 
+                                    style="float: left; height: {!IF(isIH1UX, 24, 16)}px; border: 1px solid transparent; {!IF(VO.ImageClass__c == '' || VO.ImageClass__c == null, 'display: none;', '')}"></img>
+                                
+                                <div class="VoteAreaLabel" >    
+                                    {!VO.OptionLabel__c}
+                                </div>
+ -->                                                
+
+
+<span class="{!IF(theVote == VO.Id, 'slds-badge slds-badge_lightest slds-theme_inverse', 'slds-badge slds-badge_lightest')}">
+    
+    <span class="slds-icon_container slds-m-right_xx-small" >
+
+        <img class="{! IF(VO.iahelp__ImageClass__c == '' || VO.iahelp__ImageClass__c == null, 'slds-hide', 'IHDetailVoteOption')}" 
+            
+            
+            src="{!VO.iahelp__ImageClass__c}" 
+            alt="{!VO.iahelp__OptionLabel__c}" />
+
+    </span>
+
+    {!VO.iahelp__OptionLabel__c}
+</span>                         
+
+
+
+                                
+                        </apex:commandLink>
+                    </div>
+                </apex:repeat>
+            </div>
+            
+            <!-- Details of how user voted -->
+            <div id="PreviousVote" class="VoteAreaLabel" style="font-style: italic; font-weight: normal; color: #333; margin-right: 3px;">
+                <apex:outputText value="{!Diags}" escape="true" />
+            </div>
+        </div>
+    
+    </div>
+
+</apex:component>

@@ -1,0 +1,78 @@
+<design:component label="Improved Help: Nudge">
+
+    <design:attribute name="RootNode" 
+                    label="Scope" 
+                    description="Id of the Topic that defines the tag pool whose members will be depicted via this component (unless fixed text is specified, below)." 
+                    default=""
+                    required="false" />
+                    
+    <design:attribute name="CurrentTName" 
+                    label="Fixed Title" 
+                    description="Enter title text to present a fixed message via this component instead of a member of a tag cloud." 
+                    default=""
+                    required="false" />
+                    
+    <design:attribute name="CurrentTSummary" 
+                    label="Fixed Sub-title" 
+                    description="Enter sub-title text to present a fixed message via this component instead of a member of a tag cloud." 
+                    default=""
+                    required="false" />
+                    
+    <design:attribute name="SelectedStyle" 
+                    label="Nudge Panel Type" 
+                    description="Controls the sizing of the nudge: Alert is full width, Toast is smaller." 
+                    datasource="Alert,Toast"
+                    default="Alert" 
+                    required="true" />	
+
+    <design:attribute name="SelectedPalette" 
+                    label="Palette" 
+                    description="Controls the visual styling of the Nudge area as a whole, based on recommended SLDS palettes." 
+                    datasource="Error,Info,Offline,Warning"
+                    default="Info" 
+                    required="false" />	
+
+    <design:attribute name="CalloutOption" 
+                    label="Callout Option" 
+                    description="For non-Fixed Nudges only, controls how to respond to item clicks." 
+                    datasource="Topic Selected Event Only,Topic Selected Event plus Topic view"
+                    default="Topic Selected Event plus Topic view"
+                    required="false" />	                    
+                    
+    <design:attribute name="YMax" 
+                    label="Vertical Range" 
+                    description="Depth in pixels (Y-axis extent) to which nudge bar should animate." 
+                    default="100"
+                    required="true" />
+    
+    <design:attribute name="AnimationSpeed" 
+                    label="Animation Speed" 
+                    description="Controls the speed at which the Nudge bar animates into position. Enter the number of milliseconds this is to take." 
+                    default="1000"
+                    required="true" />
+
+    <design:attribute name="AutoHideTime" 
+                    label="Auto-hide Time" 
+                    description="Hides the nudge automatically after the number of milliseconds entered. Zero (0) = do not hide automatically." 
+                    default="0"
+                    required="true" />
+
+    <design:attribute name="MaxNudges" 
+                    label="Max. Nudges" 
+                    description="Number of nudges to issue to a user within the Nudge Period before ceasing to display this component. Zero (0) = Keep nudging indefinitely." 
+                    default="0"
+                    required="false" />
+
+    <design:attribute name="NudgePeriod" 
+                    label="Nudge Period" 
+                    description="Where Max. Nudges is non-zero, the number of hours within which Nudges must have been issued to count towards the maximum to be displayed." 
+                    default="0"
+                    required="false" />
+
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component." 
+                    default="Nudge1"
+                    required="true" />
+    
+</design:component>

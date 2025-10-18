@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ViewInPortalLink__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Automatically generated hyperlink to view this item in the Improved Help SF1 Portal</description>
+    <externalId>false</externalId>
+    <formula>HYPERLINK(&quot;/apex/iahelp__IHToolsLUX?HTID=&quot;&amp;Id, &quot;View in Portal&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Automatically generated hyperlink to view this item in the Improved Help SF1 Portal</inlineHelpText>
+    <label>View in Portal</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPageWebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <availability>online</availability>
+    <description>This component has been deprecated. Please contact Improved Apps for more information.</description>
+    <displayType>link</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Show Improved Help</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>{!REQUIRESCRIPT(&apos;/resource/iahelp__IHResources/js/jsConsole.js&apos;)}
+// This component has been deprecated. Please contact Improved Apps for more information.</url>
+</CustomPageWebLink>

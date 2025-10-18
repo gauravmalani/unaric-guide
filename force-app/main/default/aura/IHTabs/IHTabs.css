@@ -1,0 +1,13 @@
+.THIS .IHCompactTabSet 			{padding: 0 0 0.5rem 0;}
+ 
+/* Tab shift left / right tools */
+.THIS .tabShiftTools			{cursor: pointer; position: absolute; z-index: 100; right: 0px; font-size: 1.0rem; color: #dddddd; background: #ffffff; border-radius: 0.3rem;}
+.THIS .tabShiftTools span		{padding: 0.3rem;}
+.THIS .tabShiftTools span:hover	{color: grey;}
+
+.THIS li.Utility				{border-radius: 0.5rem; margin-right: 0.3rem; color: #ffffff;}
+
+.THIS .IHTabsInline				{display: inline !important;}
+
+.THIS .TabSelectorUtility		{position: fixed; bottom: 0px;}
+.THIS .TabPanelUtility			{position: fixed; bottom: 40px;}

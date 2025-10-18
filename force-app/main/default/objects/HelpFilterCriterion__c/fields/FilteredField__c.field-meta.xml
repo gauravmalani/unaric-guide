@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FilteredField__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The API name of the Field being filtered</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The API name of the Field being filtered</inlineHelpText>
+    <label>Filtered Field</label>
+    <length>75</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

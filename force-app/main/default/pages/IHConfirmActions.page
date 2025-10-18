@@ -1,0 +1,284 @@
+<!--
+============================================================================================== 
+PAGE TO VIEW SUMMARIES OF RECENT ACTIONS (EG HELP ENABLING) AND CONFIRM OR CANCEL THEM.
+REQUIRES ONE OF SEVERAL OPTIONS TO BE SPECIFIED IN THE "Opts" SWITCH PLUS RELATED PARAMETERS, I.E:
+
+    [SF base URL]/Apex/IHConfirmActions?Opts=[confirmation option]&Params=[Parameter string suited to option]
+
+AVAILABLE OPTIONS VALUES ARE:
+    1 = Confirm results of help enabling activity
+        In which case Params should be:
+            [Help Enabled Page URL][D2]
+            ["D1" delimited string of elements to be helped][D2]
+            ["D1" delimited string of types of the above][D2]
+            ["D1" delimited string of elements to be un-helped]
+            ["D1" delimited string of types of the above][D2]
+        ...where...
+            D1 = ControllerSettings.D1 (a non-printable character defined in the Settings Controller)
+            D2 = ControllerSettings.D2 (a non-printable character defined in the Settings Controller)
+    
+    2 = Confirm results of guide enabling activity
+        In which case Params should be:
+            For each amended Guide Step:
+            RL Entry Id[D1]Topic Name[D1]Topic Summary[D1]Step Order[D1]Element Id[D1]Element Type[D1]Flag[D2]
+        ...where...
+            "Flag" is a value indicating the type of record amendment undertaken:
+                A = Added
+                E = Edited
+                D = To be deleted
+                
+Martin Little for Improved Apps
+May 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="True" showHeader="False" sidebar="False" 
+            title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}"
+            controller="ControllerConfirmActions"
+            action="{!showActions}">
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />     
+        
+        <apex:stylesheet value="{!BrandCSS}" /> 
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}" />
+        
+        <script type='text/javascript'>
+            
+            function initialise() {         
+                // Ensure tools buttons adopt IH look and feel for tasks in progress
+                IHEditHelp.initialiseButtons();                
+                return;         
+            }
+            
+            
+            // Respond to any inter-window messages
+            window.onmessage = function (e) {
+                
+                // v1.31: only respond to events from our own origin
+                if (e.origin == document.location.origin) {
+                
+                    // Message = help topic has been selected
+                    if (e.data.toString().substring(0,9) == 'Opt7HTID=') {
+                        // Retrieve the message body
+                        var msg = e.data.toString().substring(9);
+    
+                        // Split this into its 2 parts: HTID [delim] Referring Control
+                        // (See also search results page code)
+                        var mParms = msg.split('{!D1}');
+    
+                        // Set control (selected by class, as set below) to HTID value                  
+                        $IAIHj("." + mParms[1]).prop("value", mParms[0]);
+                    }
+                }
+            }
+        </script>       
+        
+        
+        <style>
+            .IHRowAdded     {background-color: #c6efce;}
+            .IHRowEdited    {background-color: #ffeb9c;}
+            .IHRowDeleted   {background-color: #ffc7ce;}
+        </style>
+                   
+    </head>
+    
+
+    <body class='Dialogue IHConfirm' onload='javascript:initialise();'>     
+        
+        <apex:include pageName="IHHook"/>
+<!--  
+===============================================
+HEADER / TITLE AREA
+===============================================
+ -->            
+        
+        <div class='IHDialogue IHPanel'>
+            <apex:form >                
+                <div class='IHPanelHeader'>
+                    <div class='IH-H3'>
+                        <apex:outputText value="{!DialogueLocalisations['TitleDialogueTitle']}" />
+                    </div>              
+                </div>
+                
+                
+                <div class="IHPanelBody" style="height: 280px; padding: 0; margin: 0; overflow-y: auto;" >
+
+<!--  
+===============================================
+OPTION 1 / CONFIRM HELP ENABLING
+===============================================
+ -->            
+                    <apex:pageBlock rendered="{!IF(Opts == '1', true, false)}">
+
+                        <div class="IHSearchResultsList">
+                            <p>{!GlobalLocalisations['TitleDialogueSubtitleLayout']} - {!HPLName}{!IF(HPLIsNew == true, ' (new)', '')}</p>
+                            <hr/>
+                            
+                            <apex:dataTable var="HE" value="{!elemsC}" rowClasses="odd, even"> 
+                                <apex:variable var="SafeSpace" value=" "/>
+                                <apex:variable var="SafeBlank" value=""/>
+                                                    
+                                <apex:column style="width: 50%;">
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">                                
+                                            {!DialogueLocalisations['TitleSubtitleCreatingElements']}
+                                        </div>
+                                    </apex:facet>
+                                    
+                                <apex:inputCheckbox title="{!DialogueLocalisations['TipButtonCheckToHelp']} {!HE.Summary} {!HE.Name}" value="{!HE.Link}" />                             
+                                <div title="{!DialogueLocalisations['TipElementType']} = {!HE.Summary}" style="margin-left: 10px; float: left;" class="IHIcon16 IHIcon{!SUBSTITUTE(HE.Summary, ' ', '')}"></div>
+                                    {!HE.Name}
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">                                   
+                                            {!DialogueLocalisations['ColumnLabelUseExistingTopic']}
+                                        </div>
+                                    </apex:facet>
+                                                                    
+                                    <apex:inputText styleClass="{!SUBSTITUTE(HE.Name, SafeSpace, SafeBlank)}" title="{!DialogueLocalisations['TipExistingTopicId']}" value="{!HE.Id}" />                             
+                                    <div onclick='javascript:IHQAMenu.DoDialogue(IHSettings[SFURL] + "/apex/iahelp__IHSearchResults?Opts=7&Referrer={!SUBSTITUTE(HE.Name, SafeSpace, SafeBlank)}", 0, 0, 800, 400, "_HelpedElements");' 
+                                        style="margin-left: 10px; float: left; cursor: pointer;" 
+                                        title="{!DialogueLocalisations['TipButtonSearchForTopic']}" 
+                                        class="IHIcon16 IHIconSearchHelp"></div>                                                                
+                                </apex:column>
+                            </apex:dataTable>
+                            <hr/>
+    
+    
+                            <apex:dataTable var="HE" value="{!elemsD}" rowClasses="odd, even">                      
+                                <!-- NB: For deletes, summary is in the form Allow Delete Flag [D2] HTID [D1] Element Type -->
+                                <apex:variable var="SumSplit1" value="{!FIND(D1, HE.Summary)}"/>
+                                <apex:variable var="SumSplit2" value="{!FIND(D2, HE.Summary)}"/>
+    
+                                <!-- NB: For deletes, name is in the form Element Id [D1] Element descriptive text -->
+                                <apex:variable var="NameSplit1" value="{!FIND(D1, HE.Name)}"/>
+    
+                                <apex:column style="width: 50%;">
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">                                
+                                            {!DialogueLocalisations['TitleSubtitleDeletingElements']}
+                                        </div>
+                                    </apex:facet>
+    
+                                    <apex:inputCheckbox title="{!DialogueLocalisations['TipButtonCheckToUnhelp']} {!MID(HE.Summary, SumSplit1 + 1, LEN(HE.Summary) - SumSplit1)} {!MID(HE.Name, NameSplit1 + 1, LEN(HE.Name) - NameSplit1)}" value="{!HE.Link}" />                                
+                                    <div title="{!DialogueLocalisations['TipElementType']} = {!MID(HE.Summary, SumSplit1 + 1, LEN(HE.Summary) - SumSplit1)}" style="margin-left: 10px; float: left;" class="IHIcon16 IHIcon{!SUBSTITUTE(MID(HE.Summary, SumSplit1 + 1, LEN(HE.Summary) - SumSplit1), ' ', '')}"></div>                             
+                                    {!MID(HE.Name, NameSplit1 + 1, LEN(HE.Name) - NameSplit1)}
+                                </apex:column>
+
+                                <apex:column >           
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">                                
+                                            {!DialogueLocalisations['ColumnLabelDeleteAssociatedTopic']}
+                                        </div>
+                                    </apex:facet>                   
+     
+                                    <div style="display: {!IF(LEFT(HE.Summary, SumSplit2 - 1) == '1' , 'none', 'block')};">
+                                        <apex:inputCheckbox title="{!DialogueLocalisations['TipButtonCheckToDeleteTopic']}" value="{!HE.Id}" />
+                                    </div> 
+                                </apex:column>
+                            </apex:dataTable>
+                            <hr/>                       
+                            
+                        </div>
+                    </apex:pageBlock>
+                    
+ <!--  
+===============================================
+OPTION 2 / CONFIRM GUIDE ENABLING
+===============================================
+ -->            
+                    <apex:pageBlock rendered="{!IF(Opts == '2', true, false)}">
+
+                        <div class="IHSearchResultsList">
+    
+                            <p>{!DialogueLocalisations['TitleDialogueSubtitleGuide']} - {!HPLName}</p>
+                            <hr/>
+                            
+                            <apex:dataTable var="Step" value="{!elemsC}" rowClasses="odd, even"> 
+                                <apex:column style="width: 50%;">
+
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">
+                                            {!DialogueLocalisations['TitleSubtitleEditSteps']}
+                                        </div>
+                                    </apex:facet>
+                                    
+                                    <apex:inputCheckbox title="{!DialogueLocalisations['TipButtonCheckToEdit']} {!Step.Name}" value="{!Step.Link}" />                             
+                                    <div title="{!SUBSTITUTE(Step.Summary, D1, ': ')}" style="margin-left: 10px; float: left;" class="IHIcon16 IHIconGuideEnable"></div>                             
+                                    
+                                    <span class="{!IF(RIGHT(Step.Summary, 2) == D1 + 'A', 'IHRowAdded', 'IHRowEdited')}">
+                                        {!Step.Name}
+                                    </span>
+
+                                </apex:column>
+                            </apex:dataTable>
+                            <hr/>
+                            
+                            
+                            <apex:dataTable var="Step" value="{!elemsD}" rowClasses="odd, even"> 
+                                <apex:column style="width: 50%;">
+
+                                    <apex:facet name="header">
+                                        <div class="IHListColumnHeading">
+                                            {!DialogueLocalisations['TitleSubtitleDeleteSteps']}
+                                        </div>
+                                    </apex:facet>
+                                    
+                                    <apex:inputCheckbox title="{!DialogueLocalisations['TipButtonCheckToDelete']} {!Step.Name}" value="{!Step.Link}" />                             
+                                    <div title="{!SUBSTITUTE(Step.Summary, D1, ': ')}" style="margin-left: 10px; float: left;" class="IHIcon16 IHIconDelete"></div>                             
+                                    
+                                    <span class="IHRowDeleted">
+                                        {!Step.Name}
+                                    </span>
+
+                                </apex:column>
+                            </apex:dataTable>
+                            <hr/>
+                            
+                        </div>
+                    </apex:pageBlock>
+                                                        
+<!--  
+===============================================
+FOOTER / DIAGS
+===============================================
+ -->    
+                </div>
+
+                <div class="IHPanelFooter" style="height: 50px; padding: 0;">
+                    <table><tr>
+                        <td>
+                            <div style="display: {!IF(optionalFeaturesSave == false, 'inline', 'none')};">
+                                <div style="margin-left: 10px; float: left;" class='IHIcon32 IHIconSaveUnavailable'></div>
+                            </div>
+                            
+                            <div style="margin-left: 10px; display: {!IF(optionalFeaturesSave == true, 'inline', 'none')};">
+                                <apex:commandButton action="{!saveChanges}" 
+                                                    styleclass="IHIcon24 IHIdle IHIconSave" 
+                                                    image="{!URLFOR($Resource.IHResources, '/img/IconSave.png')}"
+                                                    title="{!DialogueLocalisations['TipButtonSave']}" 
+                                                    onclick="javascript:IHEditHelp.showClicked(this);"
+                                                    oncomplete="IHEditHelp.confirmComplete(this, '{!JSENCODE(Diags)}');" />
+                            </div>
+                        </td>
+                        
+                        <td>
+                            <span class='IHError'>
+                                {!Diags}
+                            </span>
+                        </td>
+                    </tr></table>
+                </div> 
+                
+            </apex:form>
+        </div>
+    </body>
+</apex:page>

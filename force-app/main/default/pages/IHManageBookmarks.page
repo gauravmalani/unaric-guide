@@ -1,0 +1,95 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO SHOW THE CURRENT USER'S LIST OF BOOKMARKS.
+AS BOOKMARKS ARE NOT RELATED TO CONTEXT, NO QUERY STRING IS REQUIRED FOR THIS PAGE.
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleDialogueTitleBookmarks']}"  
+                Controller="ControllerHelpContent"
+                action="{!initialiseForBookmarks}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleDialogueTitleBookmarks']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+            
+        <apex:includeScript value="/support/console/28.0/integration.js"/>        
+        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}" />
+        
+        <script type="text/javascript">
+
+            function initialise() {                         
+                return;         
+            }
+        
+        </script>
+    </head>    
+
+    <body class='Dialogue' onload='javascript:initialise();'>
+
+        <apex:include pageName="IHHook"/>
+
+        <div id='BookmarksDialogue' class='IHDialogue IHPanel' >
+            <apex:form >
+
+                <div class='IHPanelHeader'>
+                    <div class='IH-H3'>
+                        {!GlobalLocalisations['TitleDialogueTitleBookmarks']}
+                    </div>
+                </div>
+                
+                <div class='IHPanelBody'>
+                
+                    <div id='BookmarkList'>
+                        <apex:dataTable value="{!Bookmarks}" var="Bmk" rowClasses="odd,even" style="max-height:200px; overflow-y: auto;">
+                            <apex:column >
+                                <!--
+                                NB: JS function abstracts target of search result link:
+                                Could be a browser or console tab depending on context...
+                                
+                                ALSO: we need to deal with communities situations: the required URL will 
+                                NOT be the same as internally - so we cannot just take the stored bookmark URL.
+                                
+                                1.23 - replacing simple link of: {!JSENCODE(Bmk.ItemURL)}
+                                Need to "hard code" page address (so SF can work out the correct detail in the context of community or otherwise)
+                                BUT choice of page needs to respond to bookmark: most are topic on portal, except Guides...
+                                 -->        
+
+                                 <a href="javascript:void(0)" 
+                                 
+                                    onclick="javascript:IHQAMenu.DoTab('{!IF(CONTAINS(Bmk.ItemURL, 'IHTools'), 
+                                        PortalPage + '?HTID=' + Bmk.HTID, 
+                                        $Page.IHWrapper + MID(Bmk.ItemURL, FIND('?', Bmk.ItemURL), LEN(Bmk.ItemURL) - FIND('?', Bmk.ItemURL)))}', 
+                                        '_HelpTopic', '{!JSENCODE(Bmk.Name)}');" 
+                                        
+                                    title="{!JSENCODE(Bmk.Summary)}">
+
+                                    <p>{!Bmk.Name}</p>
+                                 </a>
+
+
+                                                
+                            </apex:column>
+                        </apex:dataTable>
+                    </div>
+
+                </div>
+                
+                <div class="IHPanelFooter" style="height: 16px;">
+                    <apex:outputText value="{!Diags}" escape="true" />                
+                </div>              
+                                    
+            </apex:form>
+                        
+        </div>
+    </body>
+
+</apex:page>

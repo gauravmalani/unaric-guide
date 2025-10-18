@@ -1,0 +1,33 @@
+<design:component label="Improved Help: Tree Selector">
+
+	<design:attribute name="Height" 
+	                label="Component Height" 
+	                description="Display height for this component (pixels)." 
+                    default="100" 
+                    required="true" />	
+
+    <design:attribute name="CSVTreeIDs" 
+                    label="Available Tree IDs" 
+                    description="Comma separated list of the identifiers (i.e., IDs of 'root' records) of Trees to make available via this control."
+                    default="" 
+                    required="true" />
+
+    <design:attribute name="CSVNodeProviders" 
+                    label="Tree Node Providers" 
+                    description="Comma separated list of tree node provider classes: provide blanks separated by commas to use default providers." 
+                    default=""
+                    required="false" />
+    
+    <design:attribute name="CSVTreeNames" 
+                    label="Tree Labels" 
+                    description="Comma separated list of the names to use to refer to each of the specified Trees." 
+                    default=""
+                    required="true" />
+    
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+</design:component>

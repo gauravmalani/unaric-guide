@@ -1,0 +1,59 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO BE USED AS A STRAIGHT REDIRECTION PAGE (REFRESHING TO A NEW URL. 
+THIS MODE OF USE REQUIRES THE ADDRESS TO DIRECT TO (IHContext), IE:
+
+    [SF base URL]/Apex/IHWrapper?IHContext=[SF page URL]
+
+CAN ALSO BE USED TO LAUNCH A GUIDE WINDOW. THIS MODE REQUIRES GUIDE WINDOW URL, IE:
+
+    [SF base URL]/Apex/IHWrapper?GoToRL=[Guide URL]
+ 
+Martin Little for Improved Apps
+July 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ 
+ <apex:page standardStylesheets="false" showHeader="false" sidebar="false" 
+                title="{!BrandingLocalisations['ProductName']}"
+                controller="ControllerHelpContent"
+                action="{!initialiseLocalisations}">
+
+    <head>
+    
+        <script type="text/javascript">
+            function initialise() {
+            
+                // Try context / straight redirect first
+                if ('{!JSENCODE(IHContext)}' != '') {
+                    document.location = '{!JSENCODE(IHContext)}';
+                    return;
+                }
+                
+                
+                // Try Guide URL next
+                if ('{!JSENCODE(GoToRL)}' != '') {
+                    
+                    // Note window sizing information for Guides (set by RL Viewer in Guides mode
+                    // with co-ordinates variables and retrieval defined in jsSettings
+                    // which is included via IHHook
+                    getGuideCoords();
+                                        
+                    IHQAMenu.DoDialogue('{!JSENCODE(GoToRL)}', guideX, guideY, guideW, guideH, '_Guide');
+                    document.location = '{!JSENCODE(TRootLink)}/apex/iahelp__IHMessage?Diags={!GlobalLocalisations['MessageGuideInNewWindow']}';
+                    return;
+                }
+
+            }
+                    
+        </script>
+    </head>
+
+
+    <body style="margin: 0px; padding: 0px;" onload="javascript:initialise();">
+        <apex:include pageName="IHHook"/>           
+    </body>
+
+</apex:page>

@@ -1,0 +1,494 @@
+<!--
+============================================================================================== 
+PAGE FOR SHOWING HELP SUMMARY TEXT AS A POPUP TIP WITH ASSOCIATED READING LIST(S). 
+
+REQUIRES EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+In addition:
+    elemType can be used to control nubbin position
+    IHLUX / IH1UX can be used to force user experience (which otherwise defaults per global settings)   
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleSubtitleReadingLists']}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+    
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TitleSubtitleReadingLists']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />  
+           
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <style>
+            
+            /* Classes particular to mark up on this page */
+            div.ListItem                {clear: right;}
+            .DoesNotIncludeCurrentTopic {display: none;}
+            div#CalloutReadingList      {height: {!(Hlp.CalloutHeight__c - 25)}px;}
+            div.CalloutBody             {height: {!(Hlp.CalloutHeight__c - 80)}px; }            
+
+                div.GalleryHeader       {height: 15px; padding: 7px 0 0 0;}
+                div.GalleryBody         {height: {!(Hlp.CalloutHeight__c - 100)}px; width: 100%; font-size: 0.9em; padding: 0px;} 
+                    
+                    div.ReadingListGallery              {margin: 0px; padding: 0px; overflow: hidden;}
+                        div.ReadingListFilmstrip        {margin: 0px;} 
+                            div.GalleryItem                 {margin: 5px; padding: 5px; border-radius: 10px;} 
+
+            div.CalloutBodyLUX          {height: {!(Hlp.CalloutHeight__c - 95)}px; box-shadow: none !important; background-color: #ffffff;}   
+            div.GalleryBodyLUX          {height: {!(Hlp.CalloutHeight__c - 115)}px; width: 100%; font-size: 0.9em; padding: 0px;} 
+            .navButtonLUX               {cursor: pointer;}         
+            .Summary                    {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}            
+            .IHWide {width: 100% !important;}                        
+        </style>
+
+        <apex:includeScript value="/support/console/28.0/integration.js"/>              
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>       
+        
+        <apex:slds rendered="{!isIHLUX==true}" />
+    </head>
+
+    
+    <body class="Page {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}"> 
+        <apex:include pageName="IHHook"/>
+        <apex:form >
+        
+<!--   
+===============================================
+CLASSIC TREATMENT
+===============================================
+ -->      
+            <apex:pageblock rendered="{!!isIHLUX}">
+                <div id='CalloutReadingList' class="Callout Bubble {!TCSSClass}" >
+                    <div class="CalloutContent">
+                
+<!--   
+...............................................
+HEADER / SUMMARY TEXT
+...............................................
+ -->
+                        <div class="CalloutHeader">
+                            <div class="IH-H4">
+                                <div style="float: left;">
+                                    <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                                </div>
+    
+                                <!-- Share, Like and other tools -->
+                                <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                                 
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </div>                                
+                        </div>
+
+<!--   
+...............................................
+READING LIST SELECTOR
+...............................................
+ -->
+                        <div class="CalloutBody">
+                            <div class="GalleryRowNav">
+                                <div id="next" class="nav navButton manual IHHidden" title="{!DialogueLocalisations['TipRLSelectorButton']}">
+                                    <div class="arrowDown"></div>
+                                </div>
+                            </div>
+     
+                            <apex:variable var="rowNum" value="{!1}" />                            
+                                                    
+                            <apex:repeat value="{!ReadingLists}" var="rec">
+                            
+                                <div class="ListItem {!rec.ListCSSClass} {!IF(rec.IncludesCurrentTopic==true, 'IncludesCurrentTopic', 'DoesNotIncludeCurrentTopic')} IHHidden">                            
+                                    
+                                    <div class="GalleryHeader IH-H4 IHHidden">                                    
+                                        {!DialogueLocalisations['AdviceLabelReadingListCounter1']} {!FLOOR(rowNum)} ({!DialogueLocalisations['AdviceLabelReadingListCounter2']} {!ReadingListsImIn}) - {!rec.ListName}:&nbsp;{!rec.ListSummary}
+                                    </div>
+                     
+<!--   
+...............................................
+GALLERY
+...............................................
+ -->
+                                    <div class="GalleryBody" style=''>
+                                       
+                                        <div class="ReadingListGallery" style="height: 100%; width: 100%; overflow-x: auto; overflow-y: hidden;">
+                                            <div class="ReadingListFilmstrip" style="height: 100%;">
+                                            
+                                                <apex:Repeat value="{!rec.Entries}" var="RLE">          
+                                                    <div class="GalleryItem{!IF(RLE.EntryRecord.HelpTopic__r.Id == THelpId, ' Active' , '')}" style="height: 86%; width: auto; float: left; ">
+                                                        
+                                                        <!-- NavSlideTemplate -->
+                                                        <div class="GalleryMediaContainer" style="height: 80%;">
+                                                        
+                                                            <!-- Selected media = image -->
+                                                            <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.CalloutMediaChoice__c == 'Image'}">
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ImageURL__c == '' || RLE.EntryRecord.HelpTopic__r.ImageURL__c == null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <img src="{!URLFOR($Resource.IHResources, '/img/ImgMediaMissing.png')}" style="height: 100%;" />
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                    
+                                                                <!-- Click to see image full size link -->
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ImageURL__c != '' && RLE.EntryRecord.HelpTopic__r.ImageURL__c != null}">
+                                                                    <a target="_Blank" title="{!GlobalLocalisations['TipViewImageLink']}" href="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.ImageURL__c)}">
+                                                                        <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                            <img src="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.ImageURL__c)}" style="height: 100%;" />
+                                                                        </div>
+                                                                    </a>                                                    
+                                                                </apex:outputPanel>
+                                                                
+                                                            </apex:outputPanel>
+                                                            
+                                                            <!-- Selected media = video -->
+                                                            <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.CalloutMediaChoice__c == 'Video'}">
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.VideoURL__c == '' || RLE.EntryRecord.HelpTopic__r.VideoURL__c == null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <img src="{!URLFOR($Resource.IHResources, '/img/ImgMediaMissing.png')}" style="height: 100%;" />
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.VideoURL__c != '' && RLE.EntryRecord.HelpTopic__r.VideoURL__c != null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <iframe src="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.VideoURL__c)}" style="height: 100%;" frameborder="0" ></iframe>                               
+                                                                    </div>                                                  
+                                                                </apex:outputPanel>
+                                    
+                                                            </apex:outputPanel>
+                                                        
+                                                            <!-- Link / Topic text below media -->
+                                                            <div class="GalleryLink" style="height: 20%; max-width: 230px; margin: auto; text-align: center; padding-top: 5px; overflow: hidden;" >
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == true || (isAuthor || isAdministrator)}">
+                                                                
+                                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == false}">
+                                                                        <apex:outputPanel rendered="{!isConsolePage == true}">
+                                                                            <a title="{!GlobalLocalisations['TipReadMoreLinkAuthors']}" 
+                                                                               href="#"
+                                                                               styleClass="Authoring" 
+                                                                               onclick="javascript:IHQAMenu.openPrimaryTab({!Q + JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id + Q + ', ' + Q + JSENCODE(RLE.EntryRecord.HelpTopic__r.Name) + Q});">
+                                    
+                                                                                [<apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />]
+                                                                            </a>
+                                                                        </apex:outputPanel>
+                                    
+                                                                        <apex:outputLink rendered="{!isConsolePage == false}" 
+                                                                                        title="{!GlobalLocalisations['TipReadMoreLinkAuthors']}"
+                                                                                        styleClass="Authoring"
+                                                                                        value="{!JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id}" 
+                                                                                        target="_Blank" >
+                                                                            [<apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />]
+                                                                        </apex:outputLink>
+                                                                    </apex:outputPanel>
+                                    
+                                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == true}">
+                                                                        <apex:outputPanel rendered="{!isConsolePage == true}">
+                                                                            <a title="{!GlobalLocalisations['TipGoto']} '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}'"
+                                                                               href="#" 
+                                                                               onclick="javascript:IHQAMenu.openPrimaryTab({!Q + JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id + Q + ', ' + Q + JSENCODE(RLE.EntryRecord.HelpTopic__r.Name) + Q});">
+                                                                            
+                                                                                <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                            </a>
+                                                                        </apex:outputPanel>
+                                    
+                                                                        <apex:outputLink rendered="{!isConsolePage == false}"
+                                                                                        title="{!GlobalLocalisations['TipGoto']} '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}'" 
+                                                                                        value="{!JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id}" 
+                                                                                        target="_Blank" >
+                                                                            <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                        </apex:outputLink>
+                                                                    </apex:outputPanel>                                                                
+                                                                    
+                                                                </apex:outputPanel>
+                                    
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == false && !(isAuthor || isAdministrator)}">
+                                                                    <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                </apex:outputPanel>
+                                                                
+                                                            </div>  <!-- GalleryLink -->
+                                                        
+                                                        </div>  <!-- GalleryMediaContainer -->                  
+                                                    </div>  <!-- GalleryItem -->
+                                                                
+                                                </apex:Repeat>
+                                            
+                                            </div>
+                                        </div>                                   
+                                    </div>                                                       
+                                
+                                    <apex:variable var="rowNum" value="{!rowNum + IF(rec.IncludesCurrentTopic==true, 1, 0)}"/>
+                                
+                                </div>
+                            
+                            </apex:repeat>  
+                    
+                        </div>
+                        
+                    </div>  <!-- End CalloutContent DIV -->       
+                </div>  <!-- End CalloutReadingList DIV -->        
+            </apex:pageblock>   <!-- End Classic page block -->
+            
+<!--   
+===============================================
+LIGHTNING TREATMENT
+===============================================
+ -->  
+            <apex:pageblock rendered="{!isIHLUX}">
+                <div style="padding: 1rem;" class='{!TCSSClass}'>
+                    <section style="height: 100%;" class="{!CustomStyle} {!LUXNubbinClass} slds-popover IHWide IHCustomStyled">
+                
+<!--   
+...............................................
+HEADER / SUMMARY TEXT
+...............................................
+ -->
+                        <header class="slds-popover__header">
+                            <h2 class="slds-text-heading_small Summary IHLUXDetailSummary">
+                                <apex:outputText escape="true" value="{!TSummary}" />
+                            </h2>
+                        </header>
+
+                        <!-- Share, Like and other tools -->
+                        <div style="padding: 0.7em 0 1.5em 0.7em; background-color: #ffffff;">
+                            <c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" isIHLUX="{!isIHLUX}" /> 
+                        </div>
+
+<!--   
+...............................................
+READING LIST SELECTOR
+...............................................
+ -->
+                        <div class="CalloutBodyLUX">
+                            <div class="GalleryRowNav">
+                                <div id="next" class="nav navButtonLUX manual" title="{!DialogueLocalisations['TipRLSelectorButton']}">
+                                    <div class="arrowDown"></div>
+                                </div>
+                            </div>
+     
+                            <apex:variable var="rowNum" value="{!1}" />                            
+                                                    
+                            <apex:repeat value="{!ReadingLists}" var="rec">
+                            
+                                <div class="ListItem {!rec.ListCSSClass} {!IF(rec.IncludesCurrentTopic==true, 'IncludesCurrentTopic', 'DoesNotIncludeCurrentTopic')} IHHidden">                            
+                                    
+                                    <div class="Summary">                                    
+                                        {!DialogueLocalisations['AdviceLabelReadingListCounter1']} {!FLOOR(rowNum)} ({!DialogueLocalisations['AdviceLabelReadingListCounter2']} {!ReadingListsImIn}) - {!rec.ListName}:&nbsp;{!rec.ListSummary}
+                                    </div>
+                     
+<!--   
+...............................................
+GALLERY
+...............................................
+ -->
+                                    <div class="GalleryBodyLUX" style=''>
+                                   
+                                        <div class="ReadingListGallery" style="height: 100%; width: 100%; overflow-x: auto; overflow-y: hidden;">
+                                            <div class="ReadingListFilmstrip" style="height: 100%;">
+                                            
+                                                <apex:Repeat value="{!rec.Entries}" var="RLE">          
+                                                    <div class="GalleryItem{!IF(RLE.EntryRecord.HelpTopic__r.Id == THelpId, ' Active' , '')}" style="height: 86%; width: auto; float: left; ">
+                                                        
+                                                        <!-- NavSlideTemplate -->
+                                                        <div class="GalleryMediaContainer" style="height: 80%;">
+                                                        
+                                                            <!-- Selected media = image -->
+                                                            <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.CalloutMediaChoice__c == 'Image'}">
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ImageURL__c == '' || RLE.EntryRecord.HelpTopic__r.ImageURL__c == null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <img src="{!URLFOR($Resource.IHResources, '/img/ImgMediaMissing.png')}" style="height: 100%;" />
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                    
+                                                                <!-- Click to see image full size link -->
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ImageURL__c != '' && RLE.EntryRecord.HelpTopic__r.ImageURL__c != null}">
+                                                                    <a target="_Blank" title="{!GlobalLocalisations['TipViewImageLink']}" href="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.ImageURL__c)}">
+                                                                        <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                            <img src="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.ImageURL__c)}" style="height: 100%;" />
+                                                                        </div>
+                                                                    </a>                                                    
+                                                                </apex:outputPanel>
+                                                                
+                                                            </apex:outputPanel>
+                                                            
+                                                            <!-- Selected media = video -->
+                                                            <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.CalloutMediaChoice__c == 'Video'}">
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.VideoURL__c == '' || RLE.EntryRecord.HelpTopic__r.VideoURL__c == null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <img src="{!URLFOR($Resource.IHResources, '/img/ImgMediaMissing.png')}" style="height: 100%;" />
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.VideoURL__c != '' && RLE.EntryRecord.HelpTopic__r.VideoURL__c != null}">
+                                                                    <div class="GalleryMediaPayload" style="height: 100%; margin: auto;">
+                                                                        <iframe src="{!JSENCODE(RLE.EntryRecord.HelpTopic__r.VideoURL__c)}" style="height: 100%;" frameborder="0" ></iframe>                               
+                                                                    </div>                                                  
+                                                                </apex:outputPanel>
+                                    
+                                                            </apex:outputPanel>
+                                                        
+                                                            <!-- Link / Topic text below media -->
+                                                            <div class="GalleryLink" style="height: 20%; max-width: 230px; margin: auto; text-align: center; padding-top: 5px; overflow: hidden;" >
+                                                                
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == true || (isAuthor || isAdministrator)}">
+                                                                
+                                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == false}">
+                                                                        <apex:outputPanel rendered="{!isConsolePage == true}">
+                                                                            <a title="{!GlobalLocalisations['TipReadMoreLinkAuthors']}" 
+                                                                               href="#"
+                                                                               styleClass="Authoring" 
+                                                                               onclick="javascript:IHQAMenu.openPrimaryTab({!Q + JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id + Q + ', ' + Q + JSENCODE(RLE.EntryRecord.HelpTopic__r.Name) + Q});">
+                                    
+                                                                                [<apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />]
+                                                                            </a>
+                                                                        </apex:outputPanel>
+                                    
+                                                                        <apex:outputLink rendered="{!isConsolePage == false}" 
+                                                                                        title="{!GlobalLocalisations['TipReadMoreLinkAuthors']}"
+                                                                                        styleClass="Authoring"
+                                                                                        value="{!JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id}" 
+                                                                                        target="_Blank" >
+                                                                            [<apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />]
+                                                                        </apex:outputLink>
+                                                                    </apex:outputPanel>
+                                    
+                                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == true}">
+                                                                        <apex:outputPanel rendered="{!isConsolePage == true}">
+                                                                            <a title="{!GlobalLocalisations['TipGoto']} '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}'"
+                                                                               href="#" 
+                                                                               onclick="javascript:IHQAMenu.openPrimaryTab({!Q + JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id + Q + ', ' + Q + JSENCODE(RLE.EntryRecord.HelpTopic__r.Name) + Q});">
+                                                                            
+                                                                                <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                            </a>
+                                                                        </apex:outputPanel>
+                                    
+                                                                        <apex:outputLink rendered="{!isConsolePage == false}"
+                                                                                        title="{!GlobalLocalisations['TipGoto']} '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}'" 
+                                                                                        value="{!JSENCODE(TRootLink) + '/apex/iahelp__' + JSENCODE(PortalPage) + '?HTID=' + RLE.EntryRecord.HelpTopic__r.Id}" 
+                                                                                        target="_Blank" >
+                                                                            <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                        </apex:outputLink>
+                                                                    </apex:outputPanel>                                                                
+                                                                    
+                                                                </apex:outputPanel>
+                                    
+                                                                <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.ShowReadMoreLink__c == false && !(isAuthor || isAdministrator)}">
+                                                                    <apex:outputText escape="true" value="{!RLE.EntryRecord.HelpTopic__r.Name}" />
+                                                                </apex:outputPanel>
+                                                                
+                                                            </div>  <!-- GalleryLink -->
+                                                        
+                                                        </div>  <!-- GalleryMediaContainer -->                  
+                                                    </div>  <!-- GalleryItem -->
+                                                                
+                                                </apex:Repeat>
+                                            
+                                            </div>
+                                        </div>                                   
+                                    </div>                                                       
+                            
+                                    <apex:variable var="rowNum" value="{!rowNum + IF(rec.IncludesCurrentTopic==true, 1, 0)}"/>
+                            
+                                </div>
+                        
+                            </apex:repeat>  
+                    
+                        </div>
+                    </section>
+                </div>
+            
+            </apex:pageblock>   <!-- End LUX page block -->
+            
+        </apex:form>           
+    </body>
+
+<!--   
+===============================================
+SHARED SCRIPTS
+===============================================
+ -->            
+    <script type="text/javascript">
+
+        $IAIHj(document).ready(function(){ 
+            // Fade-in 'Next' Navigation
+            $IAIHj("#next").delay(200).fadeIn(400);
+            
+            // Fade-in Gallery Header (Reading List Name)
+            $IAIHj(".GalleryHeader").delay(600).fadeIn(400);
+                            
+            // Fade-in Gallery Body then set filmstrip width
+            $IAIHj(".IncludesCurrentTopic:first").delay(0).fadeIn(300, reCalcW);
+            
+        });
+            
+        $IAIHj('#next').click(function(event) { // Navigates to next Reading List
+
+            var currli = $IAIHj('.IncludesCurrentTopic:visible'); // get current list item
+            var nextli = currli.next();    // get next list item        
+
+            // if nextli length is 0, make it equal to first li
+            if (nextli.length == 0) {
+                nextli = $IAIHj('.IncludesCurrentTopic:first');
+            }
+            
+            // Cross fade from current to next RL then set filmstrip width
+            currli.fadeOut(300);
+            nextli.delay(400).fadeIn(300, reCalcW);
+        });
+    
+        
+        // Resets filmstrip width based on its items rendered width
+        function reCalcW() {
+        
+        
+            var wStrip=0;
+            var firstTop = -999;
+            var lastTop = -999;         
+            var v;
+            
+            // Attempt to size the filmstrip to something "reasonable"
+            $IAIHj('.GalleryItem').each( function(){
+                wStrip += $IAIHj(this).width() + 20;
+            });
+
+            $IAIHj('.ReadingListFilmstrip').width(wStrip);
+
+
+            // Also, set media widths so media can sit centrally in its containing DIV
+            $IAIHj('.GalleryMediaPayload').each( function(){
+                $IAIHj(this).width($IAIHj(this).children(":first").width());   
+            });
+
+                                    
+            // Run through each visible gallery item on the filmstrip: if top
+            // appears to have wrapped despite above efforts, add some width 
+            // to the filmstrip and try again
+            $IAIHj('.GalleryItem').each( function(){
+                            
+                v = $IAIHj(this).is(':visible');
+                
+                if(v == true) {
+                    if (firstTop == -999) {firstTop =  $IAIHj(this).position().top};
+                    lastTop = $IAIHj(this).position().top;
+                    
+                    if (firstTop != lastTop) {
+                        wStrip = $IAIHj('.ReadingListFilmstrip').width();
+                        $IAIHj('.ReadingListFilmstrip').width(wStrip + $IAIHj(this).width());
+                    }
+                }
+                
+            })
+          
+        }
+
+    </script>
+</apex:page>

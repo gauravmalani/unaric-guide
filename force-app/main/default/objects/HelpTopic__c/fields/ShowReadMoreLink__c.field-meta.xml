@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ShowReadMoreLink__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Controls whether or not this Help Topic will feature a &quot;Read More&quot; link in its callouts</description>
+    <inlineHelpText>Controls whether or not this Help Topic will feature a &quot;Read More&quot; link in its callouts</inlineHelpText>
+    <label>Show Read More Link?</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

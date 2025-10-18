@@ -1,0 +1,115 @@
+<!--
+============================================================================================== 
+SIDEBAR LAUNCHER BUTTON PAGE FOR USE IN SF SIDEBAR VF COMPONENT:
+OPENS A POPOUT COPY OF A HELP LAUNCH PAGE (CURRENTLY THE SF1 QAM IN Callout Mode) AND
+OPTIONALLY ALLOWS THE USER TO KEEP THIS WINDOW IN SYNCH
+
+Martin Little for Improved Apps 
+October 2015
+Copyright (c.) Improved Apps Limited 2015. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page sidebar="false" showHeader="False"
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelQAM']}"
+                docType="html-5.0"
+                controller="ControllerIHQAMSettings"
+                action="{!initializeIH1QAM}">
+    <head>    
+        <title>{!BrandingLocalisations['ProductName']} - GlobalLocalisations['AdviceLabelQAM']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2015. All Rights Reserved.' />     
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}"/>       
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSettings.js')}"/>       
+
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_customer.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>
+            .IHActive       {background-image: url({!URLFOR($Resource.IHResources, '/img/IconHelpSynchOn.png')});}
+            .IHInactive     {background-image: url({!URLFOR($Resource.IHResources, '/img/IconHelpSynchOff.png')});}
+        </style>
+            
+        <script type='text/javascript'>
+            
+            jQuery(document).ready(function() {
+                // If a popped out QAM is in play, synch it
+                if (readCookie('IHQAMSynch') == 'true') {
+                    popOut();
+                    jQuery('#btnSynch').removeClass('IHInactive').addClass('IHActive');
+                } else {
+                    jQuery('#btnSynch').removeClass('IHActive').addClass('IHInactive');
+                }
+            });
+            
+
+            // Launch QAM on request to size at which it was last used
+            function popOut() {
+                var U = '{!$Page.IH1QAM}?CalloutMode=true&IHContext=' + encodeURI(document.location.href);
+                
+                // Get the co-ordinates of the QAM              
+                var CoOrds = readCookie('IHQAMCoOrds');
+    
+                if (CoOrds != null) {
+                    CoOrds = CoOrds.split(':');
+                } else {
+                    CoOrds = '0:0:800:300';
+                    CoOrds = CoOrds.split(':');
+                }
+                
+                var X = CoOrds[0];
+                var Y = CoOrds[1];
+                var W = CoOrds[2];
+                var H = CoOrds[3];
+                
+                // Show the QAM at these co-ordinates
+                IHQAMenu.DoDialogue(U, X, Y, W, H, 'IHQAM');   
+                
+            }
+            
+
+            function toggleSynch() {
+                var doSynch = readCookie('IHQAMSynch');
+                
+                if (doSynch == 'true') {
+                    doSynch = false;
+                    jQuery('#btnSynch').removeClass('IHActive').addClass('IHInactive');
+                } else {
+                    doSynch = true;
+                    jQuery('#btnSynch').removeClass('IHInactive').addClass('IHActive');
+                }
+                IHSetCookie('IHQAMSynch', doSynch, 30);
+            }
+
+            
+            // Respond to resize messages / record QAM co-ordinates
+            window.onmessage = function (e) {
+            
+                // v1.31: Only respond to legitimate messages from our own sources
+                if (e.origin == document.location.origin) {
+                    // Message = guide step window has been re-sized
+                    if (e.data.toString().substring(0,8) == 'QAMSize=') {  
+                        IHSetCookie('IHQAMCoOrds', e.data.toString().substring(8), 30);                
+                    }
+                }
+            }
+                        
+        </script>        
+    </head>
+ 
+    
+    <body class="IH1UX IH1QAM" id="theBody" style="width: 100%; height: auto; margin: 0; padding: 0; background: white;">      
+        <apex:form >            
+            <div id="IHQAM" style="float: left; width: 183px; height: auto; margin: 1px 2px 2px 1px; padding: 5px; background: #004080; border: 2px solid white; border-radius: 6px; box-shadow: 1px 1px 3px #888;" >                            
+                <div id="IHQAMLabel" title="{!GlobalLocalisations['TipReadMoreLinkUsers']}" class="" style="float: left; width: 162px; height: auto; margin: 0; padding: 2px; color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; line-height: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer" onclick="javascript:popOut();">
+                    {!cH.TBrandTitle}
+                </div>
+
+                <div id="btnSynch" title="{!DialogueLocalisations['TipButtonSynch']}" class="IHIcon IHInactive" style="float: right; height: 16px; width: 16px; cursor: pointer;" onclick="javascript:toggleSynch();"></div>
+            </div>               
+        </apex:form>
+    </body>
+
+</apex:page>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Default Logo used in the Improved Help Tools Page. This may be replaced with a clients own branding.</description>
+    <internalUseOnly>false</internalUseOnly>
+    <name>Improved Help Tools Page Logo</name>
+    <public>true</public>
+</Document>

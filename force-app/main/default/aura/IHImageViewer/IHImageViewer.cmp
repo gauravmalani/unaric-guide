@@ -1,0 +1,61 @@
+<aura:component controller="ControllerLUXOps"  
+				implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"  
+                extends="IHCard" 
+				access="global">
+ 
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+    <aura:set attribute="Title" value="Improved Help Image Viewer" />
+	<aura:set attribute="IHCardType" value="MediaViewer" />    
+    <aura:set attribute="Icon" value="fa-picture-o" />    
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="MediaWidth" type="string" required="true" default="100" access="global" />
+    <aura:attribute name="ImageTitle" type="string" required="true" default="Improved Help Image Viewer" access="global" />
+	<aura:attribute name="ImageURL" type="string" required="true" default="" access="global" />
+	<aura:attribute name="MediaMode" type="string" required="true" default="Image" access="global" />
+    
+    
+   	<div class="IHIVContainer" >
+<!-- 
+================================================
+NO MEDIA MESSAGE (IF URL IS BLANK)
+================================================
+-->
+	    <div class="{!v.ImageURL + '' == '' ? 'NoDataMessage' : 'slds-hide'}">
+			{!v.NoDataMessage}
+	    </div>
+
+
+<!-- 
+================================================
+SPECIFIED MEDIA
+================================================
+-->   	
+		<aura:if isTrue="{!v.ImageURL + '' != ''}">
+			<div class="{! 'IHIVMedia IHIV' + v.MediaMode + v.MediaWidth}" >
+			
+				<aura:if isTrue="{!v.MediaMode == 'Image'}">		
+					<img class="IHIVImage" src="{!v.ImageURL}" />
+				</aura:if>
+	
+				<aura:if isTrue="{!v.MediaMode == 'Video'}">		
+					<iframe class="IHIVVideo" frameborder="0" scrolling="no" src="{!v.ImageURL}" />
+				</aura:if>
+				
+			</div>
+   		</aura:if>
+   	</div>
+    
+</aura:component>

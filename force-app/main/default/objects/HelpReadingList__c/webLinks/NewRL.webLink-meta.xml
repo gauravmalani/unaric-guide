@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NewRL</fullName>
+    <availability>online</availability>
+    <description>Add a new Reading List</description>
+    <displayType>massActionButton</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>New Reading List</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <requireRowSelection>false</requireRowSelection>
+    <url>// THIS BUTTON HAS BEEN DEPRECATED AND IS NO LONGER REQUIRED BY
+// THE IMPROVED HELP PACKAGE</url>
+</WebLink>

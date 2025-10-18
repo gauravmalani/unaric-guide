@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Configuration_items</fullName>
+    <columns>NAME</columns>
+    <columns>ActionCode__c</columns>
+    <columns>ToolContext__c</columns>
+    <columns>IconClass__c</columns>
+    <columns>Type__c</columns>
+    <columns>MinimumFormFactor__c</columns>
+    <columns>Description__c</columns>
+    <columns>SkipImportOverwrite__c</columns>
+    <columns>SkipExport__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>1. All Configuration items</label>
+</ListView>

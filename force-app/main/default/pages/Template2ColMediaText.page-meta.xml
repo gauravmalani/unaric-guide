@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Improved Help Topic Template - 2 Column: Image &amp; Video media left; Description text right</description>
+    <label>Template: 2 Column: Media left - Text Right</label>
+</ApexPage>

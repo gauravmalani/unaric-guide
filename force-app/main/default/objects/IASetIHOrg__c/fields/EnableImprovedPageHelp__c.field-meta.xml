@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EnableImprovedPageHelp__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Check this box to replace the default SalesForce page-level help with Improved Help</description>
+    <inlineHelpText>Check this box to replace the default SalesForce page-level help with Improved Help</inlineHelpText>
+    <label>Enable Improved Page Help</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

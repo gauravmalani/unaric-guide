@@ -1,0 +1,1529 @@
+<!--
+============================================================================================== 
+PAGE FOR DISPLAYING AND EDITING IH GLOBAL SETTINGS, SUCH AS HELP OPTIONS, BRANDING AND LINKS.
+CAN BE PROVIDED WITH A "CAT" PARAMETER TO PRE-SELECT A CATEGORY OF HELP SETTINGS (TO JUMP 
+TO A DESIRED SETTINGS TAB), I.E.
+
+[SF base URL]/Apex/IHManageSettings?Cat=[help settings category]
+OR
+[SF base URL]/Apex/IHManageSettings?iahelp__Cat=[help settings category]
+
+THE CATEGORIES ARE AS PER THE NAMES (NOT LABELS) OF THE TABS GIVEN  IN THE MARKUP BELOW.
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="True" sidebar="false" 
+                title="{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}"
+                controller="ControllerSettings"
+                action="{!showSettings}" >
+    
+    <apex:includeLightning />            
+    <div id="compContainer" />
+    
+    <head>
+        
+        <title>{!BrandingLocalisations['ProductName']} - {!DialogueLocalisations['TitleDialogueTitle']}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!Settings.BrandCSS__c}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+
+        <apex:slds />
+
+        <style>
+            .IHTabBodyTaller            {height: 650px; overflow-y: auto; padding: 10px;}
+            .IHListFooter               {padding: 10px;}
+            hr                          {margin: 0.5em !important;}
+            table.IHSettings * tr       {border-bottom: dotted 1px #d4e0ea;}
+            .ColourPreview              {display: inline; float: left; width: 1.3em; height: 1.3em; border: 1px solid #d4e0ea}
+        </style>
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+
+        <script type='text/javascript'>
+
+            // Prepare page for use
+            function initialise() {
+            
+                // Ensure tools buttons adopt IH look and feel for tasks in progress
+                IHEditHelp.initialiseButtons();
+                
+                return;
+            }
+        
+            // Validation for numeric fields 
+            function checkIsNumber(elem, doFocus, maxValue) {
+                if (isNaN(elem.value)) {
+                    alert('Please enter a number between 0 and ' + maxValue);
+                    elem.value = 30;
+                    elem.select();
+                    
+                } else {
+                    if (elem.value > maxValue) { 
+                        alert('Please enter a number between 0 and ' + maxValue);
+                        elem.value = maxValue;
+                        elem.select();
+                        
+                    } else {
+                        elem.value = parseInt(elem.value, 10);
+                        if (doFocus == true) {elem.select()};
+                    }
+                }
+            }
+            function callAlert(Diags){
+                //  alert(Diags);
+                
+                console.log("callAlert...");
+                
+                var aMap = '{"Message":"test"}';
+                
+                $Lightning.use("iahelp:appIH", function() {
+                    $Lightning.createComponent("iahelp:IHAlert",
+                 {Message:"test"},
+                 "compContainer",
+                 function(cmp) {
+                     console.log("c:VFPageApp loaded successfully in VF page");
+                 }
+             );
+                });
+            }
+            
+            
+            
+        </script>
+    </head>    
+
+
+    <body> 
+          
+        <apex:include pageName="IHQAM" />
+        
+        <div class="IHLUX">
+            <div class='IHIcon16 IHIconSettings' style='float: left; margin: 10px;'></div>
+        </div>
+
+        <span class="slds-text-heading--large">
+            <p>
+                {!DialogueLocalisations['TitleDialogueTitle']}
+            </p>
+        </span>
+
+    
+        <div id='IHSettings'>
+            <apex:form id="SettingsForm">
+            
+<!--   
+===============================================
+TAB: QUICK START
+===============================================
+ -->            
+                <apex:tabPanel activeTabClass="IHTabActive" inactiveTabClass="IHTabInactive" headerClass="IHSettingsHeader" headerSpacing="5" contentClass="IHTabContent" switchType="client" value="{!selectedCategory}" width="100%">
+                    <apex:tab label="{!DialogueLocalisations['TitleTabQuickStart']}" name="QuickStart" styleClass="IHTab" >
+                        <div class='IHTabBodyTaller'>
+                        
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleQuickStart']}
+                            </div>
+                            
+                            <p>{!DialogueLocalisations['AdviceLabelQuickStart']}</p>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelQuickStartLink']}
+                                
+                                <a target="_blank" href="{!BrandingLocalisations['QuickStartLink']}" title="{!DialogueLocalisations['TipQuickStartLink']}">
+                                    {!DialogueLocalisations['ButtonQuickStartLink']}
+                                </a>
+                            </p>
+                            
+                            <div class='IH-H4'>
+                                {!DialogueLocalisations['TitleSubtitleDocumentationFAQs']}
+                            </div>
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelFAQs']}&nbsp;
+
+                                <a title="{!DialogueLocalisations['TipTipButtonFAQs']}" href='#' onclick="javascript:window.open('{!BrandingLocalisations['FAQsLink']}');">
+                                    {!DialogueLocalisations['ButtonFAQs']}
+                                </a>
+                            </p>
+
+                            
+                            <div class='IH-H4'>
+                                {!DialogueLocalisations['TitleSubtitleDocumentationSupport']}
+                            </div>
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelSupportGeneral']}
+                                <a target='_Blank' title="{!DialogueLocalisations['TipButtonSupportGeneral']}" href="{!BrandingLocalisations['ContactUsLink']}">
+                                    {!DialogueLocalisations['ButtonSupportGeneral']}</a>.&nbsp;
+                                
+                                {!DialogueLocalisations['AdviceLabelSupportTechnical']}
+                                <a title="{!DialogueLocalisations['TipButtonSupportTechnical']}" href="{!BrandingLocalisations['SupportEmail']}">
+                                    {!BrandingLocalisations['SupportEmail']}
+                                </a>
+                            </p>
+                           
+                            
+                            <p>&nbsp;</p>
+                            <div class="IH-H4" >
+                                {!DialogueLocalisations['TitleSubtitleInitialiseSettings']}
+                            </div>
+                            
+                            <p>{!DialogueLocalisations['AdviceLabelInitialiseSettings']}</p>
+                            
+                            <div style="padding: 10px;">
+                                <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                    action="{!seedHelpSettings}" 
+                                    oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                    value="{!DialogueLocalisations['ButtonInitialiseSettings']}" 
+                                    title="{!DialogueLocalisations['TipButtonInitialiseSettings']}" 
+                                    styleClass="IHIcon24 IHIdle" 
+                                    style="width: 120px; font-size: 11px;"
+                                    reRender="DiagsMsg" 
+                                    disabled="{!DisableOpts}" />
+                                                                                                
+                                <span class='IHError'>
+                                    {!DiagsConfigIssue}
+                                </span>
+                            </div>   
+
+
+                            <p>&nbsp;</p>
+                            <div class="IH-H4" >
+                                {!DialogueLocalisations['AdviceLabelRemoteSiteURL']}:
+                            </div>
+                            <p>
+                                {! LEFT($CurrentPage.URL, FIND('/apex', $CurrentPage.URL) -1)}            
+                            </p>
+
+                            <p>&nbsp;</p>
+                            <a href="{!$Page.iahelp__IHManageSettingsMin}?iahelp__Cat=GetMetadata" target="_blank" title="{!GlobalLocalisations['TipGoto']}">
+                                <div class="IH-H4" >
+                                    {!DialogueLocalisations['ButtonRefreshLayoutMetadata']}
+                                </div>
+                                <p>
+                                    {!DialogueLocalisations['AdviceLabelRefreshLayoutMetadata']}
+                                </p>
+                            </a>
+                                                       
+                        </div>
+                                                
+                    </apex:tab>
+
+<!--   
+===============================================
+TAB: DATA MIGRATION (DOCUMENTATION)
+===============================================
+ -->            
+
+                    <apex:tab label="{!DialogueLocalisations['TitleTabDocumentation']}" name="Documentation" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                        
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleDocumentation']}
+                            </div>
+
+        <!-- 
+        ................................................
+        Introductory text
+        ................................................
+        -->
+                            <table cellborders='1'>
+                                <tr>
+                                    <td colspan="2">
+                                       <div class="IH-H4" style="margin-bottom: 2rem;">
+                                            {!DialogueLocalisations['AdviceLabelBaselineDocsAbout']}
+                                       </div>
+                                    </td>
+                                </tr>
+        <!-- 
+        ................................................
+        Left side: upload help content - info
+        ................................................
+        -->
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div id="TitleSubtitleDocumentationUploadAdditionalHelp" class="IH-H4 HelpableR_100 IHSnapToElement">
+                                            {!DialogueLocalisations['TitleSubtitleDocumentationUploadAdditionalHelp']}
+                                        </div>
+                                       
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelLoadXML']}
+                                        </p>
+
+                                    </td>
+        <!-- 
+        ................................................
+        Right side: upload config JSON - info
+        ................................................
+        -->
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['TitleSubtitleUploadDownloadConfig']}
+                                        </div>
+                                        
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelUploadDownloadConfig']}
+                                        </p>
+                                        <br/>                                   
+                                    </td>
+                                </tr>
+
+                                    
+        <!-- 
+        ................................................
+        Left side: upload help - entry controls
+        ................................................
+        -->
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div class='MediaCaption' style="float: right; margin: 10px; width: 80%;">
+                                            {!DialogueLocalisations['TitleSubtitleDocumentationLoadXML']} : <br/>
+                                            <apex:inputText style="width: 60%;" value="{!UserXMLDoc}" title="{!DialogueLocalisations['TipInputTextboxXMLPath']}" />
+                                            &nbsp;&nbsp;
+
+
+                                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                                action="{!seedDocsFromUserDocASynch}" 
+                                                oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                                value="{!DialogueLocalisations['ButtonUpsertDocumentation']}" 
+                                                title="{!DialogueLocalisations['TipButtonUpsertDocumentation']}" 
+                                                styleClass="IHIcon24 IHIdle" 
+                                                style="width: 35%; font-size: 11px;"
+                                                reRender="DiagsMsg" 
+                                                disabled="{!DisableOpts}" />
+
+                                        </div>
+
+                                    </td>
+                                                                      
+
+        <!-- 
+        ................................................
+        Right side: upload config JSON - entry controls
+        ................................................
+        -->
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div>
+                                                                                                
+                                            <div class='MediaCaption' style="float: right; margin: 10px; width: 80%;">
+                                                
+                                                {!DialogueLocalisations['TitleSubtitleUploadConfig']} : <br/>                                              
+                                                <apex:inputText style="width: 60%;" value="{!UserJSONDoc}" title="{!DialogueLocalisations['TipInputTextboxJSONPath']}" />
+
+                                                &nbsp;&nbsp;
+                                                <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                                    action="{!seedConfigFromUserDoc}" 
+                                                    oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                                    value="{!DialogueLocalisations['ButtonUpsertConfig']}" 
+                                                    title="{!DialogueLocalisations['TipButtonUpsertConfig']}" 
+                                                    styleClass="IHIcon24 IHIdle" 
+                                                    style="width: 35%; font-size: 11px;"
+                                                    reRender="DiagsMsg" 
+                                                    disabled="{!DisableOpts}" />
+    
+                                            </div>
+                                            <br/>
+                                        </div>
+                                    </td>
+                                </tr>                                                
+
+                          
+        <!-- 
+        ................................................
+        Left side: download help as XML AND / OR JSON
+        ................................................
+        -->
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div class="{!IF(Settings.EnableExportXL__c == false, 'IHHidden', '')}">
+                                            <div class='IH-H4'>
+                                                {!DialogueLocalisations['TitleSubtitleDocumentationDownloadXLS']}
+                                            </div>
+                                            
+                                            <p>
+                                                {!DialogueLocalisations['AdviceLabelDownloadXLS']}
+                                                <br/><br/>
+                                                
+                                                <apex:outputLink value="{!$Page.IHExportXL}" target="_Blank" title="{!DialogueLocalisations['TipButtonDownloadXLS']}">
+                                                    {!DialogueLocalisations['ButtonDownloadXLS']}
+                                                </apex:outputLink>
+                                           
+<!-- 
+HIDING FOR THIS RELEASE
+ -->                   
+  <!-- 
+                                                &nbsp;&nbsp;&nbsp; : &nbsp;&nbsp;&nbsp;  
+
+                                                <apex:commandLink action="{!downloadDataJSONASynch}" oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" >
+                                                    {!DialogueLocalisations['ButtonDownloadConfig']}
+                                                </apex:commandLink>
+  -->                        
+                                                
+                                            </p>
+                                        </div>              
+                                        <br/><br/>
+                                        
+
+                                        
+                                    </td>
+                                    
+        <!-- 
+        ................................................
+        Right side: Download Config tools records
+        ................................................
+        -->
+                                    
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="clear: both;"><p>                                           
+    
+                                            <div class='IH-H4'>
+                                                {!DialogueLocalisations['TitleSubtitleDownloadConfig']}
+                                            </div>
+                                            
+                                            <p>
+                                                {!DialogueLocalisations['AdviceLabelDownloadConfig']}                                               
+                                                <br/><br/>
+    
+                                                <apex:outputLink value="{!$Page.IHExportConfigJSON}" target="_Blank" title="{!DialogueLocalisations['TipButtonDownloadConfig']}">
+                                                    {!DialogueLocalisations['ButtonDownloadConfig']}
+                                                </apex:outputLink>
+                                            </p>
+                                        </p></div>
+                                    </td>                               
+                                </tr>                               
+                            </table>
+                        
+                        </div>
+                    </apex:tab>
+
+<!--   
+===============================================
+TAB: HELP-ENABLING
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabHelpEnabling']}" name="HelpEnabling" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleHelpEnabling']}
+                            </div>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelHelpEnablingAbout']}
+                            </p>                               
+
+                            <div style='padding: 10px 10px 10px 0; overflow: auto;'>
+                                <div style='float: left; margin-right: 500px; min-width: 150px; ' > 
+                                    <table width='100%'>
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;" ><apex:inputCheckbox value="{!Settings.EnableImprovedPageHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnablePageHelp']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnablePageHelp']}
+                                                </div>
+                                            </td>
+                                        </tr>                                        
+                                        
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedRecordTitleHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableRecordTitle']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableRecordTitle']}
+                                                </div></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedDetailsHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableRecordDetailSectionLabel']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableRecordDetailSectionLabel']}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                                                        
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedFieldHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableFieldLabels']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableFieldLabels']}
+                                                </div>
+                                            </td>
+                                        </tr>  
+
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedRelatedListHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableRelatedListLabels']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableRelatedListLabels']}
+                                                </div>
+                                            </td>
+                                        </tr>    
+                                                                
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedObjectHelp__c}" /></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableRelatedListObjectHelpLinks']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableRelatedListObjectHelpLinks']}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedTableHelp__c}"/></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableRelatedListColumnLabels']}" >
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableRelatedListColumnLabels']}
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedButtonHelp__c}"/></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableButtons']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableButtons']}
+                                                </div>
+                                            </td>
+                                        </tr>
+    
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedLinkHelp__c}"/></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableCustomLinks']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableCustomLinks']}
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.EnableImprovedSectionHelp__c}"/></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipHelpEnableCustomSectionHeadings']}">
+                                                    {!DialogueLocalisations['FieldLabelHelpEnableCustomSectionHeadings']}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        
+                                        <tr><td colspan="2"><hr/></td></tr>
+
+                                        <tr>
+                                            <td><div class='IHCheckbox' style="padding-top: 3px;"><apex:inputCheckbox value="{!Settings.DoLoginChecks__c}"/></div></td>
+                                            <td>
+                                                <div class='IH-H4 ' style="color: #004080; cursor: pointer;" title="{!DialogueLocalisations['TipDoLoginChecks']}">
+                                                    {!DialogueLocalisations['FieldLabelDoLoginChecks']}
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr><td colspan="2"><hr/></td></tr>
+                                    </table>
+                                </div>  
+                            </div>
+                            
+                            
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleWhitelisting']}
+                            </div>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelWhitelisting']}
+                            </p>                      
+                            <apex:inputTextArea disabled="{!CIWhitelistedDomains == null}" value="{!CIWhitelistedDomains.SupportingControls__c}" richText="false" rows="2" style="width: 100%;"/>
+
+                        </div>
+                    </apex:tab>
+                    
+<!--   
+===============================================
+TAB: HELP TOPICS
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabHelpTopics']}" name="HelpTopics" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleHelpTopics']}
+                            </div>
+                             
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelHelpTopicsAbout']}
+                            </p>
+                            
+                            <table>                            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelCalloutTemplate']}
+                                        </div>
+                                    </td>                                  
+                                    <td>
+                                        <apex:selectList value="{!Settings.DefaultHelpCalloutTemplate__c}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!TemplatesC}"/>
+                                        </apex:selectList>                                              
+                                    
+                                    </td>
+                                </tr>
+                            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelCalloutWidth']}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <apex:inputText maxlength="3" size="4" value="{!Settings.CalloutWidth__c}" onfocus="javascript:checkIsNumber(this, true, 100);" onblur="javascript:checkIsNumber(this, false, 100);" />                                    
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelCalloutClosureBehaviour']}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <apex:selectList value="{!Settings.CalloutClosureBehaviour__c}" multiselect="false" size="1">
+                                            <apex:selectOption itemValue="1" itemLabel="{!DialogueLocalisations['ValueClose2ndClick']}" />
+                                            <apex:selectOption itemValue="2" itemLabel="{!DialogueLocalisations['ValueCloseMouseOut']}" />
+                                            <apex:selectOption itemValue="3" itemLabel="{!DialogueLocalisations['ValueCloseEither']}" />
+                                        </apex:selectList>                                                                                                                  
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'><hr/></td>
+                                </tr>
+
+<!-- 
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelGuidesTemplate']}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <apex:selectList value="{!Settings.DefaultGuideTemplate__c}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!TemplatesF}"/>
+                                        </apex:selectList>                                                                                                                        
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'><hr/></td>
+                                </tr>
+ -->
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelFullTemplate']}
+                                        </div></td>
+                                    <td>
+                                        <apex:selectList value="{!Settings.DefaultHelpTopicTemplate__c}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!TemplatesF}"/>
+                                        </apex:selectList>                                        
+                                        
+                                        &nbsp;&nbsp;
+                                        
+                                        <a target="_Blank" title="{!GlobalLocalisations['TipButtonGotoTemplates']}" href="{!TemplatesLink}">
+                                            {!GlobalLocalisations['ButtonGotoTemplates']}
+                                        </a>                                    
+                                        
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelResetHeight']}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="line-height: 18px;">{!DialogueLocalisations['AdviceLabelSetHBS']}&nbsp; 
+                                            <apex:inputText maxlength="3" size="5" value="{!Settings.DefaultHelpTopicHBS__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" />
+                                        </span>
+                                        
+                                        <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                            action="{!resetHBS}" 
+                                            oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                            value="{!DialogueLocalisations['ButtonSetHBS']}" 
+                                            title="{!DialogueLocalisations['TipButtonSetHBS']}" 
+                                            styleClass="IHIcon24 IHIdle" 
+                                            style="font-size: 11px;"
+                                            reRender="DiagsMsg" 
+                                            disabled="{!DisableOpts}" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'><hr/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelImageUploadFolder']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText value="{!Settings.ImageUploadFolder__c}" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td colspan='2'><hr/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelCreateAsActive']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputCheckbox value="{!Settings.DefaultHelpActiveStatus__c}" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelShowReadMore']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputCheckbox value="{!Settings.DefaultReadMoreOption__c}" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelDefaultVisibility']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText value="{!Settings.DefaultVisibility__c}" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                           {!DialogueLocalisations['FieldLabelDefaultVoteSet']}
+                                        </div>
+                                    </td>                                  
+                                    <td>
+                                        <apex:selectList value="{!Settings.DefaultVoteSet__c}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!VoteSets}"/>
+                                        </apex:selectList>                                              
+                                    
+                                    </td>
+                                </tr>   
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelDaysToReview']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="4" value="{!Settings.ReviewWithinDays__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelHoursAmended']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="4" value="{!Settings.UpdateMarkerHours__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+                                
+                                
+<tr>
+    <td>
+        <div class='IH-H4'>
+            {!DialogueLocalisations['FieldLabelDefaultHelpTopicTreeProvider']}
+        </div>
+    </td>
+    <td>
+        <apex:selectList multiselect="false" size="1" value="{!Settings.DefaultHelpTopicTreeProvider__c}" >
+            <apex:selectOption itemValue="ServiceIHTrees.TNSHelpTopicsOrdered" itemLabel="{!DialogueLocalisations['ValueAuthorsSortOrder']}" />
+            <apex:selectOption itemValue="ServiceIHTrees.TNSHelpTopics" itemLabel="{!DialogueLocalisations['ValueFixedSortOrder']}" />
+        </apex:selectList>                                                                                                                  
+    </td>
+</tr>
+                                
+                                
+                                <tr>
+                                    <td colspan='2'><hr/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['FieldLabelDefaultHelpTopic']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="20" size="20" value="{!Settings.DefaultHelpTopic__c}" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </apex:tab>
+                    
+<!--   
+===============================================
+TAB: EXPERIMENTAL (Advanced) FEATURES
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabExperimentalFeatures']}" name="ExperimentalFeatures" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleExperimentalFeatures']}
+                            </div>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelExperimentalFeaturesAbout']}
+                            </p>
+                            
+                            <p>&nbsp;</p>
+                            
+                            <table>                                 
+                                <tr>
+                                    <td colspan='2'>
+                                        <div class='IH-H4'>
+                                            {!DialogueLocalisations['TitleSubtitleExportFacilities']}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelExportFacilities']}
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['AdviceLabelEnableTopicExportToWord']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputCheckbox value="{!Settings.EnableExportDocHT__c}" /></td> 
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['AdviceLabelEnableRLExportToWord']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputCheckbox value="{!Settings.EnableExportDocRL__c}" /></td> 
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <hr/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelExportExcelAbout']}
+                                        </p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['AdviceLabelExportExcel']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputCheckbox value="{!Settings.EnableExportXL__c}" /></td> 
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <hr/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['TitleSubtitleSignatures']}
+                                        </div>  
+                                        
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelSignaturesAbout']}
+                                        </p>
+                                        
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelSignaturesLink']}&nbsp;
+                                            <a target='_Blank' href='{!SignaturesLink}' title="{!DialogueLocalisations['TipButtonHelpableSignatures']}">
+                                                {!GlobalLocalisations['ButtonHere']}</a>.
+                                        </p>
+                                    </td> 
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <hr/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelDebugMode']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputCheckbox value="{!Settings.DebugMode__c}" /></td>
+                                </tr>
+ 
+                            </table>
+                        </div>
+                    </apex:tab>
+
+<!--   
+===============================================
+TAB: RELATED CONTENT
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabRelatedContent']}" name="RelatedContent" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleRelatedContent']}
+                            </div>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelRelatedContentAbout']}
+                            </p>
+                            
+                            <p>&nbsp;</p>
+                            
+                            <table>                                 
+                                <tr>
+                                    <td colspan='2'>
+                                        <div class='IH-H4'>
+                                            {!GlobalLocalisations['TitleSubtitleRelatedHelp']}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelShowReferringTopicsAbout']}
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['AdviceLabelShowReferringTopics']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputCheckbox value="{!Settings.ShowReferringTopics__c}" /></td> 
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <hr/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <div class='IH-H4'>
+                                            {!GlobalLocalisations['TitleSubtitleReadingLists']}
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <p>
+                                            {!DialogueLocalisations['AdviceLabelShowNextPreviousAbout']}
+                                        </p>
+                                    </td>
+                                </tr>
+                                                  
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['AdviceLabelShowNextPrevious']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputCheckbox value="{!Settings.RLShowNextPrev__c}" /></td> 
+                                </tr>
+
+                                <tr>
+                                    <td colspan='2'>
+                                        <hr/>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </apex:tab>
+                    
+<!--   
+===============================================
+TAB: TRACKING
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabTracking']}" name="Tracking" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'> 
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleTracking']}
+                            </div>
+                            
+                            <p>
+                                {!DialogueLocalisations['AdviceLabelTrackingAbout']}
+                            </p>
+
+                            <p>&nbsp;</p>
+                            
+                            <table class="IHSettings">
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelCallouts']}
+                                        </div>
+                                    </td>   
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysCallouts__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td> 
+                                </tr>
+                    
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelTopics']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysTopics__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelComments']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysComments__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelVotes']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysVotes__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelConfigurationIssues']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysErrors__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelHelpResourceViews']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysResources__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelSearches']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysSearches__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelLUXOps']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText maxlength="3" size="3" value="{!Settings.TrackDaysLUXOps__c}" onfocus="javascript:checkIsNumber(this, true, 999);" onblur="javascript:checkIsNumber(this, false, 999);" /></td>
+                                </tr>
+
+
+                                <tr>
+                                    <td style="padding-right: 10px;">
+                                        <p style="padding: 1em 0;">
+                                            {!DialogueLocalisations['AdviceLabelInteractionsLink']}&nbsp;
+                                            <a target='_Blank' href='{!InteractionsLink}' title="{!DialogueLocalisations['TipButtonInteractions']}">
+                                                {!GlobalLocalisations['ButtonHere']}</a>.
+
+<!--
+EXCLUDE FOR NOW - EXPORT AVAILABLE VIA REPORTS                                              
+                                            &nbsp;{!DialogueLocalisations['AdviceLabelInteractionsDownloadLink']}&nbsp;
+                                            <apex:outputLink value="{!$Page.IHExportInteractionsJSON}" 
+                                                    target="_Blank" 
+                                                    title="{!DialogueLocalisations['TipButtonInteractionsDownload']}">{!GlobalLocalisations['ButtonHere']}
+                                            </apex:outputLink>.
+-->
+                                        </p>
+                                    </td>
+
+                                    <td>
+                                        <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                            action="{!scheduleRetention}" 
+                                            oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                            value="{!DialogueLocalisations['ButtonScheduleMaintenance']}" 
+                                            title="{!DialogueLocalisations['TipButtonScheduleMaintenance']}"
+                                            styleClass="IHIcon24 IHIdle" 
+                                            style="font-size: 11px;"
+                                            reRender="DiagsMsg"
+                                            disabled="{!DisableOpts}" />
+                                                                                
+                                    </td>                       
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelAllowCommentsByDefault']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputCheckbox value="{!Settings.AllowLayoutComments__c}" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelRaisePlatformEvents']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputCheckbox value="{!Settings.RaisePlatformEvents__c}" /></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelLocationTracking']}
+                                        </div>
+                                    </td>
+                                        <td><apex:inputCheckbox value="{!Settings.Location_Tracking__c}" /></td>
+                                </tr> 
+                                
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelGeoTimeout']}
+                                        </div>
+                                    </td>
+                                    <td><apex:inputText size="3" value="{!Settings.Geo_Timeout__c}" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td>
+                                        <div class='IH-H4 '>
+                                            {!DialogueLocalisations['FieldLabelGeoEnableHighAccuracy']}
+                                        </div>
+                                    </td>
+                                        <td><apex:inputCheckbox value="{!Settings.Geo_EnableHighAccuracy__c}" /></td>
+                                </tr>                     
+                            </table>
+                        </div>
+                    </apex:tab>
+                    
+<!--   
+===============================================
+TAB: QUICK-LINKS
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabQuickLinks']}" name="QuickLinks" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'>
+                        <div class='IH-H3'>
+                            {!DialogueLocalisations['TitleQuickLinks']}
+                        </div>
+                        
+                        <p>
+                            {!DialogueLocalisations['AdviceLabelQuickLinksAbout']}
+                        </p>
+
+                            <p>&nbsp;</p>
+                            
+                            <table class="IHSettings">
+                            
+                                <tr>
+                                    <th>{!DialogueLocalisations['ColumnLabelLink']}</th>
+                                    <th>{!DialogueLocalisations['ColumnLabelURL']}</th>
+                                    <th>{!DialogueLocalisations['ColumnLabelLinkText']}</th>
+                                    <th>{!DialogueLocalisations['ColumnLabelTip']}</th>
+                                </tr>
+                    
+                                <tr>
+                                    <td><div class='IH-H4'>1</div></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickLink1__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickText1__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickTip1__c}" /></td>
+                                </tr>
+                    
+                                <tr>
+                                    <td><div class='IH-H4'>2</div></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickLink2__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickText2__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickTip2__c}" /></td>
+                                </tr>
+                    
+                                <tr>
+                                    <td><div class='IH-H4'>3</div></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickLink3__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickText3__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickTip3__c}" /></td>
+                                </tr>
+                    
+                                <tr>
+                                    <td><div class='IH-H4'>4</div></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickLink4__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickText4__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickTip4__c}" /></td>
+                                </tr>
+                    
+                                <tr>
+                                    <td><div class='IH-H4'>5</div></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickLink5__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickText5__c}" /></td>
+                                    <td><apex:inputText style="width: 250px;" value="{!Settings.QuickTip5__c}" /></td>
+                                </tr>
+                            
+                            </table>
+                        </div>
+                    </apex:tab>
+
+            
+<!--   
+===============================================
+TAB: BRANDING
+===============================================
+ -->            
+                    <apex:tab label="{!DialogueLocalisations['TitleTabBranding']}" name="Branding" styleClass="IHTab">
+                        <div class='IHTabBodyTaller'> 
+                            <div class='IH-H3'>
+                                {!DialogueLocalisations['TitleBranding']}
+                            </div>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingTitle']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingTitle']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText style="width: 600px; margin-left: 10px;" maxlength="32" value="{!Settings.BrandTitle__c}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingSlogan']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingSlogan']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText style="width: 600px; margin-left: 10px;" maxlength="100" value="{!Settings.BrandSubTitle__c}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingLogo']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingLogo']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText style="width: 600px; margin-left: 10px;" value="{!Settings.BrandImage__c}" />
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr/>
+                                        </td>
+                                    </tr>
+
+<!--                                     
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingCustomerCSS']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingCustomerCSS']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText style="width: 600px; margin-left: 10px;" value="{!Settings.BrandCSS__c}" />
+
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipBrandingCustomerCSSLUX']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingCustomerCSSLUX']}
+                                            </div>
+                                            
+                                            <p>
+                                                {!DialogueLocalisations['TipBrandingCustomerCSSLUX']}
+                                            </p>
+                                            
+                                                                                
+                                            <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                                action="{!seedCSSTextFromFile}" 
+                                                oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');" 
+                                                value="{!GlobalLocalisations['ButtonEnable']}" 
+                                                title="{!GlobalLocalisations['ButtonEnable']}" 
+                                                styleClass="IHIcon24 IHIdle" 
+                                                style="width: 80px; font-size: 11px;"
+                                                reRender="DiagsMsg" 
+                                                disabled="{!DisableOpts}" />
+                                                                                
+                                        </td>
+                                        
+                                        <td>                                           
+                                            <apex:inputTextArea disabled="{!CICustomerCSS == null}" 
+                                                value="{!CICustomerCSS.SupportingControls__c}" 
+                                                richText="false" rows="5" 
+                                                style="width: 600px; margin: 10px; font-family: monospace; white-space: nowrap;"/>
+                                    
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr/>
+                                        </td>
+                                    </tr>
+-->
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingCustomStyles']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingCustomStyles']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText style="width: 600px; margin-left: 10px;" value="{!Settings.CustomStyles__c}" />
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr/>
+                                            <p>
+                                                {!DialogueLocalisations['AdviceLabelBrandingColours']}
+                                            </p>
+                                        </td>
+                                    </tr>
+                        
+                                   
+<!-- Branding colours -->
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour4']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour4__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour4__c};" />
+                                        </td>
+                                    </tr>
+                                                                        
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour1']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour1__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour1__c};" />
+                                        </td>
+                                    </tr>
+
+                                    
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour7']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour7__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour7__c};" />
+                                        </td>
+                                    </tr>
+
+                                    
+<tr><td colspan="2"><hr/></td></tr>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour5']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour5__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour5__c};" />
+                                        </td>
+                                    </tr>
+                                    
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour2']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour2__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour2__c};" />
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour8']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour8__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour8__c};" />
+                                        </td>
+                                    </tr>
+
+                                    
+<tr><td colspan="2"><hr/></td></tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour6']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour6__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour6__c};" />
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour3']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour3__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour3__c};" />
+                                        </td>
+                                    </tr>
+                                    
+
+<tr><td colspan="2"><hr/></td></tr>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="">
+                                                {!DialogueLocalisations['FieldLabelBrandColour1Text']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText maxlength="6" size="6" style="margin-left: 10px;" value="{!Settings.BrandColour1Text__c}" />
+                                            <div class="ColourPreview" style="background-color: #{!Settings.BrandColour1Text__c};" />
+                                        </td>
+                                    </tr>
+                                    
+                                    
+<!-- End of brand colours -->
+
+
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <hr/>
+                                            <p>
+                                                {!DialogueLocalisations['AdviceLabelBrandingUXOption']}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class='IH-H4' style="cursor: pointer" title="{!DialogueLocalisations['TipFieldBrandingCustomStyles']}">
+                                                {!DialogueLocalisations['FieldLabelBrandingUXOption']}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:selectList style="margin-left: 10px;" value="{!Settings.BrandUXOption__c}" multiselect="false" size="1">
+                                                <apex:selectOption itemValue="1" itemLabel="Classic" />
+                                                <apex:selectOption itemValue="2" itemLabel="Lightning - Guides only" />
+                                                <apex:selectOption itemValue="3" itemLabel="Lightning - Guides, Portal, QAM & Callouts" />
+                                            </apex:selectList>                                                                                                                  
+                                        </td>
+                                    </tr>
+                                                                         
+                                </table>
+                            
+                        </div>
+                    </apex:tab>
+
+                    
+                </apex:tabPanel>
+    
+<!--   
+===============================================
+FOOTER
+===============================================
+ -->                
+                <div class='IHListFooter'>
+                    <table><tr>
+                        <td style='width: 200px;'>
+                        
+                            <!--    <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                    reRender="SettingsForm" 
+                                                    disabled="{!DisableOpts}" 
+                                                    value="{!GlobalLocalisations['ButtonSave']}" 
+                                                    styleClass="IHIcon24 IHIdle" 
+                                                    action="{!saveSettings}" 
+                                                    title="{!DialogueLocalisations['TipButtonSave']}" 
+                                                    oncomplete="IHEditHelp.confirmComplete(this, '{!Diags}');"
+                                                    style="width: 80px;" /> -->
+                                                    
+                                <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                    reRender="SettingsForm" 
+                                                    disabled="{!DisableOpts}" 
+                                                    value="{!GlobalLocalisations['ButtonSave']}" 
+                                                    styleClass="IHIcon24 IHIdle" 
+                                                    action="{!saveSettings}" 
+                                                    title="{!DialogueLocalisations['TipButtonSave']}" 
+                                                    oncomplete="javascript:callAlert('{!Diags}');"
+                                                    style="width: 80px;" />
+                            
+                                <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);"
+                                                    disabled="{!DisableOpts}" 
+                                                    value="{!GlobalLocalisations['ButtonCancel']}" 
+                                                    styleClass="IHIcon24 IHIdle" 
+                                                    action="{!cancelSettingsChanges}"
+                                                    title="{!DialogueLocalisations['TipButtonCancel']}"  
+                                                    style="width: 80px;" />
+                          
+                        </td>
+                        
+                        <td>
+                            <apex:outputText id="DiagsMsg" value="{!Diags}"></apex:outputText>
+                        </td>
+                    </tr></table>
+                </div>
+        
+            </apex:form>
+        </div>
+        
+ 
+    </body> 
+</apex:page>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LightningTemplate__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The page layout to use when displaying the full text of this Help Topic in the Lightning viewer component</description>
+    <inlineHelpText>The page layout to use when displaying the full text of this Help Topic in the Lightning viewer component</inlineHelpText>
+    <label>Lightning Template</label>
+    <referenceTo>HelpTopicTemplate__c</referenceTo>
+    <relationshipLabel>Help Topics (Lightning Template)</relationshipLabel>
+    <relationshipName>Help_Topics1</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

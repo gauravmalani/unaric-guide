@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X8_All_Help_Topics_Linked_to_a_Layout</fullName>
+    <columns>GuidedLayout__c</columns>
+    <columns>NAME</columns>
+    <columns>Summary__c</columns>
+    <columns>Active__c</columns>
+    <columns>GuidedElement__c</columns>
+    <columns>GuideStepMode__c</columns>
+    <columns>GuideCallout__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>GuidedLayout__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Topics Linked to a Layout</label>
+</ListView>

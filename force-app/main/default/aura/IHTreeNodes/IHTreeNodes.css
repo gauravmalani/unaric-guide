@@ -1,0 +1,46 @@
+/* ============================================================================*/
+/* Standard, on-screen view */
+/* ============================================================================*/  
+
+.THIS .node 						{margin-left: 2em;}
+.THIS .nodeExpanded 				{transform: rotate(90deg);}
+.THIS .TreeNodeClickableContainer 	{width: 100%; overflow: hidden;	text-overflow: ellipsis;}
+.THIS span.WhiteText span.fa-stack-1x {color: #ffffff; font-size: 0.8em;}
+
+
+/* D&D support */
+.THIS .NodeOrdinal					{border: 1px solid #eee; font-size: 0.6rem; text-align: center; height: 0.8rem; border-radius: 0.4rem;}
+.THIS .DropTargetActive 			{background-color: rgba(75, 202, 129, 0.1) !important; border: 2px dashed #4bca81; border-radius: 4px; animation: pulseGreen 1.5s infinite; position: relative;}
+.THIS .DropTargetUnavailable 		{background-color: rgba(254, 92, 76, 0.1) !important; border: 2px dashed #fe5c4c; border-radius: 4px; animation: shake 0.5s ease-in-out;}
+/* Copy of "slds-is-selected" that seems not to work for us! */
+.THIS .nodeSelected 				{background: #ecebea; box-shadow: #0070d2 4px 0 0 inset;}
+
+/* Added as slds-is-hidden (the replacement for deprecated slds-is-disabled) appears not to work! */
+/* NB: IHHidden defiend elsewhere as display none - which we do not want as this spoils indentation / alignment... */
+.THIS .IHTwistyHidden						{visibility: hidden;}
+
+/* Compact node/display density setting */
+.THIS .nodeCompact 					{padding: 0 0 0 1rem !important;}
+
+/* Specialist styles for the tags tree provider */
+.THIS .Tagged						{box-shadow: lime 4px 0 0 inset;}
+.THIS .PoolInUse					{box-shadow: silver 4px 0 0 inset;}
+.THIS .PoolNotInUse					{}
+
+
+/* ============================================================================*/
+/* "Mobile" adjustments */
+/* ============================================================================*/
+
+@media screen and (max-width: 47.9375em) {	
+    .THIS .TreeNodeClickableContainer	{margin: 1rem 0;}
+}
+
+
+/* ============================================================================*/
+/* Printable view */
+/* ============================================================================*/  
+
+.THIS .PrintTopic 					{margin-bottom: 20px;}
+.THIS .PrintLabel					{clear: left;}
+.THIS .PrintImage					{margin: 10px 20px 10px 0;}

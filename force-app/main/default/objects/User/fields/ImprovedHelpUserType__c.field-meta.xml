@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ImprovedHelpUserType__c</fullName>
+    <deprecated>false</deprecated>
+    <inlineHelpText>For Improved Help Subscriptions based on Named Users, sets this User&apos;s Improved Help User Type</inlineHelpText>
+    <label>Improved Help User Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Helped User</fullName>
+                <color>#0B6FCE</color>
+                <default>false</default>
+                <label>Helped User</label>
+            </value>
+            <value>
+                <fullName>Help Analyst</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Help Analyst</label>
+            </value>
+            <value>
+                <fullName>Help Author</fullName>
+                <color>#E27001</color>
+                <default>false</default>
+                <label>Help Author</label>
+            </value>
+            <value>
+                <fullName>Help Administrator</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+                <label>Help Administrator</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

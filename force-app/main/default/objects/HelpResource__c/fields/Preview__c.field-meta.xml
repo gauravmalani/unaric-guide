@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Preview__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <formula>IF( ISPICKVAL( ResourceType__c , &quot;Document&quot;) , 
+    IMAGE(&quot;/servlet/servlet.ImageServer?id=015d0000000T3Ah&amp;oid=00Dd0000000di2a&quot;, &quot;Document Icon&quot;, 32, 32),
+IF( ISPICKVAL( ResourceType__c , &quot;Web-Page&quot;),
+        IMAGE(&quot;/servlet/servlet.ImageServer?id=015d0000000T3Va&amp;oid=00Dd0000000di2a&quot;, &quot;Web-page Icon&quot;, 32, 32),
+IF( ISPICKVAL( ResourceType__c , &quot;Video&quot;),
+    IMAGE(&quot;/servlet/servlet.ImageServer?id=015d0000000T3V2&amp;oid=00Dd0000000di2a&quot;, &quot;Video Icon&quot;, 32, 32),
+IMAGE( ResourceURL__c , &quot;Preview from Link &quot; &amp;  ResourceURL__c, 32, 32) ) ))</formula>
+    <inlineHelpText>Formula returning a Preview of the Help Resource (if available)</inlineHelpText>
+    <label>Preview</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

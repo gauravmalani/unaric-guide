@@ -1,0 +1,283 @@
+<aura:component controller="ControllerLUXOps"> 
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>     
+	<aura:handler name="change" value="{!v.ComponentDef}" action="{!c.ComponentDefChange}"/>
+	
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelCGStep1" type="string"  access="private" default="" />
+    <aura:attribute name="AdviceLabelCGStep2" type="string"  access="private" default="" />
+    <aura:attribute name="AdviceLabelCGStep3" type="string"  access="private" default="" />
+    <aura:attribute name="ButtonGenerate" type="string"  access="private" default="" />
+    <aura:attribute name="TipAttrAdd" type="string"  access="private" default="" />
+    <aura:attribute name="TipAttrDelete" type="string"  access="private" default="" />
+    <aura:attribute name="TitleSubtitleCGStep3" type="string"  access="private" default="" />
+	<aura:attribute name="TipCueContextHelp" type="string"  access="private" default="" />
+	
+<!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="Id" type="string" required="false" default="" access="public" />
+    <aura:attribute name="isInitialised" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="ComponentDef" type="string" required="true" default="" access="global" />
+	<aura:attribute name="theComponent" type="Object" required="true" default="" access="global" />
+	<aura:attribute name="Parent" type="Object" required="true" default="" access="global" />
+	<aura:attribute name="MyDelimiter" type="string" required="true" default=":~¬|" access="global" />
+    
+	<aura:attribute name="SuppressPoweredBy" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="UXTheme" type="string" required="false" default="" access="public" />
+    <aura:attribute name="ToToggle" type="boolean" access="public" default="false"/>
+    
+    <aura:attribute name="componentName" type="string" required="false" default="" access="public" />
+    <aura:attribute name="attributeValue" type="string" required="false" default="" access="public" />
+    <aura:attribute name="attributeName" type="string" required="false" default="" access="public" />
+    <aura:attribute name="listItems" type="list" required="false" default="" access="private" />
+    
+    <aura:attribute name="ComponentTypes" type="List" access="private" default="[ {'label': 'Autoform', 'value': '1^iahelp:IHAutoForm'},
+			{'label': 'Detail', 'value': '2^iahelp:IHDetail'},
+			{'label': 'Flow Launcher', 'value': '3^iahelp:IHFlowLauncher'},
+			{'label': 'Image Viewer', 'value': '4^iahelp:IHImageViewer'},
+			{'label': 'List', 'value': '5^iahelp:IHList'},
+			{'label': 'Reading List Viewer', 'value': '6^iahelp:IHRLViewer'},
+			{'label': 'Tabs', 'value': '7^iahelp:IHTabs'},
+			{'label': 'Tree', 'value': '8^iahelp:IHTree'},
+			{'label': 'Utility 1', 'value': '9^iahelp:IHUtility1'}
+			]"/>
+    
+    <aura:attribute name="AttributeNames" type="List" access="private" default="[
+			{'label': 'Component Height', 'value': 'Height'},
+			{'label': 'Component Id', 'value': 'ComponentId'},
+			{'label': 'Suppress Header', 'value': 'SuppressHeader'},
+			{'label': 'Suppress Footer', 'value': 'SuppressFooter'},
+			]"/>
+    
+			
+    <aura:attribute name="ComponentSelected" type="string" required="false" default="" access="private" />
+    <aura:attribute name="attNameValuePairList" type="List" access="private" default="[{'attributeName' : '', 'attributeValue' : '', 'attributeHelp' : '', 'attributeHelpId' : '', 'attributetype' : '', 'attributedefaultvalues' : ''}]"/>
+    <aura:attribute name="SelectedAttributeName" type="string" access="private" default=""/>
+
+	<aura:attribute name="HelpExpanded" type="boolean" required="false" default="false" access="private" />
+    
+    <aura:attribute name="isAdministrator" type="boolean" access="public" default="false"/>
+    <aura:attribute name="isAuthor" type="boolean" access="public" default="false"/>
+    
+<!-- 
+================================================
+View mode
+================================================
+-->    
+    <aura:if isTrue="{!v.ToToggle == false }">
+        {!v.body}
+    </aura:if>
+	
+<!-- 
+================================================
+Edit / design mode
+================================================
+-->     
+    <aura:if isTrue="{!v.ToToggle}"> 
+
+	    <div class="slds_card" style="background-color: #cccccc;">	    	
+	        
+<!-- 
+................................................
+Step 1 - select component
+................................................
+-->
+			<div class="IHDesignerRow slds-grid slds-wrap">
+				<div class="slds-col slds-size_12-of-12" title="{!v.AdviceLabelCGStep1}">
+					<div class="RLStepNumberContainer">
+						<div class="RLStepNumber">1</div>
+					</div>					
+	        
+		            <div class="RLStepName">
+						{!v.AdviceLabelCGStep1}
+					</div>	        
+				</div>				
+
+				<div class="slds-col slds-size_12-of-12 slds-p-top_small">
+	                <div class="slds-form-element__control">
+	                    <lightning:combobox name="cmpName" 
+		                    	onchange="{!c.paramChange}" 
+		                    	variant="label-hidden" 
+                        		class="labelRight"		                    	
+		                    	value="{!v.ComponentSelected}" 
+		                    	options="{!v.ComponentTypes}" />
+	                </div>
+				</div>
+			</div>
+
+<!-- 
+................................................
+Step 2 - set attribute(s)
+................................................
+-->
+			<div class="IHDesignerRow slds-grid slds-wrap">
+				<div class="slds-col slds-size_12-of-12" >
+					<div class="RLStepNumberContainer">
+						<div class="RLStepNumber">2</div>
+					</div>					
+	        
+		            <div class="RLStepName">
+						
+						<span title="{!v.AdviceLabelCGStep2}">
+							{!v.AdviceLabelCGStep2}
+						</span>
+
+						<div class="designerEditButton padLeft IHAdopter Twisty">
+							<i class='fa fa-question'></i>
+						</div>
+						
+						<div class="{!v.HelpExpanded == true? 'designerEditButton IATool IHAdopter Twisty' : 'slds-hide'}" onclick="{!c.toggleHelp}" title="{!v.TipCueContextHelp}">
+							<i class='fa fa-caret-up'></i>
+						</div>
+						
+						<div class="{!v.HelpExpanded == false? 'designerEditButton IATool IHAdopter Twisty' : 'slds-hide'}" onclick="{!c.toggleHelp}" title="{!v.TipCueContextHelp}">
+							<i class='fa fa-caret-down'></i>
+						</div>								
+						
+					</div>	        
+				</div>	
+				
+				<div class="slds-col slds-size_12-of-12 slds-p-top_small">
+				
+		            <aura:iteration items="{!v.attNameValuePairList}" var="R" indexVar="rIdx">
+						<div class="slds-grid">		
+                           
+			                <div class="slds-col slds-size_6-of-12 forceBlock">
+		                        <lightning:combobox name="{!'attName_'+rIdx}" 
+		                        		onchange="{!c.paramChange}" 
+		                        		variant="label-hidden" 
+		                        		class="labelRight"
+		                        		value="{!R.attributeName}"
+		                        		options="{!v.AttributeNames}" 
+		                        		id="comboId" />
+							</div>				
+							
+			                <div class="slds-col slds-size_5-of-12 forceBlock">
+                                
+                                <aura:if isTrue="{!or(R.attributetype  == '' , R.attributetype == 'Integer')}">
+			                        <lightning:input  name="{!'attValue_'+rIdx}" 
+			                        		onblur="{!c.paramChange}" 
+			                        		variant="label-hidden" 
+			                        		class="labelRight"
+			                        		type="{!R.attributetype == 'Integer' ? 'number' : 'text' }" 
+			                        		value="{!R.attributeValue}" 
+			                        		id="inputId"/>
+                                </aura:if>
+                                
+                                <aura:if isTrue="{!R.attributetype  == 'Boolean'}">
+                                    <ui:inputCheckbox
+                                                  name="{!'attValue_'+rIdx}"    
+                                                  aura:id="fstname" 
+                                                  class="labelRight"
+                                                  labelClass="slds-form-element__label"
+                                                  value="{!R.attributeValue}"
+                                                  required="false"/>
+                                </aura:if>
+
+                                <aura:if isTrue="{!R.attributetype  == 'CustomPicklist'}">
+                                    <lightning:select name="select" value="{!R.attributeValue}">
+                                        <aura:iteration items="{!R.attributedefaultvalues}" var="attVal">
+                                            <option text="{!attVal}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </aura:if>
+		                    </div>                                     
+		
+			                <div class="slds-col slds-size_1-of-12 forceBlock">	
+			                				
+								<button name="Add Row" class="designerEditButton" onclick="{! c.addComponentAttribute }" >
+									<i class="fa fa-plus" title="{!v.TipAttrAdd}" aria-hidden="true"></i>
+								</button>	           
+			                				
+			                    <button name="Remove Row" class="designerEditButton" onclick="{! c.removeComponentAttribute}"  data-value="{!rIdx}" >
+			                        <i class="fa fa-minus" title="{!v.TipAttrDelete}" aria-hidden="true"></i>
+			                    </button>
+			                    
+			                </div> 
+						</div>		
+							                
+						<div class="{! v.HelpExpanded == true ? 'slds-grid' : 'slds-hide'}">
+							<div class="slds-col slds-size_12-of-12 forceBlock IHAdopter RLStepSummary">
+
+								<aura:if isTrue="{!R.attributeHelpId != ''}">
+									<a title="{!v.TipCueContextHelp}" target="_blank" href="{! '/' + R.attributeHelpId}">
+										{!R.attributeHelp}
+									</a>							
+								</aura:if>
+								
+								<aura:if isTrue="{!R.attributeHelpId == ''}">
+									{!R.attributeHelp}
+								</aura:if>
+
+							</div>
+						</div>
+		                
+		            </aura:iteration>      
+					
+				</div>
+			</div>
+
+<!-- 
+................................................
+Step 3 - Generate definition
+................................................
+-->
+			<div class="IHDesignerRow slds-grid slds-wrap">
+				<div class="slds-col slds-size_12-of-12" title="{!v.AdviceLabelCGStep3}">
+					<div class="RLStepNumberContainer">
+						<div class="RLStepNumber">3</div>
+					</div>					
+	        
+		            <div class="RLStepName">
+						{!v.AdviceLabelCGStep3}
+					</div>	        
+				</div>				
+
+				<div class="slds-col slds-size_12-of-12 slds-p-top_small">
+
+			        <div class="slds-m-around_small slds-align_absolute-center slds-">
+						
+						<!-- Generation button disabled until component selected -->
+						<aura:if isTrue="{! v.ComponentSelected != ''}">			        
+				            <button class="slds-button slds-button_brand" onclick="{!c.generateComponentDef}" title="{!v.AdviceLabelCGStep3}">
+								{!v.ButtonGenerate}
+				            </button>
+						</aura:if>	
+						
+						<aura:if isTrue="{! v.ComponentSelected == ''}">			        
+				            <button class="slds-button slds-button_brand" disabled="disabled">
+								{!v.ButtonGenerate}
+				            </button>
+						</aura:if>			            
+		            
+			        </div> 
+
+			    	<div class="">
+						{!v.TitleSubtitleCGStep3}
+					    <textarea class="ComponentDefinitionText" onblur="{!c.updateComponentDef}"> 
+	   						{!v.ComponentDef}
+				   		</textarea>
+			    	</div>
+					
+				</div>
+			</div>
+		    
+	    </div>
+    </aura:if>
+    
+</aura:component>

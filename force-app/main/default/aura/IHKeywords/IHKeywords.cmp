@@ -1,0 +1,128 @@
+<aura:component controller="ControllerLUXOps" 
+				extends="IHCard">
+                
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->             
+    <aura:registerEvent name="evtPassThrough" type="c:evtPassThrough"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+    
+    <aura:method name="initialise" action="{!c.initialise}" />
+    <aura:method name="reInitialise" action="{!c.reInitialise}" />
+    <aura:method name="subscribe" action="{!c.subscribe}" />
+
+<!-- 
+================================================
+(Component-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="AdviceLabelSentenceMode" type="string" required="false" default="" access="private" />    
+   
+<!-- 
+================================================
+Member data
+================================================
+--> 
+    <aura:attribute name="ComponentId" type="string" default="" access="global" />
+    <aura:attribute name="selectedColour1" type="string" default="eeeeee" access="global" />
+    <aura:attribute name="deselectedColour" type="string" default="ffffff" access="global" />
+    <aura:attribute name="qualityThresholdOfKeywords" type="integer" default="1" access="global" />
+    <aura:attribute name="MaxPhraseLength" type="integer" default="3" access="global" />
+    <aura:attribute name="operationMode" type="string" default="synchronous" access="global" />
+
+    <aura:attribute name="textValue" type="string" default="" access="public" />    
+    <aura:attribute name="ListingItems" type="sObject[]" required="false" access="public" />
+    
+    <aura:attribute name="words" type="string[]" access="private" />
+    <aura:attribute name="filteredWords" type="string[]" access="private" />
+    <aura:attribute name="finalList" type="List" access="private" />
+    <aura:attribute name="Mapuse" type="map" default="{str1:'sfsfs',str2:null,obj:null}" access="private" />
+    <aura:attribute name="isdirty" type="Boolean" default="false" access="private" />
+    <aura:attribute name="channel" type="string" default="/event/iahelp__LWC_Aura_Interaction_Event__e" access="private" />
+   	<aura:attribute name="GUID" type="string" access="private" />
+    <aura:attribute name="selectedKeywordsList" type="string" access="private" />
+    <aura:attribute name="Sentences" type="sObject[]" access="public" />
+    <aura:attribute name="SentenceMode" type="boolean" access="public" default = "false"/>
+    
+    
+    
+    <ltng:require styles="/resource/iahelp__IHResources/lib/FontAwesome463/css/font-awesome.min.css" />
+    <ltng:require styles="/resource/iahelp__IHResources/css/help_main.css" />
+   
+   
+    <lightning:empApi aura:id="empApi"/>
+    
+                
+	<div  class="slds-p-top_medium slds-p-left_medium slds-p-bottom_medium slds-p-right_medium">
+<!--        
+================================================
+No data message
+================================================
+-->
+		<div class = "{!v.textValue.length == 0 || v.textValue+'' == ''? 'NoDataMessage' : 'slds-hide'}">
+		    {!v.NoDataMessage}
+		</div>
+
+<!-- 
+================================================
+Keyword list (or asynch message when processing)
+================================================
+-->		
+		<ul>
+			<aura:if isTrue="{!v.ListingItems.length > 0 &amp;&amp; v.isdirty == false}">
+				<aura:iteration items="{!v.ListingItems}" var="LI" indexVar="key">
+				
+					<aura:if isTrue="{!LI.Parameters >= v.qualityThresholdOfKeywords &amp;&amp; LI.Id != 'ASYNCH'}">                 
+ 	                    <span style="{!'background : #'+v.deselectedColour}" class="{! 'slds-badge ' + LI.StyleClass}" onclick="{!c.keywordClick}">
+	                        {!LI.Id}
+	                    </span>
+					</aura:if> 
+					
+					<aura:if isTrue="{!LI.Id == 'ASYNCH'}">
+						<div class="NoDataMessage">
+							{!LI.Label}
+						</div>                
+					</aura:if>        
+					
+               </aura:iteration>
+           </aura:if>                
+		</ul>
+
+
+<!-- 
+================================================
+"Sentence mode" furniture
+================================================
+-->		
+	    <aura:if isTrue="{!v.SentenceMode}">
+	    
+	        <div class="SentenceMode">
+	        	<div class="SentenceModeTitle">
+	        		{!v.AdviceLabelSentenceMode}
+	        	</div>
+	        	
+ 			    <aura:iteration items="{!v.Sentences}" var="sen" indexVar="key">
+		            <b>{!sen.keyword} :</b>
+		                
+			        <ul class="SentenceList">
+						<aura:iteration items="{!sen.sentence}" var="item" indexVar="key2">
+							<li>{!item}</li>    
+						</aura:iteration>
+					</ul>
+		                	            
+		        </aura:iteration>
+	        	
+	        </div>
+	        
+	    </aura:if>
+
+            
+	</div>  
+	
+	
+
+</aura:component>

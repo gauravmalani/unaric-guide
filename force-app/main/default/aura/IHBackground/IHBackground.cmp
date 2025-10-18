@@ -1,0 +1,42 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:hasRecordId,force:hasSObjectName,flexipage:availableForAllPageTypes"
+				access="global">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+
+<!-- 
+================================================
+Member data
+================================================
+-->	
+
+	<aura:attribute name="Image" type="string" required="true" default="" access="global" />
+	<aura:attribute name="styleSize" type="string" required="true" default="Original size" access="global" />
+	<aura:attribute name="styleRepeat" type="string" required="true" default="No repeat" access="global" />
+	<aura:attribute name="stylePosition" type="string" required="true" default="Fixed" access="global" />
+	<aura:attribute name="styleWidth" type="string" required="true" default="Containing column" access="global" />
+    <aura:attribute name="checkInterval" type="integer" required="true" default="2000" access="global" />
+    <aura:attribute name="Height" type="integer" required="true" default="450" access="global" />
+    <aura:attribute name="VPad" type="integer" required="true" default="0" access="global" />
+    <aura:attribute name="posX" type="integer" required="true" default="0" access="global" />
+    <aura:attribute name="posY" type="integer" required="true" default="0" access="global" />
+    
+    <aura:attribute name="Width" type="string" required="true" default="0px" access="public" />
+	<aura:attribute name="styleClasses" type="string" required="false" default="" access="public" />
+
+
+	<div aura:id="Sizer">
+		<div class="{!v.styleClasses}" 
+			style="{! 'height: ' + v.Height + 'px; width: ' + v.Width + '; background-image: url(' + v.Image + '); 
+						background-position-x: ' + v.posX + 'px; 
+						background-position-y: ' + v.posY + 'px;'}" />	
+	</div>
+
+	<div style="{! 'height: ' + v.VPad + 'px; '}" />	
+		
+</aura:component>

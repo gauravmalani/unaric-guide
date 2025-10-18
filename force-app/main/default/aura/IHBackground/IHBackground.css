@@ -1,0 +1,10 @@
+.THIS .SizeOriginal				{background-size: auto;}
+.THIS .SizeFill					{background-size: contain;}
+
+.THIS .RepeatNone				{background-repeat: no-repeat;}
+.THIS .RepeatHorizontal			{background-repeat: repeat-x;}
+.THIS .RepeatVertical			{background-repeat: repeat-y;}
+.THIS .RepeatBoth				{background-repeat: repeat;}
+
+.THIS .PositionFixed			{position: fixed;}
+.THIS .PositionScrolling		{position: absolute;}

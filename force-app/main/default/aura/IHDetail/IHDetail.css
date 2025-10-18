@@ -1,0 +1,52 @@
+/* General */
+.THIS .Centred 							{text-align: center;}
+.THIS .VoteOption						{display: inline-block; padding-top: 1em;}
+
+/* Remove underline from summary text in read mode: link is required for D&D ops, but this is not a 'real' hyperlink... */
+.THIS .IHLUXDetailSummary a				{text-decoration: none;}
+.THIS .IHLUXDetailSummary a:hover		{text-decoration: none;}
+
+/* Highlight modified / dirty status */ 
+.THIS .isDirty                          {background-color: #faffbd;}
+.THIS .isDirty * .Parameter.input 		{background-color: #faffbd;}
+
+/* Voting related options */
+.THIS .LastVote {}
+
+/* Edit Mode */ 
+.THIS .TabPanel							{background-color: rgba(255, 255, 255, 0.5); height: Calc(100% - 40px);}
+.THIS .TabFooter 						{background-color: #eee;}
+.THIS .TabFooterTools 					{background-color: silver; padding-left: 5px;}
+.THIS .RichTextEdit 					{height: 200px;} /* needs to be calculated from CardBody - (slds-tabs--default__nav + EditTools) */
+
+/* Edit Parameters */
+.THIS .nodeExpanded 					{transform: rotate(90deg);}
+.THIS .ParameterEditMenu 				{padding: 0.3rem; background: #eeeeee;}
+
+.THIS .DropTargetActive 				{background-color: #ffffcc !important;}
+.THIS .DropTargetUnavailable 			{background-color: #ffcccc !important;}
+
+
+
+
+/* Additional general items */
+.THIS .DisplayInline					{display: inline;}
+
+/* Non-topic mode */
+.THIS #IARecordViewComponentBody		{height: 100%;}
+.THIS .IARecordViewComponentBody		{padding: 0 10px; height: 100%;}
+
+/* Topic - view mode */
+.THIS .IHDetailMediaImage				{margin: auto;}
+.THIS .IHDetailMediaImageContainer		{width: 100%;}
+.THIS .IHDetailMediaVideoContainer		{width: 100%;}
+.THIS .IHDetailVoteSetInfo				{border-top: solid 1px #dddddd; padding-top: 5px;}
+.THIS .IHDetailVoteSetImage				{margin-right: 10px; height: 16px; width: 16px; border: 0;}
+.THIS .IHDetailVoteQText				{color: orange;}
+.THIS .IHDetailVoteOptionsContainer		{padding-bottom: 1rem;}
+.THIS .IHDetailVoteOption				{height: 1.2em;}
+
+/* Topic - edit mode */
+.THIS .IHDetailEditorContainer			{height: 100%;}
+.THIS .IHDetailTabHeaders				{height: 40px;}
+.THIS .IHDetailEditorTopicId			{padding-top: 0.6em;}

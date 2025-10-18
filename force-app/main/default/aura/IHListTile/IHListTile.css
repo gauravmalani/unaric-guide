@@ -1,0 +1,77 @@
+.THIS .TileContainer			{cursor: pointer;}
+.THIS .TileContainer:hover		{background: #dddddd;}
+
+.THIS .TileContainerSmallest	{padding: 0.5rem; border-radius: 0.4rem; width: 150px;}
+.THIS .TileContainerSmall 		{padding: 0.7rem; border-radius: 0.5rem; width: 250px;}
+.THIS .TileContainerMedium 		{padding: 1.0rem; border-radius: 0.6rem; width: 300px;}
+.THIS .TileContainerLarge 		{padding: 1.2rem; border-radius: 0.7rem; width: 400px;}
+
+.THIS .TileContainerSmallest .TileArticle	{border-radius: 0.3rem;}
+.THIS .TileContainerSmall .TileArticle		{border-radius: 0.4rem;}
+.THIS .TileContainerMedium .TileArticle		{border-radius: 0.5rem;}
+.THIS .TileContainerLarge .TileArticle		{border-radius: 0.6rem;}
+
+.THIS .TileArticle				{overflow: hidden;}
+
+.THIS .TileText					{padding: 0 0.3rem;	overflow: hidden;}
+
+.THIS .SummarySmallest			{font-size: 0.7rem; height: 1.9rem; line-height: 0.8rem; margin: 0.5rem;}
+.THIS .SummarySmall				{font-size: 1.1rem; height: 3rem; line-height: 1.3rem; margin: 0.8rem;}
+.THIS .SummaryMedium			{font-size: 1.4rem; height: 3.8rem; line-height: 1.6rem; margin: 0.8rem;}
+.THIS .SummaryLarge				{font-size: 2.0rem; height: 5.5rem; line-height: 2.1rem; margin:1rem}
+
+
+
+.THIS .DescriptionSmallest		{font-size: 0.7rem; height: 3.9rem; line-height: 0.7rem; margin-top: 0.6rem; overflow-y: scroll;}
+.THIS .DescriptionSmall			{font-size: 0.8rem; height: 5.3rem; line-height: 1.0rem; margin-top: 1.7rem; overflow-y: scroll;}
+.THIS .DescriptionMedium		{font-size: 1.0rem; height: 6.2rem; line-height: 1.4rem; margin-top: 2.0rem; overflow-y: scroll;}
+.THIS .DescriptionLarge			{font-size: 1.2rem; height: 8.2rem; line-height: 1.3rem; margin-top: 3.5rem;  overflow-y: scroll;}
+
+.THIS .DescriptionLarge::-webkit-scrollbar {
+  display: none;
+}
+.THIS .DescriptionMedium::-webkit-scrollbar {
+  display: none;
+}
+.THIS .DescriptionSmall::-webkit-scrollbar {
+  display: none;
+}
+.THIS .DescriptionSmallest::-webkit-scrollbar {
+  display: none;
+}
+
+
+.THIS .SummarynotExpandSmallest			{font-size: 0.7rem; height: 2.9rem; line-height: 0.8rem;}
+.THIS .SummarynotExpandSmall				{font-size: 1.1rem; height: 5rem; line-height: 1.3rem;}
+.THIS .SummarynotExpandMedium			    {font-size: 1.4rem; height: 5.5rem; line-height: 1.6rem;}
+.THIS .SummarynotExpandLarge				{font-size: 2.0rem; height: 7.5rem; line-height: 2.1rem;}
+
+
+.THIS .IconSizeSmallest     {margin-left: 7rem;}
+.THIS .IconSizeSmall        {margin-left: 12rem; margin-top: 0.5rem;} 
+.THIS .IconSizeMedium       {margin-left: 14rem; margin-top: 0.6rem;}
+.THIS .IconSizeLarge        {margin-left: 19rem;}
+
+.THIS .textclassSmallest    {padding-top: 0.3rem; text-align: center;}
+.THIS .textclassSmall    {padding-top: 0.4rem; text-align: center;}
+.THIS .textclassMedium    {padding-top: 0.5rem; text-align: center;}
+.THIS .textclassLarge       {padding-top: 1rem; text-align: center;}
+/* Our copy of FA seems to lack this? */
+.THIS .fa-7x					{font-size: 7rem;}
+
+
+
+.THIS .container{
+    display:grid;
+    grid-template-rows:33% 68%;
+    grid-template-areas:
+        "main2 "
+        "main"
+      ;
+    }
+.THIS .main2{
+    grid-area:main2;
+  }
+.THIS .main{
+    grid-area:main;
+  }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DefaultGuideTemplate__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The Help Topic Template to use by default when adding new Help Topics for use in a Guide</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Help Topic Template to use by default when adding new Help Topics for use in a Guide</inlineHelpText>
+    <label>DEPRECATED: Default Guide Template</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

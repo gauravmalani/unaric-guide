@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HourCreated__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Formula representing the hour of the day at which the Interaction was logged</description>
+    <externalId>false</externalId>
+    <formula>(CASE(VALUE(MID(TEXT(CreatedDateTime__c),12,2)),
+0, &quot;24&quot;,
+1,&quot;01&quot;,
+2,&quot;02&quot;,
+3,&quot;03&quot;,
+4,&quot;04&quot;,
+5,&quot;05&quot;,
+6,&quot;06&quot;,
+7,&quot;07&quot;,
+8,&quot;08&quot;,
+9,&quot;09&quot;,
+10,&quot;10&quot;,
+11,&quot;11&quot;,
+12,&quot;12&quot;,
+13,&quot;13&quot;,
+14,&quot;14&quot;,
+15,&quot;15&quot;,
+16,&quot;16&quot;,
+17,&quot;17&quot;,
+18,&quot;18&quot;,
+19,&quot;19&quot;,
+20,&quot;20&quot;,
+21,&quot;21&quot;,
+22,&quot;22&quot;,
+23,&quot;23&quot;,
+&quot;0&quot;))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Formula representing the hour of the day at which the Interaction was logged</inlineHelpText>
+    <label>Hour Created</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

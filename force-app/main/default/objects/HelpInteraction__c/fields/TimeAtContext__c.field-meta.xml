@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TimeAtContext__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Number of seconds user spent at a particular context logged location</description>
+    <externalId>false</externalId>
+    <formula>(DepartureDate__c - CreatedDate) * 86400</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Number of seconds user spent at a particular context logged location</inlineHelpText>
+    <label>Time at Context</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

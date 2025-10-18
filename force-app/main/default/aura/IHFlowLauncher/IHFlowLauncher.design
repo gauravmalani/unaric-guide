@@ -1,0 +1,15 @@
+<design:component label="Improved Help: Flow Launcher">
+
+	<design:attribute name="theFlowName" 
+	                label="Flow Name" 
+	                description="API Name of the Salesforce Flow you wish to launch via this component. Enter '[CONTEXT]' to prompt the user to select a flow from those available to the current Help layout." 
+                    default="[CONTEXT]" 
+                    required="true" />	
+
+	<design:attribute name="theFlowParams" 
+	                label="Flow Parameters" 
+	                description="Optionally, provide input parameter values for the specified flow. Each parameter should be in the form: Name¬Data Type¬Value : use a pipe (|) to separate multiple parameters. EG: MyFirstParameter¬String¬Hello World!|Parameter2¬Number¬27 ." 
+                    default="" 
+                    required="false" />	
+
+</design:component>

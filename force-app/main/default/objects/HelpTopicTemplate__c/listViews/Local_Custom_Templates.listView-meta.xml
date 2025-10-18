@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Local_Custom_Templates</fullName>
+    <columns>NAME</columns>
+    <columns>TemplateType__c</columns>
+    <columns>PageURL__c</columns>
+    <columns>Description__c</columns>
+    <columns>DefaultHeight__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PageURL__c</field>
+        <operation>startsWith</operation>
+        <value>c.</value>
+    </filters>
+    <label>Local Custom Templates</label>
+</ListView>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Created by Lightning App Builder</description>
+    <flexiPage>Tagging1</flexiPage>
+    <icon>ImprovedHelpDocuments/IconHelpedElement_png.png</icon>
+    <label>Tagging</label>
+    <motif>Custom150: TV Widescreen</motif>
+</CustomTab>

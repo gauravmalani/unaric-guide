@@ -1,0 +1,34 @@
+/* Crumb used to show peer trees */
+.THIS #PopoverPeerList 					{padding: 10px;	z-index: +1; position: fixed;}
+.THIS .PopoverPeerCrumb					{width: 100%;}
+ 
+/* D&D ops */
+.THIS .DropTargetActive 				{background-color: #d9ffdf !important;}
+.THIS .DropTargetUnavailable 			{background-color: #ffcccc !important;}
+
+.THIS .DropTargetRoot					{text-align: center; overflow: hidden; margin-bottom: 3px; font-size: 2rem; color: #ffffff;}
+.THIS .DropTargetRootAvailable			{background-color: #eeeeee; height: 2px; cursor: pointer;}
+.THIS .DropTargetRootAvailable:hover	{background-color: #ffcccc; height: 3px; cursor: pointer; margin-bottom: 2px;}
+.THIS .DropTargetRootActive				{background-color: #ffcccc; height: auto !important;}
+
+
+/* Special node types */
+.THIS .DuplicateNode					{border: dashed 1px grey; border-radius: 0.3rem;}
+
+
+/* Print specifics */
+.THIS .PrintContainer 					{}
+.THIS .printNodeContainer				{max-width: 100%;}
+.THIS .PrintControls					{}
+.THIS .ModeSpecificToolsPrint			{height: 5rem;}
+.THIS .PrintHeader						{display: none;}
+.THIS .PrintFooter						{display: none;}
+
+@media print {
+	.THIS .PrintControls				{display: none;}
+	.THIS .ModeSpecificToolsPrint		{display: none;}
+	
+	/* HEADER AND FOOTER HIDDEN FOR THIS RELEASE */
+	.THIS .PrintHeader					{display: none; text-align: center; font-size: 0.6em; font-variant: all-caps; width: 100%; position: fixed; top: 0;}
+	.THIS .PrintFooter					{display: none; width: 100%; text-align: center; font-size: 0.6em; font-variant: all-caps; position: fixed; bottom: 0;}
+}

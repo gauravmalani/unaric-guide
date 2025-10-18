@@ -1,0 +1,18 @@
+.THIS .GPHeaderText	*										{background: transparent; width: 100%; border: none; color: white;}
+.THIS .GPBodyTextArea *										{background: transparent; width: 100%; border: none; resize: vertical; color: white;}
+.THIS .GPBodyText *											{background: transparent; width: 100%; border: none;}
+.THIS .GPBodySelect *										{width: 100%; border: none; color: rgb(3,46,97);}
+
+.THIS .DataModifiedMarker									{vertical-align: unset;}
+.THIS .PromptImage											{height: 150px; padding-top: 5px;}
+.THIS .VideoIframeContainer									{padding-top: 5px;}
+.THIS .VideoIframe											{width: 100%;}
+
+.THIS ::-webkit-input-placeholder, 							/* Chrome/Opera/Safari */
+.THIS ::-moz-placeholder, .THIS :-moz-placeholder, 			/* Firefox 19+ */
+.THIS :-ms-input-placeholder 								/* IE 10+ */
+															{color: white;}
+																
+.THIS .PromptFooter											{padding: 1em;}
+
+.THIS .slds-nubbin_bottom-left								{margin-bottom: 1rem;}

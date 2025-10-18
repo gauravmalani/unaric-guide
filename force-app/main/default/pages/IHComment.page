@@ -1,0 +1,148 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO ALLOW USERS TO ADD COMMENTS ABOUT A PARTICULAR HELP TOPIC (FROM THE TOOLS PAGE, 
+AS THIS IS WHERE IT IS BEING VIEWED) OR HELPED PAGE LAYOUT (IF COMMENTING FROM THE QAM IN SF).
+REQUIRES THE RELEVANT HELP TOPIC ID OR PAGE LAYOUT IDENTIFIER, I.E.
+
+https://ihdev-dev-ed.my.salesforce.com/_ui/common/apex/debug/ApexCSIPage#[SF base URL]/Apex/IHComment?HTID=[topic id]
+... or ...
+[SF base URL]/Apex/IHComment?PL=[page layout id]
+
+OPTIONALLY, CONTROL THE UI VARIANT WITH PARAMETERS IH1UX=true (SF1) OR IHLUX=true (Lightning)
+
+Martin Little for Improved Apps
+July 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelComment']}" 
+                controller="ControllerComments"
+                action="{!initialise}" >
+
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['AdviceLabelComment']}</title>        
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />
+
+        <apex:slds rendered="{!isIHLUX}" />
+
+        <style>
+            .IH1UX.Dialogue             {background: transparent;}
+            .IH1UX #CommentDialogue     {box-shadow: none; border: none; border-radius: 0px;}
+            
+            .IHLUX.IHPanelHeader        {display: none;}
+            .IHLUXContainer textarea    {border: solid 1px #bbbbbb !important;}
+            .IHLUX.IH-H4                {padding: 10px;}
+        </style>
+
+
+        <script type='text/javascript'>
+        
+            // Set focus to search text box on load
+            function initialise() {
+                
+                var txt = '{!JSENCODE($Component.commentForm.txtComment)}';
+                var x = document.getElementById(txt);
+                
+                if (x) {
+                    x.value = '';
+                    
+                    // Do NOT focus if we're in SF1...
+                    if (!{!isIH1UX}) {
+                        x.focus();
+                    }
+                }
+                
+                // Also, hide the instructional text if there's an error
+                var t = '{!JSENCODE(DialogueTitle)}';
+                if (t == '{!DialogueLocalisations['AdviceLabelFeatureNotAvailable']}') {
+                    $IAIHj('#SubmitButtonOff').hide();
+                }   
+            }
+        
+            // Check user has entered comment text before "enabling" Submit button:
+            // This is in fact done by swapping the visibility of suitable styled DIVs,
+            // of which only the "enabled" type forms part of the submit command link...
+            function checkComment(elem) {
+                
+                if(elem.value != "") {              
+                    $IAIHj('#SubmitButtonOn').show();
+                    $IAIHj('#SubmitButtonOff').hide();
+
+                } else {
+                    $IAIHj('#SubmitButtonOn').hide();
+                    $IAIHj('#SubmitButtonOff').show();
+
+                }               
+            }
+            
+        </script>
+
+    </head>   
+
+    <body class="Dialogue{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(IHContext != '', ' ' + IHContext, '')}" onload="javascript:initialise();">
+
+        <apex:include pageName="IHHook"/>
+    
+        <div id='CommentDialogue' class="{!IF(isIHLUX==true, 'IHLUX', '')}IHDialogue{!IF(isIH1UX==true || isIHLUX==true, '', ' IHPanel')}">
+        
+            <div class="{!IF(isIHLUX==true, 'IHLUX ', '')}IHPanelHeader IH-H3">
+                 {!DialogueLocalisations['TitleDialogueTitle']}
+            </div>      
+            
+            
+            <div class='IHPanelBody'>
+                <apex:form id="commentForm">
+                    <div class="{!IF(isIH1UX==true, 'IHHidden', 'IH-H4')}{!IF(isIHLUX==true, ' IHLUX', '')}">
+                        <apex:outputText value="{!DialogueTitle}" escape="true"></apex:outputText>
+                    </div>
+                    
+                    <div id="IHCommentBody">
+                        <div class="{!IF(isIHLUX==true, 'IHLUX', '')}Container" style="{!IF(isIH1UX==true, 'width: 95%', '')}">
+                            <apex:inputTextarea onfocus="javascript:checkComment(this);" onkeyup="javascript:checkComment(this);" id="txtComment" styleClass="IHCommentInput" style="border: 0px; width: 100%; height: 2.2em; resize: none; overflow: hidden;" value="{!UserText}" disabled="{!IsError}" />
+                        </div>                  
+                    </div>
+                    
+                    <div class="IHPanelFooter" >
+                        <table width='100%'>
+                            <tr>
+                                <td>                                
+                                    <div id="SubmitButtonOff" style="height: 19px; margin: 5px 0 0 0;">
+                                        <span style="display: {!IF(isIH1UX==true, 'none', 'block')};">
+                                            {!DialogueLocalisations['AdviceLabelEnterFeedback']}
+                                        </span>
+                                        
+                                        <apex:outputText value="{!Diags}" escape="true" />                                      
+                                    </div>                                                          
+                                </td>
+                                
+                                <td>
+                                </td>
+
+                                <td>
+                                    <div id="SubmitButtonOn" style="display: none; float: right;" >
+                                        <apex:commandButton onclick="javascript:IHEditHelp.showClicked(this);" 
+                                                        value="{!DialogueLocalisations['ButtonSubmit']}" 
+                                                        styleClass="IHIcon24 IHIdle" 
+                                                        action="{!logComment}" 
+                                                        title="{!DialogueLocalisations['TipButtonSubmit']}" 
+                                                        oncomplete="IHEditHelp.confirmComplete(this, '{!JSENCODE(Diags)}'); initialise();" 
+                                                        style="width: 80px;" /> 
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>      
+                                      
+                </apex:form>
+            </div>
+        </div>
+    </body>    
+</apex:page>

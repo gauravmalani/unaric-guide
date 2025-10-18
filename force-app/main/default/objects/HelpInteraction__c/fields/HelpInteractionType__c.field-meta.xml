@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HelpInteractionType__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The type of activity that generated this Help Interaction record</description>
+    <inlineHelpText>The type of activity that generated this Help Interaction record</inlineHelpText>
+    <label>Help Interaction Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Callout</fullName>
+                <color>#F3D904</color>
+                <default>true</default>
+                <label>Callout</label>
+            </value>
+            <value>
+                <fullName>Comment</fullName>
+                <color>#F96FB7</color>
+                <default>false</default>
+                <label>Comment</label>
+            </value>
+            <value>
+                <fullName>Display Density</fullName>
+                <default>false</default>
+                <label>Display Density</label>
+            </value>
+            <value>
+                <fullName>Form Section Toggle</fullName>
+                <default>false</default>
+                <label>Form Section Toggle</label>
+            </value>
+            <value>
+                <fullName>Full Topic</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Full Topic</label>
+            </value>
+            <value>
+                <fullName>Guide Prompt Viewed</fullName>
+                <default>false</default>
+                <label>Guide Prompt Viewed</label>
+            </value>
+            <value>
+                <fullName>HelpRequest</fullName>
+                <default>false</default>
+                <label>Help Request</label>
+            </value>
+            <value>
+                <fullName>Issue</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+                <label>Issue</label>
+            </value>
+            <value>
+                <fullName>List Detail Level</fullName>
+                <default>false</default>
+                <label>List Detail Level</label>
+            </value>
+            <value>
+                <fullName>LUX List Type</fullName>
+                <default>false</default>
+                <label>LUX List Type</label>
+            </value>
+            <value>
+                <fullName>Nudge Displayed</fullName>
+                <default>false</default>
+                <label>Nudge Displayed</label>
+            </value>
+            <value>
+                <fullName>Personal Field Selection</fullName>
+                <default>false</default>
+                <label>Personal Field Selection</label>
+            </value>
+            <value>
+                <fullName>Personal Form Visibility</fullName>
+                <default>false</default>
+                <label>Personal Form Visibility</label>
+            </value>
+            <value>
+                <fullName>Position Detector Context Log</fullName>
+                <default>false</default>
+                <label>Position Detector Context Log</label>
+            </value>
+            <value>
+                <fullName>QAM Drag</fullName>
+                <default>false</default>
+                <label>QAM Drag</label>
+            </value>
+            <value>
+                <fullName>Reading List Entry</fullName>
+                <default>false</default>
+                <label>Reading List Entry</label>
+            </value>
+            <value>
+                <fullName>Resource</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Resource</label>
+            </value>
+            <value>
+                <fullName>Search</fullName>
+                <color>#33FFFF</color>
+                <default>false</default>
+                <label>Search</label>
+            </value>
+            <value>
+                <fullName>Sticky</fullName>
+                <default>false</default>
+                <label>Sticky</label>
+            </value>
+            <value>
+                <fullName>Sticky (Archived)</fullName>
+                <default>false</default>
+                <label>Sticky (Archived)</label>
+            </value>
+            <value>
+                <fullName>System</fullName>
+                <color>#BBBBBB</color>
+                <default>false</default>
+                <label>System</label>
+            </value>
+            <value>
+                <fullName>Tree Node</fullName>
+                <default>false</default>
+                <label>Tree Node</label>
+            </value>
+            <value>
+                <fullName>Tree Search Cancelled</fullName>
+                <default>false</default>
+                <label>Tree Search Cancelled</label>
+            </value>
+            <value>
+                <fullName>Tree Search Completed</fullName>
+                <default>false</default>
+                <label>Tree Search Completed</label>
+            </value>
+            <value>
+                <fullName>Vote</fullName>
+                <default>false</default>
+                <label>Vote</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

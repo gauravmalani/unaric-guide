@@ -1,0 +1,99 @@
+<design:component label="Improved Help: Position Detector">
+
+    <design:attribute name="PositioningGroup" 
+                    label="Positioning Group" 
+                    description="A reference name for this component, similar to Component Id and used in conjunction with the 'Listens To' parameter. This field may be used in Reports, so choose a nice friendly name e.g. 'Contact Page'"
+       				default="[Unique Name]"
+       				required="true" />
+
+    <design:attribute name="PositioningRole" 
+                    label="Role" 
+					description="The service this detector will provide. Help Cue: issues a context message to cue help in other components as soon as this component renders. Help Button: renders a button to cue contextual help on click. Help Request: logs an interaction requestinng that Help be added to this page." 
+					datasource="Component Generator,Help Cue,Help Button,Help Request"
+					default="Help Cue"
+					required="true" />
+
+	<design:attribute name="HelpButtonText" 
+                    label="Button Text" 
+					description="For the 'Help Button' role, optional text to display alongside the icon." 
+                    default=""
+                    required="false" />
+
+	<design:attribute name="HelpButtonTextSize" 
+                    label="Button Text Size" 
+					description="For the 'Help Button' role, sets the font size of optional text." 
+					datasource="Small,Medium,Large"
+                    default="Small"
+                    required="false" />
+
+	<design:attribute name="HelpButtonTextStyle" 
+                    label="Button Text Style" 
+					description="For the 'Help Button' role, controls how optional text wraps" 
+					datasource="Ellipsis,Wrap 100%,Wrap fixed width"
+                    default="Ellipsis"
+                    required="false" />
+
+	<design:attribute name="HelpButtonTextWidth" 
+                    label="Button Text Width" 
+					description="For the 'Help Button' role, sets the width of the optional text area." 
+                    default="250"
+                    required="false" />
+
+	<design:attribute name="HelpButtonPosition" 
+                    label="Button Position" 
+					description="For the 'Help Button' role, controls button positioning." 
+					datasource="Left,Right,Above Left,Above Right,Inline"
+                    default="Right"
+                    required="false" />
+
+	<design:attribute name="HelpRecordId" 
+                    label="Help Context" 
+                    description="For the 'Help Cue' and 'Help Button' roles, information defining the contextualise request to issue. For example, a Help Topic ID or (for Fixed listings) the API name of an object." 
+                    default=""
+                    required="false" />
+
+	<design:attribute name="LogContextInteraction" 
+	                label="Log Context Interaction" 
+	                description="For the 'Help Cue' and 'Help Button' roles, check this box to log a Help Interaction as and when context messages are issued." 
+	                default="true"
+                    required="false" />	
+
+	<design:attribute name="ContextCheckInterval" 
+	                label="Navigation Checking Interval" 
+	                description="USE WITH DUE REGARD FOR MACHINE RESOURCES: Enter zero unless re-contextualisation is required. Enter a number greater than zero (representing milliseconds) to check for changes in user context (page address). Minimum recommended interval is 1000." 
+	                default="0"
+                    required="true" />	
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	                          
+
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls the background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from)." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="FrameBorderColour" 
+                    label="DEPRECATED: Embedded Help Border Colour" 
+                    description="This parameter is no longer in use." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="FrameBackgroundColour" 
+                    label="DEPRECATED: Embedded Help Background Colour" 
+                    description="This parameter is no longer in use." 
+                    default=""
+                    required="false" />
+
+
+</design:component>

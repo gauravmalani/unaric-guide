@@ -1,0 +1,39 @@
+<aura:component controller="ControllerLUXOps" 
+				implements="force:appHostable" 
+				access="global" 
+				extends="IHCard" extensible="true">
+
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+	<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>   
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>	
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+<!-- 
+================================================
+Member data
+================================================
+-->    
+    <aura:attribute name="CurrentRecord" type="sObject" required="false" access="private" />
+    <aura:attribute name="StickyTitle" type="string" required="false" default="" access="public" />
+    <aura:attribute name="StickyStyle" type="string" required="false" default="" access="public" />
+
+		
+    <div class="stickyContainer">
+    
+		<div class="slds-text-heading_medium stickyTitle" title="{!v.StickyTitle}">
+			{!v.StickyTitle}	
+		</div>
+    
+        <ui:inputTextArea aura:id="theStickyInput" value="{!v.CurrentRecord.iahelp__Description__c}" 
+            change="{!c.setDirty}" 
+            class="{! v.StickyStyle + ' stickyInput'}" 
+            label="" 
+            rows="14" 
+            placeholder="{!v.AdviceLabelGenericTextPlaceholder}" />
+    </div>
+
+</aura:component>

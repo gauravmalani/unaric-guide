@@ -1,0 +1,980 @@
+<aura:component controller="ControllerLUXOps" implements="force:appHostable,force:hasRecordId,force:hasSObjectName"
+	access="global" extensible="true">
+
+	<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+<aura:attribute name="lwcComponentGeoLocation" type="Aura.Component"/><!--Attribute to store LWC Geolocation component-->
+ 
+     
+   
+	<aura:registerEvent name="evtSelectRecord" type="c:selectTopic" />
+	<aura:registerEvent name="evtPassThrough" type="c:evtPassThrough" />
+
+     <!-- Messaging channel for communication betwn Lwc and Aura -->
+    <lightning:messageChannel aura:id="messageChannel" type="iahelp__MyMessageChannel__c" onMessage="{!c.handleMessage}" Scope="APPLICATION"/>
+    
+	<aura:handler name="init" value="{!this}" action="{!c.Init}" />
+	<aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}" />
+	<aura:handler event="c:evtNegMenuClick" action="{!c.menuItemClick}" />
+
+	<aura:handler name="change" value="{!v.CardBodyScrollPos}" action="{!c.setScroll}" />
+	<aura:attribute name="CardBodyScrollPos" type="integer" required="false" default="0" access="public" />
+
+	<!-- 
+................................................
+Limited interface for non-cards with access to a 'parent' implementation (eg IHCalloutPrompt)
+allowing the former to complete certain actions with assistance of the latter's helper
+................................................
+-->
+	<aura:method name="doDialogue" action="{!c.doDialogue}">
+		<aura:attribute name="dlgTitle" type="string" />
+		<aura:attribute name="dlgType" type="string" />
+		<aura:attribute name="dlgSource" type="string" />
+		<aura:attribute name="dlgAttrs" type="object" />
+		<aura:attribute name="frmHeight" type="integer" />
+		<aura:attribute name="allowScroll" type="boolean" />
+		<aura:attribute name="largeMode" type="boolean" />
+		<aura:attribute name="showFooter" type="boolean" />
+		<aura:attribute name="translateTitle" type="boolean" />
+	</aura:method>
+
+
+	<!-- 
+================================================
+Internationalised values for use in mark-up
+================================================
+-->
+	<!--  Globals -->
+	<aura:attribute name="ButtonCancel" type="string" required="false" default="" access="public" />
+	<aura:attribute name="ButtonGotoTemplates" type="string" required="false" default="" access="public" />
+	<aura:attribute name="ButtonSave" type="string" required="false" default="" access="public" />
+	<aura:attribute name="ButtonQuickSave" type="string" required="false" default="" access="public" />
+	<aura:attribute name='FieldLabelAvailable' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCreatedBy' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCreatedByDT' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelModifiedBy' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelModifiedByDT' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelSelected' type='string' required='false' default='' access='public' />
+	<aura:attribute name="MessageGenericTaskComplete" type="string" required="false" default="" access="global" />
+	<aura:attribute name="MessageValueRequired" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipButtonClose" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipButtonCompactView" type="string" required="false" default="" access="public" />
+	<aura:attribute name="TipButtonConfigureSettings" type="string" required="false" default="" access="public" />
+	<aura:attribute name="TipButtonGotoTemplates" type="string" required="false" default="" access="public" />
+	<aura:attribute name="TipButtonHelpHome" type="string" required="false" default="" access="public" />
+	<aura:attribute name="TipButtonUploadImage" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGenericCancel" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGenericDelete" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGenericEdit" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGenericOK" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipGoto" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipReadMoreLinkUsers" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TipVote" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TitleHelpedElement" type="string" required="false" default="" access="global" />
+
+	<aura:attribute name="ToggleHistory" type="string" required="false" default="Toggle History" access="global" />
+	<aura:attribute name="BacktoTree" type="string" required="false" default="Back to Tree" access="global" />
+
+	<!-- LUXComponents -->
+	<aura:attribute name="AdviceLabelGenericTextPlaceholder" type="string" required="false" default="Modified"
+		access="public" />
+	<aura:attribute name="AdviceLabelItemsViewed" type="string" required="false" default="Items Viewed" access="public" />
+	<aura:attribute name="AdviceLabelModified" type="string" required="false" default="Modified" access="public" />
+	<aura:attribute name='AdviceLabelSelectFields' type='string' required='false' default='' access='public' />
+	<aura:attribute name="AdviceLabelWorking" type="string" required="false" default="Working..." access="public" />
+	<aura:attribute name="AdviceLabelTools" type="string" required="false" default="Tools" access="public" />
+	<aura:attribute name="FieldLabelMyNotes" type="string" required="false" default="My Notes" access="public" />
+	<aura:attribute name="FieldLabelSaveFormAs" type="string" required="false" default="My Notes" access="public" />
+	<aura:attribute name='AdviceLabelTagMode' type='string' required='false' default='AdviceLabelTagMode'
+		access='public' />
+	<aura:attribute name='FieldLabelTagModeAll' type='string' required='false' default='FieldLabelTagModeAll'
+		access='public' />
+	<aura:attribute name='FieldLabelTagModeAny' type='string' required='false' default='FieldLabelTagModeAny'
+		access='public' />
+	<aura:attribute name='FieldLabelTreePrintIndentationLevel' type='string' required='false'
+		default='FieldLabelTreePrintIndentationLevel' access='public' />
+	<aura:attribute name="TipButtonSettings" type="string" required="false" default="Settings" access="public" />
+	<aura:attribute name="TipView" type="string" required="false" default="" access="global" />
+	<aura:attribute name='TitleSelectFields' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabVisible' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleAllRelatedHelp' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleReadingLists' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleAllResources' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleQuickLinks' type='string' required='false' default='' access='public' />
+
+	<!-- IHTools -->
+	<aura:attribute name='ButtonGotoVoteSets' type='string' required='false' default='' access='public' />
+	<aura:attribute name='ButtonPreviewCallout' type='string' required='false' default='' access='public' />
+	<aura:attribute name='ButtonPreviewCalloutAsEdited' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelActive' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCalloutHeight' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCalloutMediaChoice' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCalloutTemplate' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelCustomStyle' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelFullTemplate' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelHeightBeforeScrolling' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageALTText' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageCaption' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageHeight' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageTitle' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageURL' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelImageWidth' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelKeywords' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelLightningTemplate' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelMasterTopicIdentifier' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelName' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelSummary' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelSFHelpURL' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelShowCallout' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelShowReadMore' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelShowReferringTopics' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelStatus' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelStepContext' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelStepElement' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelStepLayout' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelStepMode' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVideoCaption' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVideoHeight' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVideoTitle' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVideoURL' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVideoWidth' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVisibility' type='string' required='false' default='' access='public' />
+	<aura:attribute name='FieldLabelVoteInfo' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TipButtonPreviewCallout' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TipButtonPreviewCalloutAsEdited' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TipButtonResetImage' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TipButtonResetVideo' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleGuides' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabCustom' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabGeneral' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabGuides' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabStatus' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TitleTabText' type='string' required='false' default='' access='public' />
+
+	<!-- IHConfirmActions -->
+	<aura:attribute name='ColumnLabelDeleteAssociatedTopic' type='string' required='false' default='' access='public' />
+	<aura:attribute name='ColumnLabelUseExistingTopic' type='string' required='false' default='' access='public' />
+	<aura:attribute name='TipButtonSave' type='string' required='false' default='' access='public' />
+
+	<!-- ClientSide (QAM) -->
+	<aura:attribute name='QAMAdviceLabelGuideStepCounter1' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMAdviceLabelGuideStepCounter2' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMTitleButtonGotoNextStep' type='string' required='false' default='' access='public' />
+	<aura:attribute name='QAMButtonGotoNextStep' type='string' required='false' default='' access='public' />
+
+	<!-- Branding -->
+	<aura:attribute name='ProductPoweredBy' type='string' required='false' default='' access='public' />
+
+	<!-- 
+================================================
+IHCard member data
+================================================
+-->
+
+	<aura:attribute name="isUser" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="isAnalyst" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="isAuthor" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="isAdministrator" type="boolean" required="true" default="false" access="public" />
+    <aura:attribute name="isGeoEnabled" type="boolean" required="true" default="false" access="public" />
+
+	<aura:attribute name="IHCardType" type="string" required="false" default="" access="global" />
+	<aura:attribute name="ComponentId" type="string" required="false" default="" access="global" />
+	<aura:attribute name="ListensTo" type="string" required="false" default="" access="global" />
+	<aura:attribute name="ResponseLatch" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="AuthorConfigLatch" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="UniqueIdent" type="string" required="false" default="" access="global" />
+	<aura:attribute name="Parent" type="Object" required="false" default="" access="global" />
+
+	<aura:attribute name="HasAuthorOverridesClass" type="string" required="false" default="" access="public" />
+	<aura:attribute name="OuterContainerClass" type="string" required="false" default="" access="public" />
+
+	<aura:attribute name="UXTheme" type="string" required="false" default="" access="global" />
+	<aura:attribute name="BackgroundStyle" type="string" required="true" default="Coloured" access="global" />
+	<aura:attribute name="UXThemeColour1" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXThemeColour2" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXThemeColour3" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXThemeColour4" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXBodyBackgroundColour" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXMenuBackgroundColour" type="string" required="true" default="#" access="global" />
+	<aura:attribute name="UXMenuFontColour" type="string" required="true" default="#" access="global" />
+
+	<aura:attribute name="SkipGlobals" type="boolean" default="true" access="public" />
+	<!-- Sets whether or not to use cached data for certain ops -->
+	<aura:attribute name="isInitialised" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="CheckURLParams" type="boolean" required="false" default="false" access="public" />
+
+	<aura:attribute name="CalloutOption" type="string" required="false" default="Topic Selected Event plus Topic view"
+		access="global" />
+	<aura:attribute name="CalloutOptionSelectiveOverride" type="boolean" required="false" default="false"
+		access="global" />
+
+	<aura:attribute name="Height" type="integer" required="true" default="450" access="global" />
+	<aura:attribute name="AutoCardHeight" type="boolean" required="false" default="true" access="public" />
+	<aura:attribute name="ViewportHeightRequested" type="boolean" required="false" default="false" access="private" />
+	<aura:attribute name="SizingTimer" type="integer" required="true" default="0" access="private" />
+	<aura:attribute name="RenderedHeightReported" type="boolean" required="false" default="false" access="private" />
+
+	<aura:attribute name="SuppressHeader" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressFooter" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressListingTools" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressBodyTools" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressCardUI" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressCardStyling" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="SuppressPoweredBy" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="BrandSuppressed" type="boolean" required="true" default="false" access="public" />
+	<aura:attribute name="HasVisibleBodyTools" type="boolean" required="false" default="false" access="public" />
+
+	<aura:attribute name="hasUtilityBar" type="Boolean" default="true" />
+	<aura:attribute name="ComponentGeneratorInUse" type="boolean" required="false" default="false" access="global" />
+	<aura:attribute name="DisplayDensity" type="string" required="false" default="Comfy" access="global" />
+	<aura:attribute name="H_Header" type="integer" required="true" default="0" access="public" />
+	<aura:attribute name="H_BodyTools" type="integer" required="true" default="0" access="public" />
+	<aura:attribute name="H_Footer" type="integer" required="true" default="0" access="public" />
+	<aura:attribute name="H_UtilityBar" type="integer" required="true" default="0" access="public" />
+	<aura:attribute name="UtilityBarCheckDelay" type="integer" required="true" default="1000" access="public" />
+
+	<aura:attribute name="CardConfig" type="string" required="false" default="" access="global" />
+	<aura:attribute name="ToolContext" type="string" required="false" default="QAM" access="global" />
+	<aura:attribute name="NoDataMessage" type="string" required="false" default="[No Data]" access="global" />
+	<aura:attribute name="Title" type="string" required="true" default="- - -" access="public" />
+	<aura:attribute name="Icon" type="string" required="true" default="fa-question" access="public" />
+	<aura:attribute name="ActionCode" type="string" required="true" default="AllHelp" access="public" />
+	<aura:attribute name="BrandCSS" type="string" required="false" default="" access="public" />
+	<aura:attribute name="CommunityRoot" type="string" required="false" default="" access="public" />
+	<aura:attribute name="PortalPage" type="string" required="false" default="" access="public" />
+
+	<aura:attribute name="GlobalSettings" type="sObject" required="false" access="public" />
+	<aura:attribute name="PersonalisationSettings" type="HelpInteraction__c[]" required="false" access="public" />
+	<aura:attribute name="Internationalisations" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="ConfigToolFilterInfo" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="ExtendedCapabilities" type="sObject[]" required="false" access="public" />
+
+	<aura:attribute name="StencilRows" type="Integer[]" required="false" access="private" />
+
+	<aura:attribute name="WizardSteps" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="WizardStepBodyTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="EllipsisTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="DropDownTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="HeaderTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="HeaderToolSupportControls" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="BodyTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="FooterTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="ExtensionTools" type="ConfigurationItem__c[]" required="false" access="public" />
+
+	<aura:attribute name="VoteOptions" type="HelpVoteOption__c[]" required="false" access="public" />
+	<aura:attribute name="theVote" type="string" required="false" default="" access="public" />
+	<aura:attribute name="RetainSelectionOnScroll" type="boolean" required="false" default="false" access="public" />
+	<aura:attribute name="ListingItems" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="ListingTools" type="ConfigurationItem__c[]" required="false" access="public" />
+	<aura:attribute name="ListingSelections" type="string[]" required="false" access="public" />
+	<aura:attribute name="SelectedRow" type="string" required="false" access="public" />
+
+	<aura:attribute name="HelpedElements" type="HelpedElement__c[]" required="false" access="public" />
+	<aura:attribute name="HelpTopics" type="HelpTopic__c[]" required="false" access="public" />
+
+	<aura:attribute name="PassThroughData" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="RowLabellingOption" type="string" default="Topic Name" required="false" access="global" />
+	<aura:attribute name="CurrentRecordMetadata" type="sObject" required="false" access="public" />
+	<aura:attribute name="Delimiter" type="string" required="false" access="public" />
+
+	<aura:attribute name="IHContext" type="string" required="false" default="" access="global" />
+	<aura:attribute name="HelpRecordId" type="string" required="false" default="" access="global" />
+	<aura:attribute name="TagRecordId" type="string" default="" required="false" access="global" />
+	<aura:attribute name="recordId" type="Id" access="global" />
+	<aura:attribute name="sObjectName" type="string" access="global" />
+	<aura:attribute name="CustomFields" type="sObject[]" required="false" access="public" />
+
+	<aura:attribute name="History" type="sObject[]" required="false" access="public" />
+	<aura:attribute name="HasHistory" type="boolean" required="false" default="false" access="public" />
+
+	<aura:attribute name="UIFilter" type="string" default="AllHelp" access="public" />
+	<aura:attribute name="isBusy" type="boolean" default="false" access="public" />
+	<aura:attribute name="isDirty" type="boolean" default="false" access="global" />
+	<aura:attribute name="DataMode" type="string" required="false" default="View" access="public" />
+	<aura:attribute name="EmbeddedContentVisible" type="boolean" default="false" access="public" />
+
+	<aura:attribute name="DragData" type="string" required="false" default="" access="public" />
+
+	<aura:attribute name="NullValue" type="string" required="false" default="NULL" access="public" />
+	<aura:attribute name="NullLabel" type="string" required="false" default="--None--" access="public" />
+
+	<aura:attribute name="Diags" type="string" required="true" default="[OK]" access="public" />
+	<aura:attribute name="AdvancedDiags" type="string" required="false" default="[OK]" access="public" />
+	<aura:attribute name="BrowserFormFactor" type="string" required="false" default="DESKTOP" access="public" />
+	<aura:attribute name="FormFactorVal" type="integer" required="false" default="1" access="public" />
+
+	<aura:attribute name="ProductEdition" type="integer" required="true" default="-2" access="public" />
+	<aura:attribute name="ProductEditionMessage" type="string" required="false"
+		default="** Option not supported in this Edition **" access="public" />
+
+		<!--ListingRowStyle for IHPOsDetect needs acces-->
+		<aura:attribute name="ListingRowStyle" type="string" default="Expanded" required="false" access="global" />  
+
+	<!-- 
+================================================
+For checking presence of utility bar for sizing etc.
+================================================
+-->
+
+	<aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+		<lightning:utilityBarAPI aura:id="UtilityBar" />
+	</aura:if>
+
+
+	<!-- 
+================================================
+Scripts & Styles
+================================================
+-->
+	<ltng:require styles="/resource/iahelp__IHResources/lib/FontAwesome463/css/font-awesome.min.css" />
+	<ltng:require styles="/resource/iahelp__IHResources/css/help_main.css" />
+
+	<ltng:require scripts="{!$Resource.IHResources + '/lib/jquery/3.6.0/jquery-3.6.0.min.js'}"
+		afterScriptsLoaded="{!c.afterJQ}" />
+
+
+	<!-- 
+DRAGGABLE TESTS - DISABLED AS AT 1.55
+
+ltng:require scripts="{!$Resource.jQUI}" afterScriptsLoaded="{!c.afterJQUI}"/>
+aura:attribute name="DraggedItemOriginalPosition" type="object" required="false" access="public" />
+ -->
+
+
+
+	<!-- 
+================================================
+Card container, hidden diags, overall visibility 
+================================================
+-->
+	<!-- Additional outer DIV layer required so we can style the next child in! -->
+	<!-- ALSO: style attribute added 1.49.n as style class does not seem to be applied! -->
+	<div class="{! v.SuppressCardUI == true ? '' : 'IHFullHeight'}"
+		style="{! v.SuppressCardUI == true ? '' : 'height: 100%;'}">
+
+		<div aura:id="IHCardOutermostReachable" data-cmpId="{!globalId}"
+			class="{! v.SuppressCardUI == true ? globalId + ' IHCardOuterContainer IHSuppressedUI' : globalId + ' IHCardOuterContainer ' + v.HasAuthorOverridesClass + ' ' + v.ComponentId + ' ' + v.OuterContainerClass}"
+			onmouseover="{!c.reportRenderedHeight}" onmouseout="{!c.hidePoweredBy}"
+			style="{! v.Height == -1 ? 'height: 100%;' : ''}">
+
+
+			<!-- Include hidden diagnostics in case we need them -->
+			<div class='AdvancedDiagnostics slds-hide'>
+				{!v.AdvancedDiags}
+			</div>
+
+			<!-- Hide card as a whole if logged in person is not at least a Helped User? -->
+			<!-- 1.42+ Flexibility of overall card styling -->
+			<div class="{! v.SuppressCardStyling == false ? 'slds-card HelpList ui-resizable' : 'HelpList ui-resizable'}"
+				style="{! v.Height == -1 ? 'height: 100%;' : 'height: ' + v.Height + 'px;'}">
+
+				<!-- 
+================================================
+Header
+================================================
+-->
+				<aura:if isTrue="{!v.SuppressCardUI == false}">
+					<div aura:id="IHCardHeader"
+						class="{! v.SuppressHeader == false ? 'slds-card__header slds-grid' : 'slds-hide'}"
+						style="{! 'background-color: #' + v.UXThemeColour1 + ';'}">
+
+						<!-- Left set -->
+						<div class="slds-col slds-col_bump-right">
+
+							<div class="slds-col">
+
+								<div class="slds-media slds-media_center slds-has-flexi-truncate">
+
+									<!-- Title and Dirty Marker -->
+									<div
+										class="{! v.DropDownTools.length > 0 ? 'IHCardTitle IHLUXDropDown' : 'IHCardTitle IHInlineEditable'}">
+
+										<!-- 
+................................................
+Card title text when not inline editing
+................................................
+-->
+										<aura:if isTrue="{!v.DataMode != 'InlineEdit'}">
+											<span class="slds-text-heading_small">
+												<p class='IHToolText' title="{!v.Title}">
+													<span class="{! v.isDirty == true ? 'slds-badge IHModifiedMarker' : 'slds-hide'}">
+														{!v.AdviceLabelModified}
+													</span>
+
+													{!v.Title}
+
+												</p>
+											</span>
+										</aura:if>
+
+										<!-- 
+................................................
+If inline editing, title text shown via editing control
+................................................
+-->
+										<aura:if isTrue="{!v.DataMode == 'InlineEdit'}">
+											<c:IHLTopicSelector>
+												<aura:set attribute="InputType" value="Input" />
+												<aura:set attribute="recordId" value="{!v.recordId}" />
+												<aura:set attribute="FieldName" value="Name" />
+												<aura:set attribute="FieldValue" value="{!v.Title}" />
+												<aura:set attribute="FieldClass" value="slds-text-heading_small" />
+											</c:IHLTopicSelector>
+										</aura:if>
+
+										<!-- 
+................................................
+Drop down tools
+................................................
+-->
+										<button id="btnDropDown"
+											class="{! v.DropDownTools.length > 0 ? 'slds-button slds-button_icon-container IHCardDropDownButton' : 'slds-hide'}"
+											aria-haspopup="true" onclick="{!c.toggleDropDownTools}">
+											<span id="IAListViewTrigger" class="fa-stack fa-lg"
+												style="{! 'color: #' + v.UXThemeColour1 + ';'}">
+												<i class="fa fa-square-0 fa-stack-2x " aria-hidden="true"></i>
+												<i class="fa fa-caret-down fa-stack-1x" aria-hidden="true"></i>
+											</span>
+											<span class="slds-assistive-text">{!v.AdviceLabelModified}</span>
+										</button>
+
+										<div aura:id="toolsDropDown" id="IAListViewMenu" class="slds-hide slds-dropdown_left"
+											style="{! 'border: solid 2px #' + v.UXThemeColour1 + '; border-top: none; border-radius: 0 0 1rem 1rem; background-color: #' + v.UXMenuBackgroundColour + ';'}">
+
+											<ul class="dropdown__list slds-dropdown_length-10" role="menu">
+												<aura:iteration items="{!v.DropDownTools}" var="T">
+
+													<li
+														class="{! T.iahelp__DisplayGrouping__c + ' ' + (T.iahelp__HasDivider__c == true ? 'slds-dropdown__item slds-has-divider_top-space' : 'slds-dropdown__item')}"
+														style="{! T.iahelp__HasDivider__c == true ? 'border-top: solid 1px #' + v.UXMenuFontColour + ';' : '' }">
+
+														<a href="javascript:void(0);" role="menuitem" onclick="{!c.menuItemClick}"
+															title="{!T.iahelp__TipText__c}"
+															id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}">
+
+															<p class="slds-truncate" style="{! 'color: #' + v.UXMenuFontColour + ';'}">
+																&nbsp;{! T.iahelp__Label__c}
+															</p>
+														</a>
+													</li>
+												</aura:iteration>
+											</ul>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+
+						<!-- 
+................................................
+Header tools
+................................................
+-->
+						<!-- Right side -->
+						<div class="slds-col">
+							<div class="slds-float_right IHHeaderToolsContainer">
+								<div class="IHLimitSpill">
+
+									<!-- 
+									Required to facilitate search ops on key down: this control is given
+									focus momentarily to allow "change" in search text box value to occur
+									 -->
+									<input id="FocusPuller" type="text" />
+
+									<aura:iteration items="{!v.HeaderTools}" var="T">
+
+										<!-- BELOW SPAN REQUIRED TO AVOID BUG IN AURA:ITERATION! PLEASE DO NOT REMOVE! -->
+										<span>
+
+
+											<!-- Header Tool Support Controls -->
+											<aura:iteration items="{!v.HeaderToolSupportControls}" var="ST">
+
+												<!-- 
+		                                        NB: There may be a number of header tool support controls:
+		                                        Against each header tool, we only want to show those for that tool
+		                                        i.e., those marked with its action code.
+		                                        
+		                                        Also, we respond to support tool type (element 2 in array of tool info):
+		                                        Effectively as of this release, type allows us to produce same action call 
+		                                        via different events (header button click or header support tool drop)
+		
+												AURA:IF is NOT reliable on repeat calls within iterations: alternative being used of necessity...
+												 -->
+
+												<div
+													class="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'text' ? 'slds-form-element IHHeaderSupportTool' : 'slds-hide'}">
+													<input aura:id="HEADERSUPPORTTOOL" class="{! ST[1] + ' slds-input ' + T.iahelp__ToolClass__c}"
+														value="{!ST[5]}" placeholder="{!ST[4]}" label="{!ST[3]}" onkeyup="{!c.HSTTextKeyup}"
+														id="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'text' ? ST[1] + v.UniqueIdent : ''}" />
+												</div>
+
+
+												<div
+													class="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'droptarget' ? 'slds-form-element IHHeaderSupportTool' : 'slds-hide'}">
+													<input aura:id="HEADERSUPPORTTOOL" class="{! ST[1] + ' slds-input ' + T.iahelp__ToolClass__c}"
+														value="{!ST[5]}" title="{!T.iahelp__TipText__c}" ondrop="{!c.dropTargetFire}"
+														id="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'droptarget' ? ST[1] + v.Delimiter + T.iahelp__ActionCode__c : ''}" />
+												</div>
+
+
+												<div
+													class="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'draggable' ? 'slds-form-element IHHeaderSupportTool' : 'slds-hide'}">
+													<div aura:id="HEADERSUPPORTTOOL" class="{! ST[1] + ' ' + T.iahelp__ToolClass__c}"
+														title="{!T.iahelp__TipText__c}" draggable="true"
+														id="{! ST[0] == T.iahelp__ActionCode__c &amp;&amp; ST[2] == 'draggable' ? ST[1] + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + v.HelpRecordId : ''}">
+														{!ST[5]}
+													</div>
+												</div>
+
+											</aura:iteration>
+
+
+											<!-- 
+		                                    	Actual Header Tool clickable 
+												SHOW TOOL IF:
+											    Tool is NOT in a toggle group ([NEXT] = 0)
+											    OR Row marks tool as current toggle ( Row marked with "active" marker for this tool)
+											    OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+												OR Tool availability depends on COMPONENT - not row - and component matches conditions specified in active marker 
+											-->
+
+											<span
+												class="{! T.iahelp__ToggleNext__c == 0 
+											                || (v.CurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+											                || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any') 
+											                || T.iahelp__ToggleActiveMarker__c == 'ComponentConditionsMatch'
+											                
+											                ? 'fa-stack fa-lg IATool ' + T.iahelp__ToolClass__c : 'slds-hide fa-lg IATool ' + T.iahelp__ToolClass__c}"
+												id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}"
+												aura:id="menuClickable"
+												style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+
+												<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+
+												<i class="{! 'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}"
+													title="{!T.iahelp__TipText__c}" aria-hidden="true"></i>
+
+												<span class="sr-only">
+													{!T.iahelp__TipText__c}
+												</span>
+												<span class="fa-stack-1x IHToolIconContent" title="{!T.iahelp__TipText__c}"
+													id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+													onclick="{!c.menuItemClick}">
+													&nbsp;{!T.iahelp__IconContent__c}&nbsp;
+												</span>
+											</span>
+										</span>
+									</aura:iteration>
+								</div>
+
+								<!-- 
+................................................
+Ellipsis tools
+................................................
+-->
+
+								<div class="IHEllipsisMenuContainer">
+									<div
+										class="{! v.EllipsisTools.length > 0 ? 'slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-hide'}"
+										onclick="{!c.toggleEllipsisTools}">
+
+										<span class="fa-stack fa-lg IATool IHEllipsisMenuTool"
+											style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+											<i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+											<i class="fa fa-bars fa-stack-1x fa-inverse" title="{!v.AdviceLabelTools}" aria-hidden="true"></i>
+											<span class="sr-only">{!v.AdviceLabelTools}</span>
+										</span>
+
+										<div aura:id="toolsEllipsis" class="slds-hide slds-dropdown_right IATool HelpTopic"
+											style="z-index:1; background: transparent; box-shadow: none; margin-right: -10px;">
+
+											<ul class="dropdown__list" role="menu"
+												style="{! 'border: solid 2px #' + v.UXThemeColour1 + '; border-top: none; border-radius: 0 0 1rem 1rem; background-color: #' + v.UXMenuBackgroundColour + ';'}">
+
+												<aura:iteration items="{!v.EllipsisTools}" var="T">
+
+													<!--
+		                                            As a card, we don't have a listing as such: however, a single listing item record can
+		                                            be added to pass information about the current record (on list or details).
+		                                            Our helper sends this to our metadata member at the time of processing clickables...
+		
+		                                            SHOW TOOL IF:
+		                                                Tool is NOT in a toggle group ([NEXT] = 0)
+		                                                OR Row marks tool as current toggle ( Row marked with "active" marker for this tool)
+		                                                OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+														OR Tool availability depends on COMPONENT - not row - and component matches conditions specified in active marker 
+		                                            -->
+
+													<li
+														class="{! T.iahelp__ToggleNext__c == 0 
+		                                                            || (v.CurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+		                                                            || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any') 
+								               						|| T.iahelp__ToggleActiveMarker__c == 'ComponentConditionsMatch'
+		                                                            
+		                                                            ? 'slds-dropdown__item IATool IAEllipsisItem HelpTopic' : 'slds-dropdown__item IATool IAEllipsisItem HelpTopic slds-hide'}"
+														title="{!T.iahelp__TipText__c}" aura:id="menuClickable"
+														id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}">
+
+														<a href="javascript:void(0);" onclick="{!c.menuItemClick}"
+															class="{! T.iahelp__HasDivider__c == TRUE ? 'slds-has-divider_top-space' : ''}"
+															style="{! T.iahelp__HasDivider__c == TRUE ? 'border-top: solid 1px #' + v.UXMenuFontColour + ';' : ''}"
+															id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+															role="menuitem">
+
+															<p class="slds-truncate" style="{! 'color: #' + v.UXMenuFontColour + ';'}">
+																<span class="{! 'fa-stack fa-lg IHEllipsisMenuTool ' + T.iahelp__ToolClass__c}">
+																	<i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+																	<i class="{!T.iahelp__IconClass__c + ' fa fa-stack-1x fa-inverse'}"
+																		aria-hidden="true"></i>
+																	<span class="sr-only">{!T.iahelp__TipText__c}</span>
+																	<span class="IconContentEllipsis">{!T.iahelp__IconContent__c}</span>
+																</span>
+																&nbsp;{!T.iahelp__Label__c}
+															</p>
+														</a>
+													</li>
+
+												</aura:iteration>
+
+											</ul>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					</div> <!-- Suppress Header option Div -->
+				</aura:if> <!-- Suppress UI option -->
+
+				<!-- 
+================================================
+Body Area
+================================================
+-->
+				<aura:if isTrue="{!v.SuppressCardUI == false}">
+
+					<div id="CardBodyContainer" aura:id="CardBodyContainer"
+						class="{! v.DataMode == 'Edit' ? 'CardBodyContainer EditMode' : 'CardBodyContainer' }"
+						onscroll="{!c.cardBodyScroll}"
+						style="{! 'height: CALC(100% - ' + (v.H_Header + v.H_Footer) + 'px); color: #' + v.GlobalSettings.iahelp__BrandColour6__c + '; background: ' + v.UXBodyBackgroundColour + ';' }">
+
+						<!-- 
+................................................
+Body tools
+................................................
+-->
+						<aura:if isTrue="{!v.SuppressBodyTools == false}">
+							<div aura:id="IHBodyTools" id="{!globalId + 'microTools'}" class="microTools">
+								<aura:iteration items="{!v.BodyTools}" var="T">
+
+									<!-- 
+									SHOW TOOL IF:
+									Tool is NOT in a toggle group ([NEXT] = 0)
+									OR ROW marks tool as current toggle ( ROW marked with "active" marker for this tool)
+									OR Tool is Group default in ALL cases ([PREV] = 0 AND tool's active marker = "Any" meta condition)
+									OR Tool availability depends on COMPONENT - not row - and component matches conditions specified in active marker 
+									-->
+
+									<span class="{! T.iahelp__ToggleNext__c == 0 
+									                || (v.CurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+									                || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any')
+									                || T.iahelp__ToggleActiveMarker__c == 'ComponentConditionsMatch'
+									                
+									                ? T.iahelp__ToolClass__c : 'slds-hide ' + T.iahelp__ToolClass__c}"
+										id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}"
+										aura:id="menuClickable">
+
+										<i class="{! 'microTool ' + T.iahelp__ToolClass__c + ' fa ' + T.iahelp__IconClass__c}"
+											style="{! 'color: #' + v.UXThemeColour1 + ';'}" aria-hidden="true" title="{!T.iahelp__TipText__c}"
+											id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+											onclick="{!c.menuItemClick}"></i>
+									</span>
+								</aura:iteration>
+							</div>
+						</aura:if>
+
+						<!-- 
+................................................
+"Working" visual cue - Default / simple spinner
+................................................
+-->
+						<aura:if
+							isTrue="{! v.IHCardType != 'AutoForm' &amp;&amp; v.IHCardType != 'List' &amp;&amp; v.IHCardType != 'Detail' &amp;&amp; v.isBusy == true}">
+							<div class="CardBody slds-align_absolute-center IASpinner" role="alert">
+								<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								<span class="sr-only">{!v.AdviceLabelWorking}</span>
+							</div>
+						</aura:if>
+
+						<!-- 
+................................................
+"Working" visual cue - Topic viewer / details
+................................................
+-->
+						<aura:if isTrue="{!v.IHCardType == 'Detail' &amp;&amp; v.isBusy == true}">
+
+							<div class="IHStencil" role="alert">
+								<div class="section">
+									<span class="sr-only">{!v.AdviceLabelWorking}</span>
+
+									<div class="row1">
+										<div class="text"></div>
+									</div>
+									<div class="media row2"></div>
+
+									<aura:iteration items="{!v.StencilRows}" var="SR" indexVar="idxR">
+										<div class="{! 'row' + (SR+2)}">
+											<div class="text"></div>
+										</div>
+									</aura:iteration>
+								</div>
+							</div>
+
+						</aura:if>
+
+						<!-- 
+................................................
+"Working" visual cue - Listing
+................................................
+-->
+						<aura:if isTrue="{!v.IHCardType == 'List' &amp;&amp; v.isBusy == true}">
+
+							<div class="IHStencil" role="alert">
+								<div class="section">
+									<span class="sr-only">{!v.AdviceLabelWorking}</span>
+
+									<aura:iteration items="{!v.StencilRows}" var="SR" indexVar="idxR">
+										<div class="{! 'row' + SR}">
+											<div class="text"></div>
+											<div class="text"></div>
+											<div class="text"></div>
+											<hr />
+										</div>
+									</aura:iteration>
+								</div>
+							</div>
+
+						</aura:if>
+
+						<!-- 
+................................................
+"Working" visual cue - Auto-form
+................................................
+-->
+						<aura:if isTrue="{!v.IHCardType == 'AutoForm' &amp;&amp; v.isBusy == true}">
+
+							<div class="IHStencil" role="alert">
+								<div class="section">
+									<span class="sr-only">{!v.AdviceLabelWorking}</span>
+
+									<div class="TwoCol">
+										<aura:iteration items="{!v.StencilRows}" var="SR">
+											<div class="{! 'row' + SR}">
+												<div class="text"></div>
+												<div class="text"></div>
+												<div class="text"></div>
+												<hr />
+											</div>
+										</aura:iteration>
+									</div>
+
+									<div class="TwoCol">
+										<aura:iteration items="{!v.StencilRows}" var="SR">
+											<div class="{! 'row' + SR}">
+												<div class="text"></div>
+												<div class="text"></div>
+												<div class="text"></div>
+												<hr />
+											</div>
+										</aura:iteration>
+									</div>
+								</div>
+							</div>
+
+						</aura:if>
+
+						<!-- 
+................................................
+Implementation / sub-component body & History listing
+................................................
+-->
+
+						<aura:if isTrue="{!v.ProductEdition != 0 &amp;&amp; v.ProductEdition != -2}">
+							<div aura:id="CardBody" id="{!globalId + 'CardBody'}"
+								class="{! v.isBusy == true ? 'slds-hide' : 'CardBody CardBodyAutoHeight_' + v.AutoCardHeight}">
+
+								<div aura:id="HistoryContainer" class="HistoryContainer slds-hide">
+									<ul class="iahelpIHList">
+										<aura:iteration items="{!v.History}" var="H">
+											<li class="HelpListingItem">
+												<a id="{!H.value}" onclick="{!c.historyClick}" class="">
+													{!H.label}
+												</a>
+											</li>
+										</aura:iteration>
+									</ul>
+								</div>
+
+								{!v.body}
+							</div>
+						</aura:if>
+
+						<!-- 
+................................................
+Advice message if product edition restricts use
+................................................
+-->
+						<aura:if isTrue="{!v.ProductEdition == 0}">
+							<div class="NoDataMessage">
+								{!v.ProductEditionMessage}
+							</div>
+						</aura:if>
+
+					</div>
+
+					<!-- 
+		            For "minimal" components (such as position detector) that extend Card to obtain
+		            member data etc. but do not want our surrounding mark-up, just show 
+		            whatever UI they specify (and not our own)
+		            -->
+					<aura:set attribute="else">
+						{!v.body}
+					</aura:set>
+				</aura:if>
+
+				<!-- 
+================================================
+Footer and footer tools
+================================================
+-->
+				<aura:if isTrue="{!v.SuppressCardUI == false}">
+
+					<aura:if isTrue="{!v.SuppressFooter == false}">
+						<div aura:id="IHCardFooter" class="slds-card__footer IHCardFooter" style="background: #ffffff;">
+
+							<div
+								class="{! v.GlobalSettings.iahelp__DebugMode__c == true ? 'DebugMode DiagsText' : 'slds-text-body_regular slds-text-align_right DiagsText'}"
+								onclick="{!c.reportDiags}">
+								{!v.Diags}
+							</div>
+
+							<div class='IAFooterTools'>
+								<aura:iteration items="{!v.FooterTools}" var="T">
+
+									<span class="fa-stack IATool IAFooterTool" title="{!T.iahelp__TipText__c}"
+										id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}">
+
+										<a href="javascript:void(0);" onclick="{!c.menuItemClick}"
+											class="{! T.iahelp__HasDivider__c == TRUE ? 'slds-has-divider_top-space' : ''}"
+											id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}"
+											role="menuitem">
+
+											<span class="slds-truncate"
+												style="{! 'color: #' + v.GlobalSettings.iahelp__BrandColour6__c  + ';'}">
+												<span class="{! 'fa-stack fa-lg IHFooterTool ' + T.iahelp__ToolClass__c}">
+													<i class="fa fa-square fa-stack-2x" aria-hidden="true"></i>
+													<i class="{!T.iahelp__IconClass__c + ' fa fa-stack-1x fa-inverse'}" aria-hidden="true"></i>
+
+													<span class="sr-only">{!T.iahelp__TipText__c}</span>
+													<span class="IconContentEllipsis">{!T.iahelp__IconContent__c}</span>
+												</span>
+											</span>
+										</a>
+									</span>
+
+								</aura:iteration>
+							</div>
+
+							<div aura:id="PoweredBy" class="{! v.UXTheme == 'Dark' ? 
+									'IHCardFooterLogo IHCardFooterOnLogo IHCardFooterLogoLight' : 
+									'IHCardFooterLogo IHCardFooterOnLogo IHCardFooterLogoDark'}"
+								style="{! 'background-color: #' + v.UXThemeColour1 + ';'}"></div>
+						</div>
+					</aura:if>
+
+
+					<aura:if isTrue="{!v.SuppressFooter == true}">
+						<div aura:id="IHCardFooter" style="height: 0px;">
+							<div aura:id="PoweredBy" class="{! v.UXTheme == 'Dark' ? 
+									'IHCardFooterLogo IHCardFooterOffLogo IHCardFooterLogoLight' : 
+									'IHCardFooterLogo IHCardFooterOffLogo IHCardFooterLogoDark'}" onclick="{!c.gotoPoweredBy}"
+								title="{!v.ProductPoweredBy}"
+								style="{! 'background-color: #' + v.UXThemeColour1 + '; cursor: pointer;'}">
+
+								<div class="IHPBSuppressor" style="{! 'background: #' + v.UXThemeColour3 + ';'}"
+									onmouseover="{!c.suppressPoweredBy}" />
+							</div>
+						</div>
+					</aura:if>
+
+				</aura:if>
+
+			</div> <!-- End card hide / is at least Helped User test -->
+		</div> <!-- End of 'true' card container div -->
+	</div> <!-- End of 'decoy' outer container allowing styling! -->
+
+	<!-- 
+================================================
+Callout & its working spinner
+================================================
+-->
+	<aura:if isTrue="{!v.SuppressCardUI == false}">
+		<div aura:id="CalloutContainer" id="{!globalId + 'CalloutContainer'}"
+			class="HelpCalloutContainer slds-hide IsFixed">
+
+			<div id="{!globalId + 'IHTipPending'}" aura:id='IHTipPending' class='IHTipPending IHFullHeight'>
+				<iframe onmouseout="{!c.tipMouseOut}" onload="{!c.toggleTipBusy}" id="{!globalId + 'tfrm'}"
+					class="IHCalloutIframe" frameborder="0" scrolling="no" src="" />
+
+			</div>
+		</div>
+	</aura:if>
+
+	<!-- 
+================================================
+Modal dialogue container & component
+================================================
+-->
+
+	<aura:if isTrue="{!v.SuppressCardUI == false}">
+		<div aura:id="ModalContainer" class="slds-hide">
+			<c:IHDialogue aura:id="theModal">
+				<aura:set attribute="ComponentId" value="{!v.ComponentId + '_Dialogue'}" />
+				<aura:set attribute="TipButtonClose" value="{!v.TipButtonClose}" />
+			</c:IHDialogue>
+		</div>
+	</aura:if>
+
+	<!-- 
+================================================
+Component generator for ad hoc needs...
+================================================
+-->
+	<aura:if isTrue="{!v.SuppressCardUI == false || v.ComponentGeneratorInUse == true}">
+		<div aura:id="CGContainer">
+			<c:IHComponentGenerator aura:id="theCG">
+				<aura:set attribute="Parent" value="{!this}" />
+				<aura:set attribute="SuppressPoweredBy" value="true" />
+			</c:IHComponentGenerator>
+		</div>
+	</aura:if>
+
+	<!-- 
+	================================================
+	LWC Component for fetching Geolocation(UI less lwc component "IHGeolocation" use for getting current location).
+	================================================
+	-->
+	<iHGeolocation aura:id="geoLocation"></iHGeolocation>
+    
+        
+
+
+</aura:component>

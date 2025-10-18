@@ -1,0 +1,131 @@
+<!--
+============================================================================================== 
+THIS PAGE SERVES AS THE EQUIVALENT OF THE HELP HOOK HOME PAGE COMPONENT FOR VISUAL FORCE PAGES:
+USE AN APEX:INCLUDE TAG TO INCLUDE THESE MATERIALS ON ANY CUSTOM VF PAGE WHERE YOU WISH
+TO ENABLE IMPROVED HELP AND / OR USE IH CALLOUT DIALOGUES ETC.
+
+PLACE THE APEX:INCLUDE TAG WITHIN THE BODY TAG OF YOUR VF PAGE - NOT IN THE HEAD.
+
+IN ORDER TO HELP ENABLE YOUR VF PAGE ELEMENTS, PLACE THEM WITHIN A DIV CLASSED:
+"Helpable", "Helpable_Ln" OR "HelpableR_n".
+
+OPTIONALLY, ADD THE CLASS "IHSnapToElement" TO ANY OF THE ABOVE.
+
+Martin Little for Improved Apps
+August 2012
+============================================================================================== 
+ -->
+
+<apex:page showHeader="False" sidebar="False" >
+    
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSettings.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsWebToolTips.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsToggleHelp.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCalloutHost.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsCommunities.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/CryptoJSv312AES/aes.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/lib/FontAwesome463/css/font-awesome.min.css')}" />        
+
+    <body class='HookPage'>
+    
+        <!--
+        ===============================================
+        THIS DIV IS USED AS A CONTAINER FOR 
+        RETRIEVED IH SETTINGS (SEE SCRIPT BELOW)
+        ===============================================
+         -->
+        <div id="IAIHSettings" style="border: 1px dotted; width: 100%; display: none;" >
+            <span class="IHError">
+                Help can be configured by visiting the Help Settings tab of the Help app.
+            </span>
+        </div>
+    
+        <script>
+    
+            /////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Script to return settings info as a delimited string retrieved from a VF page:
+            // See also srcSettings script, which provides the required callback function to
+            // process the string into a settings array for both the QAM and clients of this hook.
+            /////////////////////////////////////////////////////////////////////////////////////////////////////
+/*        
+            var url = "{!$Page.IHQAMSettings}?callback=ClientSettingsLoader&Referer=" + getSafeURL(document.URL);
+            var script = document.createElement('script');
+            script.setAttribute('src', url);
+            document.getElementById('IAIHSettings').appendChild(script);
+*/  
+    
+            /////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Lightbox enabling functions
+            /////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            if ($IAIHj + '' == 'undefined') {
+                $IAIHj = jQuery.noConflict(true);
+            }
+
+            $IAIHj(document).ready(function($) {    
+                            
+                $IAIHj('.lightbox_trigger').click(function(e) {
+
+                    // Prevent default action (hyperlink)
+                    e.preventDefault();
+            
+                    // Get clicked link href and get access to native image size
+                    var image_href = $IAIHj(this).attr("href");
+                    var img = new Image();
+                    var inIH1UX = $IAIHj('body').hasClass('IH1UX');
+                    img.src = image_href;
+                    
+                    if (img.width >= window.innerWidth || img.height >= window.innerHeight) {
+                        // If the native size of the image is larger than the available screen,
+                        // pop the image out into a new window: 
+                        
+                        // Do NOT do this, however, in IH1UX (i.e., in mobile devices)
+                        if (inIH1UX == false) {
+                            window.open(image_href);
+                        }
+                    
+                    } else {
+                        // If not, show image on current screen in a lightbox...
+
+                        if ($IAIHj('#lightbox').length > 0) { 
+                            // Amend content of existing lightbox
+                            $IAIHj('#content').html('<img src="' + image_href + '" />');
+                            $IAIHj('#lightbox').show();
+                
+                        } else { 
+                            // Create HTML markup for lightbox window
+                            var lightbox;
+                            
+                            if (inIH1UX == true) {
+                                lightbox = '<div id="lightbox"><p>Click image to close</p><div id="content">';
+                            } else {
+                                lightbox = '<div id="lightbox"><p>Click anywhere to close</p><div id="content">';
+                            }
+                            lightbox += '<img src="' + image_href +'" />';
+                            lightbox += '</div></div>';
+                
+                            // Insert lightbox HTML into page
+                            $IAIHj('body').append(lightbox);
+                        }    
+                    }                                                    
+            
+                });
+            
+            
+                //Click anywhere on the page to get rid of lightbox window
+                //must use live, as the lightbox element is inserted into the DOM
+                $IAIHj(document).on('click', '#lightbox', function() {     
+                    $IAIHj('#lightbox').hide();
+                });
+        
+                        
+            });
+        
+        </script>
+    
+    </body>
+</apex:page>

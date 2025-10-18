@@ -1,0 +1,698 @@
+<!--
+============================================================================================== 
+PAGE FOR NAVIGATING AROUND THE CONTENT OF A SINGLE READING LIST IN A STAND-ALONE WINDOW.
+REQUIRES ID OF THE DESIRED READING LIST (RLID) PLUS ID OF CURRENT HELP TOPIC (HTID), I.E.,
+
+    [SF base URL]/Apex/IHReadingListViewer?RLID=[reading list id]&HTID=[topic id]
+
+OPTIONALLY, USE "OPTIONS" PARAMETER TO PLACE RL VIEWER IN "GUIDES" MODE, 
+WHEREBY RL ENTRIES APPEAR DIFFERENTLY: IN THESE CASES, ALSO PROVIDE DETAILS OF THE 
+RECORD (URL) FROM WHICH THE GUIDE WAS CALLED, I.E.,  
+
+    [SF base URL]/Apex/IHReadingListViewer?RLID=[reading list id]&HTID=[topic id]&Opts=Guide&IHContext=[Page URL] 
+    
+Martin Little for Improved Apps
+April 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!IF(Opts=='Guide', DialogueLocalisations['TitleDialogueTitleGuides'], DialogueLocalisations['TitleDialogueTitleIH1'])}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!IF(Opts=='Guide', DialogueLocalisations['TitleDialogueTitleGuides'], DialogueLocalisations['TitleDialogueTitleIH1'])}</title>
+
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.' />
+                             
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsQAMenu.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsGuides.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsEditHelp.js')}" />        
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/CryptoJSv312AES/aes.js')}" />
+
+        <style>         
+            .IH1UX * .IH1HeaderIcon,IH1UX * .IH1Superscript {display: block;}
+            .IH1UX * .IH1PanelBarName                       {padding: 10px;}
+            .RLSummaryText                                  {margin-bottom: 5px;}
+            .IH1Input                                       {font-size: 16px;  max-width: 298px;}   
+            .IHGuideContextError                            {background:rgba(255, 255, 0, 0.3);}  
+            .RLVTools                                       {float: right; margin-right: 3px; padding: 1px; cursor: pointer; border: dotted 1px transparent; background-position-x: 1px; background-position-y: 1px;}               
+            .RLVToolSelected                                {border: solid 1px blue; border-radius: 3px; cursor: default;}   
+        </style>
+
+        <script type="text/javascript">
+        
+            if ($IAIHj + '' == 'undefined') {
+                $IAIHj = jQuery.noConflict(true);
+            }
+
+            $IAIHj(document).ready(function($) {
+                
+                // Initialise Salesforce1 layout
+                if ($IAIHj('body').hasClass('IH1UX')) {
+                
+                    $IAIHj('.IH1UX .IHIconNavFirst,.IH1UX .IHIconNavLast,.IH1UX .IHIconNavPrevious,.IH1UX .IHIconNavNext').hide();
+                    $IAIHj('.IH1UX .RLViewerHeader').css('margin','0');
+                    $IAIHj('.IH1UX .RLName').addClass('IH1HeaderTitle').removeClass('IH-H4');
+                    $IAIHj('.IH1UX .RLName').wrap('<div class="IH1Header"><div class="IH1HeaderText"></div></div>');
+                    $IAIHj('.IH1UX .RLName').before('<div class="IH1HeaderSuperscript">{!DialogueLocalisations['TitleDialogueTitleIH1']}</div>');
+                    $IAIHj('.IH1HeaderText').before('<a title="{!DialogueLocalisations['TipLinkBackIH1']}" class="IH1NavButton" href="{!$Page.IH1Tools}?HTID={!THelpId}&IHContext={!IHContext}&isdtp={!$CurrentPage.parameters.isdtp}&inline={!$CurrentPage.parameters.inline}"><div class="IH1HeaderIcon IHIcon30 IHIconHelpBackIH1"></div></a>');    
+                    $IAIHj('.IH1UX .RLSummary').wrap('<div class="IH1Panel"><div class="IH1PanelBody"></div></div>');
+                    $IAIHj('.IH1UX .RLSummary').css({'width':'auto','padding':'0'});
+                    $IAIHj('.IH1UX .RLSummary').wrapInner('<div class="IH1ListView"><div class="IH1PanelBarName"></div></div>');
+                    $IAIHj('.IH1UX .PortalLink').hide();
+                    
+                    // Calculate Header Text width from viewPort
+                    var viewportWidth = $IAIHj(window).width() - 60;
+                    $IAIHj('.IH1HeaderText').css('max-width',viewportWidth);
+                }
+                
+            });
+            
+                    
+            function initialise() {
+                
+                // Initialise variables required by included Guides script...
+                IHGuides.TRootLink = '{!JSENCODE(TRootLink)}';
+                IHGuides.cxtRequired = '{!JSENCODE(Hlp.GuidedLayout__r.PageLayoutIdentifier__c)}';
+                IHGuides.ReadingListId = '{!JSENCODE(ReadingListId)}';
+                IHGuides.THelpId = '{!JSENCODE(THelpId)}';
+                IHGuides.TTemplate = '{!JSENCODE(Hlp.Template__r.PageURL__c)}';
+                IHGuides.IHjsGDOpts = '{!JSENCODE(Opts)}';
+                IHGuides.theToolFrame = 'frmTopic';
+
+                
+                // Enter whatever mode the user was last in if in guide mode
+                // or set up to show topic if in RL mode
+                // Also, use read mode if last was guide properties
+                
+                var t = readCookie('IHRLVSelectedTool');
+
+                if (t == null || IHGuides.IHjsGDOpts != 'Guide' || t == 'GuideProperties') {
+                    IHGuides.showRLVTool('');
+                } else {
+                    IHGuides.showRLVTool(t);
+                }
+                
+                
+                // Call guide-specific initialisation
+                if (IHGuides.IHjsGDOpts == 'Guide') {
+                    IHGuides.initialiseForGuides();
+                }
+                
+                // Add function to extract a named parameter from the address of this page
+                // NB: had to change jQuery func here (see analogue in IHSearchResults page)
+                // as it seemed to have issues with certain parameter / value combinations
+                // (e.g., IHContext=n where n ends in "3" - was cutting the "3"!!)
+                
+                $IAIHj.urlParam = function(name){
+                    try {
+                        var U = window.location.href;
+                        
+                        if (U.indexOf(name + '=') == -1) {
+                            return null;
+                        } else {
+                            U = U.substring(U.indexOf(name) + name.length + 1);
+                            
+                            if (U.indexOf('&') == -1) {
+                                return U;
+                            } else {
+                                U = U.substring(0, U.indexOf('&'));
+                                return U;
+                            }
+                        }
+                        
+                    } catch (e) {
+                        return null;
+                    }
+                }   
+                
+                
+                // Check we got some steps / Guide entries for the selected RL: if we don't it suggests there
+                // was some kind of issue (poss due to inactive topics etc) - so show an error message.
+                // To perform the check, look for values in hidden text fields that should have been populated 
+                // with # RLs & steps (assuming any RLs exist) 
+                
+                // Hide if there are NO RLs or none is selected (the latter suggests you
+                // may have been redirected to a default (home) page that is part of some RL(s)
+                // but this is NOT the one that was requested
+                if ($IAIHj('.NumRLs').get(0).value == 0 || $IAIHj('.SelectedRL').length == 0) {             
+                    document.getElementById("frmTopic").style.display = "none";
+                    document.getElementById("GStepTools").style.display = "none";
+                    document.getElementById("CommentBar").style.display = "none";
+                    document.getElementById("RLError").style.display = "block";
+                }
+                
+                // Hide if there is a selected RL but it has no steps
+                if($IAIHj('.SelectedRL').length > 0) {
+                    if ($IAIHj('.SelectedRL').get(0).value == 0) {
+                        document.getElementById("frmTopic").style.display = "none";
+                        document.getElementById("GStepTools").style.display = "none";                   
+                        document.getElementById("CommentBar").style.display = "none";
+                        document.getElementById("RLError").style.display = "block";
+                    }
+                }
+                
+                
+                // Show help icon only where help is available
+                var GH = document.getElementById('GuideWindowHelp');
+                if (HelpAvailableFor(GH) == 1 && IHGuides.IHjsGDOpts == 'Guide') {
+                    GH.style.display = 'block';
+                }
+                
+                // Set frame size
+                IHGuides.resizeFrame();
+                
+                
+                // Size our "working" message div
+                $IAIHj('#IHGuideWorking').css('height', $IAIHj(window).height());
+
+                
+                return;                     
+            }
+        
+                    
+            // Control the availability of step manipulation actions "OK" button
+            function setGStepOptsAvailability() {
+            
+                var opt = document.getElementById('GStepOpts');
+                var btn = document.getElementById('GStepActionBtn');
+
+                // OK button only available if an option has been selected
+                if (opt.selectedIndex == '0') {
+                    btn.disabled = 'disabled';
+                } else {
+                    btn.disabled = '';
+                }
+
+                return;
+            }
+            
+            
+            // Call the controller function appropriate to the selected Guide Step editing operation
+            function performGStepAction() {
+                    
+                var opt = document.getElementById('GStepOpts');
+                
+                if (opt.value == '1') {
+                    doGStep1Action();
+                }
+                
+                if (opt.value == '2') {
+                    doGStep2Action();
+                }
+
+                return;
+            }
+            
+            
+            // Goto RL entry as user selects one in IH1UX nav tool
+            function cueTopic(optStep) {                        
+                var HTID = optStep.options[optStep.selectedIndex].value;
+                cueTopicL(HTID);
+                return;
+            }       
+
+
+            // Goto RL entry as user selects one in IH1UX nav tool...
+            function cueTopicL(HTID) {                      
+                var U = '{!JSENCODE(TRootLink)}/apex/iahelp__IHRedirector?HTID=' + HTID + '&IH1UX={!isIH1UX}';
+                document.getElementById('frmTopic').src = U;
+                return;
+            }       
+
+        </script>       
+    </head>
+    
+    <body id="IHRLVBody" class="Page{!IF(isIH1UX==true, ' IH1UX', '')}" onload="javascript:initialise();">        
+
+        <apex:include pageName="IHHook"/>
+                
+        <apex:form >
+<!--   
+===============================================
+HEADER AREA AND CROSS-RL FACILITIES
+===============================================
+ -->            
+        
+            <div id='IHGuideWorking' class='IHWorking' style=''>
+                <div class="IHLoading" style="">
+                    <img src="{!URLFOR($Resource.IHResources, '/img/loading.gif')}" />
+                </div>
+            </div>
+            
+            <!-- Guide mode step editing functions -->
+            <apex:actionFunction name="doGStep1Action" action="{!GSAddLocalStep}" oncomplete="javascript:IHEditHelp.confirmComplete(null, '{!JSENCODE(Diags)}');" />
+            <apex:actionFunction name="doGStep2Action" action="{!GSAddSelectStep}" oncomplete="javascript:IHEditHelp.confirmComplete(null, '{!JSENCODE(Diags)}');" />        
+        
+        
+            <div id="TopicTemplate" style="overflow: hidden;">
+
+                <div class='RLViewerHeader' style='margin: 10px; border-radius: 5px; padding-top: 1px;'>
+                
+                    <input type='hidden' class="NumRLs" value="{!ReadingLists.size}"/>
+
+<!--   
+===============================================
+READING LISTS LOOP AND GUIDE TOOLS
+===============================================
+ -->            
+                    <apex:repeat value="{!ReadingLists}" var="Lst">
+                        <apex:pageBlock rendered="{!ReadingListId == Lst.RLID || ReadingListId == '' || ReadingListId == 'undefined'}" >
+    
+                            <!--
+                            IF THIS IS THE SELECTED RL, WE SHOULD HAVE SOME ENTRIES (OTHERWISE THERE'S A PROBLEM
+                            OF SOME KIND!) SO: NOTE THE NUMBER OF ENTRIES IN A HIDDEN TEXT FIELD 
+                             -->
+                            <input type='hidden' class="{!IF(ReadingListId == Lst.RLID || ReadingListId == '', 'SelectedRL', '')}" value="{!Lst.Entries.size}"/>
+                                                        
+                            
+                            <!--
+                            NOTE USE OF TOPIC EDIT LINK AS PROXY FOR RIGHTS TO SEE "View in Portal" LINK.
+                            POSITION AND NATURE OF THIS LINK VARIES ACCORDING TO MODE / OPTIONS:
+                            IN STANDARD RL VIEWER MODE, LINK OVERLAPS TOPIC AREA AND IS TO SAME WINDOW                                 
+                             -->
+                            
+                            <apex:pageBlock rendered="{!Opts != 'Guide' && TEditModeLink != ''}" >
+                                <div class="PortalLink" style="position: relative; bottom: -100px; float: right; padding-right: 15px;">
+                                    <a title="{!DialogueLocalisations['TipButtonViewInPortal']}" 
+                                        href='{!TRootLink}/apex/iahelp__{!PortalPage}?HTID={!THelpId}'>
+                                        
+                                        {!DialogueLocalisations['ButtonViewInPortal']}
+                                    </a>
+                                </div>
+                            </apex:pageBlock>                                            
+
+
+
+                            <!--
+                            IN GUIDE MODE, LINK IS AT SCREEN TOP AND IS TO GUIDE STEP WINDOW
+                            IN THIS MODE THERE IS ALSO A "CLOSE" LINK TO SHUT ALL GUIDE/STEP WINDOWS
+                            PLUS OTHER TOOLS
+                             -->
+                            
+                            <apex:pageBlock rendered="{!Opts == 'Guide'}" >                                                             
+
+                                <div style='float: right; padding-right: 10px'>
+                                    <a title="{!DialogueLocalisations['TipButtonCloseGuideWindows']}" 
+                                        href='javascript:void(0);'
+                                        onclick='javascript:IHGuides.closeGuideWindows();'>
+                                        
+                                        <div class='IHIcon IHIcon16 IHIconClose'></div>
+                                    </a>
+                                </div>
+                                
+                                <div style='float: right; padding: 3px; cursor: pointer;' 
+                                    class="{!IF(isAuthor, '' , 'IHHidden ')}IHIcon IHIcon16 IHIconEdit" 
+                                    title="{!DialogueLocalisations['TipButtonEditGuideProperties']}" 
+                                    onclick="javascript:IHGuides.showRLVTool('GuideProperties');">
+                                </div>
+
+                                <div style="display: {!IF(Lst.Entries[0].EntryRecord.HelpTopic__c == THelpId, 'block', 'none')}; float: right; padding-right: 5px; cursor: pointer;">
+                                    <apex:commandLink rendered="{!!BmkExists}" action="{!addGuideBookmark}" >
+                                        <div title="{!DialogueLocalisations['TipButtonBookmarkGuide']}" class="IHIcon IHIconBookmarkAdd"></div>
+                                    </apex:commandLink>                                    
+                                    
+                                    <apex:commandLink rendered="{!BmkExists}" action="{!removeBookmark}" >
+                                        <div title="{!DialogueLocalisations['TipButtonUnBookmarkGuide']}" class="IHIcon IHIconBookmarkRemove"></div>
+                                    </apex:commandLink>                                    
+                                </div>
+                                                        
+                                <a href='javascript:void(0);' onclick='javascript:IHGuides.showShareLink();' title="{!DialogueLocalisations['TipButtonShareGuide']}">
+                                    <div style="float: right; padding: 3px;" class="IHIcon IHIconSmall IHIconShare"></div>
+                                </a>
+                                                                
+                                <div style='float: right; padding-right: 10px; cursor: pointer; display: none;'
+                                    id='GuideWindowHelp'
+                                    class='IHIcon IHIcon16 IHIconHelpedElement HelpableL_95 IHSnapToElement'
+                                    title="{!DialogueLocalisations['TipButtonHelpForGuideWindow']}">
+                                </div>
+                                
+                                <div id="GuideViewInPortalLink" class="PortalLink" style="{!IF(Opts == 'Guide' && TEditModeLink != '', 'float: right; padding-right: 10px;', 'display: none;')}">
+                                    <a title="{!DialogueLocalisations['TipButtonViewInPortal']}" 
+                                        href='javascript:void(0);' 
+                                        onclick="IHQAMenu.DoDialogue('{!TRootLink}/apex/iahelp__{!PortalPage}?HTID={!THelpId}', IHGuides.guideStepX, IHGuides.guideStepY, IHGuides.guideStepW, IHGuides.guideStepH, '_GuideStep');">
+                                        
+                                        {!DialogueLocalisations['ButtonViewInPortal']}
+                                    </a>
+                                </div>
+                                                                    
+                            </apex:pageBlock>                                            
+
+<!--   
+===============================================
+SELECTED READING LIST DETAILS
+===============================================
+ -->            
+                            
+                            <div class='RLName Helpable IH-H4' style="">
+                                <apex:outputText value="{!Lst.ListName}" escape="true"></apex:outputText>
+                            </div>
+         
+                            <div class='RLSummary' style='padding: 0 10px 10px 10px; width: 95%; '>
+                                <div class='RLSummaryText'>
+                                    <apex:outputText value="{!Lst.ListSummary}" escape="true"></apex:outputText>                                
+                                </div>
+                              
+<!--   
+===============================================
+READING LIST ENTRY (GUIDE STEP) LINKS 
+===============================================
+ -->            
+    <!--
+    -----------------------------------------------
+    IN STANDARD RL VIEWER MODE, SHOW NAVIGATION LOZENGES                                 
+    -----------------------------------------------
+     -->                                            
+                                <apex:pageBlock rendered="{!Opts != 'Guide'}" >
+                                    <div class='ReadingListNav' style="width: 100%;">                                            
+                                        <div class="ReadingListNavOuter">
+                                            <div class="ReadingListNavInner">
+    
+                                                <!--
+                                                "HARD WIRE" THE RL NAV SLIDES TO USE THIS VIEWER PAGE - NOT THE PORTAL PAGE
+                                                SPECIFIED BY THE HELP TOPIC (THIS WILL APPEAR IN THE IFRAME BELOW)
+                                                ALSO, INCLUDE UX SWITCHING INFO (SF1 OR STANDARD UI) 
+                                                 -->
+                                            
+                                                <apex:outputLink value="{!SUBSTITUTE(Lst.PrevURL, PortalPage + '?HTID=' , 'IHReadingListViewer?RLID=' + Lst.RLID + IF(isIH1UX==true, '&IH1UX=true', '') + '&HTID=')}" title="{!Lst.PrevName}">
+                                                    <div class='{!Lst.PrevClass}'></div>
+                                                </apex:outputLink>
+                                                        
+                                                <!-- 
+                                                PRESENTATION OF NAV SLIDES VARIES DEPENDING ON UX:
+                                                 -->                                            
+
+                                                <apex:Repeat rendered="{!!isIH1UX}" value="{!Lst.Entries}" var="RLE">
+                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.Id == THelpId}">
+                                                        <div title="[{!GlobalLocalisations['TipButtonNavCurrentTopic']}]" class="IHIcon IHIconEntryActive"></div>
+                                                    </apex:outputPanel>
+                                                    
+                                                    <apex:outputPanel rendered="{!RLE.EntryRecord.HelpTopic__r.Id != THelpId}">
+                                                        <apex:outputLink title="{!GlobalLocalisations['TipGoto']} {!JSENCODE(RLE.EntryRecord.HelpTopic__r.Name)}" value="{!JSENCODE(TRootLink)}/apex/IHReadingListViewer?RLID={!JSENCODE(Lst.RLID)}&HTID={!RLE.EntryRecord.HelpTopic__r.Id}"><div class="IHIcon IHIconEntryInactive"></div>
+                                                        </apex:outputLink>
+                                                    </apex:outputPanel> 
+                                                </apex:Repeat> 
+
+                                                        
+                                                <span id="IH1NavListMenu">                                              
+                                                    <apex:selectList rendered="{!isIH1UX && ReadingListId == Lst.RLID}"
+                                                                    id="IH1ReadingListNavTool"
+                                                                    value="{!THelpId}" 
+                                                                    onchange="javascript:cueTopic(this);"
+                                                                    multiselect="false" size="1" styleclass="IH1Input">
+                                                                    
+                                                        <apex:selectOptions value="{!Lst.RLEOptions}"/>
+                                                    </apex:selectList>                                              
+                                                </span>
+                                                                                                                
+                                                <apex:outputLink value="{!SUBSTITUTE(Lst.NextURL, PortalPage + '?HTID=' , 'IHReadingListViewer?RLID=' + Lst.RLID + IF(isIH1UX==true, '&IH1UX=true', '') + '&HTID=')}" title="{!Lst.NextName}" ><div class='{!Lst.NextClass}'></div>
+                                                </apex:outputLink>
+            
+                                            </div>
+                                        </div>                                      
+                                    </div>
+                                </apex:pageBlock>
+                                
+    <!--
+    ----------------------------------------------- 
+    FOR GUIDE MODE, SHOW EACH ENTRY AS A TOPIC NAME HYPERLINK 
+    -----------------------------------------------
+     -->
+                                 
+                                <apex:pageBlock rendered="{!Opts == 'Guide'}" >
+                                    <div class='ReadingListNav' style="width: 100%;">
+    
+                                        <div id="GuideStepList" class="IHSearchResultsList">
+    
+                                            <apex:dataTable style="width: 93%;" value="{!Lst.Entries}" var="RLE" >
+    
+                                                <apex:variable var="CurrentManualStepsSet" value="0"/>
+                                                <apex:variable var="delim1" value="{!D1}"/>
+                                                <apex:variable var="delim2" value="{!D2}"/>
+                                                
+                                            
+                                                <apex:column >
+                                                         
+                                                    <!-- 
+                                                    If step mode = AUTOMATIC, navigate step 
+                                                    -------------------------------------->
+                                                     
+                                                    <apex:pageBlock rendered="{!RLE.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Automatic'}" >
+                                                        <div class="GuideStep Automatic{!IF(RLE.EntryRecord.HelpTopic__c == THelpId, ' Current', '')}">
+                                                            
+                                                            <div class="IHIcon"></div>
+    
+                                                            <a href="javascript:void(0);" 
+                                                                title='{!RLE.EntryRecord.HelpTopic__r.Summary__c}' 
+                                                                onclick="javascript:IHGuides.navToGuideStep('{!JSENCODE(Lst.RLID)}',
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpReadingList__r.ReadingListType__c)}',
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.GuidedLayout__r.PageLayoutIdentifier__c)}',
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.GuidedRecord__c)}', 
+                                                                        encodeURI('{!JSENCODE(RLE.EntryRecord.HelpTopic__r.GuidedElement__r.Identifier__c + delim1 + RLE.EntryRecord.HelpTopic__r.GuidedElement__r.ElementType__c)}'), 
+                                                                        true, 
+                                                                        '{!RLE.EntryRecord.HelpTopic__c}');">
+    
+                                                                {!RLE.EntryName}
+                                                            </a>
+    
+                                                        </div>
+                                                    </apex:pageBlock>
+        
+                                                                 
+                                                    <!-- 
+                                                    If step mode = MANUAL and last was NOT
+                                                    OR step mode = MANUAL and Last Step's Layout is NOT the same as this one
+                                                    navigate step with Await VIP info
+                                                    ------------------------------------------------------------------------>
+
+                                                    <!-- Note the "set" number of this group of manual steps -->    
+                                                                                                                 
+                                                    <apex:variable var="CurrentManualStepsSet" 
+                                                                value="{!IF(RLE.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual'
+                                                                    && 
+                                                                    (Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuideStepMode__c != 'Manual'
+                                                                    || RLE.EntryRecord.HelpTopic__r.GuidedLayout__c != Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuidedLayout__c)
+                                                                    , RLE.EntryRecord.ReadingOrder__c, CurrentManualStepsSet)}"/> 
+                                                            
+                                                            
+                                                    <apex:pageBlock rendered="{!IF(RLE.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual'
+                                                                            && 
+                                                                            (Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuideStepMode__c != 'Manual'
+                                                                            || RLE.EntryRecord.HelpTopic__r.GuidedLayout__c != Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuidedLayout__c)
+                                                                            , true, false)}">
+                                                                
+                                                                    
+                                                        <!-- Link to cue manual steps... -->
+                                                        <div class="GuideStep Manual Set{!CurrentManualStepsSet} First{!IF(RLE.EntryRecord.HelpTopic__c == THelpId, ' Current', '')}">
+                                                            
+                                                            <div class="IHIcon"></div>
+                                                                    
+                                                            <a href="javascript:void(0);" 
+                                                                title='{!RLE.EntryRecord.HelpTopic__r.Summary__c}' 
+                                                                onclick="javascript:IHGuides.navToGuideStep('{!JSENCODE(Lst.RLID)}',
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpReadingList__r.ReadingListType__c)}',
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.GuidedLayout__r.PageLayoutIdentifier__c)}', 
+                                                                        '{!JSENCODE(RLE.EntryRecord.HelpTopic__r.GuidedRecord__c)}', 
+                                                                        '', 
+                                                                        false, 
+                                                                        '{!RLE.EntryRecord.HelpTopic__c}');">
+                                                                        
+                                                                    {!RLE.EntryName}
+                
+                                                                                                                                
+                                                                <!-- 
+                                                                PLACE VIP PARAMETERS FOR MANUAL STEPS INTO A DIV WHOSE CONTENTS CAN 
+                                                                BE COLLECTED VIA SCRIPT AND USED AS A PARAM OF navToGuideStep.
+                                                                THIS NEEDS TO LOOK AS FOLLOWS:
+                                                                
+                                                                VIP Identifier{delim 1}Element Type{delim 1}Guide Step HTID{delim 1}Prompt text{delim 1}Show Callout{delim 2}etc...
+                                                                 -->                        
+
+                                                                <apex:variable var="StepsSetEnded" value="false"/>
+                                                                <apex:variable var="LastManualStep" value="0"/>
+                                                                
+                                                                <div id='{!RLE.EntryRecord.HelpTopic__c}' style='display: none; border: solid 1px red;'>
+                                                                
+                                                                    <!--
+                                                                    Here we place AwaitVIP instructions into a hidden DIV:
+                                                                    There is 1x instruction for each manual step that forms part of the current set.
+                                                                    The current set is contiguous manual steps for the same page layout.
+                                                                    In choosing to add a step's details to the VIP instructions, we therefore check:
+                                                                    
+                                                                        - Step is manual
+                                                                        - Step's reading order is greater than the start of this contiguous set (as we're looping thru all RLEs)
+                                                                        - Contiguous set of steps has not ended
+                                                                        - Step's layout is as for the current set
+                                                                        - Step order is contiguous with current set (not a later set of steps for same layout)  
+                                                                     -->
+                                                                    
+                                                                    <apex:repeat var="Peer" value="{!Lst.Entries}">
+                                                                        {!IF(Peer.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual' 
+                                                                        && Peer.EntryRecord.ReadingOrder__c >= VALUE(CurrentManualStepsSet)
+                                                                        && StepsSetEnded == 'false'
+                                                                        && Peer.EntryRecord.HelpTopic__r.GuidedLayout__c == RLE.EntryRecord.HelpTopic__r.GuidedLayout__c
+                                                                        && (
+                                                                            Peer.EntryRecord.ReadingOrder__c <= VALUE(LastManualStep) + 1 
+                                                                            || VALUE(LastManualStep) == 0
+                                                                        )
+                                                                        , Peer.EntryRecord.HelpTopic__r.GuidedElement__r.Identifier__c + delim1 + Peer.EntryRecord.HelpTopic__r.GuidedElement__r.ElementType__c + delim1 + Peer.EntryRecord.HelpTopic__c + delim1 + Peer.EntryRecord.HelpTopic__r.Name + delim1 + IF(Peer.EntryRecord.HelpTopic__r.GuideCallout__c == true, 'true', 'false') + delim2
+                                                                        , '')}
+                                                                                 
+
+                                                                        <apex:variable var="LastManualStep" 
+                                                                            value="{!IF(Peer.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual' 
+                                                                            && Peer.EntryRecord.ReadingOrder__c >= VALUE(CurrentManualStepsSet)
+                                                                            && StepsSetEnded == 'false'
+                                                                            && Peer.EntryRecord.HelpTopic__r.GuidedLayout__c == RLE.EntryRecord.HelpTopic__r.GuidedLayout__c
+                                                                            && (
+                                                                                Peer.EntryRecord.ReadingOrder__c <= VALUE(LastManualStep) + 1 
+                                                                                || VALUE(LastManualStep) == 0
+                                                                            )
+                                                                            , Peer.EntryRecord.ReadingOrder__c
+                                                                            , LastManualStep)}"/>
+
+
+                                                                        <!--
+                                                                        USEFUL DEBUGGING - SET DISPLAY TO BLOCK ON CONTAINER DIV, ABOVE,
+                                                                        AND UN-COMMENT THIS... 
+
+                                                                        Step Order:<apex:outputText value="{!Peer.EntryRecord.ReadingOrder__c}" />Last Manual Step:<apex:outputText value="{!LastManualStep}" /><br/>
+                                                                         -->
+                                                                                 
+                                                                        <apex:variable var="StepsSetEnded" 
+                                                                            value="{!IF(Peer.EntryRecord.HelpTopic__r.GuideStepMode__c != 'Manual' 
+                                                                            && Peer.EntryRecord.ReadingOrder__c >= VALUE(CurrentManualStepsSet)
+                                                                            , 'true', StepsSetEnded)}"/>
+       
+                                                                    </apex:repeat>
+
+                                                                </div>
+                                                            </a>
+                                                        </div>                                                              
+                                                                                                                    
+                                                    </apex:pageBlock>
+                                                                                                                     
+                                                                 
+                                                     <!-- 
+                                                     If step mode = MANUAL and last WAS AS WELL, 
+                                                     AND last step shares the same Layout
+                                                     just add the name of the step - no link
+                                                     ---------------------------------------------------------------------------------->
+                                                     
+                                                     <apex:pageBlock rendered="{!RLE.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual'
+                                                                                && Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuideStepMode__c == 'Manual'
+                                                                                && RLE.EntryRecord.HelpTopic__r.GuidedLayout__c == Lst.Entries[IF(RLE.EntryRecord.ReadingOrder__c > 0, RLE.EntryRecord.ReadingOrder__c - 1, 0)].EntryRecord.HelpTopic__r.GuidedLayout__c}" >
+                                                                                
+                                                            <div class="GuideStep Manual Set{!CurrentManualStepsSet}{!IF(RLE.EntryRecord.HelpTopic__c == THelpId, ' Current', '')}">
+                                                                <div class="IHIcon" title='{!RLE.EntryRecord.HelpTopic__r.Summary__c}'></div>
+                                                                {!RLE.EntryName}
+                                                            </div>
+                                                     </apex:pageBlock>
+                                                                
+            
+                                                     <!-- 
+                                                     If step mode = LOCAL, set guide window help but do NOT navigate step 
+                                                     ------------------------------------------------------------------->
+                                                             
+                                                     <apex:pageBlock rendered="{!RLE.EntryRecord.HelpTopic__r.GuideStepMode__c == 'Local'}" >
+                                                                                                                                        
+                                                        <div class="GuideStep Local{!IF(RLE.EntryRecord.HelpTopic__c == THelpId, ' Current', '')}">
+                                                                    
+                                                            <div class="IHIcon"></div>
+                                                                    
+                                                            <a href="javascript:void(0);" 
+                                                                title='{!RLE.EntryRecord.HelpTopic__r.Summary__c}' 
+                                                                onclick="javascript:IHGuides.setStepInfo('{!JSENCODE(Lst.RLID)}', '{!JSENCODE(RLE.EntryRecord.HelpTopic__c)}', '');">
+                                                                
+                                                                {!RLE.EntryName}
+                                                            </a>
+                                                        </div>
+                                                                
+                                                     </apex:pageBlock>                                                   
+                                                                 
+                                                 </apex:column>
+                                                         
+                                            </apex:dataTable>    <!-- Loop around LST.Entries (RLE) -->                            
+                                        </div>                                
+                                            
+                                    </div>                                            
+                                </apex:pageBlock>
+
+                            </div>
+                    
+                        </apex:pageBlock>
+                     </apex:repeat>     <!-- Loop around ReadingLists (LST) -->
+ 
+                </div>                  
+
+
+<!--   
+===============================================
+GUIDE MODE STEP TOOLBAR
+===============================================
+ -->     
+                <div id='GStepTools' class='RLViewerHeader' style="{!IF(ReadingListId != '' && Opts=='Guide' && isAnalysis, 'display: block; min-width: 295px;', 'display: none;')} margin: 10px; border-radius: 5px; height: 26px;">
+                
+                    <div id='GStepActionsBar' style="float: left; margin-left: 5px; display: {!IF(isAuthor, 'inline', 'none')};">
+                        <select id='GStepOpts' onchange='javascript:setGStepOptsAvailability();' onclick='javascript:setGStepOptsAvailability();'>
+                            <option value='0'>[{!DialogueLocalisations['ValueSelectAction']}]</option>
+                            <option value='1'>{!DialogueLocalisations['ValueAddLocalStep']}</option>
+                            <option value='2'>{!DialogueLocalisations['ValueAddRecordSelectionStep']}</option>
+                        </select>
+                        
+                        <input id='GStepActionBtn' 
+                            type='button' 
+                            value="{!GlobalLocalisations['TipGenericOK']}" 
+                            disabled='disabled' 
+                            title="{!DialogueLocalisations['TipButtonPerformOperation']}" 
+                            onclick='javascript:performGStepAction();' />
+                    </div>
+                    
+                    <div id='GStepToolBar' style='float: right; padding-top: 5px; display: inline;'>
+                        <div class="RLVTools toolTopicStats {!IF(isAnalysis, '' , 'IHHidden ')}IHIcon IHIcon16 IHIconModeAnalyse" title="{!DialogueLocalisations['TipButtonViewStepStatistics']}" onclick='javascript:IHGuides.showRLVTool("TopicStats");'></div>
+                        <div class="RLVTools toolTopicEdit {!IF(isAuthor, '' , 'IHHidden ')}IHIcon IHIcon16 IHIconEdit" title="{!DialogueLocalisations['TipButtonEditStepTopic']}" onclick='javascript:IHGuides.showRLVTool("TopicEdit");'></div>
+                        <div class="RLVTools toolTopicView IHIcon IHIcon16 IHIconModeView" title="{!DialogueLocalisations['TipButtonViewStepTopic']}" onclick='javascript:IHGuides.showRLVTool("TopicView");'></div>
+                    </div>
+
+                </div>
+
+<!--   
+===============================================
+RL ENTRY / GUIDE STEP TOPIC IFRAME & COMMENT TOOL
+(Also, error message to show if any issues)
+===============================================
+ -->            
+
+                <div id="CommentBar" style='position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px; background: silver; cursor: pointer; color: #004080;' class="" onclick='javascript:IHGuides.showRLVTool("TopicComment");'>
+                    <div title="{!DialogueLocalisations['TipButtonAddComment']}" id='btnCommentShow'>
+                        {!GlobalLocalisations['AdviceLabelComment']}
+                    </div>
+
+                    <div title="{!DialogueLocalisations['TipButtonCancelComment']}" id='btnCommentCancel' class='IHHidden' >
+                        <div class="IHIcon IHIcon16 IHIconCancelBtn" style="float: left;"></div>
+                        <div style="float: left; margin: 2px 8px; color: red;">
+                            {!DialogueLocalisations['ButtonCancelComment']}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="StepTopic" style="display: {!IF(ReadingListId != '', 'block', 'none')}; margin: 5px; Zoverflow-x: hidden;">
+                    <iframe id="frmTopic" class="StepTopic" src="" frameborder="0" style="width: 100%;" />
+                    
+                    <div id="RLError" style="text-align: center; display: none;" class="IH-H3">
+                        {!DialogueLocalisations['AdviceLabelNoEntriesAvailable']}
+                    </div>
+                </div>
+
+            </div>
+        </apex:form> 
+                
+    </body> 
+    
+</apex:page>

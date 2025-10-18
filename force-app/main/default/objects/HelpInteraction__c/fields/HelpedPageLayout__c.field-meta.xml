@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HelpedPageLayout__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <inlineHelpText>The Page Layout within which this Help Interaction took place</inlineHelpText>
+    <label>Helped Page Layout</label>
+    <referenceTo>HelpedPageLayout__c</referenceTo>
+    <relationshipLabel>Help Interactions</relationshipLabel>
+    <relationshipName>HelpInteractions</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

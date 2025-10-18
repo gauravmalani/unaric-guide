@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This Platform Event will be used to communicate between LWC &amp; Aura components (either in same window or different windows).</description>
+    <eventType>HighVolume</eventType>
+    <label>LWC Aura Interaction Event</label>
+    <pluralLabel>LWC Aura Interaction Events</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

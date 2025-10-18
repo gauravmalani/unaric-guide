@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KeywordPhraseLength__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Calculates Keyword phrase length to prioritise matches for parsing into related content</description>
+    <externalId>false</externalId>
+    <formula>LEN( Keyword__c ) - LEN( SUBSTITUTE( Keyword__c , &quot; &quot;, &quot;&quot;) )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Calculates Keyword phrase length to prioritise matches for parsing into related content</inlineHelpText>
+    <label>Keyword Phrase Length</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

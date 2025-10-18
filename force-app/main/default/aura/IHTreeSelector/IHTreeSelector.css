@@ -1,0 +1,8 @@
+.THIS #IATreeSelectorComponentBody					{overflow: auto;}
+.THIS .DiagsText 									{}
+.THIS .IATSContainer								{margin-top: 0;}
+.THIS .Selector 									{float: left; padding: 5px;}
+.THIS a 											{text-decoration: none !important;}
+.THIS a:hover										{color: rgb(6, 28, 63) !important;}
+.THIS .slds-badge:hover, .THIS .slds-badge:hover a 	{background-color: #ffffff; color: rgb(6, 28, 63) !important;}
+.THIS .slds-badge:hover 							{box-shadow: inset 0 0 2px #000;}

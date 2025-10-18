@@ -1,0 +1,334 @@
+<aura:component controller="ControllerLUXOps" 
+                implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens" 
+                access="global"
+                extends="IHCard" >
+    
+    <!-- 
+================================================
+Events and Handlers
+================================================
+-->    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler event="c:selectTopic" action="{!c.selectRecord}"/>
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+    
+    <aura:handler name="change" value="{!v.HelpRecordId}" action="{!c.HelpRecordChange}"/>
+    <aura:handler name="change" value="{!v.RootNode}" action="{!c.RootNodeChange}"/>
+    
+    <aura:method name="dragAllowed" action="{!c.dragAllowed}" />
+    <aura:method name="dropAllowed" action="{!c.dropAllowed}" />
+    <aura:method name="reInitialise" action="{!c.initialiseTree}" />
+    <aura:method name="getSafeHTML" action="{!c.getSafeHTML}" />
+    <aura:method name = "logLUXInteractions" action="{!c.getlogLUXInteractions}"/>
+    
+    <aura:set attribute="IHCardType" value="Tree" />    
+    
+    <!-- 
+================================================
+(Form-specific) internationalisations for mark-up
+================================================
+-->
+    <aura:attribute name="ToolLabelGlobalSettings" type="string" required="false" default="" access="public" />
+    <aura:attribute name="ProductPoweredBy" type="string" required="false" default="" access="private" />
+    <aura:attribute name="AdviceLabelDropHereToSetRoot" type="string" required="false" default="" access="private" />
+    <aura:attribute name="AdviceLabelDropToSort" type="string" required="false" default="Sort" access="public" />
+    
+    <!-- 
+================================================
+Member data
+================================================
+-->
+    <aura:attribute name="sHTML" type="string" required="false" default="" access="public" />
+    
+    <aura:attribute name="RootNode" type="string" access="global" />	
+    <aura:attribute name="HomeRoot" type="string" required="false" default="" access="global" />	   
+    
+    <aura:attribute name="NodeProvider" type="string" access="global" />	
+    <aura:attribute name="NodeIconStyle" type="string" access="global" />	
+    <aura:attribute name="MaxListingTools" type="integer" default="3" required="false" access="global" />    
+    <aura:attribute name="DDAllowed" type="boolean" default="false" access="global" />	
+    <aura:attribute name="MaxDepth" type="integer" default="0" access="global" />	
+    
+    <aura:attribute name="PrintView" type="boolean" default="false" access="global" />	
+    <aura:attribute name="PrintStyle" type="string" default="Plain" access="global" />	
+    <aura:attribute name="PrintHeader" type="string" default="Improved Help" access="global" />	
+    <aura:attribute name="PrintFooter" type="string" default="Commercial in Confidence" access="global" />	
+    <aura:attribute name="LevelIndentation" type="integer" default="0" access="global" />
+    
+    <aura:attribute name="Nodes" type="Object[]" access="public" />
+    <aura:attribute name="FilteredNodes" type="Object[]" access="private" />				<!-- For filtering via highlights -->
+    <aura:attribute name="FilteredLIs" type="Object[]" access="public" />					<!-- For filtering via LI array manipulation -->
+    <aura:attribute name="LIFilter" type="string" default="" access="global" />				<!-- For filtering via LI array manipulation -->
+    
+    <aura:attribute name="EditedLIs" type="Object[]" access="private" />					<!-- For filtering via LI array manipulation -->
+    
+    <aura:attribute name="OpsCache" type="string" default="" access="private" />	
+    
+    <aura:attribute name="SearchMode" type="boolean" default="false" required="true" access="private" />
+    <aura:attribute name="SearchListActivated" type="boolean" default="false" required="true" access="private" />
+    <aura:attribute name="hHead" type="integer" default="0" access="private" />
+    <aura:attribute name="hFoot" type="integer" default="0" access="private" />
+    
+    <aura:attribute name="OtherListActivated" type="boolean" default="false" required="true" access="private" />
+    <aura:attribute name="OtherListConfig" type="string" default="Bookmarks" required="true" access="private" />
+    
+    
+    <aura:attribute name="SupportsJIT" type="boolean" default="false" required="true" access="public" />	
+    <aura:attribute name="SupportsOrder" type="boolean" default="false" required="true" access="public" />	
+    
+    <aura:set attribute="Title" value="Improved Help" />
+    <aura:set attribute="Icon" value="fa-tree" />
+    <aura:set attribute="IHCardType" value="Tree" />  
+    
+    <aura:attribute name="helperReference" type="Object" />
+    <aura:attribute name="RootChange" type="boolean" required="false" default="false" />	
+    <aura:attribute name="newHelprecordID" type="string" default="" access="public" /> <!-- for getting the newly created child node id -->
+    <aura:attribute name="ExpandAllNode" type="Boolean" default="false" />
+            <!-- 
+            ================================================
+            LIST COMPONENT - FOR TREE SEARCH VIA LIST:
+            NB: list's powered by branding is hidden 
+            as it's invasive in these scenarios
+            ================================================
+            -->
+	<aura:if isTrue="{!v.SearchListActivated == true}">
+		<div class="{! v.SearchMode == true ? '' : 'slds-hide'}">
+			<c:IHList aura:id="SearchList" >
+				<aura:set attribute="CardConfig" value="TreeContent" />
+				<aura:set attribute="HelpRecordId" value="{!v.RootNode}" />
+				<aura:set attribute="Height" value="{!v.Height}" />		
+				<aura:set attribute="ComponentId" value="{!v.ComponentId}" />	
+				<aura:set attribute="CalloutOption" value="Topic Selected Event Only" />									
+				<aura:set attribute="ToolContext" value="CardTreeSearchList" />		
+				<aura:set attribute="TreeMaxDepth" value="{!v.MaxDepth}" />
+				<aura:set attribute="InitialRows" value="300" />
+				<aura:set attribute="ListingClickActionCode" value="BackToTreeFromSearchList" />			
+				<aura:set attribute="OuterContainerClass" value="ChildUI" />
+                <aura:set attribute="listitem" value="{!v.ListingItems}" />
+                
+				<aura:set attribute="SuppressPoweredBy" value="true" />                
+			</c:IHList>
+		</div>
+	</aura:if>
+
+
+<!-- 
+================================================
+LIST COMPONENT - OTHER MODES
+================================================
+-->
+	<aura:if isTrue="{!v.OtherListActivated == true}">
+		<c:IHList aura:id="OtherList" >
+			<aura:set attribute="CardConfig" value="{!v.OtherListConfig}" />
+			<aura:set attribute="Height" value="{!v.Height}" />		
+			<aura:set attribute="ComponentId" value="{!v.ComponentId}" />	
+			<aura:set attribute="CalloutOption" value="Topic Selected Event Only" />									
+			<aura:set attribute="ToolContext" value="CardTreeOtherList" />		
+			<aura:set attribute="OuterContainerClass" value="ChildUI" />
+               
+			<aura:set attribute="SuppressPoweredBy" value="true" />                
+		</c:IHList>
+	</aura:if>
+
+<!-- 
+================================================
+TREE - WHEN LIST-BASED SEARCH NOT IN PLAY
+================================================
+-->
+	<div class="{!v.SearchMode == false &amp;&amp; v.OtherListActivated == false ? '' : 'slds-hide'}">
+	    <div id="IATreeComponentBody" class="{! v.PrintView == false ? 'slds-card__body' : 'PrintContainer ' + v.PrintStyle}">
+
+<!-- 
+================================================
+RE-ROOTING DROP ZONE:
+NB: this requires page owner consent (DDAllowed) but
+does not require specialised node provider, as all have a root
+================================================
+-->
+		    <div data-DDID="DropTargetReRoot" class="{! v.DDAllowed == false ? 'slds-hide' : 'DropTargetRoot DropTargetRootAvailable'}"
+					ondragover="{!c.doDragOver}" 
+					ondragleave="{!c.doDragLeave}"
+					ondrop="{!c.doDrop}" 
+	
+					title="{!v.AdviceLabelDropHereToSetRoot}" >
+		    
+				{!v.AdviceLabelDropHereToSetRoot}
+		    </div>
+	        
+<!-- 
+================================================
+NO DATA MESSAGE (IF ZERO NODES ARE AVAILABLE)
+================================================
+-->
+		    <div class="{!v.Nodes.length == 0 ? 'NoDataMessage' : 'slds-hide'}"
+					ondragover="{!c.doDragOver}" 
+					ondragleave="{!c.doDragLeave}"
+					ondrop="{!c.doDrop}" >
+					
+		        {!v.NoDataMessage}
+		    </div>
+
+<!-- 
+================================================
+INFORMATION (Crumbs) ABOUT "PEER" TREES - non print only
+================================================
+-->
+			<aura:if isTrue="{!v.PrintView == false}">
+			    <div aura:id="PopoverPeers" id="PopoverPeerList" class="slds-hide">
+					<section class="slds-popover PopoverPeerCrumb" role="dialog" aria-describedby="dvPeerLinks" aria-label="">
+		
+						<button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon" 
+								onclick="{!c.closeCrumb}" 
+								title="{!v.ButtonCancel}">
+							<i class="fa fa-times" aria-hidden="true"></i>
+							<span class="slds-assistive-text">{!v.ButtonCancel}</span>
+						</button>
+			
+						<div class="slds-popover__body" id="dvPeerLinks">
+							<c:IHCrumb aura:id="Crumbs">
+								<aura:set attribute="ComponentId" value="{!v.ComponentId + 'Crumbs'}" />
+								<aura:set attribute="CrumbColour" value="{!v.GlobalSettings.iahelp__BrandColour6__c}" />
+							</c:IHCrumb>
+						</div>
+					</section>
+			    </div>
+		    </aura:if>
+
+<!-- 
+================================================
+PRINTING OPTIONS and FURNITURE - print only
+================================================
+-->
+			<aura:if isTrue="{!v.PrintView == true}">
+	 
+				<div class='ModeSpecificTools slds-theme_shade PrintControls FixedMode'>
+					<ul class="slds-accordion">		
+						<li class="slds-accordion__list-item">
+
+<!-- 
+................................................
+Print settings - Accordion label and twisty
+................................................
+-->			      		
+							<section aura:id="Settings_Section" class="slds-accordion__section">  
+					      		<div id="Settings_Summary" class="slds-accordion__summary" onclick="{!c.toggleAccordionSection}">
+					
+							        <h3 class="slds-text-heading_small slds-accordion__summary-heading">
+										<button type="button"
+												aria-controls="accordion-details-01" 
+												class="slds-button slds-button_reset slds-accordion__summary-action"
+												>
+													
+											<lightning:icon aura:id="Settings_Twisty" class="slds-button__icon" size="xx-small" iconName="utility:chevronright"/>
+														
+											<span class="slds-truncate" title="">
+												{!v.ToolLabelGlobalSettings}
+											</span>
+										</button>
+					        		</h3>
+								        		
+					      		</div>
+							      	
+							      		
+<!-- 
+................................................
+Print settings controls
+................................................
+-->			      		
+					      		<div aria-hidden="false" class="slds-accordion__content IHToolPanel" id="accordion-details-01">
+					
+									<div class="slds-form"> 
+										<div class="slds-grid slds-gutters">
+											<div class="slds-col slds-p-horizontal_medium">
+									    		<lightning:input label="{!v.FieldLabelCustomStyle}" type="text" value="{!v.PrintStyle}" />
+									    	</div>
+									    	
+									    	<div class="slds-col slds-p-horizontal_medium">
+									    		<lightning:input label="{!v.FieldLabelTreePrintIndentationLevel}" type="text" value="{!v.LevelIndentation}" />
+											</div>
+											
+	<!-- 
+	DISABLIING FOR THIS RELEASE
+	
+									    	<div class="slds-col slds-p-horizontal_medium">
+									    		<lightning:input label="!!! Page Header Text" type="text" value="{!v.PrintHeader}" />
+											</div>
+					
+									    	<div class="slds-col slds-p-horizontal_medium">
+									    		<lightning:input label="!!! Page Footer Text" type="text" value="{!v.PrintFooter}" />
+											</div>
+	
+	 -->										
+	
+											<div class="slds-col slds-p-horizontal_medium slds-align-bottom">
+												<lightning:button onclick="{!c.initialiseTree}" label="{!v.TipGenericOK}" variant="brand" />
+											</div>
+										</div>
+									</div>
+								
+								</div>	
+								
+							</section>
+						</li>
+					</ul>	
+				</div>
+				
+	
+				<!-- Shim to force data form NOT to underlie (floating) accordion tools when in affected modes -->			
+				<div class="ModeSpecificToolsPrint" />
+			
+<!-- 
+................................................
+Print page header / footer - DISABLED FOR THIS RELEASE VIA CSS
+................................................
+-->    			
+				<div class="PrintHeader">
+					{!v.PrintHeader}
+				</div>			
+				
+				<div class="PrintFooter">
+					{!v.PrintFooter}
+					<br/>
+					{!v.ProductPoweredBy}
+				</div>			
+			
+			</aura:if>
+
+<!-- 
+================================================
+TREE IS AN ITERATION AROUND NODES, EACH FORMED OF
+A CHILD "TREE NODES" CONTROL
+================================================
+-->
+			<div class="{!v.PrintView == false ? 'slds-tree_container printNode printNodeContainer' : 'printNode printNodeContainer'}" role="application">
+	
+		  	    <aura:iteration items="{!v.Nodes}" var="node">		
+	
+					<c:IHTreeNodes aura:id="myNodes">
+						<aura:set attribute="Node" value="{!node}" />
+						<aura:set attribute="TreeControl" value="{!this}" />
+						<aura:set attribute="Expanded" value="true" />
+						<aura:set attribute="NodeIconStyle" value="{!v.NodeIconStyle}" />
+						<aura:set attribute="MaxListingTools" value="{!v.MaxListingTools}" />
+						<aura:set attribute="DisplayDensity" value="{!v.DisplayDensity}" />
+						<aura:set attribute="ListingTools" value="{!v.ListingTools}" />
+						<aura:set attribute="SuppressListingTools" value="{!v.SuppressListingTools}" />
+						<aura:set attribute="Delimiter" value="{!v.Delimiter}" />
+	
+						<aura:set attribute="NodeExpanderTip" value="{!v.TipButtonCompactView}" />
+						<aura:set attribute="AdviceLabelTools" value="{!v.AdviceLabelTools}" />
+
+<aura:set attribute="DataMode" value="{!v.DataMode}" />
+
+						
+						<aura:set attribute="AdviceLabelDropToSort" value="{!v.AdviceLabelDropToSort}" />											
+	 				</c:IHTreeNodes>
+	
+			    </aura:iteration>
+			</div>
+	
+	
+		</div>	
+	</div>
+	
+</aura:component>

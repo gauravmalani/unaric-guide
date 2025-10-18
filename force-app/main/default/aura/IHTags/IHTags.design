@@ -1,0 +1,84 @@
+<design:component label="Improved Help: Tags">
+  
+	<design:attribute name="Height" 
+	                label="Component Height" 
+	                description="Initial display height for this component (pixels)" 
+                    default="450" 
+                    required="true" />	
+
+	<design:attribute name="SuppressHeader" 
+	                label="Suppress Header" 
+	                description="Check this box to hide the header area of this component" 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="SuppressFooter" 
+	                label="Suppress Footer" 
+	                description="Check this box to hide the footer / diagnostics area of this component" 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present" 
+	                default="[Selected pool has no members]"
+                    required="false" />	
+
+    <design:attribute name="CardConfig" 
+                    label="Mode" 
+                    description="Controls the behaviour of this control when its contents are clicked" 
+                    datasource="Search,Associate" 
+                    default="Associate" 
+                    required="true" />	
+                    
+    <design:attribute name="RootNode" 
+                    label="Scope" 
+                    description="Id of the Topic that defines the tag cloud whose members will be depicted via this component." 
+                    default=""
+                    required="false" />
+
+	<design:attribute name="AllowCloudSelection" 
+	                label="Allow Cloud Selection" 
+	                description="Check this box to allow authorised users to select the tag cloud to display." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="AllowCloudEditing" 
+	                label="Allow Cloud Editing" 
+	                description="Check this box to allow authorised users to edit the tags that feature in the selected cloud." 
+	                default="false"
+                    required="false" />	
+
+    <design:attribute name="SelectedStyle" 
+                    label="'Selected Tag' Style" 
+                    description="Styling option to apply to selected tags." 
+                    datasource="SCIENCE_BLUE,MIDNIGHT_BLUE,FLUSH_MAHOGANY,AZURE,SALEM,KOROMIKO,EMERALD,PALETTE_GRAY_9"
+                    default="SCIENCE_BLUE" 
+                    required="true" />	
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'."
+                    default="" 
+                    required="false" />                    
+
+</design:component>

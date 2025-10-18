@@ -1,0 +1,61 @@
+<!--
+============================================================================================== 
+THIS TEMPLATE IS NOT IN USE.
+
+Martin Little for Improved Apps
+June 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!TName}"
+                controller="ControllerHelpContent"
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!TName}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+    </head>
+    
+    <body class="Page {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(isIHLUX==true, ' IHLUX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}">     
+        
+        <div class='Callout Bubble {!TCSSClass}'>
+            <div class="CalloutContent">
+                <apex:form >
+                    <div style="height: 10px;"></div>
+
+                    <div class='ToolsContent' >
+                    
+                        <div style="float: left;">
+                            <apex:outputText value="{!TAdminLink}" escape="true"></apex:outputText>&nbsp;
+                        </div>
+                    
+                        <iframe style='border: 0; width: 100%; height: {!Hlp.CalloutHeight__c - 70}px;' src='{!TLayout}' ></iframe>
+                    </div>
+                    
+                    <div class="CalloutFooter">
+
+                        <div class="ReadMoreLink">
+                            <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.ShowReadMoreLink__c == false, 'Authoring', '')}" 
+                                            title="{!JSENCODE(TMoreLinkTitle)}" 
+                                            value="{!JSENCODE(TMoreLinkHref)}" 
+                                            onclick="{!IF(TMoreLinkOnclick != '', 'IHQAMenu.openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+
+                                <div class='MoreLink'>
+                                    <apex:outputText escape="true" value="{!TMoreLinkText}" />
+                                </div>
+                            </apex:outputLink>                        
+                        </div>  
+
+                    </div>
+                    
+                </apex:form> 
+            </div>
+        </div>                
+    </body>
+
+</apex:page>

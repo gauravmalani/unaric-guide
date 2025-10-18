@@ -1,0 +1,842 @@
+<!--
+============================================================================================== 
+SF1 VERSION OF THE VF QAM, DESIGNED TO BE VIEWED AS A PUBLISHER ACTION OR, IN "CALLOUT MODE",
+AS A STAND-ALONE VF PAGE THAT LAUNCHES TOPIC TEMPLATES INTO ITSELF (RATHER THAN FULL TOPIC
+TEMPLATES IN SF1 STYLE).
+
+FOR CALLOUT MODE, PASS PARAMETER CalloutMode=true
+
+REQUIRES CONTEXT INFORMATION ABOUT THE LAST SF1 RECORD VIEWED IF THIS QAM IS TO CONTEXTUALISE.
+SF1 SHOULD PASS THIS AUTOMATICALLY FROM THE PUBLISHER AS THE id PARAMETER.
+OUR CONTROLLER STORES THIS AS THE "RecordId" MEMBER STRING.
+THEREAFTER, WE PASS THIS ON IN OUR ONWARD LINKS TO THE PORTAL / IH1TOOLS
+IN THE FORM OF THE IHContext QUERY PARAMETER. 
+
+Martin Little for Improved Apps 
+December 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page sidebar="false" showHeader="False"
+                title="{!BrandingLocalisations['ProductName']} - {!IF(CalloutMode == true, cH.TBrandTitle + ' - ' + HPLName, GlobalLocalisations['AdviceLabelQAM'])}"
+                docType="html-5.0"
+                controller="ControllerIHQAMSettings"
+                action="{!initializeIH1QAM}">
+
+    <head>    
+        <title>{!BrandingLocalisations['ProductName']} - {!IF(CalloutMode == true, cH.TBrandTitle + ' - ' + HPLName, GlobalLocalisations['AdviceLabelQAM'])}</title>
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />     
+
+        <apex:includeScript value="/canvas/sdk/js/publisher.js" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/lib/jquery/3.6.0/jquery-3.6.0.min.js')}"  />
+    
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSettings.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsSearch.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.IHResources, '/js/jsIH1UX.js')}" />
+    
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_customer.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />
+        
+        <style>
+            .IH1Button                      {display: inline-block; margin: 6px 0 6px 6px; padding: 2px 5px; cursor: pointer; 
+                                            background-color: white; color: #004080; border: 1px solid silver; border-radius: 5px; 
+                                            font-size: 16px; line-height: 25px;}
+                                            
+            .IH1Input:not(.CurrentFilter,SelectedFilter)    {color: black;}
+            .IH1Filter                      {display: inline-block; xpadding: 2px 5px;}
+            .CurrentFilter                  {display: inline; background-color: white; color: #004080;}
+            .SelectedFilter                 {display: inline; background-color: white; color: #004080; font-weight: bold;}
+            .IH1QAMSearchWidgetContainer    {width: 180px; float: left; margin: 2px 0 0 10px;}
+            #IH1QAMSearchButton             {width: 65px; float: left; margin: 10px;}
+
+            <!-- Start mobile-ui styles -->
+            .ui-btn                           {font-size: 12px; font-family: Arial, Helvetica, sans-serif;}
+            .ui-input-search                  {margin: 6px 0 0 0; padding: 0; background: white; border: 1px solid silver; border-radius: 4px;}
+            .ui-input-search input            {padding: 1px 5px; font-size: 0.72em;}
+            <!-- End mobile-ui styles -->
+            
+            <!-- Start Callout Mode -->
+            .IHCalloutBody                    {font-family: Arial, Helvetica, sans-serif;}
+            .IHCalloutMode * #IH1NavBar,.IHCalloutMode * #IH1NavBar.IH1NavBarItem    {height: 24px;}
+            .IHCalloutMode * .ui-input-search input            {min-height: 1em; padding: 1px 5px; font-size: 0.72em;}
+            .IHCalloutMode * #IH1QAMSearchButton    {margin: 5px;}
+            .IHHelpedSFElement                  {padding: 2px 5px; border: 1px solid transparent;}
+            #CalloutTitle                       {padding: 5px; font-size: 0.9em; color: #004080;}
+            .IHCalloutMode * .IH1ListViewLabel    {font-size: 0.8em; margin: 6px 5px; padding: 0;}
+            .IHCalloutMode * #CalloutListAutoFilter    {float:left;}
+            .IHCalloutMode * .ui-input-search          {margin-top: 5px;}
+            .IHCalloutMode * #CalloutViewSelect        {display:inline-block;}
+            .IHCalloutMode * .IH1Filter                {font-size: 0.9em;}
+            .IHCalloutMode * .IH1Filter,.IHCalloutMode * .IH1Search,.IHCalloutMode * .IH1Button    {margin: 5px 0 0 0; padding: 2px 5px; line-height: 16px;}
+            .IHCalloutMode * .IH1ListItem    {border: none; background: transparent; font-size: 12px; font-family: Arial, Helvetica, sans-serif; padding-left: 10px; }          
+            .IHCalloutMode * .Bubble         {position: static; margin: 0; padding: 0;}         
+            <!-- End Callout Mode -->
+
+        </style>
+            
+        <script type='text/javascript'>
+            
+            if ($IAIHj + '' == 'undefined') {
+                $IAIHj = jQuery.noConflict(true);
+            }
+
+            $IAIHj(document).ready(function($) {
+
+                // Initial conditions
+                $IAIHj("#{!JSENCODE(SelectedQAMTab)}").show(); 
+                                    
+                // Quick Links: show only if links exist
+                var lnkTest = '{!cH.Settings.QuickLink1__c}' + '{!cH.Settings.QuickLink2__c}' + '{!cH.Settings.QuickLink3__c}' + '{!cH.Settings.QuickLink4__c}' + '{!cH.Settings.QuickLink5__c}';
+                lnkTest = lnkTest.split('null').join('');
+                if (lnkTest != '') {
+                    $IAIHj('#HelpQuickLinks').removeClass('IHHidden');
+                }
+                                    
+
+                // Set Nav Bar item widths
+                var VisNavItems = $IAIHj('.IH1NavBarItem:visible').length;
+                var NavItemWidth = (100 / VisNavItems) + '%';
+                $IAIHj('.IH1NavBarItem').css('width', NavItemWidth);        
+                
+                
+                // Nav Bar tab click handlers
+                $IAIHj(".IH1NavBarItem:not('#IH1HelpHome,#IH1ListDetail')").click(function() {
+
+                    var PanelToShow = "#Panel" + $IAIHj(this).attr("id");
+                    var ActiveNavBarItem = '#' + $IAIHj(this).attr("id");
+                                                
+                    // Hide Panels, Nav Bar items and Header texts
+                    $IAIHj(".IH1NavBarItem,.IH1Panel,.IH1QAMTitleText").hide();
+                        
+                    // Make clicked Nav Bar Item Active                         
+                    $IAIHj(".IH1NavBarItem").removeClass("IHActive");
+                    $IAIHj(ActiveNavBarItem).addClass("IHActive");                      
+                                                
+                    // Show active Panel
+                    $IAIHj(PanelToShow).show();
+                        
+                    // Show Nav bar items - unless they were hidden by page logic/rules
+                    $IAIHj(".IH1NavBarItem:not('.IHHidden')").show();
+                        
+                    // Show active title
+                    $IAIHj(PanelToShow + 'Title').show();
+                        
+                }); 
+                
+                
+                // Show / hide listing details
+                $IAIHj(".IH1ViewMode").click(function() {
+                    if($IAIHj(this).hasClass('IHIconExpandIH1')) {
+                        IHIH1UX.toggleDetails('Expand');
+                    } else {
+                        IHIH1UX.toggleDetails('Collapse');
+                    }
+                });
+                
+                
+                // Initialise expanded/collapsed state based on cookie
+                if (readCookie('IH1ViewMode') != null) {
+                    IHIH1UX.toggleDetails(readCookie('IH1ViewMode'));
+                }
+                
+                
+                // Initialise help for this page list element filter
+                if ('{!CalloutMode}' == 'true') {
+                    filterToElement(document.getElementById('selectorCalloutField'));
+                } else {
+                    filterToElement(document.getElementById('selectorField'));
+                }
+
+
+                // Specialise styling if in Callout Mode 
+                if ('{!CalloutMode}' == 'true') {
+                    $IAIHj('#theBody').addClass('IHCalloutMode');
+                    $IAIHj('.IH1NavButtonIcon').removeClass('IHIcon30').addClass('IHIcon16').css('margin','5px auto');
+                }  
+
+            }); 
+                
+                                                
+            // Filter the page help topics list to the specified helped element type
+            function filterToElement(elem) {
+                
+                var theElementType;
+                
+                // If selected filter was clicked, show all selectors and end
+                if($IAIHj(elem).hasClass('CurrentFilter')) {                    
+                    $IAIHj(elem).removeClass('CurrentFilter');
+                    $IAIHj(elem).addClass('SelectedFilter');
+                    $IAIHj('#IH1HelpFilterSelectors .IH1Input').show();
+                    $IAIHj('#IH1CalloutFilterSelectors .IH1Input').show();
+                    return;
+                }
+                
+                // If another filter selection was clicked, process selection:
+                // Get the selected element type
+                if ('{!CalloutMode}' == 'true') {
+                    theElementType = elem.id.substring(15);
+                } else {
+                    theElementType = elem.id.substring(8);
+                }
+                
+                // Hide all page help
+                $IAIHj(".IH1PageHelpItem").hide();
+                $IAIHj(".IH1CalloutHelpItem").hide();
+                    
+                // Show help for the selected element type
+                if (theElementType == 'All') {
+                    $IAIHj(".Field").show();
+                    $IAIHj(".PageHelpLink").show();
+                    $IAIHj(".Button").show();
+                    $IAIHj(".CustomLink").show();
+                    $IAIHj(".RelatedListHelpLink").show();
+                        
+                } else {
+                    $IAIHj("." + theElementType).show();
+                }
+                
+                // Hide selection tools
+                $IAIHj('#IH1HelpFilterSelectors .IH1Input').hide();
+                $IAIHj('#IH1CalloutFilterSelectors .IH1Input').hide();
+                                
+                // Set selected filter as current and show it
+                $IAIHj('#IH1HelpFilterSelectors .IH1Input').removeClass('CurrentFilter');
+                $IAIHj('#IH1HelpFilterSelectors .IH1Input').removeClass('SelectedFilter');
+                $IAIHj('#IH1CalloutFilterSelectors .IH1Input').removeClass('CurrentFilter');
+                $IAIHj('#IH1CalloutFilterSelectors .IH1Input').removeClass('SelectedFilter');
+
+                $IAIHj(elem).addClass('CurrentFilter');
+                $IAIHj('.CurrentFilter').show();
+                
+                return;                                     
+            }
+                
+                                                
+            // When doing a search, we need to keep the publisher open, so
+            // remove standard on-unload behaviour
+            function cueSearch() {
+                document.getElementById("theBody").onunload = "";
+                doSearch();
+            }
+                
+                
+            // As a rule, when navigating from the publisher (QAM) - i.e., when
+            // clicking a topic link, we want the publisher to close
+            function doUnload() {
+                Sfdc.canvas.publisher.publish({name: "publisher.close", payload:{ refresh:"true"}});
+            }
+                
+                
+            window.onmessage = function (e) {
+                // Message = some action has completed
+                if (e.data.toString().substring(0,16) == 'confirmComplete=') {
+                    // In our case, this message is sent only by the comments
+                    // page from its iframe: when this happens, we want to return
+                    // the user to the help listing
+                    
+                    document.getElementById('HelpList').click();
+                    document.getElementById('HelpList').focus();
+                }
+            }
+
+
+            // Report to opener as our window is resized
+             $IAIHj(window).resize(function() {
+                 resizeFrame();
+             }); 
+            function resizeFrame() {
+
+                var CoOrds;
+                
+                // In Mac, we need to take the "toolbar / menubar" into account:
+                // NB: FireFox does this itself - so if FireFox, ignore
+                if (navigator.appVersion.indexOf("Mac") != -1 && navigator.userAgent.toLowerCase().indexOf('firefox') == -1) {
+                    CoOrds = window.screenX + ':' + (window.screenY - 22) + ':' + window.outerWidth + ':' + window.outerHeight;
+                } else {
+                    CoOrds = window.screenX + ':' + window.screenY + ':' + window.outerWidth + ':' + window.outerHeight;
+                }
+                 
+                window.opener.postMessage('QAMSize=' + CoOrds, document.location.origin);         
+            }
+                        
+        </script>        
+    </head>
+
+    
+    <body class="IH1UX IH1QAM" id="theBody" onunload="javascript:doUnload();">      
+        <apex:form >            
+        
+<!--   
+===============================================
+HEADER BAR (Hidden in "Callout" / popped out mode)
+===============================================
+ -->            
+            <div id="IH1Container" class="{!IF(HPLName=='[Unknown Page]', '', '')}">
+                <div class="IH1Header{!IF(CalloutMode == true, ' IHHidden', '')}">
+                    <div class="IH1HeaderIcon IHIcon30 IHIconHelpTopicIH1"></div>
+                                        
+                    <div class="IH1HeaderText">                    
+                        <div class="IH1HeaderSuperscript">{!cH.TBrandTitle}</div>
+
+                        <div class="IH1HeaderTitle">
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelHelpListTitle">
+                                {!HPLName}                              
+                            </div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelCalloutListTitle">
+                                {!HPLName}                              
+                            </div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelHelpBookmarksTitle">
+                                {!DialogueLocalisations['TitleSubtitleTabBookmarks']}
+                            </div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelHelpQuickLinksTitle">
+                                {!DialogueLocalisations['TitleSubtitleTabQuickLinks']}
+                            </div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelHelpSearchTitle">
+                                {!GlobalLocalisations['ButtonSearch']}
+                            </div>
+                            <div class="IH1QAMTitleText IH1HeaderTitleText" id="PanelIH1HelpToolsTitle">
+                                {!GlobalLocalisations['TitleSubtitleTools']}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+<!--   
+===============================================
+NAV BAR
+===============================================
+ -->            
+                <div id="IH1NavBar">                    
+                    <span style="display: {!IF(Diags != '' && Diags != null, 'block', 'none')}; font-size: 1px; color: red;">{!Diags}</span>                    
+
+                    <div id="HelpList"  title="{!DialogueLocalisations['TipTabHelpForCurrentPage']}" class="{!IF(CalloutMode == true, 'IHHidden ', '')}IH1NavBarItem{!IF(SelectedQAMTab=='PanelHelpList', ' IHActive', '')}">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpListIH1" ></div>
+                        </a>                
+                    </div>
+
+                    <div id="CalloutList"  title="{!DialogueLocalisations['TipTabHelpForCurrentPage']}" class="{!IF(CalloutMode == true, '', 'IHHidden ')}IH1NavBarItem{!IF(SelectedQAMTab=='PanelCalloutList', ' IHActive', '')}">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpListIH1" ></div>
+                        </a>                
+                    </div>
+
+                    <div id="HelpBookmarks" title="{!GlobalLocalisations['TipButtonOpenBookmarks']}" class="IH1NavBarItem{!IF(SelectedQAMTab=='PanelHelpBookmarks', ' IHActive', '')}">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconBookmarksIH1" ></div>
+                        </a>                
+                    </div>
+    
+                    <div id="HelpQuickLinks" title="{!DialogueLocalisations['TipTabQuickLinks']}" class="IH1NavBarItem IHHidden">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconQuickLinkIH1" ></div>
+                        </a>
+                    </div>                  
+
+                    <div id="HelpSearch" title="{!DialogueLocalisations['TipTabSearch']}" class="IH1NavBarItem{!IF(SelectedQAMTab=='PanelHelpSearch', ' IHActive', '')}">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconSearchIH1" ></div>
+                        </a>                
+                    </div>
+
+                    <div id="IH1HelpHome" title="{!GlobalLocalisations['TipButtonHelpHome']}" class="IH1NavBarItem{!IF(DefaultHTSet == true, '', ' IHHidden')}">
+
+                        <!--
+                        NOTE SF1 / NON-SF1 / CALLOUT MODE LINK TARGET DIFFERENTIATION 
+                        ------------------------------------------------------------- 
+                         -->
+                        <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!getHelpTopic}" >                            
+                            <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="&IHContext={!RecordId}"></apex:param>                                               
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpHomeIH1" ></div>
+                        </apex:commandLink>
+
+                        <apex:commandLink rendered="{!!isSF1}" action="{!getHelpTopic}" target="_Blank">                            
+                            <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="&IHContext={!RecordId}"></apex:param>                                               
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpHomeIH1" ></div>
+                        </apex:commandLink>
+
+                        <apex:commandLink rendered="{!CalloutMode}" action="{!getHelpTopic}" target="_Blank">                            
+                            <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="&IHContext={!RecordId}"></apex:param>                                               
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpHomeIH1" ></div>
+                        </apex:commandLink>
+                    </div>                                              
+
+                    <div id="IH1HelpTools" title="{!GlobalLocalisations['TipTabTools']}" class="IH1NavBarItem{!IF(SelectedQAMTab=='PanelIH1HelpTools', ' IHActive', '')}">
+                        <a class="IH1NavButton" href="javascript:void(0);">
+                            <div class="IH1NavButtonIcon IHIcon30 IHIconHelpMenuIH1" ></div>
+                        </a>                
+                    </div>
+
+                </div>
+        
+
+<!--   
+===============================================
+HELP FOR THIS PAGE LIST
+===============================================
+ -->            
+                <div id="PanelHelpList" class="IH1Panel" style="display: none;">
+                    <div class="IH1PanelBody">
+
+                        <div class="IH1ListView">
+                            <div id="ViewSelect">
+                        
+                                <div class="IH1ListViewLabel">
+                                    {!DialogueLocalisations['AdviceLabelShowingHelpFor']}
+                                </div>
+
+                                <div id="IH1HelpFilterSelectors" style="float:left;">                               
+                                    <div onclick="javascript:filterToElement(this);" id="selectorField" class="IH1Input IH1Button IH1Filter">
+                                        {!DialogueLocalisations['ButtonFilterToFields']}
+                                    </div>
+                                    <div onclick="javascript:filterToElement(this);" id="selectorPageHelpLink" class="IH1Input IH1Button IH1Filter">
+                                        {!SFObjPluralName}
+                                    </div>
+                                    <div onclick="javascript:filterToElement(this);" id="selectorButton" class="IH1Input IH1Button IH1Filter">
+                                        {!DialogueLocalisations['ButtonFilterToButtons']}
+                                    </div>
+                                    <div onclick="javascript:filterToElement(this);" id="selectorCustomLink" class="IH1Input IH1Button IH1Filter">
+                                        {!DialogueLocalisations['ButtonFilterToLinks']}
+                                    </div>
+                                    <div onclick="javascript:filterToElement(this);" id="selectorRelatedListHelpLink" class="IH1Input IH1Button IH1Filter">
+                                        {!DialogueLocalisations['ButtonFilterToRelatedLists']}
+                                    </div>
+                                    <div onclick="javascript:filterToElement(this);" id="selectorAll" class="IH1Input IH1Button IH1Filter">
+                                        {!DialogueLocalisations['ButtonFilterToEverything']}
+                                    </div>
+                                </div>                          
+
+                            </div>
+                        </div>
+
+                        
+                        <div class="IH1List" style="clear: both; overflow-y: auto; height: {!IF(isSF1 == true, 'auto', '355px')};">                              
+                            <apex:Repeat value="{!HelpedElements}" var="Elems"> 
+                                <div class="IH1ListItem IH1PageHelpItem {!SUBSTITUTE(Elems.Element.ElementType__c, ' ', '')}">
+                                    
+                                    <!--
+                                    RESPOND TO "READ MORE" SETTING BY OFFERING 2x LISTINGS: ONE
+                                    AS A LINK, ONE STYLED DIFFERENTLY AS JUST TEXT.
+                                    ALSO, USE THE MOST "PLAIN ENGLISH" ELEMENT TEXT. IN SOME CASES
+                                    THIS IS ELEMENT NAME, IN OTHERS IT'S IDENTIFIER... 
+                                    
+                                    ALSO, DIFFERENTIATE LINK TARGET BETWEEN SF1 (NO TARGET REQUIRED)
+                                    AND PUBLISHER ACTION WHEN USED VIA "FEED" IN CLASSIC (TARGET A NEW BROWSER TAB SO TOPIC
+                                    IS NOT CONSTRAINED TO THE MINIMAL AREA OF THE FEED)
+                                     -->
+                                     
+                                    <div class="{!IF(Elems.Element.HelpTopic__r.ShowReadMoreLink__c == true, '', 'IHHidden')}">
+                                        <apex:commandLink rendered="{!IF(Elems.Result.Name != '' && Elems.Result.Link != '' && isSF1 == false, true, false)}"
+                                            action="{!getHelpTopic}"
+                                            title="{!DialogueLocalisations['TipButtonViewTopic']}" 
+                                            target="_Blank">
+                                            
+                                            <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Elems.Element.HelpTopic__r.Id + '&IHContext=' + RecordId}"></apex:param>                   
+                                            
+                                            <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!IF(Elems.Element.ElementType__c == 'Field' || Elems.Element.ElementType__c == 'Custom Link' || Elems.Element.ElementType__c == 'Related List Help Link', Elems.Element.Identifier__c, Elems.Element.Name)}</div>
+                                            <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Elems.Result.Summary}</div>
+                                        </apex:commandLink>
+
+                                        <apex:commandLink rendered="{!IF(Elems.Result.Name != '' && Elems.Result.Link != '' && isSF1 == true, true, false)}"
+                                            action="{!getHelpTopic}"
+                                            title="{!DialogueLocalisations['TipButtonViewTopic']}">
+                                            
+                                            <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Elems.Element.HelpTopic__r.Id + '&IHContext=' + RecordId}"></apex:param>                   
+                                            
+                                            <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!IF(Elems.Element.ElementType__c == 'Field' || Elems.Element.ElementType__c == 'Custom Link' || Elems.Element.ElementType__c == 'Related List Help Link', Elems.Element.Identifier__c, Elems.Element.Name)}</div>
+                                            <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Elems.Result.Summary}</div>
+                                        </apex:commandLink>
+
+                                    </div> 
+                                    
+                                    <div class="{!IF(Elems.Element.HelpTopic__r.ShowReadMoreLink__c == false, 'IH1NoReadMore', 'IHHidden')}">
+                                        <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!IF(Elems.Element.ElementType__c == 'Field' || Elems.Element.ElementType__c == 'Custom Link' || Elems.Element.ElementType__c == 'Related List Help Link', Elems.Element.Identifier__c, Elems.Element.Name)}</div>
+                                        <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Elems.Result.Summary}</div>
+                                    </div>
+                                                                     
+                                </div>
+                            </apex:Repeat>
+                        </div>                      
+                    </div>
+                </div>
+
+
+<!--   
+===============================================
+CALLOUTS FOR THIS PAGE LIST
+===============================================
+ -->            
+                <div id="PanelCalloutList" class="IH1Panel" style="display: none;">
+
+                    <div class="IH1ListView">
+
+                        <div class="IH1ListViewLabel">
+                            {!GlobalLocalisations['ButtonFilter']}
+                        </div> 
+
+                        <div id="CalloutListAutoFilter" >
+                            <form class="ui-filterable">
+                                <input id="filterBasic-input" data-type="search" title="{!GlobalLocalisations['TipInputTextbox']}"/>
+                            </form>
+                        </div>
+
+
+                        <div class="IH1ListViewLabel">
+                            {!DialogueLocalisations['AdviceLabelShowingHelpFor']}
+                        </div>
+
+                        <div id="CalloutViewSelect">                        
+
+                            <div id="IH1CalloutFilterSelectors" style="float:left;">                                
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutField" class="IH1Input IH1Button IH1Filter">
+                                    {!DialogueLocalisations['ButtonFilterToFields']}
+                                </div>
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutPageHelpLink" class="IH1Input IH1Button IH1Filter">
+                                    {!SFObjPluralName}
+                                </div>
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutButton" class="IH1Input IH1Button IH1Filter">
+                                    {!DialogueLocalisations['ButtonFilterToButtons']}
+                                </div>
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutCustomLink" class="IH1Input IH1Button IH1Filter">
+                                    {!DialogueLocalisations['ButtonFilterToLinks']}
+                                </div>
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutRelatedListHelpLink" class="IH1Input IH1Button IH1Filter">
+                                    {!DialogueLocalisations['ButtonFilterToRelatedLists']}
+                                </div>
+                                <div onclick="javascript:filterToElement(this);" id="selectorCalloutAll" class="IH1Input IH1Button IH1Filter">
+                                    {!DialogueLocalisations['ButtonFilterToEverything']}
+                                </div>
+                            </div>                          
+
+                        </div>
+                    </div>
+
+                    <div class="IH1PanelBody" style="height: Calc(100vh - 58px); overflow: hidden;">
+
+                        <div id="IHPanel1" style="float: left; width: 17%; height: 100%; margin: 0; padding: 0;">
+                            <div id="CalloutListContainer" style="float: left; width: 100%; height: Calc(100vh - 59px); overflow: auto; font-size: 75%;">
+                                <ul data-role="listview" data-filter="true" data-input="#filterBasic-input" class="Tree">
+                                    <apex:repeat value="{!HelpedElements}" var="HE">
+                                        <li class="IH1CalloutHelpItem {!SUBSTITUTE(HE.Element.ElementType__c, ' ', '')}">
+                                            <apex:commandLink styleClass="IHHelpedSFElement {!HE.Element.HelpTopic__r.CustomStyle__c}" 
+                                                        action="{!getTopicCalloutTemplate}" 
+                                                        title="{!HE.Result.Name}" 
+                                                        rerender="IHPanel2">
+                            
+                                                <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!HE.Element.Id}"></apex:param>                                               
+                                            {!HE.Element.Name}
+                                            </apex:commandLink>
+                                        </li>
+                                    </apex:repeat>
+                                </ul>                
+                            </div>
+                        </div>
+                        
+                        <apex:outputPanel id="IHPanel2" layout="block" style="height: 100%">
+                            <div style="float:left; width: 83%; height: 100%; margin: 0; padding: 0;">
+                                <div id="SelectedCallout" style="width: 100%; height: 25px; background: white; color: #004080; border-bottom: 1px solid silver;">
+                                    <div id="CalloutTitle" class="IHHelpedSFElement {!theSBQAMItemCS}">
+                                        <apex:outputText value="{!theSBQAMItemTitle}" escape="true" />
+                                    </div>
+                                </div>
+                                
+                                <div id="PanelTopicCallout" class="Bubble" style="width: 100%; height: calc(100% - 25px); margin: 0; padding: 0; overflow: hidden;">
+                                    <iframe frameborder="0" id="theTopicFrame" src="{!theSBQAMItem}" style="width: 100%; height: 100%; overflow-x:hidden; overflow-y:scroll;" />
+                                </div>
+                            </div>         
+                        </apex:outputPanel>
+
+                    </div>
+                </div>
+
+<!--   
+===============================================
+HELP BOOKMARKS
+===============================================
+ -->
+                <div id="PanelHelpBookmarks" class="IH1Panel" style="display: none;">
+                    
+                    <!--
+                    NOTE SF1 / NON-SF1 / CALLOUT MODE LINK TARGET DIFFERENTIATION 
+                    ------------------------------------------------------------- 
+                     -->
+
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">{!GlobalLocalisations['TitleDialogueTitleBookmarks']}</div> 
+                    </div>
+
+                    <div class="IH1PanelBody">
+                        <div class="IH1List" style="clear: both; overflow-y: auto; height: {!IF(isSF1 == true, 'auto', '355px')};">
+                            <apex:Repeat value="{!cH.Bookmarks}" var="Bmk">
+                                <div class="IH1ListItem">
+                                    <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!getHelpTopic}" >                                    
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Bmk.HTID + '&IHContext=' + RecordId}"></apex:param>                   
+                                        
+                                        <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Bmk.Name}</div>
+                                        <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Bmk.Summary}</div>                                               
+                                    </apex:commandLink>
+    
+                                    <apex:commandLink rendered="{!!isSF1}" action="{!getHelpTopic}" target="_Blank">                                    
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Bmk.HTID + '&IHContext=' + RecordId}"></apex:param>                   
+                                        
+                                        <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Bmk.Name}</div>
+                                        <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Bmk.Summary}</div>                                               
+                                    </apex:commandLink>
+
+                                    <apex:commandLink rendered="{!CalloutMode}" action="{!getHelpTopic}" target="_Blank">                                    
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Bmk.HTID + '&IHContext=' + RecordId}"></apex:param>                   
+                                                               
+                                        <div class="">{!Bmk.Name}</div>
+                                    </apex:commandLink>
+                                </div>
+                            </apex:Repeat>                                          
+                        </div>                    
+                    </div>
+                </div>
+
+<!--   
+===============================================
+HELP QUICK LINKS
+===============================================
+ -->
+                <div id="PanelHelpQuickLinks" class="IH1Panel" style="display: none;">                    
+
+
+                    <!--
+                    NOTE SF1 / NON-SF1 / CALLOUT MODE LINK TARGET DIFFERENTIATION 
+                    ------------------------------------------------------------- 
+                     -->
+
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">{!DialogueLocalisations['TitleTabQuickLinks']}</div> 
+                    </div>
+
+                    <div class="IH1PanelBody">
+                        <div class="IH1List" style="clear: both; overflow-y: auto; height: {!IF(isSF1 == true, 'auto', '355px')};">
+
+                            <div class="IH1ListItem{!IF(cH.Settings.QuickLink1__c != '' && cH.Settings.QuickLink1__c != null, '', ' IHHidden')}">
+                                <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!gotoURL}" >                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink1__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText1__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip1__c}</div>
+                                </apex:commandLink>
+    
+                                <apex:commandLink rendered="{!!isSF1}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink1__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText1__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip1__c}</div>
+                                </apex:commandLink>
+
+                                <apex:commandLink rendered="{!CalloutMode}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink1__c}"></apex:param>
+                                                        
+                                    <div class="">{!cH.Settings.QuickText1__c}</div>                                   
+                                </apex:commandLink>
+                            </div>
+                        
+                            <div class="IH1ListItem{!IF(cH.Settings.QuickLink2__c != '' && cH.Settings.QuickLink2__c != null, '', ' IHHidden')}">
+                                <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!gotoURL}" >                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink2__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText2__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip2__c}</div>
+                                </apex:commandLink>
+    
+                                <apex:commandLink rendered="{!!isSF1}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink2__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText2__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip2__c}</div>
+                                </apex:commandLink>
+
+                                <apex:commandLink rendered="{!CalloutMode}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink2__c}"></apex:param>
+                                                        
+                                    <div class="">{!cH.Settings.QuickText2__c}</div>                                   
+                                </apex:commandLink>
+                            </div>
+    
+                            <div class="IH1ListItem{!IF(cH.Settings.QuickLink3__c != '' && cH.Settings.QuickLink3__c != null, '', ' IHHidden')}">
+                                <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!gotoURL}" >                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink3__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText3__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip3__c}</div>
+                                </apex:commandLink>
+    
+                                <apex:commandLink rendered="{!!isSF1}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink3__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText3__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip3__c}</div>
+                                </apex:commandLink>
+
+                                <apex:commandLink rendered="{!CalloutMode}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink3__c}"></apex:param>
+                                                        
+                                    <div class="">{!cH.Settings.QuickText3__c}</div>                                   
+                                </apex:commandLink>
+                            </div>
+
+                            <div class="IH1ListItem{!IF(cH.Settings.QuickLink4__c != '' && cH.Settings.QuickLink4__c != null, '', ' IHHidden')}">
+                                <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!gotoURL}" >                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink4__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText4__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip4__c}</div>
+                                </apex:commandLink>
+    
+                                <apex:commandLink rendered="{!!isSF1}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink4__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText4__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip4__c}</div>
+                                </apex:commandLink>
+
+                                <apex:commandLink rendered="{!CalloutMode}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink4__c}"></apex:param>
+                                                        
+                                    <div class="">{!cH.Settings.QuickText4__c}</div>                                   
+                                </apex:commandLink>
+                            </div>
+    
+                            <div class="IH1ListItem{!IF(cH.Settings.QuickLink5__c != '' && cH.Settings.QuickLink5__c != null, '', ' IHHidden')}">
+                                <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!gotoURL}" >                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink5__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText5__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip5__c}</div>
+                                </apex:commandLink>
+    
+                                <apex:commandLink rendered="{!!isSF1}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink5__c}"></apex:param>
+                                    
+                                    <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingLink']} </span>{!cH.Settings.QuickText5__c}</div>                                   
+                                    <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!DialogueLocalisations['AdviceLabelListingDetails']} </span>{!cH.Settings.QuickTip5__c}</div>
+                                </apex:commandLink>
+
+                                <apex:commandLink rendered="{!CalloutMode}" action="{!gotoURL}" target="_Blank">                                 
+                                    <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!cH.Settings.QuickLink5__c}"></apex:param>
+                                                        
+                                    <div class="">{!cH.Settings.QuickText5__c}</div>                                   
+                                </apex:commandLink>
+                            </div>
+                        </div>
+                    </div>                  
+                </div>
+                
+<!--   
+===============================================
+HELP SEARCH
+===============================================
+ -->
+                <div id="PanelHelpSearch" class="IH1Panel" style="display: none;">
+                    
+                    <div class="IH1PanelBody">
+                        <div class="IH1ListView">
+                            <div style="width: 100%;">
+                                <div class="IH1ListViewLabel">{!GlobalLocalisations['AdviceLabelSearchHelp']}</div> 
+
+                                <div id="IH1QAMSearchWidget">
+                                    <div class="IH1QAMSearchWidgetContainer">
+                                        <apex:input styleClass="xIH1Input IH1InputText" style="width: 90%; cursor: default;" value="{!SearchResultId}" type="search" onkeydown="javascript:return IHSearch.checkEnter('IH1QAMSearch', event);"/>
+                                    </div>
+                                </div>                      
+    
+                                <div id="IH1QAMSearchButton">
+                                    <apex:actionFunction name="doSearch" action="{!doSearch}" />
+                                    <div title="{!DialogueLocalisations['TipButtonSearch']}" class="IH1Button IH1Filter IH1Search" style="text-align: center; margin: -2px 0;" onclick="javascript:cueSearch();">
+                                        {!GlobalLocalisations['ButtonSearch']}                   
+                                    </div>                               
+                                </div>
+                            </div>
+                        </div>
+                                            
+
+                        <!--
+                        NOTE SF1 / NON-SF1 / CALLOUT MODE LINK TARGET DIFFERENTIATION 
+                        ------------------------------------------------------------- 
+                         -->
+
+                        <div class="IH1List" style="clear: both; overflow-y: auto; height: {!IF(isSF1 == true, 'auto', '355px')};">
+                            <apex:Repeat value="{!cS.FieldHelp}" var="Fd">
+                                <div class="IH1ListItem">
+                                    <apex:commandLink rendered="{!isSF1 && !CalloutMode}" action="{!getHelpTopic}" title="{!DialogueLocalisations['TipButtonViewTopic']}" >
+                                        
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id + '&IHContext=' + RecordId}"></apex:param>                   
+                                        
+                                        <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Fd.Name}</div>
+                                        <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Fd.Summary}</div>                                                
+                                    </apex:commandLink>
+
+                                    <apex:commandLink rendered="{!!isSF1}" action="{!getHelpTopic}" target="_Blank" title="{!DialogueLocalisations['TipButtonViewTopic']}" >
+                                        
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id + '&IHContext=' + RecordId}"></apex:param>                   
+                                        
+                                        <div class="IH1ListItemHeader"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingName']} </span>{!Fd.Name}</div>
+                                        <div class="IH1ListItemFirstLine"><span class="IH1ListItemLabel">{!GlobalLocalisations['AdviceLabelListingSummary']} </span>{!Fd.Summary}</div>                                                
+                                    </apex:commandLink>
+
+                                    <apex:commandLink rendered="{!CalloutMode}" action="{!getHelpTopic}" target="_Blank" title="{!DialogueLocalisations['TipButtonViewTopic']}" >
+                                                                   
+                                        <apex:param name="SearchResultId" assignTo="{!SearchResultId}" value="{!Fd.Id + '&IHContext=' + RecordId}"></apex:param>                   
+                                                                   
+                                        <div class="">{!Fd.Name}</div>
+                                    </apex:commandLink>
+                                </div>
+                            </apex:Repeat>   
+                            
+                        </div>                                      
+                    </div>
+                </div>
+
+<!--   
+===============================================
+HELP TOOLS MENU 
+===============================================
+ -->            
+
+                <div id="PanelIH1HelpTools" class="IH1Panel" style="display: none;">
+                    <div class="IH1ListView">
+                        <div class="IH1ListViewLabel">{!GlobalLocalisations['TitleSubtitleTabTools']}</div>
+                    </div>
+                    
+                    <div class="IH1ToolList">
+                        <div class="IH1List" style="clear: both; overflow-y: auto; height: {!IF(isSF1 == true, 'auto', '355px')};">
+                        
+                            <div class="{!IF(CalloutMode == true, 'IHHidden ', '')}IH1ListItem">
+                                <div class="IH1ListItemHeader">
+                                    <div title="{!GlobalLocalisations['TipButtonCompactView']}" class="IH1ViewMode IH1NavButtonIcon IHIcon30 IHIconCollapseIH1" style="display: inline-block; cursor: pointer; vertical-align: middle;">&nbsp;</div>
+                                    <span style="font-weight: bold; vertical-align: middle;">{!GlobalLocalisations['ButtonCompactView']}</span>  
+                                </div>                                         
+
+                                <div class="IH1ListItemFirstLine">
+                                    {!GlobalLocalisations['AdviceLabelCompactView']}
+                                </div>
+                            </div>
+                            
+                            <div class="IH1ListItem">
+                                <div class="IH1ListItemHeader">
+                                    <div class="IH1NavButtonIcon IHIcon30 IHIconCommentIH1" style="display: inline-block; vertical-align: middle;">&nbsp;</div>
+                                        <span style="font-weight: bold;">{!GlobalLocalisations['AdviceLabelComment']}</span>
+                                    <div class='IH1QAMComment' style="clear: left; width: 100%;">                     
+                                        <iframe style='border: 0; width: 100%; height: 95px;' src='{!SFURL}/apex/iahelp__IHComment?PL={!SFObjId}&IH1UX=true&IHContext=IHHosted' id='tfrmComment' ></iframe>
+                                    </div>                                  
+                                </div>
+
+                                <div class="IH1ListItemFirstLine">
+                                    {!DialogueLocalisations['AdviceLabelCommnetOnLayout']}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>          
+        </apex:form>
+    </body>
+</apex:page>

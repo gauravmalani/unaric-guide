@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Classic_Portal_Templates</fullName>
+    <columns>NAME</columns>
+    <columns>TemplateType__c</columns>
+    <columns>PageURL__c</columns>
+    <columns>Description__c</columns>
+    <columns>DefaultHeight__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>TemplateType__c</field>
+        <operation>equals</operation>
+        <value>Full Topic</value>
+    </filters>
+    <label>Full Topic Templates</label>
+</ListView>

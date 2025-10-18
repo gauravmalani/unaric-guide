@@ -1,0 +1,67 @@
+.THIS.IsFixed 							{position: fixed;}
+.THIS.IsAbsolute 						{position: absolute;}
+.THIS.IHComponentContainer				{box-shadow: 0 2px 4px 4px rgba(0, 0, 0, 0.16);}
+
+.THIS#QAM 								{
+    top: 175px;
+    z-index: 10000;
+    right: 0px;
+    border: 1px solid #d8dde6;
+    border-right: none;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 3px;
+    background: white;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,.16)
+}
+ 
+
+.THIS #QAMHandleTool, .THIS .IATool 	{cursor: pointer;}
+.THIS#QAM:hover 						{box-shadow: 0px 0px 3px #1589ee;}
+
+
+/* Optional Label text in QAM handle area */
+.THIS .QAMHandleLabel					{margin: 0 .3rem; cursor: pointer;}
+.THIS.QAMWithLabel 					{margin-top: 12px;}
+
+
+/* QAM-wide waiting spinner, for use before individual cards have initialised */
+.THIS#QSpinner							{text-align: center; color: #cccccc; background: #eeeeee; font-size: 1.5rem; padding: 2rem;}
+
+.THIS .IASpinner						{overflow: hidden;}
+
+/* Instance of IHCard opened by QAM Handle */
+.THIS#QSpinner, .THIS#QListContainer, .THIS#QStickyContainer, .THIS#QRLVContainer, .THIS#QUT1Container {
+    z-index: 9999 !important;
+    top: 196px;
+    right: 15px;
+    width: 80%;
+    border: none;
+    border-radius: 0.25rem;
+	box-shadow: none;    
+}
+
+
+/* Move QAM body down a little where negotiated tools present */
+.THIS.QAMWithNegTools 					{margin-top: 12px;}
+
+.THIS .IHIconContent					{margin-top: -0.2em}
+
+.THIS#QListContainer .ui-resizable-handle {bottom: 7px;}
+
+@media screen and (min-width: 600px) {
+	.THIS#QSpinner, .THIS#QListContainer, .THIS#QStickyContainer, .THIS#QRLVContainer {
+	    width: 33%; min-width: 500px;
+	}
+}
+
+/* Move QAM handle and body up if on "mobile" */
+@media screen and (max-width: 47.9375em) {	
+    .THIS#QAM	{
+    	top: 30px;
+    }
+
+	.THIS#QSpinner, .THIS#QListContainer, .THIS#QStickyContainer, .THIS#QRLVContainer, .THIS#QUT1Container {
+    	top: 51px;
+	}   
+}

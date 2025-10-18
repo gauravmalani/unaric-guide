@@ -1,0 +1,88 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO ALLOW USERS TO UPLOAD A PICTURE FILE AND IMMEDIATELY ASSOCIATE IT WITH A 
+PARTICULAR HELP TOPIC (AS ITS TOPIC IMAGE). REQUIRES THE RELEVANT HELP TOPIC ID, I.E.
+
+[SF base URL]/Apex/IHUploadTopicImage?HTID=[topic id]
+
+OPTIONALLY, CONTROL THE UI VARIANT WITH PARAMETERS IH1UX=true (SF1) OR IHLUX=true (Lightning)
+
+Martin Little for Improved Apps
+March 2018
+Copyright (c.) Improved Apps Limited 2018. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TipButtonUploadImage']}" 
+                controller="ControllerHelpContent" 
+                action="{!getHelp}" >
+
+    <head>
+        <title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['TipButtonUploadImage']}</title>        
+        <meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2018. All Rights Reserved.' />     
+
+        <apex:stylesheet value="{!BrandCSS}" />
+        <apex:stylesheet value="{!URLFOR($Resource.IHResources, '/css/help_main.css')}" />  
+        
+        <style>
+            .IH1UX.Dialogue             {background: transparent;}
+            .IH1UX #UploadDialogue      {box-shadow: none; border: none; border-radius: 0px;}
+            .IHLUX.IHPanelHeader        {display: none;}
+            .IHLUX.IH-H4                {padding: 10px;}
+        </style>
+        
+        <script>
+            // Show / Hide upload button depending on whether a file has been selected
+            function checkFile(elem) {
+                try {
+                    var fName = elem.value;
+                    var btnSubmit = document.getElementById('SubmitButtonOn');
+                    
+                    if (fName == '') {
+                        btnSubmit.style.display = 'none';
+                    } else {
+                        btnSubmit.style.display = '';
+                    }
+                } catch (e) {}
+            }
+        </script>
+        
+    </head>
+    
+    
+    <body class="Dialogue{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(IHContext != '', ' ' + IHContext, '')}" >   
+    
+        <div id='UploadDialogue' class="{!IF(isIHLUX==true, 'IHLUX', '')}IHDialogue{!IF(isIH1UX==true || isIHLUX==true, '', ' IHPanel')}">
+    
+            <div class="{!IF(isIHLUX==true, 'IHLUX ', '')}IHPanelHeader IH-H3">
+                {!GlobalLocalisations['TipButtonUploadImage']}
+            </div>      
+            
+            <div style='padding: 10px;'>    
+                <apex:form >
+                
+                    <div class="{!IF(isIH1UX==true, 'IHHidden', 'IH-H4')}{!IF(isIHLUX==true, ' IHLUX', '')}">
+                        <apex:outputText value="{!Hlp.Name}" escape="true"></apex:outputText>
+                    </div>
+                    
+                    <div class='' style='padding: 10px 10px 0;'>
+                        <apex:inputFile accept=".jpg,.jpeg,.gif,.png,.bmp" value="{!imgFile}" contentType="{!imgType}" fileName="{!imgName}" onchange="javascript:checkFile(this);" />
+                        <div id="SubmitButtonOn" style="float: right; display: none;" >
+                            <apex:commandButton action="{!uploadImg}" title="{!GlobalLocalisations['TipButtonUploadImage']}" value="{!GlobalLocalisations['ToolLabelButtonUpload']}" />
+                        </div>
+                    </div>
+                    
+                    <div class="IHStatusBox">
+                        <div class="IHStatusMessage">
+                            <span id='Diags' class="IHError {!IF(TEditorClass=='IHHidden', '', 'IHHidden')}">
+                                <apex:outputText title="{!Diags}" value="{!Diags}" escape="true" />
+                            </span>         
+                        </div>
+                    </div>
+
+                </apex:form>
+            </div>    
+        </div>
+    </body>
+</apex:page>

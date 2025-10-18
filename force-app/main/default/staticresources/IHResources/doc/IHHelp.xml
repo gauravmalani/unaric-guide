@@ -1,0 +1,676 @@
+<xml>
+<ImprovedHelpDocumentation>
+<HelpTopics>
+<HelpTopic Id='a0Eb0000001VIxPEAW' Name='1. Welcome to Improved Help' Summary='This will become YOUR custom Help Portal and this page can be set as your Users Home Page (See Global Settings)...' Default='True' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2ColTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='150' Width='250' Caption='' Title='' URL='http://www.improvedapps.com/wp/wp-content/uploads/2013/10/Improved-Help-Tools-Page-Logo.png' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Improved Help delivers significant value to enterprise customers, providing help for your users in a number of new ways: &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Reduce On-Boarding to hours and minutes...&lt;/strong&gt;by guiding new users step by step, we can help get your internal users comfortable with Salesforce and your processes in minutes and hours, rather than days or weeks.&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Raise the bar on Partner on-boarding&lt;/strong&gt;...Provide guidance, knowledge, hints and tips to fast track new Partners trying to learn and use your apps to be successful.&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Driving BIGGER deals QUICKER&lt;/strong&gt;...By pushing the right competitive information and market intelligence collateral to your users, at the right time...Arms your Sales team with knowledge and confidance to win based on previous experience...Stop your expensive Sales team from having to waste time searching for this valuable information.&lt;/li&gt;&lt;/ul&gt; If any of these points are of interest, then simply click the appropriate &amp;#39;Reading List&amp;#39; found to the right of this text box and navigate thorugh each Help Topic by clicking the right blue arrow. Otherwise start by going through the &amp;#39;&lt;strong&gt;Quick Start: Evaluators Reading List&lt;/strong&gt;&amp;#39; to learn the basics.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#TopTip: &lt;/strong&gt;Click the popout icon next to a Reading List&amp;#39;s name to view it in a separate dialogue for easy reading.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VIy4EAG' Name='Contact the Improved Apps Team' Summary='Improved Apps are positioned to ensure that you are successful utilising our products, we welcome your contact.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2ColTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='150' Width='250' Caption='' Title='' URL='http://www.improvedapps.com/wp/wp-content/uploads/2013/10/Improved-Help-Tools-Page-Logo.png' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Feel free to reach us through the following methods:&lt;br/&gt;&lt;ul&gt;&lt;li&gt; &lt;strong&gt;Email&lt;/strong&gt; : info@improvedapps.com&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Telephone&lt;/strong&gt; : +44 (0)1372 617020&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Web Site&lt;/strong&gt; : &lt;a href="http://improvedapps.com/contact/" target="_blank"&gt;Click here&lt;/a&gt; to go to the &amp;#39;Contact Us&amp;#39; page&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VIyoEAG' Name='Navigating yourself around this Help Portal Page' Summary='First lets walk you through this page that you are on right now. This is know as your &#39;Help Portal&#39; to your Users but also as the &#39;Tools Page&#39; for those with Help Author permissions.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='440' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;p&gt; You have arrived at the Improved Help Portal - providing your custom application help and enterprise documentation.&lt;/p&gt; &lt;ul&gt;&lt;li&gt; You are now reading a &lt;strong&gt;Help Topic&lt;/strong&gt;; The Help Topic is the heart of this Help Portal.&lt;/li&gt;&lt;li&gt; Above this panel is the &lt;strong&gt;Toolbar&lt;/strong&gt;, which provides Help Topic utilities suited to your role;&lt;/li&gt;&lt;li&gt; Above the Help Topic Toolbar is the Tools page Header, including utilities on the right for &lt;strong&gt;Help Quick-links&lt;/strong&gt;, &lt;strong&gt;Search&lt;/strong&gt; and your &lt;strong&gt;Help Bookmarks&lt;/strong&gt; list;&lt;/li&gt;&lt;li&gt; The &lt;strong&gt;Related Help Topics&lt;/strong&gt; panel (right-top) shows any &amp;#39;see also&amp;#39; Help Topics linked to this one;&lt;/li&gt;&lt;li&gt; The &lt;strong&gt;Reading Lists&lt;/strong&gt; panel (right-bottom) shows any process or play-book lists of interest;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;For more information, please see the Related Help Resources panel&lt;/strong&gt; at the bottom of this page, which provides links to other collateral or documentation.&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;Bookmark your favourite Help Topics by clicking the Bookmark icon in the Toolbar above (2nd icon from the left)&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;Use the Related Resource link to show a more interactive view explaining this Help Portal page.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Next Step: &lt;/strong&gt;Now click the blue, right arrow, on the &amp;#39;Quick Start: Evaluators Reading List&amp;#39; to go to the next Help Topic.  Over to the right --&amp;gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VIzJEAW' Name='Your Improved Apps Success Team' Summary='Improved Apps are aligned to our Customers for mutual success. Here is your team. Our Customers are at the heart of everything we do.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='440' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Please contact us should you require any assistance.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VJdHEAW' Name='Improved Apps Latest News' Summary='For the latest Tweets related to our products and any company related News follow the link below.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2ColMediaText' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='150' Width='250' Caption='' Title='' URL='http://www.improvedapps.com/wp/wp-content/uploads/2013/10/Improved-Help-Tools-Page-Logo.png' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;br/&gt;&lt;a href="http://improvedapps.com/news/" target="_blank"&gt;Click here&lt;/a&gt; to jump to our Improved Apps News page.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VJtZEAW' Name='Introducing Improved Help Guides' Summary='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Now you can fill the knowledge gap quicker than ever before and get your new users productive faster!' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;span&gt;Improved Help Guides provide interactive, guided step-throughs of processes, procedures &amp;#39;How-to&amp;#39;s or &amp;#39;play-books&amp;#39;:&lt;/span&gt;&lt;br/&gt;&lt;ul&gt;&lt;li&gt; &lt;p&gt; Step Users through Salesforce Fields, Buttons, Custom Links and your custom help&lt;/p&gt; &lt;/li&gt;&lt;li&gt; &lt;span&gt;...within one - or across multiple - helped Salesforce application pages.&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;They key is not just showing the users where on your pages they should be working, but explaining the importance or reasoning behind each step so that it is clearly understood.&lt;br/&gt;&lt;br/&gt;&lt;span&gt;The video (below) shows an example Help Guide -  New Opportunity Required fields.&lt;/span&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VKyjEAG' Name='Navigating using Reading Lists' Summary='Reading Lists allow grouping of Help Topics into a logical reading order, such as a process flow.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+You are currently going through the &amp;#39;Getting Started with Improved Help&amp;#39; Reading List&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip:&lt;/strong&gt; Navigating a Reading List is easy. You have these options: &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Note: &lt;/strong&gt;Each blue oval icon represents a Help Topic within a Reading List&lt;/li&gt;&lt;li&gt; Hover over any blue icon to get the Title of that Help Topic&lt;/li&gt;&lt;li&gt; Click any blue oval icon to navigate to that Help Topic&lt;/li&gt;&lt;li&gt; Click the right or left arrows to work through a Reading List in a linear fashion&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;strong&gt;Next Step: &lt;/strong&gt;Now click the blue, right arrow, on the &amp;#39;Quick Start: Evaluators Reading List&amp;#39; to go to the next Help Topic.  Over to the right --&amp;gt;&lt;br/&gt;&lt;br/&gt;&lt;div&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;Reading Lists group Help Topics into a logical reading order, such as a process flow.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VKz5EAG' Name='Help Author Features and Benefits Overview' Summary='Help Author Features on this page support the management of help content - Help Topics, Reading Lists and Help Resources - and their relationships.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; &lt;strong&gt;Authors Benefits include:&lt;/strong&gt;&lt;/div&gt; &lt;ul&gt;&lt;li&gt; In situ ?Help-Enabling?: Such as Field Labels&lt;/li&gt;&lt;li&gt; Continuous Improvement: Interaction Tracking / In situ Stats: Monitor Demand&lt;/li&gt;&lt;li&gt; No Sys-Admin Permissions Required&lt;/li&gt;&lt;/ul&gt; &lt;div&gt; &lt;div&gt; &lt;strong&gt;Business Benefits include;&lt;/strong&gt;&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Support Key Processes &lt;ul&gt;&lt;li&gt; On-Boarding - Sales Process Improvement - Competitor Analysis - Product Management (Sales Packs)&lt;/li&gt;&lt;li&gt; In situ Training / Signposting&lt;/li&gt;&lt;/ul&gt; &lt;/li&gt;&lt;li&gt; Return on Existing Investments &lt;ul&gt;&lt;li&gt; Reuse Help &amp;amp; Training Assets - People, Process and App Alignment - Reduce App Support Costs&lt;/li&gt;&lt;/ul&gt; &lt;/li&gt;&lt;li&gt; Increase Employee and Partner Productivity&lt;/li&gt;&lt;li&gt; Close the Skills Gap&lt;/li&gt;&lt;/ul&gt; &lt;/div&gt; &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VKzAEAW' Name='Helped Elements: Overview' Summary='Helped Elements are specific locations within Helped Page Layouts that can be provided with &#39;hooking&#39; to access Improved Help - either embedded in callouts or as links to the Improved Help &#39;Tools page&#39; portal.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; Current Options (Chosen from the Global Help Settings - &amp;#39;Help Enabling Options&amp;#39; Tab) include:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Help for this Page link&lt;/li&gt;&lt;li&gt; Record Detail Section Label&lt;/li&gt;&lt;li&gt; Field Labels&lt;/li&gt;&lt;li&gt; Related List: Label&lt;/li&gt;&lt;li&gt; Related List Object Help Link&lt;/li&gt;&lt;li&gt; Related List: Column Labels&lt;/li&gt;&lt;li&gt; Buttons&lt;/li&gt;&lt;li&gt; Custom Links&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VKzKEAW' Name='Types of Improved Help Users: Overview' Summary='Improved Help Users comprise Helped Users, Help Authors, Help Analysts and Help Administrators.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2ColMediaText' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='150' Width='250' Caption='' Title='' URL='http://www.improvedapps.com/wp/wp-content/uploads/2013/10/Improved-Help-Tools-Page-Logo.png' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;span&gt;Apply the correct Permission Set for Users as needed. These are hierarchical, so each user only needs the highest level of the following (don&amp;#39;t worry if you add multiple Permission Sets - Improved Help ignores all but the highest):&lt;/span&gt;&lt;br/&gt; &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Helped Users&lt;/strong&gt;: Can view help content &amp;amp; comment;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Help Analyst&lt;/strong&gt;: Can access Help Analysis mode to view statistics (they also need reporting permissions set at their Profile level);&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Help Authors&lt;/strong&gt;: Can edit help content and view Inactive Help Topics;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Help Administrators&lt;/strong&gt;: Can access Improved Help Setting Page. Profile-level &amp;#39;Customize Application&amp;#39; rights are needed to save Help Settings changes.&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;If you would like to read more about these different Permission Sets, please see the Related Help Topics Panel located just under the Search panel and click on the related Help Topic of choice.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLN6EAO' Name='Quick Start Evaluators Overview' Summary='This Reading List will take you through some things you can quickly do to familiarise yourself with Improved Help.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; &lt;strong&gt;Improved Help&lt;/strong&gt; is the native Salesforce application that supports:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Your improved help user journey: Pushing your help content, for your Salesforce applications &amp;amp; customisations to your Users&amp;#39; point of need;&lt;/li&gt;&lt;li&gt; Supporting your help processes: By creating new and improved help content - driven and informed by your users&amp;#39;;&lt;/li&gt;&lt;li&gt; Monitor the Improved Help usage, using packaged Reports &amp;amp; Dashboards to review demand and feedback.&lt;/li&gt;&lt;/ul&gt; &lt;p&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;With Improved Help you can design and deliver the ideal help journey for Your Salesforce Application Users.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt; &lt;br/&gt; &lt;strong&gt;Next Step: &lt;/strong&gt;Now click the blue, right arrow, on the &amp;#39;Quick Start: Evaluators Reading List&amp;#39; to go to the next Help Topic.  Over to the right --&amp;gt;&lt;/p&gt; &lt;p&gt; &lt;strong&gt;Estimated Duration: 45 Minutes&lt;/strong&gt;&lt;/p&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNGEA4' Name='Help Enable your first Field Label' Summary='Lets jump right in and start by providing help for a specific field on a standard Salesforce page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;ol&gt;&lt;li&gt; Open a record from any page in your applications&lt;/li&gt;&lt;li&gt; Click the &amp;#39;?&amp;quot; Help Quick Access Menu from the side of your browser window&lt;/li&gt;&lt;li&gt; Click &amp;#39;Help-Enable&amp;#39; Mode&lt;/li&gt;&lt;li&gt; Your page will highlight all areas that where we can provide help.&lt;/li&gt;&lt;li&gt; Select any Field (It will turn Green).&lt;/li&gt;&lt;li&gt; Open the Help Quick Access Menu again and select &amp;#39;View&amp;#39; Mode&lt;/li&gt;&lt;li&gt; Confirm the action by clicking &amp;#39;Save&amp;#39; icon and you are done.&lt;/li&gt;&lt;/ol&gt; &lt;div&gt; &lt;strong&gt;#Top Tip:&lt;/strong&gt; Users consume and interact with your Improved Help environment without even realising it...They think this is standard Salesforce. &lt;br/&gt; &lt;br/&gt; &lt;strong&gt;#Top Tip:&lt;/strong&gt; Did you know that you can Help Enable in View or Edit mode of a page in Salesforce?&lt;br/&gt; &lt;br/&gt; &lt;div&gt; You can provide help for &amp;#39;Help for this Page&amp;#39; links, Record Detail Section Labels, Field Labels, Related List: Labels, Related List Object Help Links, Related List: Column Labels, Buttons and Custom Links - Check your Help Global Settings for your options from the Help Quick Access Menu.&lt;/div&gt; &lt;/div&gt; &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNLEA4' Name='How to Edit your Help Topics' Summary='On the previous Step you help enabled one or more fields on one of your pages. This process created some draft Help Topics for you, against each label (Helped Element) that you chose. Now it&#39;s time to edit the information for each field to make it yours!' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Assuming you have the right Help Author Permission Sets, you may: &lt;ul&gt;&lt;li&gt; Simply open the page you just help enabled,&lt;/li&gt;&lt;li&gt; Click on the blue &amp;#39;?&amp;#39; icon next to your field (This opens the default call-out - Yellow background with black text - showing some default help text)&lt;/li&gt;&lt;li&gt; Click &amp;#39;Read More...&amp;#39; to take you into your Help Portal (this Tools Page)&lt;/li&gt;&lt;li&gt; Click the Edit icon from the Tool palette above (the Pencil Icon)&lt;/li&gt;&lt;li&gt; Start your updates and don&amp;#39;t forget to Save!&lt;/li&gt;&lt;/ul&gt; Now you can switch back to your helped page, refresh that page to see the updates you made above.&lt;br/&gt;&lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;Play around with the various settings whilst editing a Help Topic to get the desired help experience.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip:&lt;/strong&gt; You can use Search to find Help Topics that you want to Update/Edit...Search may be found in the Help Quick Access Menu or in this Tools Page (Help Portal).
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNQEA4' Name='How to Create a Reading List' Summary='Reading Lists help you group Help Topics together in a logical way. For the &#39;Helped User&#39; they provide an alternative way to be guided through Help Topics that are related.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+In this Evaluators Guide, you have been stepping through a Reading List, so why not try and create one for yourself?&lt;br/&gt;&lt;br/&gt;There are a few approaches to do this but we will start with one simple approach; &lt;ol&gt;&lt;li&gt; Search for a Help Topic that you want to be the first Help Topic in your new Reading List&lt;/li&gt;&lt;li&gt; Click the + icon in the Reading List Panel&lt;/li&gt;&lt;li&gt; Give it a Name (Required Field) and Optional Description&lt;/li&gt;&lt;li&gt; Click the &amp;#39;Create&amp;#39; button at the bottom of that dialogue&lt;/li&gt;&lt;/ol&gt; You now have a new Reading List with your Help Topic set as the first Help Topic.&lt;br/&gt; &lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;Read the full documentation on Reading Lists from the link in the Related Resources Panel below to learn about more advanced features and approaches.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNVEA4' Name='Help Resources: Overview' Summary='Help Resources access external help content. Help Topics can be linked to one or more Related Help Resources, with context-specific Usage Notes' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+We have been using Related Help Resources in this Guide, showing you related documentation or Videos for example.&lt;br/&gt;&lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;If you want to learn more about Related Resources then click on the related resource to this Help Topic below...&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;After adding a Related Resource(s) to a Help Topic a Help Author may apply &amp;#39;Usage Notes&amp;#39;. Usage Notes help your Users understand the value of that resource in relation to the Help Topic they are on. For example if the related resource is a series of slides, but only slide 5 &amp;amp; 6 are relevant to that Help Topic, use Usage Notes to explain that to the User.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNfEAO' Name='Reporting and Analytics' Summary='The Improved Help app comes with some useful analytic tools plus a series of useful Dashboards and Reports. Allowing you to monitor what Users are doing through interaction analysis, monitoring comments by Users all assist for continual Help improvement.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; &lt;div&gt; Bundled Reports and Dashboards include:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Content Analysis&lt;/strong&gt;: What applications, processes and business terms have been helped?&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Interaction Analysis&lt;/strong&gt;: Who is accessing what Help Content, from where and when?&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Comments Analysis&lt;/strong&gt;: What feedback has been logged against specific Help Topics or Pages - and by whom?&lt;/li&gt;&lt;/ul&gt; If you have the Help Analyst permissions (or Help Administrator or Help Author) they provide access to:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; In Situ Statistics for Helped Elements on your helped application pages;&lt;/li&gt;&lt;li&gt; Drill-through analysis reports;&lt;/li&gt;&lt;li&gt; Content, Interaction and Comment analysis Dashboards.&lt;/li&gt;&lt;li&gt; The video (right) introduces Help Interaction types, walks through the Help Analyst&amp;#39;s In Situ page Analyse mode &amp;amp; describes Dashboards bundled with Improved Help.&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;As Improved Help is 100% native to Salesforce, you can make use of all the Reporting and Dashboard features of Salesforce to extend the bundled Reports and Dashboards to meet your specific needs.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLNkEAO' Name='Evaluators Guide Summary' Summary='Congratulations, you&#39;ve finished the Improved Help Quick Start: Evaluators Reading List.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+So we have taken you through some of the basic steps to get you started. By now you should be able to: &lt;ul&gt;&lt;li&gt; Navigate Reading Lists&lt;/li&gt;&lt;li&gt; Help enable your application pages&lt;/li&gt;&lt;li&gt; Update/Edit your Help Topics&lt;/li&gt;&lt;li&gt; Create Reading Lists&lt;/li&gt;&lt;li&gt; Understand the value of Related Resources&lt;/li&gt;&lt;li&gt; Located the bundled Dashboards for review&lt;/li&gt;&lt;/ul&gt; With every new release we provide updated documentation which may be found online or within your use of Improved Help (assuming you choose to refresh the help upon any upgrade).&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;Click the last topic in this Reading List to see a list of other useful Reading Lists, if you wish to extend your learning further. Bookmark the next Help Topic so you may easily find it later!&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLTBEA4' Name='Reading List Menu (More Author Guides)' Summary='This is the last Help Topic in your Reading Lists to help you navigate to other Reading Lists...' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+This Help Topic introduces other Reading Lists we think may be of interest.&lt;br/&gt;&lt;br/&gt;To navigate through a new Reading List, click the &lt;strong&gt;1st&lt;/strong&gt; Help Topic icon in the row of Help Topic icons for your chosen Reading List to continue.&lt;br/&gt;&lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;#Top Tip: Bookmark this or any Help Topic, so you may easily find it later! See the Bookmark icon in the Tools bar above (Star with a + icon).&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Next Step: &lt;/strong&gt;Now click the &amp;#39;Welcome to Improved Help&amp;#39; related Help Topic to go back to the Home Page.  Panel over to the right, under the Search box  --&amp;gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VLTREA4' Name='Check your workings' Summary='If you are on this Help Topic because you have been working through the &#39;Quick Start: Evaluators Reading List&#39; Reading List, then it&#39;s now time that we logged into your environment as a &#39;Helped User&#39; to see what your Help app looks like...' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='http://eu2.salesforce.com/help/doc/en/logging_in_as_another_user.htm' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+There are a few approaches to this dependant on your Salesforce permissions; &lt;ul&gt;&lt;li&gt; You may have a User User Name and Password to login normally&lt;/li&gt;&lt;li&gt; Alternatively; There is a feature for Sys Admins to &amp;#39;Login-As&amp;#39; specific Users&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;#Top Tip:&lt;/strong&gt; It&amp;#39;s always good practice to have a nominated User that you can &amp;#39;Log-in As&amp;#39; to check your workings. Remember if you can&amp;#39;t see Help Topics or Reading Lists then you need to check your Help Topics are marked as Active first!&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip:&lt;/strong&gt; You may set the defaults for Help Topic Visibility and Active in the Help Global Settings. Creating new Help Topics as in-Active ensure you can Author content in private and make only Active when you are ready for Users to see that help.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN2OEAW' Name='Helped Elements: Help for this Page Link' Summary='Improved Help Authors can (where necessary) override the standard Salesforce &#39;Help for this Page&#39; link - to prevent users accessing &#39;unhelpful&#39; standard help for relabelled standard objects or custom objects.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN2dEAG' Name='Helped Elements: Detail Section Label' Summary='Improved Help Authors can help-enable the record detail section label of standard page layout&#39;s - for example, to provide help for &#39;Opportunity Details&#39;.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN2iEAG' Name='Helped Elements: Related List - Section Label' Summary='Improved Help Authors can help-enable the Section label for Related Lists - for example, to provide help about related &#39;Contacts&#39; from the context of the &#39;Accounts&#39; page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN2nEAG' Name='Helped Elements: Related List - Object Link' Summary='Improved Help Authors can (where necessary) override the standard Salesforce &#39;Related List Object&#39; link - to prevent users accessing &#39;unhelpful&#39; standard help for relabelled standard objects or custom objects.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN2xEAG' Name='Helped Elements: Active Field Help Labels' Summary='Improved Help Authors can help-enable standard page layout Field labels - converting them into links with icon markers, which when clicked, open Help Callouts.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN37EAG' Name='Helped Page Layouts: Overview' Summary='Standard Salesforce application page layouts and custom Visual Force pages can be registered as Helped Page Layouts - to display the Improved Help Quick Access Menu and enable embedding of help.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='150' Width='250' Caption='' Title='' URL='http://www.improvedapps.com/wp/wp-content/uploads/2013/10/Improved-Help-Tools-Page-Logo.png' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN3CEAW' Name='Helped Page Layouts: Visual Force Page Layouts' Summary='Visual Force page developers can prepare custom Visual Force pages so that Help Authors can add and manage Improved Help content.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;#Top Tip:&lt;/strong&gt; See the related Resource Guide below for more details on this topic.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN3HEAW' Name='Helped Page Layouts: Standard Salesforce Page Layouts' Summary='Improved Help Authors can help-enable standard Salesforce page layouts using the Help Quick Access Menu&#39;s Help-Enable mode.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN3MEAW' Name='Helped Page Layout: Review and rename new draft records' Summary='Newly help-enabled Help Page Layouts are assigned a draft name that needs to be reviewed and renamed' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;#Top Tip: &lt;/strong&gt;&lt;span&gt;If you would like to watch a video of this in action see the Video linked in the Related Resources below and start it from 50 seconds into this Video!&lt;/span&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN3REAW' Name='Manage Help Topics' Summary='Authors can create and edit Help Topics from within this Tools page (click edit icon and then see the edit panel appear). Help Topics are also created automatically as pages are Help-Enabled.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; &lt;strong&gt;Look at the toolbar above this Help Topic:&lt;/strong&gt;&lt;/div&gt; &lt;ul&gt;&lt;li&gt; To &lt;strong&gt;Create&lt;/strong&gt; new Help Topic - just click the &amp;#39;+&amp;#39; icon&lt;/li&gt;&lt;li&gt; To &lt;strong&gt;Edit&lt;/strong&gt; a Help Topic you are on now - just click the edit (pencil) icon&lt;/li&gt;&lt;li&gt; To &lt;strong&gt;Delete&lt;/strong&gt; a Help Topic - just click the &amp;#39;-&amp;#39; icon in the Help Topic Toolbar.&lt;/li&gt;&lt;/ul&gt; Deleting a Help Topic will provide you with a confirmation prompt to ensure that this is your intended action.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VN5QEAW' Name='How to: Link / Unlink Related Help Topics' Summary='How to guide for Help Authors / Help Administrators to link Help Topics together, using the &#39;Related Help Topics&#39; Tools Page Panel' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+There are many occasions when you will create a Help Topic and realise that you have another (or other Help Topics), which should be related.  &lt;br/&gt;&lt;br/&gt;Related Help Topics provide navigation to other related help or material.&lt;br/&gt;&lt;br/&gt;From the Help Topic you want to relate to another Help Topic; &lt;ul&gt;&lt;li&gt; Locate the Related Help Topics Panel in this Tools page&lt;/li&gt;&lt;li&gt; Click the Link icon&lt;/li&gt;&lt;li&gt; Search for the desired Help Topic&lt;/li&gt;&lt;li&gt; Click the link icon in the search results...Done.&lt;/li&gt;&lt;li&gt; Repeat for each additional required Help Topic.&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;strong&gt;#Top Top:&lt;/strong&gt; Use a related Help Topic to Introduce a User to the start of a related Reading List, by relating the first Help Topic in that Reading List to the current Help Topic.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQC0EAO' Name='The Problem with Current ?Help?' Summary='One of the main issues with traditional approaches to helping Users is that help is Remote + Complex and simply ends up under utilised and therefore &#39;shelfware&#39;!' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;If Help Is NOT Delivered In Situ, it is Out of Context&lt;br/&gt; &lt;br/&gt; &lt;div&gt; Current Help Systems do not address users&amp;#39; specific problems because they fail to deliver specific answers to them, in situ&lt;/div&gt; &lt;div&gt;  &lt;/div&gt; &lt;div&gt; &lt;br/&gt;&lt;br/&gt;&lt;/div&gt; &lt;div&gt;  &lt;/div&gt; &lt;div&gt; To make sense to the user, all the complexities surrounding their problem have to be replicated in the remote help system, with all the various scenarios, steps, screen-shots?&lt;/div&gt; &lt;div&gt;  &lt;/div&gt; &lt;div&gt; &lt;br/&gt;&lt;br/&gt;&lt;/div&gt; &lt;div&gt;  &lt;/div&gt; &lt;div&gt; &amp;#39;Hooks&amp;#39; into the help system are implemented either at too high a level to be useful - forcing the user to search - or at a detailed level that introduces additional maintenance challenges&lt;/div&gt; &lt;/div&gt; &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQC5EAO' Name='What is Help Journey Success?' Summary='If you want to driver BIGGER deals FASTER then every Help Journey should be successful... "Efficiency is doing things right. Effectiveness is doing the right things." Peter F Drucker: The Effective Executive 1993' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='440' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; You probably have invested in Sales methodologies and applications that help your Sales team be more efficient and prepared for those tailored presentations, but what use is all that if your Sales team can&amp;#39;t find the right information at the right time?&lt;br/&gt; &lt;br/&gt; Sales people are constantly searching for the latest market intelligence or competitive information to help them close business, but...&lt;br/&gt; &lt;br/&gt; &lt;strong&gt;They all too often edure a &amp;#39;Failed Help Journey&amp;#39;&lt;/strong&gt;&lt;/div&gt; &lt;ul&gt;&lt;li&gt; User&amp;#39;s Need is not addressed or Journey falters. Restart or Give up, wasting time and effort.&lt;/li&gt;&lt;li&gt; Implicit Failure: Wrong answer and therefore a business suffers from nock on effects.&lt;/li&gt;&lt;/ul&gt; &lt;div&gt; &lt;div&gt; &lt;strong&gt;Rather than enjoy a &amp;#39;Successful Help Journey&amp;#39;&lt;/strong&gt;&lt;/div&gt; &lt;div&gt; Users moment of need is addressed, so;&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Current Task progressed ? correctly&lt;/li&gt;&lt;li&gt; Able to do the right things, first time!&lt;/li&gt;&lt;li&gt; The right Help is delivered quickly &amp;amp; concisely&lt;/li&gt;&lt;/ul&gt; &lt;div&gt; Successful Help Journeys should lead - rapidly - to Help Topics targeted to address the majority of the User Needs that trigger specific Help Journeys. In learning organisations, Help Journey analysis can lead to improved help content, processes &amp;amp; targeting - increasing efficiency &amp;amp; effectiveness.&lt;/div&gt; &lt;/div&gt; &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCAEA4' Name='Reversing the flow of information' Summary='Best Practice, Hints&#39;n Tips, War Stories and Sales Process related information exists in a variety of locations, formats and applications...' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='440' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Typical resources and collateral Sales Users need access to, comes from or may be found in systems like: &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Document Stores&lt;/strong&gt; (Chatter Files, Salesforce Content, Salesforce Knowledge, SharePoint, Network File Storage to name a few)&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Learning Management Systems&lt;/strong&gt; (Training Courses, Playbooks, Tutorials etc)&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Sales Methodologies and Applications&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Local hard drives / Email Repositories&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt; and in a variety of formats!  Users have to sift through multiple results, across differing formats, author styles, tone of voice, document types - to decide what is helpful to take appropriate action.&lt;br/&gt;&lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;Our companies have invested heavily in these applications and assets, so isn&amp;#39;t it time we made better use of them?&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt; &lt;br/&gt;&lt;strong&gt;Improved Help&lt;/strong&gt; helps you point to the relevant resources in context, therefore &amp;#39;Reversing the flow of information&amp;#39; and saving the Sales users huge amounts of time.&lt;br/&gt;&lt;br/&gt;With Improved Help, Sales people can concentrate on what they are paid to do (Closing Deals) and spend the saved time making those deals &lt;strong&gt;BIGGER&lt;/strong&gt; and close them &lt;strong&gt;QUICKER&lt;/strong&gt;.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCFEA4' Name='Create Data Driven &#39;Battle Cards&#39; or &#39;PlayBooks&#39;' Summary='Creating a series of Reading Lists, grouping Help Topics that contain all the information needed by Sales teams to compete against a specific competitor is a quick win. Sales people love this quick access to related information.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+If we use one simple use case of providing information on the competitors linked to an Opportunity. i.e. Only show the Sales person the playbooks related to that Opportunities chosen competitors.  With &lt;strong&gt;Improved Help&lt;/strong&gt; you can achieve this by: &lt;ol&gt;&lt;li&gt; Creating the competitor Playbook/Battle Card - These are Reading List(s) with the relevant Help Topics grouped together&lt;/li&gt;&lt;li&gt; Help enabling either the Opportunity Competitors Related List or perhaps use a formula Field on Opportunity to track who the competitors are.&lt;/li&gt;&lt;li&gt; Make sure the first Help Topic in any Reading List is using the &amp;#39;Reading List Call-out option)&lt;/li&gt;&lt;li&gt; Utilise Data Driven Help (Introduced in v1.16 of Improved Help) to select the correct Reading List based on your chosen criteria&lt;/li&gt;&lt;li&gt; Test&lt;/li&gt;&lt;/ol&gt; Now the Sales person is one click away from the Competitive help they need to know how to compete and win against that competitor.&lt;br/&gt;&lt;br/&gt;The Sales person will also be equipped with Best Practice, Hint&amp;#39;s and Tips plus any &amp;#39;War Stories&amp;#39; gleamed from other colleagues.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top tip: &lt;/strong&gt;Another option is to signpost to existing PDF&amp;#39;s or Word documents that contain this information. To do this use Related Resources against the &amp;#39;lite&amp;#39; Help Topics to point to those resources and on the helped call-outs choose &amp;quot;Related Resources&amp;#39; Option for the Call-Out choice.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCKEA4' Name='Supporting Help Domains' Summary='Help Domains enable Help Administrators to provide different groups of Users with visibility to different subsets of Improved Help content - examples of Domains might include Internal users, Partner users or Spanish-speaking users.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Help Topics are central to Improved Help - providing both:&lt;br/&gt;&lt;ul&gt;&lt;li&gt; Content: The core of all visible help - whether in the enterprise Help Portal, Help Callouts embedded into helped Salesforce application pages or interactive Help Guide Steps;&lt;/li&gt;&lt;li&gt; Access: to related content, such as Help Resources, Reading Lists &amp;amp; Guides.&lt;/li&gt;&lt;/ul&gt; &lt;div&gt; Help Topics (like all other Improved Apps data records) are native Salesforce custom object records - and so, are subject to standard Salesforce security, permissions and sharing policies.&lt;br/&gt;&lt;br/&gt; &lt;/div&gt; &lt;div&gt;  &lt;/div&gt; &lt;div&gt; This means that Help Administrators can use standard Salesforce Sharing Rules, Roles and Public Groups to create Improved Help Domains, with rule-based visibility of Help Topics for different target audiences. Critically, these visibility rules apply not only in the Help Portal, Searches, Reading Lists &amp;amp; Guides, but also when help has been embedded within helped Salesforce applications. So Sharing Rules can be used to &amp;#39;switch&amp;#39; the Help Topic associated with specific Helped Elements in Specific Pages, for different target audiences.&lt;br/&gt; &lt;br/&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;See the Related Resource for the comprehensive Guide to Supporting Help Domains...&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCPEA4' Name='Improved Help - Sales Users Benefits' Summary='In summary, Sales people are normally highly paid individuals who should focused on winning deals for your business. We don&#39;t want them wasting their time trying to get the information they need, when they need it.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Improved Help provides many proven benefits to Sales people by; &lt;ul&gt;&lt;li&gt; On-Boarding new hires faster than ever, taking new Users through your applications and processes utilising &lt;strong&gt;Improved Help Guides &lt;/strong&gt;Step by Step. Allowing a Sales User to start to make their number and be successful quicker.&lt;/li&gt;&lt;li&gt; Helping them absorb the snippets of information with a rich experience, allowing them to move on with the task in hand.&lt;/li&gt;&lt;li&gt; Letting them feedback mistakes, updates or general improvement hints &amp;amp; tips to share with others.&lt;/li&gt;&lt;li&gt; Providing all this Help whilst they are on the move.&lt;/li&gt;&lt;li&gt; Allowing them to Bookmark favourite Help Topics for fast retrieval&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCUEA4' Name='Customer Success Examples' Summary='Here are a few comments from our enterprise Customers...' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;A truly transformational application that dramatically moves the sales productivity and enablement needles!?&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;div&gt; &lt;strong&gt;Simon McAllister&lt;/strong&gt;, Senior Director, Global Sales &amp;amp; Alliances Operations, QlikView&lt;/div&gt; &lt;div&gt; &lt;br/&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;Best-in-Class Customer Service!&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;Celeste Hollenbeck&lt;/strong&gt;, VinSolutions&lt;/div&gt; &lt;div&gt; &lt;br/&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;With our employee&amp;#39;s inboxes overflowing, NoticeBoard provides an easy way to share important information across our company and ensure that it&amp;#39;s read. NoticeBoard makes communication easy.&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;Ryan Bergstrom&lt;/strong&gt;, LifeTime Fitness&lt;/div&gt; &lt;div&gt; &lt;br/&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;This was implemented by one of my key customers and was quick and intuitive.&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;James Anderson&lt;/strong&gt;, Salesforce.com&lt;/div&gt; &lt;div&gt; &lt;br/&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;The ability to require an acknowledgement for key information and monitor non-compliance is a major benefit and makes this app more effective for us in certain use cases than Chatter.&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;Simon Edwards&lt;/strong&gt;, Trinity Mirror&lt;/div&gt; &lt;div&gt; &lt;br/&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;We were able to roll out the first version of this to our global users after a couple of days brainstorming where we captured processes, definitions and best practices that we incorporated into the tool for the users.&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;Ulrika Grahn,&lt;/strong&gt; VP Operations Training, Qlikview&lt;br/&gt; &lt;br/&gt;&lt;/div&gt; &lt;div&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;&amp;quot;No more searching through out of date &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;powerpoint&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt; / word user manuals, users can quickly find the answers directly within salesforce, a great productivity boost for users.&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt; &lt;div&gt; &lt;strong&gt;M.Sivill&lt;/strong&gt;, MD, FluxGain&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQCoEAO' Name='Help User Features Explained' Summary='With Improved Help you can provide the following features to your internal Users as well as your Partner Users, through your Partner Portal.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; You can:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Help enable your Salesforce Application Pages with Embedded Help;&lt;/li&gt;&lt;li&gt; Create Rich Content Help Topics &amp;amp; Callouts;&lt;/li&gt;&lt;li&gt; Provide a custom Help Tools Page or ?Help Portal?;&lt;/li&gt;&lt;li&gt; Show related Help Content &amp;amp; Reading Lists;&lt;/li&gt;&lt;li&gt; Quickly access remote resources - in Context;&lt;/li&gt;&lt;li&gt; Allow User comments for continual Help Improvement;&lt;/li&gt;&lt;li&gt; Use the Quick Access Menu from most Salesforce pages.&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;To learn about how you can provide these features, but with different content for different users, check out the Related Resource on ?Help Domains??&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQY2EAO' Name='Helped Elements: Help for Buttons' Summary='Improved Help Authors can help-enable standard and custom buttons - providing a small icon next to the button and highlighting the button, so when the icon is clicked we open the Help Callouts.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQZFEA4' Name='Helped Elements: Help for Custom Links' Summary='Improved Help Authors can help-enable standard and custom links - providing a small icon next to the link, so when the icon is clicked we open the Help Callouts.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbMEAW' Name='Editing Help Topics: Video Tab' Summary='This Help Topic explains what you can edit in the Video Tab when the Help Topic is in Edit mode in this Tools page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;Video URL : &lt;/strong&gt;The link address for the video file;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Title : &lt;/strong&gt;Short heading above video;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Caption :&lt;/strong&gt; Short summary under video;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Width :&lt;/strong&gt; Video player width in pixels, which should be managed together with Video Height, to maintain aspect ratio (and minimum usable size of the video player with it&amp;#39;s controls);&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Height :&lt;/strong&gt; Video player height in pixels.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt;If you are using YouTube for your video Source then locate the video URL (e.g. http://www.youtube.com/watch?v=Jioo6sP_E3o), paste this into the &lt;strong&gt;Video URL &lt;/strong&gt;field and then adjust it as follows: &lt;ul&gt;&lt;li&gt; Keep the &amp;#39;&lt;strong&gt;http://www.youtube.com/&lt;/strong&gt;&amp;#39; but make it https&lt;/li&gt;&lt;li&gt; Delete the &amp;#39;watch?v=&amp;#39; bit and add &amp;#39;&lt;strong&gt;embed/&lt;/strong&gt;&amp;#39;&lt;/li&gt;&lt;li&gt; Then take the unique video ID &amp;#39;&lt;strong&gt;Jioo6sP_E3o&lt;/strong&gt;&amp;#39; and add it to the end after &amp;#39;embed/.&lt;/li&gt;&lt;/ul&gt; &lt;div&gt; So the final URL should look like this: &lt;strong&gt;http://www.youtube.com/embed/Jioo6sP_E3o&lt;/strong&gt;&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbVEAW' Name='Editing Help Topics: General Tab' Summary='The following Help Topics will explain each Tab when in the Edit mode of a Help Topic in this Tools Page. Lets start with the General Tab.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbaEAG' Name='Editing Help Topics: Status Tab' Summary='This Help Topic explains what you can edit in the Status Tab when the Help Topic is in Edit mode in this Tools page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;Active :&lt;/strong&gt; Sets whether the Help Topic is visible to Helped Users - Inactive Help Topics are visible to Help Authors)&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Show Read More link :&lt;/strong&gt; Sets whether any help Callout will have Read More capability;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Status :&lt;/strong&gt; Used for managing Help Topic lifecycles - especially where any Salesforce approval process is used for pre-publication approval; &lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Visibility : &lt;/strong&gt;A System Administrator can update the pick list options here and use Data Driven help options to determine which type of Users can see this Help Topic.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;#Top Tip: &lt;/strong&gt; See the Related Resource to take you through &amp;#39;Help Domains&amp;#39; in more detail.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbfEAG' Name='Editing Help Topics: Image Tab' Summary='This Help Topic explains what you can edit in the Image Tab when the Help Topic is in Edit mode in this Tools page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;Image URL : &lt;/strong&gt;The link address for the image file;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Title :&lt;/strong&gt; Short heading above image;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Caption :&lt;/strong&gt; Short summary under image;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;ALT Text :&lt;/strong&gt; The alternative text to be displayed when the image is not available or otherwise processed for accessibility;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Width :&lt;/strong&gt; Image width in pixels, which should be managed together with image height to maintain an appropriate image aspect ratio (to prevent stretched or skewed images);&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Height :&lt;/strong&gt; Image height in pixels. &lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Reset Button :&lt;/strong&gt; Resets all the above in one hit (After confirmation!) &lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbpEAG' Name='Editing Help Topics: Rich Text Tab' Summary='This Help Topic explains what you can edit in the Rich Text Tab when the Help Topic is in Edit mode in this Tools page.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+The rich text area Enables rich text content to be added to your Help Topics, providing some basic formatting options.&lt;br/&gt;&lt;br/&gt;This is a standard Salesforce Field type, therefore the palette provided and its limitations are Salesforce limitations for rich text fields!
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VQbuEAG' Name='Editing Help Topics: Guides Tab' Summary='This Help Topic explains what you can edit in the Guides Tab when the Help Topic is in Edit mode in this Tools page. Please be aware this tab is only relevant to Help Topics used in a Guide. See the Related Resource - Setting up Guides for more info.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;strong&gt;Step Mode :&lt;/strong&gt; Options Include: &lt;ul&gt;&lt;li&gt; &lt;strong&gt;&lt;span&gt;Local Steps&lt;/span&gt;:&lt;/strong&gt; provide local, Step-specific help within the Guide Window, providing Guide context &amp;amp; background to orientate the reader;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;&lt;span&gt;Automatic Steps&lt;/span&gt;: &lt;/strong&gt;provide Step help in the Guide Window but also opens a Step Window and navigates this to view-in-place a specific Helped page element, such as a specific Opportunity Field, in its page setting;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;&lt;span&gt;Manual Steps&lt;/span&gt;: &lt;/strong&gt;extends the View-in-Place concept, allowing the user to be Guided through a set of manual actions in a Helped Page - without refreshing the page between steps (so users can be guided in record edit view without losing context or edits);&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;Step Layout :&lt;/strong&gt; Choose which Helped Page Layout this Step is related too. For the first Step in a Reading List Guide this field will determine where the Guide can be found by the Helped User;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Step Element :&lt;/strong&gt; (Optional) Is the Element to be guided in this Step;&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Step Context : &lt;/strong&gt;(Optional) Used to navigate to specific Salesforce records (as worked examples) or pages that are not associated with specific Salesforce object records. Supported contexts include:&lt;br/&gt;&lt;ul&gt;&lt;li&gt; [blank]: Default - used for all Guide Steps that are &amp;#39;relative&amp;#39; to the User&amp;#39;s current Salesforce page (its object &amp;amp; record);&lt;/li&gt;&lt;li&gt; [nnn]/o: Object tab, such as Accounts List Tab = 001/o&lt;/li&gt;&lt;li&gt; [nnn]/e: New object record, such as Contact New = 003/e&lt;/li&gt;&lt;li&gt; [123456789012345]: A Salesforce record ID, to show a specific record in view mode;&lt;/li&gt;&lt;li&gt; [123456789012345]/e: A Salesforce record ID, to show a specific record in edit mode;&lt;/li&gt;&lt;li&gt; [nnn]: All records list view;&lt;/li&gt;&lt;li&gt; [nnn]?fcf=[remainder of list view URL]:&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VSueEAG' Name='Some On-Boarding Challenges' Summary='Why is on-boarding new users such a challenge when you believe that your Salesforce application is as easy to use as Amazon or eBay?' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+We have to do our best to ensure that new employees acquire the necessary knowledge, skills, and behaviours to become effective company members and insiders. There are a number of facts and challenges that exist today; &lt;ul&gt;&lt;li&gt; It&amp;#39;s hard to know which Users have on boarded successfully Vs those that have struggled.&lt;/li&gt;&lt;li&gt; A significant part of on boarding falls into training and documentation; &lt;ul&gt;&lt;li&gt; Most customers use on boarding Word or PDF guides which lack any feedback or real interaction;&lt;/li&gt;&lt;li&gt; Documentation quickly falls behind your applications;&lt;/li&gt;&lt;li&gt; It&amp;#39;s hard to know how your help is helping or which parts are good and which parts are causing issues;&lt;/li&gt;&lt;/ul&gt; &lt;/li&gt;&lt;li&gt; Let&amp;#39;s not forget that &lt;strong&gt;NO&lt;/strong&gt; application is perfect!&lt;/li&gt;&lt;li&gt; We can&amp;#39;t react quick enough new recruits requests for help and guidance in order to tweak our on boarding documentation and help programmes for the benefit of others;&lt;/li&gt;&lt;li&gt; We don&amp;#39;t have the luxury of endless training and on-boarding budgets;&lt;/li&gt;&lt;li&gt; A lot of money, time and resource is consumed in this process, which typically includes formal meetings, videos/recorded webinars, too much printed materials, person to person computer-based orientations or e-Learning to introduce newcomers to their new jobs and applications.&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VSujEAG' Name='Questions ??? and Facts' Summary='What are the challenges that you are facing with on-boarding? How long are your on-boarding training or certification programmes? What  are the typical issues new users face using your applications? What if we could reduce your on-boarding time by 1/2?' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Research has demonstrated that socialisation techniques lead to positive outcomes for new employees such as higher job satisfaction, better job performance, greater organisational commitment, and reduction in stress and intent to quit.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;These outcomes are particularly important to an organisation looking to retain a competitive advantage in an increasingly mobile and globalised workforce. &lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;In the United States, for example, up to 25% of workers are &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;organisational&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt; newcomers engaged in an on boarding process.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;div&gt; (Source - Wikipedia)&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VSuoEAG' Name='Improved Help Guides Features' Summary='Guides enable you to simplify your Salesforce user experience and remove any confusion. Users can quickly find relevant Guides and either start from the beginning or jump to an area of need.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+Here are some of the main features of Improved Help Guides; &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Context Sensitive Guides&lt;/strong&gt;: Available Guides are focused on the area of the application where the user needs guidance;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guides explain their purpose&lt;/strong&gt;: So less wasted time as its far less likely that a user will start the wrong Guide&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Viewer&lt;/strong&gt;: Shows all Steps  in a Guide, so it&amp;#39;s clear what is involved and how long it may take if the user chooses to go from start to finish. Users are free to use Guides at different levels, depending on the task in-hand&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Different Step Types:&lt;/strong&gt; 1. Provide Local Step Help or 2. Automatically show a user something or 3. Show a prompt in a location to explain where and what is expected of the user;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;User Prompts&lt;/strong&gt;: e.g. Highlight a the Save button and prompt the user with &amp;#39;Don&amp;#39;t forget to Save..Click Here&amp;#39;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Relative or Absolute Steps:&lt;/strong&gt; Show me help relative to where I am or take me to somewhere specific for this Step!&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Authoring Tools:&lt;/strong&gt; Guide and Step Creation, Step Ordering, in-place Authoring and Management&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Analytics:&lt;/strong&gt; Understand who is using which Guides and what Steps have been most used/viewed.&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;strong&gt;#Top Tip:&lt;/strong&gt; You may start setting up Guides today in this instance of Salesforce with Improved Help installed...Simply follow the steps below in the Guide shown in the Related Resources.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VSutEAG' Name='Improved Help Guides Benefits' Summary='Maximise your resources and speed up your on-boarding time, reduce support costs, drive adoption to new high levels and accelerate learning and training.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+We are happy to setup a webinar to discuss your specific requirements and share how Guides are already benefiting other Salesforce Customers. &lt;ul&gt;&lt;li&gt; Your Users will feel self-sufficient and productive in 1/2 the time&lt;/li&gt;&lt;li&gt; Simplify your Applications without any technical know-how&lt;/li&gt;&lt;li&gt; Make your processes feel far less complicated&lt;/li&gt;&lt;li&gt; Reduce training costs&lt;/li&gt;&lt;li&gt; Reduce end-user frustration: they can get on with the task in hand&lt;/li&gt;&lt;li&gt; Reduce churn rate&lt;/li&gt;&lt;li&gt; Fill knowledge gaps&lt;/li&gt;&lt;li&gt; Reduce inbound support enquiries &lt;ul&gt;&lt;li&gt; Strengthens your company&amp;#39;s support reputation&lt;/li&gt;&lt;/ul&gt; &lt;/li&gt;&lt;li&gt; Let ALL employees learn as they work&lt;/li&gt;&lt;li&gt; Reduce errors and Increase productivity&lt;/li&gt;&lt;li&gt; Free up management time from support local users&lt;/li&gt;&lt;li&gt; Increase user satisfaction, loyalty and productivity&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VTZmEAO' Name='Introducing Improved Help for Partners' Summary='With Improved Help for Partners you can get your new Partners up to speed in hours not days or weeks. Now you can fill the knowledge gap quicker than ever before and get your partner users productive even faster.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='440' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;span&gt;&lt;span&gt;&lt;span&gt;Give partners what they need, when they need it with Improved Help for Partners.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;div&gt; &lt;strong&gt;Improved Help for Partners&lt;/strong&gt; is the native Salesforce application that supports:&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Your improved help user journey: Pushing your help content, for your Salesforce Partner applications &amp;amp; customisations to your Partners&amp;#39; point of need;&lt;/li&gt;&lt;li&gt; Supporting your help processes: By creating new and improved help content - driven and informed by your users&amp;#39;;&lt;/li&gt;&lt;li&gt; Monitor the Improved Help usage using packaged Reports &amp;amp; Dashboards to review demand and feedback.&lt;/li&gt;&lt;/ul&gt; &lt;span&gt;&lt;strong&gt;Improved Help Guides for Partners&lt;/strong&gt; (a feature of Improved Help) provide interactive, guided step-throughs of processes, procedures &amp;#39;How-to&amp;#39;s or &amp;#39;play-books&amp;#39;:&lt;/span&gt;&lt;br/&gt;&lt;ul&gt;&lt;li&gt; &lt;p&gt; Step Partners through Salesforce Fields, Buttons, Custom Links and your custom help&lt;/p&gt; &lt;/li&gt;&lt;li&gt; &lt;span&gt;...within one - or across multiple - helped Partner application pages.&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt; &lt;strong&gt;#Top Tip: &lt;/strong&gt;They key is not just showing the partner users where on your pages they should be working, but explaining the importance or rational behind each step, so that it is clearly understood.&lt;br/&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VTa0EAG' Name='Some Partner On-Boarding Challenges' Summary='All too often working with Partners is a game of balancing Carrots and Sticks to optimise results.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+We see many challenges around but end up focusing on things like: What&amp;#39;s in it for the Partner; &lt;ul&gt;&lt;li&gt; Qualified Leads ; Campaign History ; Better Data&lt;/li&gt;&lt;li&gt; Various Incentives ; Quality Support&lt;/li&gt;&lt;/ul&gt; What&amp;#39;s in it for us, as the Vendor; &lt;ul&gt;&lt;li&gt; Immediate Feedback ; Real-time Activity Visibility&lt;/li&gt;&lt;li&gt; Performance Tracking ; Building a Strong Channel generating Good Revenue&lt;/li&gt;&lt;/ul&gt; Vendors concentrate and invest significantly on tools for Partners, via their Partner Portal like: Sales Tools, RFP Templates, Pricing, Sales Process Support, email Templates, RFP templates and Reminders. To try and help the Partners be successful and therefore you, the vendor will succeed.&lt;br/&gt;&lt;br/&gt;But is all this as good as it could be? Could you make better use of what you already have? How can you take your Partner experience into another league and out smart your competition?
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VTaAEAW' Name='Questions ??? and Facts' Summary='A lot of time and effort is spent on your Partners and your Partner Portal. Things like what it looks like and how easy it is to use. However...' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+We should ask ourselves questions like: &lt;ul&gt;&lt;li&gt; How easy is our Partner Programme to work with? Could it be better?&lt;/li&gt;&lt;li&gt; What is our Partner Help Journey like?  (See the Related Resource below to read about the &amp;#39;Enterprise Help Journey&amp;#39;)&lt;/li&gt;&lt;li&gt; What is accessible within one click?&lt;/li&gt;&lt;li&gt; How easy is our Portal to use and what&amp;#39;s the User Experience like? Surely it can be better, can&amp;#39;t it?&lt;/li&gt;&lt;li&gt; Where is our Partner Training and in what format is it consumed in?&lt;/li&gt;&lt;li&gt; If you record webinars, how easy are these to find? Who uses them? Are they useful?&lt;/li&gt;&lt;li&gt; Where&amp;#39;s the documentation and in what Format is it all in?&lt;/li&gt;&lt;li&gt; Do we have localised Content? Different help for different types of Partners.&lt;/li&gt;&lt;/ul&gt; Most Partner or Channel Management Principles contain a Partner Training Strategy underpinned with a &amp;#39;Train the Trainer&amp;#39; approach...&lt;br/&gt;&lt;br/&gt;&lt;div&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;...but is this enough in today&amp;#39;s fast paced world?&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VTaYEAW' Name='Improved Help Features for Partners' Summary='Improved Help for Partners enables you to simplify your Partner user experience and remove any confusion. Partner Users can quickly find any relevant help they need.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='490' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; Some Partner User Features &lt;/div&gt; &lt;ul&gt;&lt;li&gt; &lt;strong&gt;In situ Help:&lt;/strong&gt; At the point of need&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Quick Access Menu: &lt;/strong&gt;Nearby (For Help Gaps)&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Feedback&lt;/strong&gt;: Contribute to Improvement &lt;/li&gt;&lt;li&gt; &lt;strong&gt;Intuitive: &lt;/strong&gt;Minimal Training&lt;/li&gt;&lt;/ul&gt; Here are some of the main features of Improved Help Guides; &lt;ul&gt;&lt;li&gt; &lt;strong&gt;Context Sensitive Guides&lt;/strong&gt;: Available Guides are focused on the area of the application where the user needs guidance;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guides explain their purpose&lt;/strong&gt;: So less wasted time as its far less likely that a user will start the wrong Guide&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Viewer&lt;/strong&gt;: Shows all Steps  in a Guide, so it&amp;#39;s clear what is involved and how long it may take if the user chooses to go from start to finish. Users are free to use Guides at different levels, depending on the task in-hand&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Different Step Types:&lt;/strong&gt; 1. Provide Local Step Help or 2. Automatically show a user something or 3. Show a prompt in a location to explain where and what is expected of the user;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;User Prompts&lt;/strong&gt;: e.g. Highlight a the Save button and prompt the user with &amp;#39;Don&amp;#39;t forget to Save..Click Here&amp;#39;&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Relative or Absolute Steps:&lt;/strong&gt; Show me help relative to where I am or take me to somewhere specific for this Step!&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Authoring Tools:&lt;/strong&gt; Guide and Step Creation, Step Ordering, in-place Authoring and Management&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Guide Analytics:&lt;/strong&gt; Understand who is using which Guides and what Steps have been most used/viewed.&lt;/li&gt;&lt;/ul&gt; &lt;br/&gt;&lt;strong&gt;#Top Tip:&lt;/strong&gt; You may start setting up Guides today in this instance of Salesforce with Improved Help installed...Simply follow the steps below in the Guide shown in the Related Resources.
+</HelpTopic>
+
+
+<HelpTopic Id='a0Eb0000001VTaiEAG' Name='Improved Help Benefits for Partners' Summary='Help Author Features support the management of help content - Help Topics, Reading Lists and Help Resources - and their relationships.' Default='False' Active='False' CalloutHeight='55' CalloutMediaChoice='Image' CalloutTemplate='CalloutSummaryOnly' HeightBeforeScrolling='400' Template='Template2RowTextMedia' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;div&gt; We are happy to setup a webinar to discuss your specific requirements and share how Improved Help is already benefiting other Salesforce Customers using the Salesforce Partner Portal.&lt;/div&gt; &lt;ul&gt;&lt;li&gt; Your Partner Users will feel self-sufficient and&lt;strong&gt; productive in 1/2 the time&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; Simplify your Portal without any technical know-how&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Reduce training costs&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; Reduce end-user frustration: they can get on with the task in hand&lt;/li&gt;&lt;li&gt; Fill knowledge gaps. &lt;strong&gt;Reduce errors&lt;/strong&gt; and &lt;strong&gt;Increase productivity&lt;/strong&gt;&lt;/li&gt;&lt;li&gt; Reduce inbound support enquiries. Strengthens your company&amp;#39;s support reputation&lt;/li&gt;&lt;li&gt; Let &lt;strong&gt;ALL &lt;/strong&gt;Partners learn as they work&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Increase Partner satisfaction&lt;/strong&gt;, loyalty and productivity&lt;/li&gt;&lt;/ul&gt; &lt;span&gt;&lt;span&gt;&lt;span&gt;Maximise&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt; your existing resources and speed up your Partner on-boarding time, reduce support costs, drive adoption to new high levels and accelerate Partner learning &amp;amp; training.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
+</HelpTopic>
+
+
+<HelpTopic Id='AA03022014' Name='Help for the Guide Viewer ' Summary='Guide Viewer Help' Default='False' Active='True' CalloutHeight='250' CalloutMediaChoice='Image' CalloutTemplate='CalloutTopicText' HeightBeforeScrolling='400' Template='Template2ColMediaText' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+You can reposition this Guide Viewer window (its size and shape) and the Step windows it opens to suit your needs: it will remember your choices for future reference (recording size and position whenever you resize). It is recommended to keep this Guide Viewer tall and thin, with Steps positioned to sit alongside using as much screen width as you like.
+</HelpTopic>
+
+
+<HelpTopic Id='1' Name='Upload Additional Help' Summary='How to upload Help data in bulk from XML files' Default='False' Active='True' CalloutHeight='250' CalloutMediaChoice='Image' CalloutTemplate='CalloutTopicText' HeightBeforeScrolling='400' Template='Template2ColMediaText' HelpTopicStatus='Published' SalesforceHelpURL='' Visibility='Internal' CustomStyle='' ShowReferringRelationships='True' GuidedLayout='' GuidedRecord='' GuidedElement='' GuideStepMode='' GuideCallout='' ShowReadMoreLink='True'>
+<HelpTopicImage Height='0' Width='0' Caption='' Title='' URL='' ALTText=''></HelpTopicImage>
+<HelpTopicVideo Height='0' Width='0' Caption='' Title='' URL=''></HelpTopicVideo>
+&lt;p&gt;You can bulk upload Help Content and Helped Page configuration data by proceeding as follows:&lt;/p&gt;&lt;ul&gt; &lt;li&gt;&lt;b&gt;Create an XML data file&lt;/b&gt;: You can use XML to define the Help records you wish to create. Please refer to our support pages for information on the required format;&lt;/li&gt; &lt;li&gt;&lt;b&gt;Save your XML file locally.&lt;/b&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;Create a Salesforce Document&lt;/b&gt;: "Choose File" and select your XML file to upload;&lt;/li&gt;&lt;li&gt;&lt;b&gt;Obtain the "View File" URL of the Document&lt;/b&gt;: Click the "View File" link in the Document record and copy the resulting address from your browser.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Paste the URL into the text box below&lt;/b&gt;.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Click the Upsert Documentation button&lt;/b&gt;: Note that this will overwrite the relevant help records: we recommend you back up your data prior to any upload.&lt;/li&gt;&lt;/ul&gt;
+</HelpTopic>
+
+
+</HelpTopics>
+<HelpRelationships>
+<HelpRelationship ReferringTopic='a0Eb0000001VIxPEAW' RelatedHelpTopic='a0Eb0000001VIzJEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VLTBEA4' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VIy4EAG' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VJdHEAW' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VQCUEA4' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VLNGEA4' RelatedHelpTopic='a0Eb0000001VQCoEAO'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VSutEAG' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VSutEAG' RelatedHelpTopic='a0Eb0000001VIy4EAG'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VTZmEAO' RelatedHelpTopic='a0Eb0000001VQCFEA4'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VTZmEAO' RelatedHelpTopic='a0Eb0000001VQCoEAO'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VTaiEAG' RelatedHelpTopic='a0Eb0000001VIxPEAW'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VQCUEA4' RelatedHelpTopic='a0Eb0000001VIy4EAG'></HelpRelationship>
+
+<HelpRelationship ReferringTopic='a0Eb0000001VTaiEAG' RelatedHelpTopic='a0Eb0000001VIy4EAG'></HelpRelationship>
+
+</HelpRelationships>
+<HelpReadingLists>
+<HelpReadingList Id='a09b0000002Z153AAC' Name='2. Reduce On-Boarding to hours and Minutes' Summary='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Now you can fill the knowledge gap quicker than ever before!' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z1F1AAK' Name='1. Quick Start: Evaluators Reading List' Summary='If you are evaluating Improved Help, this Reading List should help you on your way.' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z1FBAA0' Name='3. Raise the bar on Partner on-boarding' Summary='With Improved Help you can create specific help and Guides for your Partners...Step Partners through your Partner Portal and help explain what they should be doing and why it is important.' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z1FRAA0' Name='4. Driving BIGGER deals QUICKER' Summary='This Reading Lists demonstrates how you can drive useful collateral to your Users, removing excuses from the business by pushing Competitive or Market Analysis to your Users.' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z5SaAAK' Name='Authors Guide : Helped Elements' Summary='A more detailed Reading List for Help Authors explaining more on Helped Elements' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z5SfAAK' Name='Authors Guide : Helped Page Layouts' Summary='A more detailed Reading List for Help Authors explaining more on Helped Page Layouts' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z5SpAAK' Name='Authors Guide : Managing Help Topics' Summary='A more detailed Reading List for Help Authors explaining more on Managing Help Topics.' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingList Id='a09b0000002Z5TOAA0' Name='Authors Guide : Linking Help Topics' Summary='A more detailed Reading List for Help Authors explaining more on Linking Help Topics' Description='' FeaturedUntil='' Status='' ReadingListType='Reading List'></HelpReadingList>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z153AAC' HelpTopic='a0Eb0000001VSueEAG' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z153AAC' HelpTopic='a0Eb0000001VSujEAG' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z153AAC' HelpTopic='a0Eb0000001VJtZEAW' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z153AAC' HelpTopic='a0Eb0000001VSuoEAG' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z153AAC' HelpTopic='a0Eb0000001VSutEAG' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VIxPEAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLN6EAO' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VIyoEAG' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VKyjEAG' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNGEA4' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNLEA4' ReadingOrder='6'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNQEA4' ReadingOrder='7'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNVEA4' ReadingOrder='8'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNfEAO' ReadingOrder='9'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLTREA4' ReadingOrder='10'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VKz5EAG' ReadingOrder='11'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLNkEAO' ReadingOrder='12'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1F1AAK' HelpTopic='a0Eb0000001VLTBEA4' ReadingOrder='13'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VIxPEAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VTa0EAG' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VTaAEAW' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VTZmEAO' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VTaYEAW' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FBAA0' HelpTopic='a0Eb0000001VTaiEAG' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VIxPEAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQC0EAO' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQC5EAO' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQCAEA4' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQCFEA4' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQCKEA4' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQCPEA4' ReadingOrder='6'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z1FRAA0' HelpTopic='a0Eb0000001VQCUEA4' ReadingOrder='7'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VKzAEAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VN2OEAW' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VN2dEAG' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VN2iEAG' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VN2nEAG' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VN2xEAG' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VQY2EAO' ReadingOrder='6'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VQZFEA4' ReadingOrder='7'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SaAAK' HelpTopic='a0Eb0000001VLTBEA4' ReadingOrder='8'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SfAAK' HelpTopic='a0Eb0000001VN37EAG' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SfAAK' HelpTopic='a0Eb0000001VN3CEAW' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SfAAK' HelpTopic='a0Eb0000001VN3HEAW' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SfAAK' HelpTopic='a0Eb0000001VN3MEAW' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SfAAK' HelpTopic='a0Eb0000001VLTBEA4' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VN3REAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbVEAW' ReadingOrder='1'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbaEAG' ReadingOrder='2'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbfEAG' ReadingOrder='3'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbMEAW' ReadingOrder='4'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbpEAG' ReadingOrder='5'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VQbuEAG' ReadingOrder='6'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5SpAAK' HelpTopic='a0Eb0000001VLTBEA4' ReadingOrder='7'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5TOAA0' HelpTopic='a0Eb0000001VN5QEAW' ReadingOrder='0'></HelpReadingListEntry>
+
+<HelpReadingListEntry HelpReadingList='a09b0000002Z5TOAA0' HelpTopic='a0Eb0000001VLTBEA4' ReadingOrder='1'></HelpReadingListEntry>
+
+</HelpReadingLists>
+<HelpResources>
+<HelpResource Id='a0Bb00000027bXqEAI' Name='The Permissioner App' Summary='To manage mass-updates of Permission Sets, our customers have reported success with The Permissioner app (we have no affiliation to this app).' Location='AppExchange' ResourceType='Web-page' URL='http://appexchange.salesforce.com/listingDetail?listingId=a0N30000008XYMlEAO'></HelpResource>
+
+<HelpResource Id='a0Bb00000028K2NEAU' Name='Source of on-Boarding Reserach' Summary='Quite a useful reference, regarding research for organisations and on-boarding challenges.' Location='Wikipedia' ResourceType='Web-page' URL='http://en.wikipedia.org/wiki/Onboarding'></HelpResource>
+
+<HelpResource Id='a0Bb00000027lkGEAQ' Name='Login-As Feature' Summary='This is a link to Salesforces&#39; Help for the Log-In As feature.' Location='salesforce.com' ResourceType='Web-page' URL='http://eu2.salesforce.com/help/doc/en/logging_in_as_another_user.htm'></HelpResource>
+
+<HelpResource Id='a0Bb00000027RMzEAM' Name='More about Improved Apps' Summary='We help customers drive new levels of adoption with rich, intuitive applications that enhance the user experience.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/about-us/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027MScEAM' Name='Contact Improved Apps' Summary='Feel free to reach out to the Improved Apps Team' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/contact/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027ljDEAQ' Name='Customer Highlights' Summary='Visit our growing Customer Highlights page to read about other successful Customers.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/customers/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027ljcEAA' Name='Reporting and Analytics Help Features' Summary='Video introduction to Improved Help&#39;s Analytics Features.' Location='improvedapps.com' ResourceType='Video' URL='http://www.improvedapps.com/improved-help/analytics/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027MHTEA2' Name='Improved Help Documentation' Summary='Improved Help Documentation Home Page.' Location='improvedapps.com' ResourceType='Document' URL='http://www.improvedapps.com/improved-help/documentation/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027m08EAA' Name='Help Domains - A full online Guide' Summary='This is an Improved Help Administrator&#39;s guide for managing Improved Help &#39;Domains&#39; through Help Topic visibility and Salesforce Sharing Rules.' Location='improvedapps.com' ResourceType='Document' URL='http://www.improvedapps.com/improved-help/documentation/setup-help-domains/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027nQvEAI' Name='Help Portal / Tools Page Explained' Summary='This is a more interactive Guide to the Help Portal and where things are located.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/improved-help/helped-salesforce-portal-apps/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027ljSEAQ' Name='Related Resources Guide' Summary='This is an Improved Help guide for Helped Users and Help Authors working with Improved Help Resources' Location='improvedapps.com' ResourceType='Document' URL='http://www.improvedapps.com/improved-help/help-resources/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027baAEAQ' Name='How to Help-Enable Your Visual Force Pages' Summary='This guide describes how Visual Force page developers can: Help-enable specific elements on custom Visual Force pages and Provide placeholder Improved Help Topic records that will allow subsequent help content refinement - by themselves or Help Authors.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/improved-help/helped-visual-force-pages/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027lmTEAQ' Name='Help Quick Access Menu Guide' Summary='View this more detailed Guide on the Help Quick Access Manu' Location='improvedapps.com' ResourceType='Document' URL='http://www.improvedapps.com/improved-help/quick-access-menu/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027ljNEAQ' Name='Creating and Managing Reading Lists' Summary='This is a guide for working with Improved Help Reading Lists for the more advanced Help Author' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/improved-help/documentation/authoring-reading-lists/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027lnPEAQ' Name='Improved Help Global Help Settings Guide' Summary='A comprehensive Guide walking you through all aspects of re-Branding to Help Topic options.' Location='improvedapps.com' ResourceType='Document' URL='http://www.improvedapps.com/improved-help/documentation/authoring-help-guides/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027MHUEA2' Name='Help Author Features' Summary='Video introduction to Improved Help Author Features.' Location='improvedapps.com' ResourceType='Video' URL='http://www.improvedapps.com/improved-help/help-author-features/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027S9PEAU' Name='Improved Help Guides Video' Summary='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Watch this short video.' Location='improvedapps.com' ResourceType='Video' URL='http://www.improvedapps.com/improved-help/help-guides/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027v7zEAA' Name='The Enterprise Help Journey - White Paper' Summary='To avoid process/application/information silos in the &#39;Brave New (Cloud-based) World&#39; it&#39;s time for a native Force.com Cloud strategy to drive adoption through improved help content and delivery.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/articles/the-enterprise-help-journey/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027MKVEA2' Name='Helped User Features' Summary='Video introduction to Improved Help&#39;s Helped User Features.' Location='improvedapps.com' ResourceType='Video' URL='http://www.improvedapps.com/videos/the-helped-user-experience/'></HelpResource>
+
+<HelpResource Id='a0Bb00000027lphEAA' Name='The Problem with Current Help' Summary='This is a little more help explaining the problem that exists today regarding current help.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/articles/the-problem-with-current-help/'></HelpResource>
+
+<HelpResource Id='a0Bb00000028JovEAE' Name='Improved Help Release Notes' Summary='If you would like to see more history on the main Features of each major release, follow this resource.' Location='improvedapps.com' ResourceType='Web-page' URL='http://www.improvedapps.com/improved-help/documentation/improved-help-release-notes/'></HelpResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027ljNEAQ' HelpTopic='a0Eb0000001VKyjEAG' UsageNotes='This is a guide for working with Improved Help Reading Lists for the more advanced Help Author'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027lnPEAQ' HelpTopic='a0Eb0000001VKzAEAW' UsageNotes='A comprehensive Guide walking you through all aspects of re-Branding to Help Topic options.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027lphEAA' HelpTopic='a0Eb0000001VQC0EAO' UsageNotes='This is a little more help explaining the problem that exists today regarding current help.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027m08EAA' HelpTopic='a0Eb0000001VQCFEA4' UsageNotes='A Guide for managing Improved Help Domains through Help Topic visibility and Salesforce Sharing Rules. Which is important relating to Data Driven Help as you may wish to provide different help to different types of Users i.e Internal Vs Portal User Help!'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027m08EAA' HelpTopic='a0Eb0000001VQCKEA4' UsageNotes='Here we can use the same resource as the previous Help Topic, but provide different usage notes to explain managing Improved Help &#39;Domains&#39; through Help Topic visibility and Salesforce Sharing Rules.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027S9PEAU' HelpTopic='a0Eb0000001VQCPEA4' UsageNotes='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Watch this short video.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MHUEA2' HelpTopic='a0Eb0000001VN3HEAW' UsageNotes='Video introduction to Improved Help Author Features.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027baAEAQ' HelpTopic='a0Eb0000001VN3CEAW' UsageNotes='This guide describes how Visual Force page developers can: Help-enable specific elements on custom Visual Force pages and Provide placeholder Improved Help Topic records that will allow subsequent help content refinement - by themselves or Help Authors.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027S9PEAU' HelpTopic='a0Eb0000001VN3HEAW' UsageNotes='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Watch this short video.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MHUEA2' HelpTopic='a0Eb0000001VN3MEAW' UsageNotes='Video introduction to Improved Help Author Features. For renaming/Editing your newly created Help Topics - See 50 seconds into this Video.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027m08EAA' HelpTopic='a0Eb0000001VQbaEAG' UsageNotes='This is an Improved Help Administrator&#39;s guide for managing Improved Help &#39;Domains&#39; through Help Topic visibility and Salesforce Sharing Rules.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027S9PEAU' HelpTopic='a0Eb0000001VQbuEAG' UsageNotes='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Watch this short video.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027nQvEAI' HelpTopic='a0Eb0000001VIyoEAG' UsageNotes='This is a more interactive Guide to the Help Portal and where things are located.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027ljNEAQ' HelpTopic='a0Eb0000001VLTBEA4' UsageNotes='This is a guide for working with Improved Help Reading Lists for the more advanced Help Author'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027lmTEAQ' HelpTopic='a0Eb0000001VN37EAG' UsageNotes='View this more detailed Guide on the Help Quick Access Manu'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027v7zEAA' HelpTopic='a0Eb0000001VLN6EAO' UsageNotes='To avoid process/application/information silos in the &#39;Brave New (Cloud-based) World&#39; it&#39;s time for a native Force.com Cloud strategy to drive adoption through improved help content and delivery.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027S9PEAU' HelpTopic='a0Eb0000001VSuoEAG' UsageNotes='A comprehensive Guide covering everything you need to know to create an Improved Help Guide.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027v7zEAA' HelpTopic='a0Eb0000001VTaAEAW' UsageNotes='This is VERY relevant to Partners too! To avoid process, application, information silos in the Brave New (Cloud-based) World it&#39;s time for a native Force.com Cloud strategy to drive adoption through improved help content and delivery.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027m08EAA' HelpTopic='a0Eb0000001VQCoEAO' UsageNotes='This is an Improved Help Administrator&#39;s guide for managing Improved Help &#39;Domains&#39; through Help Topic visibility and Salesforce Sharing Rules.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000028JovEAE' HelpTopic='a0Eb0000001VLNkEAO' UsageNotes='If you would like to see more history on the main Features of each major release, follow this resource.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MKVEA2' HelpTopic='a0Eb0000001VTa0EAG' UsageNotes='Video introduction to Improved Help&#39;s Helped User Features. The same experience is found in your Salesforce Portal.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MKVEA2' HelpTopic='a0Eb0000001VTZmEAO' UsageNotes='Video introduction to Improved Help&#39;s Helped User Features. The same experience is found in your Salesforce Portal.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MKVEA2' HelpTopic='a0Eb0000001VTaYEAW' UsageNotes='Video introduction to Improved Help&#39;s Helped User Features. The same experience is found in your Salesforce Portal.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027MKVEA2' HelpTopic='a0Eb0000001VTaiEAG' UsageNotes='Video introduction to Improved Help&#39;s Helped User Features. The same experience is found in your Salesforce Portal.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000028K2NEAU' HelpTopic='a0Eb0000001VSujEAG' UsageNotes='Quite a useful reference, regarding research for organisations and on-boarding challenges.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027S9PEAU' HelpTopic='a0Eb0000001VSutEAG' UsageNotes='With Improved Help Guides you can get your new Users up to speed in hours not days or weeks. Watch this short video.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027v7zEAA' HelpTopic='a0Eb0000001VQCAEA4' UsageNotes='To avoid process, application, information silos in the Brave New (Cloud-based) World it&#39;s time for a native Force.com Cloud strategy to drive adoption through improved help content and delivery.'></HelpTopicResource>
+
+<HelpTopicResource HelpResource='a0Bb00000027v7zEAA' HelpTopic='a0Eb0000001VQC5EAO' UsageNotes='To avoid process, application, information silos in the Brave New (Cloud-based) World it&#39;s time for a native Force.com Cloud strategy to drive adoption through improved help content and delivery.'></HelpTopicResource>
+
+</HelpResources>
+</ImprovedHelpDocumentation>
+
+<ImprovedHelpLayouts>
+
+<HelpedPageLayouts>
+
+<HelpedPageLayout Id='1' Name='Help Guide Viewer' PageLayoutIdentifier='iahelp__IHReadingListViewer' PageType='Visual Force' AllowComments='True' RehookTimes='' RehookInterval=''></HelpedPageLayout>
+
+<HelpedPageLayout Id='2' Name='Help Global Settings' PageLayoutIdentifier='iahelp__IHManageSettings' PageType='Visual Force' AllowComments='True' RehookTimes='' RehookInterval=''></HelpedPageLayout>
+
+</HelpedPageLayouts><HelpedElements><HelpedElement HelpedPageLayout='1' ElementType='Visualforce Element' HelpTopic='AA03022014' Name='Help Guide Viewer Help' Identifier='GuideWindowHelp' Visibility='ALL' DataDrivenFilter='' UseForNew='False'></HelpedElement>
+
+<HelpedElement HelpedPageLayout='2' ElementType='Visualforce Element' HelpTopic='1' Name='Upload Additional Help Title' Identifier='TitleSubtitleDocumentationUploadAdditionalHelp' Visibility='ALL' DataDrivenFilter='' UseForNew='False'></HelpedElement>
+
+</HelpedElements></ImprovedHelpLayouts></xml>

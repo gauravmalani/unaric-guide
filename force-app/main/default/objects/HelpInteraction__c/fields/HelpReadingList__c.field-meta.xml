@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HelpReadingList__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The Reading List (or Guide) involved in this interaction</description>
+    <inlineHelpText>The Reading List (or Guide) involved in this interaction</inlineHelpText>
+    <label>Help Reading List</label>
+    <referenceTo>HelpReadingList__c</referenceTo>
+    <relationshipLabel>Help Interactions</relationshipLabel>
+    <relationshipName>Help_Interactions</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

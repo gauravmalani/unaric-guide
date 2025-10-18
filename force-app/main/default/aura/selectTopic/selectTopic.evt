@@ -1,0 +1,7 @@
+<aura:event type="APPLICATION" 
+		description="Event triggered by certain Improved Help Aura components when a Help Topic is selected" 
+		access="global">
+		
+    <aura:attribute name="SourceComponent" type="String" default="" />
+    <aura:attribute name="RecordId" type="String"/>
+</aura:event>

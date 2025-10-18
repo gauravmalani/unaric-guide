@@ -1,0 +1,608 @@
+﻿/*==========================================================*/
+/* Stylesheet for Improved Apps Improved Help */
+/* Martin Little for Improved Apps */
+/* May 2012 */
+/* Copyright (c.) Improved Apps Limited 2012. All Rights Reserved. */
+/*==========================================================*/
+
+/*==========================================================*/
+/* Improved Help-specific styles */
+/*==========================================================*/
+
+/* Improved Help Text Styles */
+div.IH-H1							{color: white; font-size: 2em; font-weight: bold;} 		/*e.g. Help system Title */
+div.IH-H2							{color: #cccccc; font-size: 1em;}						/*e.g. Help branding sub-title */
+div.IH-H3							{font-size: 1.2em; font-weight: bold; color: #004080;}	/*e.g. Help Topic Name */
+div.IH-H4							{font-size: 1em; font-weight: bold; color: #004080;}	/*e.g. Help Topic Image Title */
+div.MediaCaption					{font-style: italic; color: #666666;}
+div.TopicSummary					{}
+
+/* Featured Topics and Reading Lists */
+div.Featured				{font-weight: bold; font-style: italic;}
+
+/*==========================================================*/
+/* Improved Help Icons */
+/*==========================================================*/
+/* Icon sizing is controlled in 'main' CSS. Helped User-facing 
+icons can be overridden and so are controlled in 'customer' css. */
+
+/* Default Icons - can be overridden for local branding*/
+.IHIconAdd							{background:url("/resource/iahelp__IHResources/img/IconAdd.png")}
+.IHIconBookmarkAdd					{background:url("/resource/iahelp__IHResources/img/IconBookmarkAdd.png")}
+.IHIconBookmarkAddUnavailable		{background:url("/resource/iahelp__IHResources/img/IconBookmarkAddUnavailable.png")}
+.IHIconBookmarkList					{background:url("/resource/iahelp__IHResources/img/IconBookmarkList.png")}
+.IHIconBookmarkRemove				{background:url("/resource/iahelp__IHResources/img/IconBookmarkRemove.png")}
+.IHIconBookmarkRemoveUnavailable	{background:url("/resource/iahelp__IHResources/img/IconBookmarkRemoveUnavailable.png")}
+.IHIconComment						{background:url("/resource/iahelp__IHResources/img/IconComment.png")}
+.IHIconGuide						{background:url("/resource/iahelp__IHResources/img/IconGuide.png")}
+.IHIconHelpedElements				{background:url("/resource/iahelp__IHResources/img/IconHelpedElements.png")}
+.IHIconHelpHome						{background:url("/resource/iahelp__IHResources/img/IconHelpHome.png")}
+.IHIconImprovedHelp					{background:url("/resource/iahelp__IHResources/img/IconImprovedHelp.png")}
+.IHIconLocked						{background:url("/resource/iahelp__IHResources/img/IconLocked.png")}
+.IHIconMaximise						{background:url("/resource/iahelp__IHResources/img/IconMaximise.png")}
+.IHIconMinimise						{background:url("/resource/iahelp__IHResources/img/IconMinimise.png")}
+.IHIconNavFirst						{background:url("/resource/iahelp__IHResources/img/IconNavFirst.png")}
+.IHIconNavLast						{background:url("/resource/iahelp__IHResources/img/IconNavLast.png")}
+.IHIconNavNext						{background:url("/resource/iahelp__IHResources/img/IconNavNext.png")}
+.IHIconNavPrevious					{background:url("/resource/iahelp__IHResources/img/IconNavPrevious.png")}
+.IHIconPopout						{background:url("/resource/iahelp__IHResources/img/IconPopout.png")}
+
+.IHIconPopoutLUX					{background:url("/resource/iahelp__IHResources/img/IconElementFeatured.png")}
+
+.IHIconRelatedFromHere				{background:url("/resource/iahelp__IHResources/img/IconRelatedFromHere.png")}
+.IHIconRelatedToHere				{background:url("/resource/iahelp__IHResources/img/IconRelatedToHere.png")}
+.IHIconTopicPrintable				{background:url("/resource/iahelp__IHResources/img/IconTopicPrintable.png")}
+.IHIconSalesforceHome				{background:url("/resource/iahelp__IHResources/img/IconSalesforceHome.png")}
+.IHIconSearchHelp					{background:url("/resource/iahelp__IHResources/img/IconSearchHelp.png")}
+.IHIconSubmit						{background:url("/resource/iahelp__IHResources/img/IconSubmit.png")}
+.IHIconSubmitDisabled				{background:url("/resource/iahelp__IHResources/img/IconSubmitDisabled.png")}
+.IHIconUnlocked						{background:url("/resource/iahelp__IHResources/img/IconUnlocked.png")}
+
+/* Default Icons - only visible to Help Authors & above, but associated with those visible to Helped Users*/
+.IHIconAddUnavailable				{background:url("/resource/iahelp__IHResources/img/IconAddUnavailable.png")}
+.IHIconHelpedElementsUnavailable	{background:url("/resource/iahelp__IHResources/img/IconHelpedElementsUnavailable.png")}
+.IHIconSalesforceHomeUnavailable	{background:url("/resource/iahelp__IHResources/img/IconSalesforceHomeUnavailable.png")}
+.IHIconHelpHomeUnavailable			{background:url("/resource/iahelp__IHResources/img/IconHelpHomeUnavailable.png")}
+.IHIconTopicPrintableUnavailable	{background:url("/resource/iahelp__IHResources/img/IconTopicPrintableUnavailable.png")}
+
+/* ML Added 1.14 + 1.15 + 1.22: icons required... */
+.IHIconButton						{background:url("/resource/iahelp__IHResources/img/IconHelpedElementButton.png")}
+.IHIconField						{background:url("/resource/iahelp__IHResources/img/IconHelpedElementField.png")}
+.IHIconCustomLink					{background:url("/resource/iahelp__IHResources/img/IconHelpedElementCustomLink.png")}
+.IHIconPageHelpLink					{background:url("/resource/iahelp__IHResources/img/IconHelpedElementPage.png")}
+.IHIconHelpandTrainingLink			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementPage.png")}
+.IHIconRelatedListColumnLabel		{background:url("/resource/iahelp__IHResources/img/IconHelpedElementReadingListColumn.png")}
+.IHIconRelatedListHelpLink			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementReadingListObject.png")}
+.IHIconRelatedListLabel				{background:url("/resource/iahelp__IHResources/img/IconHelpedElementReadingListLabel.png")}
+.IHIconDetailSectionLabel			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementDetailSectionLabel.png")}
+.IHIconCustomSectionLabel			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementDetailSectionLabel.png")}
+.IHIconVisualforceElement			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementVisualforce.png")}
+.IHIconRecordTitle					{background:url("/resource/iahelp__IHResources/img/IconHelpedElementTitle.png")}
+.IHIconSignatureElement				{background:url("/resource/iahelp__IHResources/img/IconHelpedElementSignature.png")}
+
+/* Salesforce1-ready icons added in 1.17 */
+.IHIconHelpedElementTabIH1			{background:url("/resource/iahelp__IHResources/img/IconHelpedElementTabIH1.png")}
+.IHIconHelpedPageLayoutIH1			{background:url("/resource/iahelp__IHResources/img/IconHelpedPageLayoutIH1.png")}
+.IHIconHelpResourceIH1				{background:url("/resource/iahelp__IHResources/img/IconHelpResourceIH1.png")}
+.IHIconHelpTopicIH1					{background:url("/resource/iahelp__IHResources/img/IconHelpTopicIH1.png")}
+.IHIconRelatedHelpTopicIH1			{background:url("/resource/iahelp__IHResources/img/IconRelatedHelpTopicIH1.png")}
+.IHIconReadingListIH1				{background:url("/resource/iahelp__IHResources/img/IconReadingListIH1.png")}
+.IHIconQuickLinkIH1					{background:url("/resource/iahelp__IHResources/img/IconQuickLinkIH1.png")}
+
+/* Salesforce1-ready icons added in 1.22 */
+.IHIconCommentIH1					{background:url('/resource/iahelp__IHResources/img/IconCommentIH1.png') no-repeat; background-size: 30px 30px;}
+.IHIconHelpMenuIH1      	    	{background:url('/resource/iahelp__IHResources/img/IconHelpMenu.png') no-repeat; background-size: 30px 30px;}
+.IHIconHelpBackIH1					{background:url('/resource/iahelp__IHResources/img/IconHelpBack.png') no-repeat; background-size: 30px 30px;}
+
+/* Buttons - used in Dialogues (Bookmarks, Comments, Search) */
+.IHButton							{color: #fff; font-weight: bold; text-decoration: none;}				
+div.IHButtonGreen					{float: right; background: #008000 url("/resource/iahelp__IHResources/img/BGButtonGreen.png") repeat-x top; background-size: 100% 100%; background: linear-gradient(top, #00FF00, #008000);}
+div.IHButtonGreen:hover				{color: black; box-shadow: 0 0 5px #A3C0DA;}
+.IHIdle:hover 						{box-shadow: 0px 0px 5px #A3C0DA;}
+
+/* Search Widget Used in Tools Page and Search Results Page*/
+div#SearchInput						{background-color: #ffffff; box-shadow: 0 0 2px #004080 inset;}
+div#SearchButton					{background: #004080;}
+div#SearchButton:hover				{background-color: #1666B4; box-shadow: 0px 0px 10px #A3C0DA;}
+
+/*----------------------------------------------------------*/
+/* Panels: Used in Dialogue pages and Tools Page Related Lists */
+
+.IHPanel							{color: #004080; background-color: white; box-shadow: 0px 2px 5px #A3C0DA;}
+.IHPanelHeader						{background: #E0E6F9 url("/resource/iahelp__IHResources/img/BGListHeader.png");}
+.IHPanelBody tr.even				{background-color: #EFF1F5;}
+.IHPanel * a:link					{color: #004080;}
+.IHPanel * a:hover					{color: #0A4BBE;}
+.IHPanel * a:visited				{color: #4F0078;}
+
+/*----------------------------------------------------------*/
+/* Status and Diagnostics feedback messages */
+span.IHError						{color: red; font-style: italic;} /* Diagnostics feedback */
+
+/*==========================================================*/
+/* Helped Page Layout Tools and Helped Elements */
+/*==========================================================*/
+
+/*  Helped Elements - Standard Salesforce Pages */
+table.detailList * td.labelCol.IHHelpedSFElement,table.detailList * th.labelCol.IHHelpedSFElement 	{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px 4px no-repeat; background-size: 12px 12px;}	/* Field Labels */
+#InlineEditDialogContent * .labelCol.IHHelpedSFElement	{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px 4px no-repeat; background-size: 12px 12px;}	/* Field Labels - dependent pick lists */
+h1.pageType.IHHelpedSFElement		{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Record Title */
+h2.mainTitle.IHHelpedSFElement		{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Details Section Label*/
+h3.IHHelpedSFElement		{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Custom Section Label*/
+td.pbTitle h3.IHHelpedSFElement 	{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 20px no-repeat; background-size: 12px 12px;}	/* Related List Label */
+td.pbHelp span.help.IHHelpedSFElement 	{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px no-repeat; background-size: 12px 12px; color: #015ba7;}	/* Related List Object Link*/
+th.zen-deemphasize.IHHelpedSFElement	{color: #004080 !Important; font-style: italic;}	/* Related List Column Label*/
+.IHPageHelpLink.IHHelpedSFElement		{background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 0px no-repeat; background-size: 12px 12px;} /* Help for this Page link */
+.btn.IHHelpedSFElement				{color: #004080 !Important; font-style: italic; box-shadow: 0 0 5px #A3C0DA;} /* Standard / Custom Button */
+.menuButtonButton.IHHelpedSFElement	{color: #004080 !Important; font-style: italic; box-shadow: 0 0 5px #A3C0DA;} /* Menu Buttons (drop-down) */
+table.customLinks * a.IHHelpedSFElement	{}	/* Custom Link*/
+
+/*  Helped Elements - LUX Out-invoked SF controls (e.g., record views / edits) */
+span.itemLabel.IHHelpedSFElement, span.slds-form-element__label.IHHelpedSFElement, span.test-id__field-label.IHHelpedSFElement
+						{padding-left: 20px; background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px 4px no-repeat; background-size: 12px 12px;} /* Field Labels */
+
+/* Click Helper icon for Helped buttons & Links  */
+.IHClickHelper							{width: 16px; height: 16px; margin: 0 5px 0 10px; border: 0; background: url("/resource/iahelp__IHResources/img/IconHelpedElement.png") 3px no-repeat; background-size: 12px 12px; cursor: pointer;}
+
+/* Reconfigure mode helped element counters */
+.IHHelpedSFElementX2					{background: url("/resource/iahelp__IHResources/img/IconDataDrivenFilters2.png") 3px no-repeat !important; background-size: 35px 12px;}
+.IHHelpedSFElementX3					{background: url("/resource/iahelp__IHResources/img/IconDataDrivenFilters3.png") 3px no-repeat !important; background-size: 35px 12px;}
+.IHHelpedSFElementX4					{background: url("/resource/iahelp__IHResources/img/IconDataDrivenFilters4.png") 3px no-repeat !important; background-size: 35px 12px;}
+.IHHelpedSFElementX5					{background: url("/resource/iahelp__IHResources/img/IconDataDrivenFilters5.png") 3px no-repeat !important; background-size: 35px 12px;}
+
+/* Record recently modified marker */
+.IHCollateralUpdated						{background: url("/resource/iahelp__IHResources/img/IconHelpCollateralUpdated.png") 3px no-repeat !important; background-size: 35px 12px;}
+th.zen-deemphasize.IHCollateralUpdated		{padding-left: 20px !important;}
+div.IHPanelHeader div.IHCollateralUpdated	{padding-left: 20px;}
+
+
+/* For the "Show Guides" facility when enabled as button bar item via global settings*/
+.IHGuidesButton						{width: 16px; margin: 0 5px 0 10px; border: 0; background: url("/resource/iahelp__IHResources/img/IconGuide.png") 3px no-repeat; background-size: 12px 12px; cursor: pointer;}
+
+/* Helped Element hover styling */
+table.detailList * td.labelCol.IHHelpedSFElement:hover, 
+	table.detailList * th.labelCol.IHHelpedSFElement:hover, 
+	h2.mainTitle.IHHelpedSFElement:hover, 
+	h1.pageType.IHHelpedSFElement:hover, 
+	h3.IHHelpedSFElement:hover, 
+	td.pbTitle h3.IHHelpedSFElement:hover, 
+	span.help.IHHelpedSFElement:hover,
+	
+	/* ... including LUX out elements */		
+	span.itemLabel.IHHelpedSFElement:hover, 
+	span.slds-form-element__label.IHHelpedSFElement:hover 		
+		{background-color: #E0E6F7;} /* Field Labels, Detail Section Label, Custom Section Label, Related List Label, Related List Object Link */
+
+th.zen-deemphasize.IHHelpedSFElement:hover	{color: #1450A4 !important; font-style: italic; box-shadow: 0 0 5px #1666B4 inset;} /* Related List Column Label*/
+td.pbHelp span.help.IHHelpedSFElement:hover 	{background-color: #E0E6F7;}	/* Related List Object Link*/
+.IHPageHelpLink:hover				{background-color: #E0E6F7;} /* Help for this Page link */
+.btn.IHHelpedSFElement:hover		{color: #1450A4 !important; font-style: italic; box-shadow: 0 0 5px #1666B4;} /* Standard / Custom Button */
+.menuButtonButton.IHHelpedSFElement:hover		{color: #1450A4 !important; font-style: italic; box-shadow: 0 0 5px #1666B4;} /* Menu Buttons (drop-down) */
+table.customLinks * a.IHHelpedSFElement:hover	{background-color: #E0E6F7;} /* Custom Link*/
+#IHGuidesLink:hover					{background-color: #E0E6F7;}	
+
+/* Helped Elements - Visual Force pages */
+.IHHelpedVFElement:hover			{background-color: #E0E6F7; cursor: pointer;}
+
+/*==========================================================*/
+/* Helped Page Layout Tools and Helped Element Highlighting - used for Guides */
+/*==========================================================*/
+
+/* Highlighted Helped Elements - Standard Salesforce Pages */
+table.detailList * td.labelCol.IHHelpedSFElement.IHHighlight	{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 3px 4px no-repeat; background-size: 12px 12px;}	/* Field Labels */
+h1.pageType.IHHelpedSFElement.IHHighlight				{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Record title */
+h2.mainTitle.IHHelpedSFElement.IHHighlight				{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Details Section Label */
+td.pbTitle h3.IHHelpedSFElement.IHHighlight 			{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 20px no-repeat; background-size: 12px 12px;}	/* Related List Label */
+h3.IHHelpedSFElement.IHHighlight 						{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 20px no-repeat; background-size: 12px 12px;}	/* Custom section label */
+td.pbHelp span.help.IHHelpedSFElement.IHHighlight 		{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 3px no-repeat; background-size: 12px 12px;}	/* Related List Object Link */
+th.zen-deemphasize.IHHelpedSFElement.IHHighlight		{color: red !Important; font-style: italic;}	/* Related List Column Label*/
+.IHPageHelpLink.IHHelpedSFElement.IHHighlight			{background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 0px no-repeat; background-size: 12px 12px;} /* Help for this Page link */
+.btn.IHHelpedSFElement.IHHighlight						{color: red !Important; font-style: italic; box-shadow: 0 0 5px #FF6666;} /* Standard / Custom Button */
+.btn.IHHelpedSFElement.IHHighlight:hover				{color: red !important; font-style: italic; box-shadow: 0 0 5px red;} /* Standard / Custom Button */
+.menuButtonButton.IHHelpedSFElement.IHHighlight			{color: red !Important; font-style: italic; box-shadow: 0 0 5px #E8D9DC;} /* Menu Buttons (drop-down) */
+table.customLinks * a.IHHelpedSFElement.IHHighlight		{}	/* Custom Link*/
+
+/* Similar highlighting for selective LUX form elements */
+span.itemLabel.IHHighlight, span.slds-form-element__label.IHHighlight {background: url("/resource/iahelp__IHResources/img/IconHighlightedElement.png") 3px 4px no-repeat; background-size: 12px 12px;}	/* Field Labels */
+
+/* Hover styling */
+table.detailList * td.labelCol.IHHelpedSFElement.IHHighlight:hover, h2.mainTitle.IHHelpedSFElement.IHHighlight:hover, td.pbTitle h3.IHHelpedSFElement.IHHighlight:hover, span.help.IHHelpedSFElement.IHHighlight:hover			{background-color: #E8D9DC;}
+th.zen-deemphasize.IHHelpedSFElement.IHHighlight:hover	{color: red !important; font-style: italic; box-shadow: 0 0 5px red inset;} /* Related List Column Label*/
+.IHPageHelpLink IHHelpedSFElement.IHHighlight:hover		{background-color: #E8D9DC;} /* Help for this Page link */
+.menuButtonButton.IHHelpedSFElement.IHHighlight:hover	{color: red !important; font-style: italic; box-shadow: 0 0 5px red;} /* Menu Buttons (drop-down) */
+table.customLinks * a.IHHelpedSFElement.IHHighlight:hover	{background-color: #E8D9DC;} /* Custom Link*/
+
+/* Highlighted Helped Elements - Visual Force pages */
+.IHHelpedVFElement.IHHighlight:hover					{background-color: #E8D9DC;}
+
+/*==========================================================*/
+/* Quick Access Menu (QAM) Used in Helped Pages */
+/*==========================================================*/
+
+div.QAMHandleClosed			{background-color: #ffffff; box-shadow: -2px 0px 3px #666666;}
+div.QAMHandleClosed:hover	{box-shadow: -2px 0px 5px #1666B4;}
+div.QAMHandleClosed .QAMHandleIcon	{background:url("/resource/iahelp__IHResources/img/IconQAMDefault.png")}
+div.QAMHandleOpen			{background: #fff url('/resource/iahelp__IHResources/img/BGQAMCloseArrow.png') 90% no-repeat; background-size: 6px 12px; box-shadow: 0px 0px 5px #666666;}
+div.QAMHandleOpen:hover		{box-shadow: -2px 0px 5px #1666B4;}	
+div.QAMHandleOpen .QAMHandleIcon	{background:url("/resource/iahelp__IHResources/img/IconQAMDefault.png")}
+div.QAMBody					{background-color: white; box-shadow: 0px 0px 5px #666666;}
+div.QAMRow.Active			{background-color: #A3C0DA;}
+div.QAMRow:not(.Active):not(.Unavailable):hover	{background-color: #E0E6F7; text-decoration: none;}
+
+div.QAMRow.Unavailable			{color: #dddddd; cursor: default; background-color: #eeeeee; }
+div.QAMRow.Unavailable a		{color: #dddddd; cursor: default;}
+div.QAMRow.Unavailable a:hover	{color: #dddddd; cursor: default; text-decoration: none;}
+
+div.QAMRow:disabled a:hover	{background-color: #000;}
+div.QAMRow * .GuideStep		{background-image: none !important; padding-left: 5px !important;}
+
+/*==========================================================*/
+/* Help Callout Templates */
+/*==========================================================*/
+
+/* Help Callout structure */
+div.Callout					{box-shadow: 0px 0px 5px #888888;} /* All Callouts - outer container */
+div.CalloutBody				{background-color: #ffffff; box-shadow: 8px 0 8px -8px #888, -8px 0 8px -8px #888;} /*  defaults contain Topic Details or extended Reading List / Resource content */
+
+/* Speech Bubble callout styling */
+div.Bubble					{background-color: #ffff99; color: #000;}
+
+/* Speech Bubble pointers */
+
+.Bubble.TL0:after			{border-color: #ffff99 transparent;}
+.Bubble.TR0:after			{border-color: #ffff99 transparent;}
+.Bubble.TL1:after			{border-color: #ffff99 transparent;}
+.Bubble.TR1:after			{border-color: #ffff99 transparent;}
+
+/*----------------------------------------------------------*/
+/* Callout Summary Only*/
+.CalloutOneLiner a:link		{color: #004080;}
+.CalloutOneLiner a:hover	{color: #0A4BBE;}
+
+/*----------------------------------------------------------*/
+/* Callout Gallery Format*/
+.navButton					{box-shadow: 1px 1px 3px #888;}
+.arrowDown					{border-top: 9px solid #1666B4;}
+.arrowUp					{border-bottom: 9px solid #1666B4;}
+
+/*----------------------------------------------------------*/
+/* Reading List Gallery Callout*/
+div.GalleryItem				{box-shadow: 0 0 3px #888888;}
+div.GalleryItem.Active		{box-shadow: 0 0 10px 2px #1666B4;}
+div.GalleryLink a:link		{text-decoration: none;}
+
+/*----------------------------------------------------------*/
+/* Related Help Resources Callout*/
+div#CalloutHelpResources tr.even					{background-color: #EFF1F5;}
+div#CalloutHelpResources div.ResourceName			{color: #004080;}
+div#CalloutHelpResources div.ResourceName a:link	{color: #004080;}
+div#CalloutHelpResources div.ResourceName a:hover	{color: #0A4BBE;}
+div#CalloutHelpResources div.ResourcePreview		{}
+div#CalloutHelpResources div.ResourceLocation		{color: #004080;}
+div#CalloutHelpResources div.ResourceUsageNotes		{color: #004080;}
+
+/* In Situ Stats Page */
+div.Panel					{background-color: #E0E6F7; box-shadow: 0px 0px 5px  #1666B4;}
+
+/*----------------------------------------------------------*/
+/* Dialogue popups: Bookmarks, Comments, Manage Reading Lists, Search  */
+
+/* Dialogue wrapping and closure control (in hosting page, outside iframe)*/
+div#IHDialogueWrapper		{border: solid 1px #A3C0DA; background-color: #fff; box-shadow: 0 0 10px #222;} /* iframe container in 'host' page */ 
+div#IHDialogueWrapper div.IHIcon:hover	{box-shadow: 0px 0px 5px #1666B4;}
+
+/* Comment Dialogue */
+div#IHCommentBody .Container	{background-color: #ffffff; color: #000; border: 1px solid #A3C0DA;} /* Comment text box */
+div#IHCommentBody .Container:after {border-color: transparent transparent white transparent;} /* Speech bubble pointer 'fill' colour */
+div#IHCommentBody .Container:before {border-color: transparent transparent #A3C0DA transparent;} ​/* Speech bubble pointer 'border' colour */
+
+/*----------------------------------------------------------*/
+/*Search Dialogue*/
+
+div.IHSearchResults			{box-shadow: 0 0 4px #A3C0DA; border: 1px solid lime;}
+div.IHSearchHeader			{background-color: #E0E6F7; box-shadow: 0 -1px 3px #A3C0DA;}
+div.IHSearchResultsList		{box-shadow: 0 0 3px #A3C0DA;}
+div.IHSearchResultsList * tr.even	{background-color: #EFF1F5;}
+
+/*==========================================================*/
+/* Help Portal page */
+/*==========================================================*/
+
+/*----------------------------------------------------------*/
+/* Header background */
+div#ToolsHeader				{background: #ffffff url("/resource/iahelp__IHResources/img/BGToolsHeader.png") repeat-y; box-shadow: 0px 0px 2px #A3C0DA;}
+
+/* Help Quick Links and Utilities */
+div#ToolsLinks li			{border-right: 1px solid #004080;} /* Quick link separator pipe */
+div#ToolsLinks li a		{color: #004080; text-decoration: none;}
+div#ToolsLinks li :hover	{color: #0A4BBE; background-color: #fff; box-shadow: 0px 0px 5px 3px #fff;}
+
+div.ToolsUtilities div.IHIcon:hover	{background-color: #A3C0DA; box-shadow: 0px 0px 5px #A3C0DA;}	/* Hover on Bookmarks icon*/		
+
+/*----------------------------------------------------------*/
+/* Main Content block */
+
+/* Vertical gradient background behind Toolbar and full topic Template iframe container */
+div#ToolsContentBackground	{background: #ffffff url("/resource/iahelp__IHResources/img/BGToolsContent.png") repeat-x top; background-size: 100% 100%; box-shadow: 0px 0px 5px #A3C0DA;} 
+
+/* Topic Toolbar */
+div.ToolsToolbar div.IHIcon:hover	{background-color: #A3C0DA; box-shadow: 0px 0px 5px #A3C0DA;}
+div.ToolbarLinks a:hover	{color: #222222; background-color: #fff; box-shadow: 0px 0px 5px 3px #fff;}
+
+/* Topic Template container */
+div.ToolsContent			{background-color: #fff; box-shadow: 0px 0px 5px #A3C0DA;}
+
+/* Tools Body Divider Bar */
+div#ToolsBodyDividerBar		{background: #ffffff url("/resource/iahelp__IHResources/img/BGToolsContent.png") repeat-x top; background-size: 100% 100%;} 
+
+/* JQuery Image LightBox */
+
+#lightbox {background:url("/resource/iahelp__IHResources/img/BGLightbox.png");}
+.lightbox {background:url("/resource/iahelp__IHResources/img/BGLightbox.png");}
+#lightbox p	{color: white;}		
+#lightbox img {background: #E0E6F7; box-shadow:0 0 25px #111;}
+	
+/* Tools page - Sidebar */	
+
+/* Reading Lists */	
+div#ReadilgLists div.Featured p	{font-style: italic;} /* Featured Reading Lists*/
+
+ 
+/*==========================================================*/
+/* Reading List Viewer */
+/*==========================================================*/
+
+div.RLViewerHeader		{background-color: #EEF1FB; box-shadow: 0px 0px 5px #A3C0DA;}
+div.GuideStep			{padding: 2px; text-overflow: ellipsis;}
+div.GuideStep.Active div.GuideStepLink {font-style: italic; font-weight: bold; color: #ffffff; background-color: #ff0000;}
+
+/* Guide Window */
+#GuideStepList 						{padding-top: 10px;}
+#GuideStepList *.GuideStep			{color: gray; padding: 0;}
+#GuideStepList * a:link				{text-decoration: none;}
+#GuideStepList * a:hover			{text-decoration: underline;}
+#GuideStepList *.GuideStep.Current	{color: red; font-weight: bold;}
+#GuideStepList *.IHIcon				{height: 4px; width: 4px; border:2px solid blue; border-radius: 4px; background-color: blue;}
+#GuideStepList *.Current .IHIcon	{height: 4px; width: 4px; border:2px solid red; border-radius: 4px; background-color: red;}
+#GuideStepList *.Current a:link		{color: red; font-weight: bold;}
+#GuideStepList *.Current.Manual a:link		{color: red; font-weight: bold; font-style: italic;}
+#GuideStepList *.Manual				{padding: 0 0 0 16px; color: gray;}
+#GuideStepList *.Manual .IHIcon		{height: 4px; width: 4px; border:2px solid gray; border-radius: 0; background-color: gray;}
+#GuideStepList *.Manual.Current .IHIcon	{height: 4px; width: 4px; border:2px solid red; background-color: red;}
+#GuideStepList *.Manual.First		{padding: 0; color: blue;}
+#GuideStepList *.Manual.First .IHIcon	{height: 4px; width: 4px; border:2px solid blue; border-radius: 4px; background-color: blue;}
+#GuideStepList *.Manual.First.Current .IHIcon	{height: 4px; width: 4px; border:2px solid red; border-radius: 4px; background-color: red;}
+
+/* Step Window */
+#IHFocus							{height: 25px; width: 100px; position: absolute; top: 0px; left: 0px; border: 2px solid red; border-radius: 5px; }
+
+#IHPrompt:not(.IHLUX)				{padding: 5px; background-color: #ff0000; border: 1px solid #ff0000; box-shadow: 2px 2px 8px #666666; border-radius: 5px; color: white; font-weight: bold; }
+#IHPrompt							{z-index: 10000; position: absolute; top: 0px; left: 0px; }
+
+#IHPrompt:not(.IHLUX).PromptRight:after			{content: ""; position: absolute; top: 7px; left: -10px; width: 0; height: 0; border-right: 10px solid #ff0000; border-bottom: 10px solid transparent; border-left: auto; border-top: 10px solid transparent; display: block;}
+#IHPrompt:not(.IHLUX).PromptLeft:after			{content: ""; position: absolute; top: 7px; right: -10px; width: 0; height: 0; border-left: 10px solid #ff0000; border-top: 10px solid transparent; border-right: auto; border-bottom: 10px solid transparent; display: block;}
+#IHPrompt:not(.IHLUX).PromptTop:after			{content: ""; position: absolute; bottom: -10px; left: 15px; width: 0; height: 0; border-top: 10px solid #ff0000; border-right: 10px solid transparent; border-bottom: auto; border-left: 10px solid transparent; display: block;}
+#IHPrompt:not(.IHLUX).PromptBottom:after		{content: ""; position: absolute; top: -10px; left: 15px; width: 0; height: 0; border-bottom: 10px solid #ff0000; border-left: auto; border-top: 10px solid transparent; border-right: 10px solid transparent; display: block;}
+
+#PromptMessage						{margin: 4px 5px 0 5px;}
+
+#IHStepList:not(.IHLUX)							{position: absolute; top: 0px; left: 0px; margin: 10px; padding: 10px; background-color: white; border: solid 1px #999999; border-radius: 5px; box-shadow: 0 0 8px #666666; }
+
+#IHStepList * .GuideStep Manual		{padding: 0;}
+#IHStepList * .GuideStep.Manual a:link	{text-decoration: none; color: blue;}
+#IHStepList * .GuideStep.Manual a:hover	{text-decoration: underline;}
+#IHStepList * .Manual .IHIcon		{float: left; height: 4px; width: 4px; margin: 2px 5px 0 0; border:2px solid blue; xborder-radius: 4px; background-color: transparent;}
+#IHStepList * .GuideStep.Clicked a:link		{color: purple;}
+#IHStepList * .GuideStep.Clicked a:hover	{color: purple;}
+#IHStepList * .GuideStep.Clicked .IHIcon	{background-color: purple; border-color: purple;}
+#IHStepList * .GuideStep.Current .IHIcon	{background-color: gray; border-color: gray;}
+#IHStepList * .GuideStep.Current a:link		{color: gray;}
+#IHStepList * .GuideStep.Current a:visited	{color: gray;}
+
+#IHStepListIcon						{width: 0; height: 0; margin: 8px 5px 8px 0; border-left: 8px solid transparent; border-right: 8px solid transparent;	border-top: 8px solid white;}
+
+#IHPrompt:not(.IHLUX) #IHNextStepIcon						{width: 44px; height: 22px; background: url("/resource/iahelp__IHResources/img/ButtonNext.png") no-repeat; background-size: 44px 22px;}
+
+/*==========================================================*/
+/* Customer's Custom Help Topic Styles: */
+/* These should be referenced on the "Branding" tab of */
+/* the Global Settings page.*/
+/* Having done this, the styles become available for use*/
+/* when editing Help Topics*/
+/*==========================================================*/
+
+/* Helped Elements */
+.DemoRedAlert.IHHelpedSFElement   {color: red !important;}
+.DemoAmberAlert.IHHelpedSFElement {color: orange !important;}
+.DemoGreenAlert.IHHelpedSFElement {color: green !important;}
+
+.DemoHelpChanged.IHHelpedSFElement:before {content: "!!"; color: magenta; padding-right: 5px;}
+.DemoHelpChanged.IHHelpedSFElement:hover:before {content: "Help Updated!"; color: magenta; padding-right: 5px;}
+
+#editPage * .DemoRequired.IHHelpedSFElement {border-right: solid 3px red !important;}
+
+.DemoRedAlert.IHHelpedVFElement   {color: red !important;}
+.DemoAmberAlert.IHHelpedVFElement {color: orange !important;}
+.DemoGreenAlert.IHHelpedVFElement {color: green !important;}
+:not(.slds-form-element__label).DemoRedAlert.IHHelpedVFElement   {border: solid 1px red !important; box-shadow: 0 0 5px #FF6666; box-shadow: 0 0 5px #FF6666 inset;}
+:not(.slds-form-element__label).DemoAmberAlert.IHHelpedVFElement {border: solid 1px orange !important; box-shadow: 0 0 5px #FFCC66; box-shadow: 0 0 5px #FFCC66 inset;}
+:not(.slds-form-element__label).DemoGreenAlert.IHHelpedVFElement {border: solid 1px lime !important; box-shadow: 0 0 5px #66FF66; box-shadow: 0 0 5px #66FF66 inset;}
+
+.DemoHelpChanged.IHHelpedVFElement		{border: 1 px solid #66CCFF !important; border-radius: 4px; box-shadow: 0 0 5px #66CCFF; box-shadow: 0 0 5px #66CCFF inset;}
+
+.DemoRequired.IHHelpedVFElement {border-right: solid 3px red !important;}
+
+/* Callouts */ 
+.DemoRedAlert * .CalloutContent * .IH-H4,.DemoRedAlert * .CalloutSummary * 		{color: red !important;}
+.DemoAmberAlert * .CalloutContent * .IH-H4,.DemoAmberAlert * .CalloutSummary *	{color: #AF4B04!important;}
+.DemoGreenAlert * .CalloutContent * .IH-H4,.DemoGreenAlert * .CalloutSummary * 	{color: darkgreen !important;}
+
+.DemoRedAlert .Callout		{box-shadow: 0px 0px 5px red;}
+.DemoAmberAlert .Callout	{box-shadow: 0px 0px 5px orange;}
+.DemoGreenAlert .Callout	{box-shadow: 0px 0px 5px green;}
+
+/* Full Teamplates */
+.DemoRedAlert #TopicTemplate #Content #TopicName.IH-H3		{color: red;}
+.DemoAmberAlert #TopicTemplate #Content #TopicName.IH-H3	{color: orange;}
+.DemoGreenAlert #TopicTemplate #Content #TopicName.IH-H3	{color: darkgreen;}
+
+
+/* LUX Component support */
+li.DemoRedAlert { background-color: #ffdddd;}
+tr.DemoRedAlert { background-color: #ffdddd;}
+div.DemoRedAlert { color: red;}
+div.DemoRedAlert.slds-tree__item {background-color: #ffdddd;}
+
+li.DemoAmberAlert { background-color: #FFCC66;}
+tr.DemoAmberAlert { background-color: #FFCC66;}
+div.DemoAmberAlert { color: orange; }
+div.DemoAmberAlert.slds-tree__item {background-color: #FFCC66;}
+
+li.DemoGreenAlert { background-color: #66ff66;}
+tr.DemoGreenAlert { background-color: #66ff66;}
+div.DemoGreenAlert { color: green; }
+div.DemoGreenAlert.slds-tree__item {background-color: #66ff66;}
+
+/* LIGHTNING-ONLY STYLES - FOR LUX COMPONENTS ONLY */
+tr.LUXRed, li.LUXRed, .slds-tree__item.LUXRed, .LUXRed * .IHLUXDetailSummary, .LUXRed.IHCustomStyled									{background-color: #ffdde1 !important;}	/*SLDS Pippin*/
+tr.LUXAmber, li.LUXAmber, .slds-tree__item.LUXAmber, .LUXAmber * .IHLUXDetailSummary, .LUXAmber.IHCustomStyled							{background-color: #faffbd !important;}	/*SLDS Lemon Chiffon*/
+tr.LUXGreen, li.LUXGreen, .slds-tree__item.LUXGreen, .LUXGreen *.IHLUXDetailSummary, .LUXGreen.IHCustomStyled							{background-color: #d9ffdf !important;}	/*SLDS Snowy mint*/
+tr.LUXLightBlue, li.LUXLightBlue, .slds-tree__item.LUXLightBlue, .LUXLightBlue * .IHLUXDetailSummary, .LUXLightBlue.IHCustomStyled		{background-color: #d8edff !important;}	/*SLDS Patten Blue*/
+tr.LUXDarkBlue, li.LUXDarkBlue, .slds-tree__item.LUXDarkBlue, .LUXDarkBlue * .IHLUXDetailSummary, .LUXDarkBlue.IHCustomStyled			{background-color: #16325c !important;}	/*SLDS Biscay*/
+tr.LUXLightGrey, li.LUXLightGrey, .slds-tree__item.LUXLightGrey, .LUXLightGrey * .IHLUXDetailSummary, .LUXLightGrey.IHCustomStyled		{background-color: #f3f2f2 !important;}	/*SLDS Pattern Grey 3*/
+tr.LUXDarkGrey, li.LUXDarkGrey, .slds-tree__item.LUXDarkGrey, .LUXDarkGrey * .IHLUXDetailSummary, .LUXDarkGrey.IHCustomStyled			{background-color: #706e6b !important;}	/*SLDS Pattern Grey 9*/
+
+/* For dark / "reverse" colours above, mostly set white text... */
+tr.LUXDarkBlue * a, li.LUXDarkBlue * a, tr.LUXDarkBlue * p, li.LUXDarkBlue * p, 
+	tr.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+	li.LUXDarkBlue * div:not([class*="ListingToolsBlock"]), 
+	.slds-tree__item.LUXDarkBlue *,
+	.LUXDarkBlue * .IHLUXDetailSummary, .LUXDarkBlue * .IHLUXDetailName 		{color: #ffffff;}
+	
+tr.LUXDarkGrey * a, li.LUXDarkGrey * a, tr.LUXDarkGrey * p, li.LUXDarkGrey * p, 
+	tr.LUXDarkGrey * div:not([class*="ListingToolsBlock"]), 
+	li.LUXDarkGrey * div:not([class*="ListingToolsBlock"]),
+	.slds-tree__item.LUXDarkGrey *, 
+	.LUXDarkGrey * .IHLUXDetailSummary, .LUXDarkGrey * .IHLUXDetailName		{color: #ffffff;}	
+
+/* ... but with the exception of ellipsis buttons for contracted tools area */
+.LUXDarkBlue * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}	
+.LUXDarkGrey * .fa-ellipsis-h {color: rgb(62, 62, 60) !important;}	
+
+
+/*==========================================================*/
+/* Fixes for Internet Explorer versions below IE9 */
+/*==========================================================*/
+
+/* Native sized icons */
+.IHIcon16.IHIconHelpHome			{background:url("/resource/iahelp__IHResources/img/16/IconHelpHome16.png")\9;}
+.IHIcon16.IHIconSearchHelp			{background:url("/resource/iahelp__IHResources/img/16/IconSearchHelp16.png")\9;}
+.IHIcon16.IHIconBookmarkList		{background:url("/resource/iahelp__IHResources/img/16/IconBookmarkList16.png")\9;}
+.IHIcon16.IHIconComment,.IHIconSmall.IHIconComment	{background:url("/resource/iahelp__IHResources/img/16/IconComment16.png")\9;}
+.IHIcon16.IHIconGuide				{background:url("/resource/iahelp__IHResources/img/16/IconGuide16.png")\9;}
+.IHIcon16.IHIconModeView			{background:url("/resource/iahelp__IHResources/img/16/IconModeView16.png")\9;}
+.IHIcon16.IHIconHelpEnable			{background:url("/resource/iahelp__IHResources/img/16/IconHelpEnable16.png")\9;}
+.IHIcon16.IHIconEdit				{background:url("/resource/iahelp__IHResources/img/16/IconEdit16.png")\9;}
+.IHIcon16.IHIconGuideEnable			{background:url("/resource/iahelp__IHResources/img/16/IconGuideEnable16.png")\9;}
+.IHIcon16.IHIconModeAnalyse			{background:url("/resource/iahelp__IHResources/img/16/IconModeAnalyse16.png")\9;}
+.IHIcon16.IHIconSettings,#ToolsHeader * .IHIconSettings	{background:url("/resource/iahelp__IHResources/img/16/IconModeConfigure16.png")\9;}
+
+/* Helped Page Layout modes */
+.HelpableSFElement					{background-color: #FCFF98\9;}
+.IHHelpRecon						{background-color: #FBDA9A\9 !important;}
+.QAMRow:hover						{cursor: pointer; background: #E0E6F7;}
+
+/* Tools Page */
+#SearchInput						{border: 1px solid silver\9;}
+#SearchButton						{border: 1px solid #004080\9;}
+#ToolsContentBackground				{border: 1px solid silver\9;}
+.ToolsContent						{border: 1px solid silver\9;}
+
+.ToolsToolbar * .IHIcon.IHIconAdd				{background:url("/resource/iahelp__IHResources/img/24/IconAdd24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconAddUnavailable	{background:url("/resource/iahelp__IHResources/img/24/IconAddUnavailable24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconDelete			{background:url("/resource/iahelp__IHResources/img/24/IconDelete24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconDeleteUnavailable	{background:url("/resource/iahelp__IHResources/img/24/IconDeleteUnavailable24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconEdit				{background:url("/resource/iahelp__IHResources/img/24/IconEdit24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconEditUnavailable	{background:url("/resource/iahelp__IHResources/img/24/IconEditUnavailable24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconHistory			{background:url("/resource/iahelp__IHResources/img/24/IconHistory24.png")\9;}
+.ToolsToolbar * .IHIcon.IHIconHistoryUnavailable{background:url("/resource/iahelp__IHResources/img/24/IconHistoryUnavailable24.png")\9;}
+
+.ToolsToolbar * .IHIconSmall.IHIconAdd				{background:url("/resource/iahelp__IHResources/img/16/IconAdd16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconAddUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconAddUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconBookmarkAdd		{background:url("/resource/iahelp__IHResources/img/16/IconBookmarkAdd16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconBookmarkAddUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconBookmarkAddUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconComment			{background:url("/resource/iahelp__IHResources/img/16/IconComment16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconCommentUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconCommentUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconDelete			{background:url("/resource/iahelp__IHResources/img/16/IconDelete16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconDeleteUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconDeleteUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconEdit				{background:url("/resource/iahelp__IHResources/img/16/IconEdit16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconEditUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconEditUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconEditList			{background:url("/resource/iahelp__IHResources/img/16/IconEditList16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconEditListUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconEditListUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHelpedElements	{background:url("/resource/iahelp__IHResources/img/16/IconHelpedElements16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHelpedElementsUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconHelpedElementsUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHelpHome				{background:url("/resource/iahelp__IHResources/img/16/IconHelpHome16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHelpHomeUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconHelpHomeUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHistory			{background:url("/resource/iahelp__IHResources/img/16/IconHistory16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconHistoryUnavailable{background:url("/resource/iahelp__IHResources/img/16/IconHistoryUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconModeAnalyse		{background:url("/resource/iahelp__IHResources/img/16/IconModeAnalyse16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconModeAnalyseUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconModeAnalyseUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconSalesforceHelp	{background:url("/resource/iahelp__IHResources/img/16/IconSalesHelp16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconSalesforceHelpNone	{background:url("/resource/iahelp__IHResources/img/16/IconSalesforceHelpNone16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconSalesforceHome	{background:url("/resource/iahelp__IHResources/img/16/IconSalesforceHome16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconSalesforceHomeUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconSalesforceHomeUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconTab				{background:url("/resource/iahelp__IHResources/img/16/IconTab16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconTabUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconTabUnavailable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconTopicPrintable	{background:url("/resource/iahelp__IHResources/img/16/IconTopicPrintable16.png")\9;}
+.ToolsToolbar * .IHIconSmall.IHIconTopicPrintableUnavailable	{background:url("/resource/iahelp__IHResources/img/16/IconTopicPrintableUnavailable16.png")\9;}
+
+.ToolsPage * .IHPanelFooter * .IHIconAdd			{background:url("/resource/iahelp__IHResources/img/16/IconAdd16.png")\9;}
+.ToolsPage * .IHPanelBody * .IHIconEdit				{background:url("/resource/iahelp__IHResources/img/16/IconEdit16.png")\9;}
+.ToolsPage * .IHPanelFooter * .IHIconLink,.IHSearchResultsList * .IHIconLink	{background:url("/resource/iahelp__IHResources/img/16/IconLink16.png")\9;}
+
+.ReadingListNav * .IHIconNavPrevious				{background:url("/resource/iahelp__IHResources/img/16/IconNavPrevious16.png")\9;}
+
+
+/*==========================================================*/
+/* LUX style overrides */
+/*==========================================================*/
+
+.SkinLUX .Callout			{height: 100px; border-radius: 0.25rem; box-shadow: 0 1px 3px silver;}
+.SkinLUX .Bubble			{background: rgb(250, 255, 189);}
+.SkinLUX .Callout .CalloutContent	{}
+.SkinLUX .Callout .CalloutContent	{margin: 0; width: 100%;}
+.SkinLUX .Callout .CalloutContent .CalloutBody	{box-shadow: none;}
+.SkinLUX .Callout .CalloutContent .CalloutFooter	{}
+.SkinLUX .Callout .CalloutContent .CalloutFooter .ReadMoreLink	{height: 2rem;}
+
+/* LUX Tools page*/
+body#IHToolsLUX 			{background-color: #A3C0DA;}
+
+/* LUX Callouts in Classic */
+.IHLUX .Callout {box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16); border-radius: 0.25rem; margin: 1rem 6px; border: 1px solid #dddbda; width: calc(100% - 14px); }
+.IHLUX .Bubble {margin: 1rem 6px; border: 1px solid #dddbda; width: calc(100% - 14px); background-color: #fafaf9;}
+.IHLUX .Callout.Bubble.TL0:after,.IHLUX .Callout.Bubble.TL1:after,.IHLUX .Callout.Bubble.TR0:after,.IHLUX .Callout.Bubble.TR1:after {width: 1rem; height: 1rem; background: #fafaf9; transform: rotate(45deg); content:''; border-top: 1px solid #dddbda; border-left: 1px solid #dddbda; border-right: none; border-bottom: none;}
+.IHLUX .Callout .CalloutContent {width: 100%; margin: 0;} 
+.IHLUX .Callout .CalloutContent .CalloutHeader {width: calc(100% - 1.5rem); margin: 0; padding: 0.5rem 0.75rem 0;}
+.IHLUX .Callout .CalloutContent .CalloutHeader .IH-H4 {width: 100% !important; padding: 0;}
+.IHLUX .Callout .CalloutContent .CalloutBody {margin: 0; width: 100%; box-shadow: none;}
+.IHLUX .Callout .CalloutContent .CalloutBody .CalloutText {width: calc(100% - 1.5rem); margin: 0; padding: 0.5rem 0.75rem;}
+
+/* LUX QAM overrides */
+.IHLUX .QAMHandleClosed 	{box-shadow: rgba(0, 0, 0, 0.16) 0 2px 3px;}
+.IHLUX .QAMHandleClosed .QAMHandleIcon,.IHLUX .QAMHandleOpen .QAMHandleIcon	{background: url("/resource/iahelp__IHResources/img/LUX/IconQAMDefault.png") center/20px 20px;}
+.IHLUX .QAMHandleOpen		{background: #fff url("/resource/iahelp__IHResources/img/LUX/BGQAMCloseArrow.png") 90% no-repeat; background-size: 8px 8px; box-shadow: rgba(0, 0, 0, 0.16) 0 2px 3px;}
+.IHLUX .QAMBody				{box-shadow: rgba(0, 0, 0, 0.16) 0 2px 3px;}
+.IHLUX .IHIconHelpedElements {}
+.IHLUX .IHIconBookmarkList	{background: url("/resource/iahelp__IHResources/img/LUX/IconBookmarkList.png") center/16px 16px;}
+.IHLUX .IHIconComment		{background: url("/resource/iahelp__IHResources/img/LUX/IconComment.png") center/16px 16px;}
+.IHLUX .IHIconHelpHome		{background: url("/resource/iahelp__IHResources/img/LUX/IconHelpHome.png") center/16px 16px;}
+.IHLUX .IHIconSearchHelp	{background: url("/resource/iahelp__IHResources/img/LUX/IconSearchHelp.png") center/16px 16px;}
+.IHLUX .IHIconGuide			{background: url("/resource/iahelp__IHResources/img/LUX/IconGuide.png") center/16px 16px;}
+.IHLUX .IHIconSettings		{background: url("/resource/iahelp__IHResources/img/LUX/IconSettings.png") center/16px 16px;}
+.IHLUX .IHIconModeView		{background: url("/resource/iahelp__IHResources/img/LUX/IconModeView.png") center/16px 16px;}
+.IHLUX .IHIconHelpEnable	{background: url("/resource/iahelp__IHResources/img/LUX/IconHelpEnable.png") center/16px 16px;}
+.IHLUX .IHIconEdit			{background: url("/resource/iahelp__IHResources/img/LUX/IconEdit.png") center/16px 16px;}
+.IHLUX .IHIconGuideEnable	{background: url("/resource/iahelp__IHResources/img/LUX/IconGuideEnable.png") center/16px 16px !important;}
+.IHLUX .IHIconModeAnalyse	{background: url("/resource/iahelp__IHResources/img/LUX/IconModeAnalyse.png") center/16px 16px;}
+

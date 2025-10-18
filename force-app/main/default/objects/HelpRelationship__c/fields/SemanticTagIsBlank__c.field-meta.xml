@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SemanticTagIsBlank__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Required to facilitate querying for blank (pre-semantics) relationship types</description>
+    <formula>ISBLANK(SemanticTag__c)</formula>
+    <inlineHelpText>Required to facilitate querying for blank (pre-semantics) relationship types</inlineHelpText>
+    <label>Semantic Tag Is Blank</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

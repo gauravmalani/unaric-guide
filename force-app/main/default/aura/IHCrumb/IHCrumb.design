@@ -1,0 +1,40 @@
+<design:component label="Improved Help: Crumb-trail">
+
+    <design:attribute name="HelpRecordId" 
+                    label="Default Help Topic" 
+                    description="Id of the Help Topic whose crumb trail will be sought on page load." 
+                    default=""
+                    required="false" />
+
+<!-- 
+FOR FUTURE DEVELOPMENT
+ -->
+<!-- 
+    <design:attribute name="RootNode" 
+                    label="Permitted Trail Root" 
+                    description="(Optional) Enter a Help Topic Id to limit the trail displayed to one leading from the specified Root." 
+                    default=""
+                    required="false" />
+ --> 
+ 
+    <design:attribute name="CrumbColour" 
+                    label="Crumb Colour" 
+                    description="6-character (HEX) colour value to use for the crumbs that form the trail." 
+                    default="ffffff"
+                    max="6"
+                    min="6"
+                    required="true" />
+
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="The ID of a TREE component that this component should 'listen' to (respond to events from)." 
+                    default=""
+                    required="false" />
+
+</design:component>

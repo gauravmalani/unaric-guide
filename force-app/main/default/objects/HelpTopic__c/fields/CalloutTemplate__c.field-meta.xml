@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CalloutTemplate__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The Help Topic Template to use to display summary help when viewing Callouts</description>
+    <inlineHelpText>The Help Topic Template to use to display summary help when viewing Callouts</inlineHelpText>
+    <label>Callout Template</label>
+    <referenceTo>HelpTopicTemplate__c</referenceTo>
+    <relationshipLabel>Help Topics (Callout Template)</relationshipLabel>
+    <relationshipName>HelpTopics1</relationshipName>
+    <required>true</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

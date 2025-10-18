@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GuidedElement__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>The Helped Element to View in Place when using this Topic as a step in a Guide</description>
+    <inlineHelpText>The Helped Element to View in Place when using this Topic as a step in a Guide</inlineHelpText>
+    <label>Step Element</label>
+    <referenceTo>HelpedElement__c</referenceTo>
+    <relationshipLabel>Guided ViP Help Topics</relationshipLabel>
+    <relationshipName>Help_Topics</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

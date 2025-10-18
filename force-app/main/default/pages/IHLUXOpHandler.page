@@ -1,0 +1,34 @@
+<!--
+============================================================================================== 
+PAGE FOR CONDUCTING CERTAIN (API) TASKS INVOKED FROM LUX AS VF PAGES.
+EXPECTS AN OPERATION CODE TO BE PASSED IN VIA THE Op PARAMETER, I.E:
+
+    [SF base URL]/Apex/IHLUXOpHandler?Op=n
+
+INDIVIDUAL OPERATIONS MAY REQUIRE THEIR OWN ADDITIONAL PARAMETERS
+
+EG: Op 1 = Get layout assignment for current user's profile on record specified via "recordId" parameter
+
+Martin Little for Improved Apps
+November 2018
+Copyright (c.) Improved Apps Limited 2018. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ <apex:page standardStylesheets="false" showHeader="false" 
+                title=""
+                controller="ControllerLUXOps"
+                action="{!LUXOpHandler}">
+
+    <head>
+        <apex:slds />
+        <style>     
+            div.CalloutText             {text-align: center; padding: 10px;}
+        </style>
+    </head>
+
+    <div class="CalloutText">
+        <apex:outputText escape="true" value="{!LUXOpDiags}" />
+    </div>
+
+</apex:page>

@@ -1,0 +1,8 @@
+.THIS .IHPortalHeader					{background: #eeeeee; border-radius: .25rem;}
+.THIS .IHPortalHeaderTools				{text-align: right;}
+.THIS .IHPortalBrandImageContainer		{max-width: 130px;}
+.THIS .ToolsBrandImageDefault			{background: RGBA(0,0,0,0.0);}
+.THIS .IHBranded						{width: 120px; height: 67px;}
+
+.THIS .slds-tabs_default 				{border-radius: 0.25rem}
+.THIS .slds-global-header__logo			{background-image: none !important;}

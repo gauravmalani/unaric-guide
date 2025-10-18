@@ -1,0 +1,65 @@
+/* ============================================================================*/
+/* Page design time only */  
+/* ============================================================================*/  
+.THIS .designTimeHidden						{height: 0px; font-size: 0;}
+.THIS .designTime							{background-color: #ffeeee;}
+.THIS .designTime, .THIS .theGEDiv			{text-align: center; font-variant: small-caps; position: absolute;
+													width: 100%; height: 35px !important; top: -3px; padding: 7px; font-size: 1.1em !important;
+													overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+
+/* ============================================================================*/
+/* Guide enable support */  
+/* ============================================================================*/  
+.THIS .theGEDiv								{cursor: pointer;}
+
+/* ============================================================================*/
+/* Visual adjustments for standard, run-time mode */  
+/* ============================================================================*/  
+.THIS .slds-card__footer 					{border: none;} 
+.THIS .slds-card.HelpList.ui-resizable 		{border: none;} 
+.THIS .slds-card__header 					{height: 0px; padding: 0; margin: 0;}
+
+/* For the Component Generator role - adjust (otherwise zeroed) header area height */
+.THIS .PDCGRole * .slds-card__header		{height: revert; margin-top: 2.2rem;}
+
+
+/* ============================================================================*/
+/* Visual adjustments for marking the fact that Author Overrides are in play */
+/* ============================================================================*/  
+.THIS div.HasAuthorOverrides				{border-color: lime; box-shadow: 0 0 0.3rem lime;}  
+													
+/* ============================================================================*/
+/* Iframe / overlay help mode / role = top */  
+/* ============================================================================*/  
+.THIS .FrameShow 							{position: absolute; width: 100%; }
+.THIS .FrameActive 							{border: none; padding: 1rem; border-radius: .25rem;}
+
+/* ============================================================================*/
+/* Mode/role-specific header tools */  
+/* ============================================================================*/  
+
+.THIS .SelectorTools 						{z-index: 10; position: sticky;}
+
+
+.THIS .SelectorToolsFloating 				{z-index: 10; height: 0px;	position: fixed;}
+
+.THIS .ToolsContainer 						{padding: 3px;}
+.THIS .ToolsContainerTransparent			{}
+.THIS .ToolsContainerColoured				{border-radius: 20px; background: #ffffff; border: 1px solid #d8dde6;}
+
+.THIS .PDHeaderTool.IATool 					{float: right;}
+
+.THIS .ToolButtonText						{display: inline-block; padding: 0.5rem; cursor: pointer;}
+
+.THIS .ToolButtonTextEllipsis				{white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.THIS .ToolButtonTextWrapSetWidth			{}
+.THIS .ToolButtonTextWrap					{max-width: CALC(100% - 2em);}
+
+
+
+.THIS .ToolButtonLeft						{position: absolute;}
+.THIS .ToolButtonRight						{position: absolute; right: 0;}
+.THIS .ToolButtonAboveLeft					{position: absolute; top: -1.5rem;}
+.THIS .ToolButtonAboveRight					{position: absolute; top: -1.5rem; right: -0.5rem;}
+
+.THIS .vizCheck								{height: 1px; width: 1px;}

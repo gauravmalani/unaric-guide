@@ -1,0 +1,79 @@
+<aura:component implements="force:hasRecordId,force:hasSObjectName,lightning:actionOverride"
+				controller="ControllerLUXOps"
+				access="global">
+ 
+<!-- 
+================================================
+Events and Handlers
+================================================
+-->
+    <aura:handler name="init" value="{!this}" action="{!c.doDialogue}" />
+    <aura:handler event="c:evtPassThrough" action="{!c.handlePassThroughs}"/>
+
+<!-- 
+================================================
+Limited range of IHCard-style parameters
+================================================
+-->    
+    <aura:attribute name="ExtensionTools" type="ConfigurationItem__c[]" required="false" access="public" />
+    <aura:attribute name="Delimiter" type="string" required="false" access="public" />
+    <aura:attribute name="SuppressModeTools" type="boolean" required="false" default="false" access="global" />
+
+<!-- 
+================================================
+The modal dialogue we will hard-wire
+================================================
+-->      
+	<div aura:id="OvrContainer" class="slds-gutters">
+	    <c:IHDialogue aura:id="theModal">
+	    	<aura:set attribute="ComponentId" value="theModalCmp" />
+	        <aura:set attribute="Title" value="" />        	        
+	        <aura:set attribute="TipButtonClose" value="" />        	
+	    </c:IHDialogue>
+	</div>  
+    
+<!-- 
+================================================
+Copy of dialogue component's extension tools
+so we can offer certain options outwith the body 
+of the modal (whose header, and thus tools, 
+we suppress by default).
+================================================
+-->        
+    <div aura:id="OvrTools">
+    
+		<aura:iteration items="{!v.ExtensionTools}" var="T">
+
+	    	<!-- BELOW SPAN REQUIRED TO AVOID BUG IN AURA:ITERATION! PLEASE DO NOT REMOVE! -->
+			<span>    
+	
+				<span class="{! T.iahelp__ToggleNext__c == 0 
+				                || (v.CurrentRecordMetadata.RowState == T.iahelp__ToggleActiveMarker__c &amp;&amp; T.iahelp__ToggleActiveMarker__c != '' &amp;&amp; T.iahelp__ToggleActiveMarker__c != null)
+				                || (T.iahelp__TogglePrev__c == 0 &amp;&amp; T.iahelp__ToggleActiveMarker__c == 'Any') 
+				                
+				                ? 'fa-stack fa-lg IATool ' + T.iahelp__ToolClass__c : 'slds-hide fa-lg IATool ' + T.iahelp__ToolClass__c}" 
+
+							style="{! T.iahelp__ToolClass__c != '' &amp;&amp; T.iahelp__ToolClass__c != null ? '' : 'color: #' + v.UXThemeColour1  + ';'}"
+							id="{!v.ToolContext + v.Delimiter + T.iahelp__Type__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + v.ComponentId}">
+	
+					<i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+	                                
+					<i id="{! T.iahelp__Type__c + v.Delimiter + T.iahelp__ActionCode__c + v.Delimiter + T.iahelp__DisplayOrder__c + v.Delimiter + T.iahelp__ToggleNext__c}" 
+	                                	class="{! 'fa ' + T.iahelp__IconClass__c + ' fa-stack-1x fa-inverse'}" 
+	                                	title="{!T.iahelp__TipText__c}" 
+	                                	onclick="{!c.toolClick}" aria-hidden="true" ></i>
+		
+					<span class="sr-only">
+					    {!T.iahelp__TipText__c}
+					</span>
+					<span class="fa-stack-1x IconContent">
+				        {!T.iahelp__IconContent__c}
+				    </span>                                        
+				</span>      
+				
+			</span>    
+		</aura:iteration>
+    </div>
+    
+    
+</aura:component>

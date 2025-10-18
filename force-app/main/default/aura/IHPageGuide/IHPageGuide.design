@@ -1,0 +1,65 @@
+<design:component label="Improved Help: Page Guide">
+
+	<design:attribute name="SuppressHeader" 
+	                label="Utility Bar Mode" 
+	                description="Check this box to hide the header area of this component and size it in a way suited to use in the Utility Bar." 
+	                default="false"
+                    required="true" />	
+
+	<design:attribute name="ReadingListId" 
+	                label="Guide Id" 
+	                description="[Optional] Enter a record Id to derive pages, topics and positions from the specified Guide (Reading List)." 
+                    default="" 
+                    required="false" />	
+
+	<design:attribute name="RowCount" 
+	                label="Design Rows" 
+	                description="Number of rows into which the screen area should be divided for step positioning." 
+                    default="10" 
+                    required="true" />	
+
+	<design:attribute name="ColCount" 
+	                label="Design Columns" 
+	                description="Number of columns into which the screen area should be divided for step positioning."
+	                datasource="2,3,4,6,12"
+                    default="6" 
+                    required="true" />	
+
+	<design:attribute name="Pages" 
+	                label="Step Pages" 
+	                description="Page addresses at which steps are to be shown." 
+                    default="" 
+                    required="false" />	
+
+	<design:attribute name="Positions" 
+	                label="Step Positions" 
+	                description="Comma separated list of co-ordinates (Rn:Cn) at which to display the Step Topics." 
+                    default="" 
+                    required="false" />	
+
+	<design:attribute name="Topics" 
+	                label="Step Topics" 
+	                description="Comma separated list of Help Topic Ids representing the steps to display." 
+                    default="" 
+                    required="false" />	
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	                          
+
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+	<design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="Comma-separated list of the component(s) that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'."
+                    default="" 
+                    required="false" />
+	
+</design:component>

@@ -1,0 +1,14 @@
+.THIS .IHIVContainer		{height: 100%;}
+ 
+.THIS .IHIVMedia			{margin: auto;}
+
+.THIS .IHIVImage50			{width: 50%;}
+.THIS .IHIVImage75			{width: 75%;}
+.THIS .IHIVImage100			{width: 100%;}
+
+.THIS .IHIVVideo50			{height: 100%; width: 50%;}
+.THIS .IHIVVideo75			{height: 100%; width: 75%;}
+.THIS .IHIVVideo100			{height: 100%; width: 100%;}
+
+.THIS .IHIVImage			{width: 100%;}
+.THIS .IHIVVideo			{width: 100%; height: 100%;}

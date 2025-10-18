@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EnableExportDocHT__c</fullName>
+    <defaultValue>true</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Check to allow experimental &quot;Export Topics to Word&quot; feature</description>
+    <inlineHelpText>Check to allow experimental &quot;Export Topics to Word&quot; feature</inlineHelpText>
+    <label>Enable Export to Word (Topics)</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

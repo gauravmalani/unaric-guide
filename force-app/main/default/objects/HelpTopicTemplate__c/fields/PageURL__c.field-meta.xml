@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PageURL__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <deprecated>false</deprecated>
+    <description>The name of the Visual Force page described by this Help Topic Template</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The name of the Visual Force page described by this Help Topic Template</inlineHelpText>
+    <label>Page URL</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

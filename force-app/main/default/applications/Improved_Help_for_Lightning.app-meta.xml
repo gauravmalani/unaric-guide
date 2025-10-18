@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#FD800D</headerColor>
+        <logo>Improved_Help_Question_Mark_Icon_O</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>Improved Help Administration and Authoring Tools for Lightning</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>Improved Help for Lightning</label>
+    <navType>Standard</navType>
+    <setupExperience>all</setupExperience>
+    <tabs>Welcome</tabs>
+    <tabs>Usage_Tracker</tabs>
+    <tabs>Tree_Builder</tabs>
+    <tabs>Tagging1</tabs>
+    <tabs>Content_Upload_Wizard</tabs>
+    <tabs>Context_Help_Wizard</tabs>
+    <tabs>HelpTopic__c</tabs>
+    <tabs>HelpReadingList__c</tabs>
+    <tabs>HelpedPageLayout__c</tabs>
+    <tabs>HelpedElement__c</tabs>
+    <tabs>HelpResource__c</tabs>
+    <tabs>HelpVoteSet__c</tabs>
+    <tabs>ConfigurationItem__c</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>HelpSettings</tabs>
+    <tabs>HelpInteraction__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>Improved_Help_for_Lightning_UtilityBar</utilityBar>
+</CustomApplication>

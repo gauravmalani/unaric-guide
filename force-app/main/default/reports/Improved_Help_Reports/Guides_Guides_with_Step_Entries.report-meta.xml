@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>HelpReadingListEntry__c.ReadingOrder__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.Active__c</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.Visibility__c</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.GuideStepMode__c</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.GuidedRecord__c</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.GuidedLayout__c</field>
+    </columns>
+    <columns>
+        <field>HelpTopic__c.GuidedElement__c</field>
+    </columns>
+    <description>This Report show all Guides (Linear or Non-Linear) with Step Details</description>
+    <filter>
+        <criteriaItems>
+            <column>FK_$HelpReadingList__c.ReadingListType__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>Linear Guide,Non-Linear Guide</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Help Guides: Guides with Step Entries</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntityCustomEntity$HelpTopic__c$HelpReadingListEntry__c@HelpReadingListEntry__c.HelpReadingList__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>HelpReadingListEntry__c.ReadingOrder__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

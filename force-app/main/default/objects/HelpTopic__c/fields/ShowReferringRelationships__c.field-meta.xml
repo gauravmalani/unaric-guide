@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ShowReferringRelationships__c</fullName>
+    <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
+    <description>Check to override global settings regarding the display of topics referring TO the current one in the Related Help Topics listing</description>
+    <inlineHelpText>Check to override global settings regarding the display of topics referring TO the current one in the Related Help Topics listing</inlineHelpText>
+    <label>Show Referring Topics?</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,124 @@
+<design:component label="Improved Help: Listing">
+    
+	<design:attribute name="Height" 
+	                label="Listing Component Height" 
+	                description="Display height for this component (pixels). Enter -1 to set height to 100% (i.e., the height required to avoid scrollbars)." 
+	                default="-1"
+                    required="true" />	
+
+	<design:attribute name="SuppressHeader" 
+	                label="Suppress Header" 
+	                description="Check this box to hide the header area of this component." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="SuppressFooter" 
+	                label="Suppress Footer" 
+	                description="Check this box to hide the footer / diagnostics area of this component." 
+	                default="false"
+                    required="false" />	
+
+	<design:attribute name="NoDataMessage" 
+	                label="'No Data' Advice Label" 
+	                description="A message to display on this component when no data is present." 
+	                default="[No Data]"
+                    required="false" />	
+
+    <design:attribute name="CalloutOption" 
+                    label="Callout Option" 
+                    description="Where relevant to the List being viewed, controls how to respond to listing item clicks." 
+                    datasource="Topic Selected Event Only,Topic Selected Event plus Topic view,Topic Selected Event plus Topic popout"
+                    default="Topic Selected Event plus Topic view"
+                    required="false" />	
+
+	<design:attribute name="ListingClickActionCode" 
+					label="Action Code" 
+					description="Enter a code to override the default action requested when listing items are clicked." 
+					default=""
+					required="false" />	
+
+    <design:attribute name="CardConfig" 
+                    label="Listing Type" 
+                    description="The (related) list type to display in this component."                    
+					datasource="All Help,Bookmarks,Child Help,Disambiguation,Fixed Help,Help Notes,Keywords,Only Related Help,Reading Lists,Related Help,Resources,Search Resources,Tagged Items,Search Help,Tree Content,Unfeatured Reading Lists"
+                    default="All Help"
+                    required="true" /> 
+
+    <design:attribute name="sObjectName" 
+                    label="Fixed Help Context" 
+                    description="For a Fixed help listing, the object type (API Name) to which to contextualise." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="HelpRecordId" 
+                    label="Default / Tag Pool Help Topic" 
+                    description="For related listing and Tagged Items types, the Id of the Help Topic to which to contextualise on load." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ToolContext" 
+                    label="Tool Context" 
+                    description="Defines the set of clickables (ellipsis menu items, listing tools, drop downs etc) to present on this component. Enter a value from the 'Tool Context' pick list field of the Configuration Item object. Enter '[DEFAULT]' to accept the default toolset for the component configuration being requested." 
+                    default="[DEFAULT]"
+                    required="true" />
+
+    <design:attribute name="ListingStyle" 
+                    label="Overall Listing Style" 
+                    description="The listing format to use in this component." 
+					datasource="Narrow,Tile,Wide" 
+                    default="Narrow"
+                    required="true" />
+
+    <design:attribute name="ListingTileSize" 
+                    label="Listing Tile Size" 
+                    description="For 'Tile' style only: the size of tile to display for each listing item." 
+					datasource="Smallest,Small,Medium,Large" 
+                    default="Medium"
+                    required="false" />
+
+    <design:attribute name="ListingRowStyle" 
+                    label="Listing Row Style" 
+                    description="The row format to use in this component." 
+                    datasource="Expanded,Hidden" 
+                    default="Hidden"
+                    required="false" />
+
+    <design:attribute name="RowLabellingOption" 
+                    label="Topic Labelling Option" 
+                    description="For Help Topic listings, the fields to display for each row." 
+                    datasource="Element Name - Topic Name,Topic Name (Element Type),Topic Name" 
+                    default="Topic Name"
+                    required="false" />
+
+    <design:attribute name="MaxListingTools" 
+                    label="Collapse Tools At" 
+                    description="The maximum number of tools to show against list items before collapsing them into an Ellipsis. 0 = always collapse, -1 = never collapse." 
+                    default="0"
+                    required="false" />
+
+	<design:attribute name="UXTheme" 
+	                label="Colour Scheme" 
+	                description="Enter the name of a styling theme to override the global default Help colour scheme (available themes typically include 'Light' and 'Dark'). Leave blank to accept default theme." 
+                    default="Light" 
+                    required="false" />	      
+	
+	<design:attribute name="BackgroundStyle" 
+	                label="Background Style" 
+	                description="Controls whether to adopt brand background colour for the component as a whole." 
+                    datasource="Coloured,Transparent"
+                    default="Coloured" 
+                    required="true" />	      
+	
+    <design:attribute name="ComponentId" 
+                    label="Component ID" 
+                    description="A reference name for this component, used in conjunction with the 'Listens To' parameter." 
+                    default=""
+                    required="false" />
+
+    <design:attribute name="ListensTo" 
+                    label="Listens To" 
+                    description="The ID of a SINGLE component that this component should 'listen' to (respond to events from). To listen to the Quick Access Menu, enter 'theQAM'." 
+                    default=""
+                    required="false" />
+
+</design:component>
