@@ -111,6 +111,28 @@
 			if (act === 'View') {
 				cmp.set("v.DataMode", 'View');
 			}
+
+			// Pin the current Reading List for this component instance
+			if (act === 'PinRL') {
+				helper.showSpinner(cmp);
+				var action = cmp.get("c.pinReadingList");
+				action.setParams({
+					ComponentId: cmp.get("v.ComponentId"),
+					rlId: cmp.get("v.IHContext")
+				});
+				action.setCallback(helper, function(response){
+					helper.hideSpinner(cmp);
+					var state = response.getState ? response.getState() : (response.getReturnValue ? 'SUCCESS' : 'ERROR');
+					if (state === "SUCCESS") {
+						// Empty string denotes success per logAuthorConfig pattern
+						cmp.set("v.DataMode", "PinRL");
+					} else {
+						// keep UX simple; optionally surface toast via IHCard if available
+						cmp.set("v.DataMode", "View");
+					}
+				});
+				$A.enqueueAction(action);
+			}
         }
         
 	},

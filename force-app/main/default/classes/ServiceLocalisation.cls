@@ -435,7 +435,6 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
         }
 
         if (DlgName == 'LUXComponents') {     
-            
             mLocs.put('AdviceLabelDropToSort', 'Drop here to re-order…');           
             mLocs.put('AdviceLabelFilteredTo', 'Filtered To');
             mLocs.put('AdviceLabelGEInstructions', 'Select or add a Guide, then amend the list of its steps, or click on the form to create new ones');
@@ -508,6 +507,7 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
             mLocs.put('TipHideRLDescriptions', 'Hide Reading List Entry description text');
             mLocs.put('TipListExport', 'Export the set of records featured on this component to Excel');
             mLocs.put('TipMyForm', 'Show/hide personally selected fields');         
+            mLocs.put('TipPinReadingList', 'Pin the current reading list');
             mLocs.put('TipReconfigureAddFilter', 'Add Help Filter');
             mLocs.put('TipReconfigureAddFilterCriterion', 'Add Help Filter Criterion');
             mLocs.put('TipReconfigureCloneElement', 'Clone this Helped Element');
@@ -615,7 +615,8 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
             mLocs.put('ToolLabelCommentsAll', 'Comments - All');
             mLocs.put('ToolLabelCommentsTopics', 'Comments - Topics');
             mLocs.put('ToolLabelCommentsRLs', 'Comments - Reading Lists');
-            mLocs.put('ToolLabelCommentsHPLs', 'Comments - Page Layouts');            
+            mLocs.put('ToolLabelCommentsHPLs', 'Comments - Page Layouts');
+            mLocs.put('ToolLabelPinReadingList', 'Pin Reading List');            
             mLocs.put('TitleCustomLinkHelp', 'Links Help');
             mLocs.put('TitleEditTopic', 'Edit Topic');
             mLocs.put('TitleFieldHelp', 'Field Help');

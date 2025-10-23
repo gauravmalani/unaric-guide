@@ -237,6 +237,25 @@ public static string getMatrix (string XObject, string XField) {
     // Author configuration, Personalisation and stats / interactions support
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Pin a Reading List for the current component by leveraging existing author-config pipeline
+    // Params encoding pattern reused from Topic Viewer "Pin Topic":
+    // ToolContext=RLViewer|ActionCode=PinnedRL|Value={rlId}
+    @AuraEnabled
+    public static String pinReadingList(String ComponentId, String rlId) {
+        try {
+            if (String.isBlank(ComponentId) || String.isBlank(rlId)) {
+                return 'Error (Pin Reading List): ComponentId and rlId are required';
+            }
+            // Build Params string consistent with existing logAuthorConfig usage
+            // Use caret (^) and tilde (~) separator convention used throughout ControllerLUXOps
+            // For Author config records, SupportingControls__c stores Params verbatim
+            String params = 'HelpRecordId~' + rlId;
+            return ControllerLUXOps.logAuthorConfig(ComponentId, params);
+        } catch (Exception e) {
+            return 'Error (Pin Reading List): ' + e.getMessage();
+        }
+    }
+
     // Obtain any author-specified LUX component configuration information
     // with which to override the default settings provided by page authors 
     @AuraEnabled
@@ -322,7 +341,7 @@ public static string getMatrix (string XObject, string XField) {
                     CI.ToolContext__c = '[Hidden]';
                     CI.ToolFilter__c = 0;
                     CI.Type__c = 'AuthorConfiguration';
-                        
+                        System.debug('Log Author congif : ' +CI);
                     upsert CI;
                     retVal = '';
                     
@@ -3303,7 +3322,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
         string timeStamps;                                                              // Timed diagnostics / always returned via a NVP
         
         try {
-        
+            System.debug('ActionCode : ' + ActionCode);
             List<ConfigurationItem__c> LXTs = new List<ConfigurationItem__c> ();            // Collection of the same, ultimately returned via JSON
             ServiceIHLists.ListingItem LI;                                                  // A listing item being returned, ultimately via JSON
             List<ServiceIHLists.ListingItem> LIs = new List<ServiceIHLists.ListingItem> (); // Collection of the same for efficient JSON parsing
@@ -3319,7 +3338,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
 
             localDiags += 'Basic vars set... ';
             timeStamps = getTimeStamp() + 'getTools - entry with action code: "' + ActionCode + '" for client "' + ClientComponentId + '" with Context "' + IHContext + '", Tool Context "' + ToolContext + '" and Parameters "' + Params + '"... ';
-    
+
             ControllerIHQAMSettings cIHQ = new ControllerIHQAMSettings(true);
             ControllerHelpContent cH = new ControllerHelpContent(false);       
             string CRoot = ControllerSettings.getCommunityPrefix();        
@@ -3366,7 +3385,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 
                 string keyword = IHContext;
                 string str = 'select id from iahelp__HelpTopic__c where iahelp__keyword__c = \''+keyword+'\' or (iahelp__keyword__c like \''+keyword+',%\') or (iahelp__keyword__c like \'%,'+keyword+'\') or iahelp__keyword__c like \'%,'+keyword+',%\'';
-      
+        
                 for(HelpTopic__c HT : database.query(str)){
 
                     //If current user is help user then bring only active topics, else bring all topics including inactive ones
@@ -3381,7 +3400,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 }
             }
             
-                       
+                        
             // If action is "Fixed Help", context will not have come from SF record context but will be an object name 
             // selected by page author - so we need to translate that to something usable: we need to 3 letter code.
             if (ActionCode == 'FixedHelp') {
@@ -3508,7 +3527,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 if (cIHQ.isAuthor) userPermLevel += 4;
                 if (cIHQ.isAdministrator) userPermLevel += 8;
             }
-    
+
             localDiags += 'Permission levels checked... ';
             
             
@@ -3596,7 +3615,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 
                 NVP = new NameValuePair('TabsJSON', 'AllTabs', AllTabs);
                 NVPs.add(NVP);
-                 
+                    
             }
 
 
@@ -3738,7 +3757,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                     }
                 }                
 
-    
+
                 // Set layout name (to return, below) to that actually discovered
                 Metadata.Layout layoutMd = (Metadata.Layout)layouts.get(0);
                 LayoutName = layoutMd.fullName;
@@ -3797,7 +3816,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                     } catch (exception exc) {
                         Sect.Expanded = false;
                     }
-                     
+                        
                     IARs = new IALayoutRow[]{};
                     
                     
@@ -3905,7 +3924,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                                                     }
                                                 }        
                                                 
-                                                                               
+                                                                                
                                                 // Having obtained the field - including namespace where relevant - check whether 
                                                 // it features in the list of known helped elements for the current context
                                                 // (i.e., whether help is available) 
@@ -3952,7 +3971,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                                                         }
                                                     }
                                                 }                                                
-                                              
+                                                
                                             }   // End if section / column / item's field != null
 
                                             
@@ -3979,7 +3998,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                                                 // However, special handling is required for composite fields: for example,
                                                 // 'Mailing Address' itself is never updatable - only its component parts. 
                                                 // So: If we encounter (potential) composite fields, investigate further...
-                                                 
+                                                    
                                                 if (Fld.getType().name().toUpperCase() == 'ADDRESS') {
                                             
                                                     // For addresses, obtain field representing the "street" line and use this 
@@ -4026,7 +4045,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                                             // section may look like it should be shown (becuase it has items) when in fact
                                             // it is empty from the user's point of view (as even if the item is added here,
                                             // SFDC will correctly render it as a blank)...    
-                                                      
+                                                        
                                             if ((isField == true && isAccessible == true) || isField == false) {
                                                 
                                                 // If adding the item, set composite editability values for convenience / LWC necessity
@@ -4043,7 +4062,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                                             } else {
                                                 IAR.Items.add(null);
                                             }    
-                                                              
+                                                                
                                                                         
                                         } else {
                                             // Form mode is edit and item is read only
@@ -4092,7 +4111,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                     
                     // Take note, for rendering convenience, of whether the section has any rows
                     Sect.HasRows = IARs.size() > 0;                    
-                      
+                        
                     Sects.add(Sect);
                 }   // End loop around Layout Sections
                 
@@ -4124,7 +4143,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 timeStamps += getTimeStamp() + 'getTools - GetForm action processed... ';
             }
             
-           
+            
             if (ActionCode == 'AllHelp' || ActionCode == 'FixedHelp' || ActionCode == 'PopularHelp') {
                 
                 Boolean doAdd;
@@ -4155,8 +4174,8 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                         // with whether or not user has bookmaked them                      
                         Boolean bmkInfoOK = cIHQ.cH.initialiseBookmarks(false, false);
                         localDiags += 'cIHQ Bookmarks initialised... ';   
-                                                 
-                                                 
+                                                    
+                                                    
                         for (ControllerIHQAMSettings.SearchResultQAM SR : cIHQ.HelpedElements) {
                                                     
                             // 1.31.3: if a Help Topic is referenced by multiple Helped Elements,
@@ -4189,14 +4208,14 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                             
                             if (doAdd == true) {
 
-// Avoid JSON parser null issues
-try{
-    if (SR.Element.HelpTopic__r.Keyword__c == null) {SR.Element.HelpTopic__r.Keyword__c = '';}
-} catch (exception exc) {
-    
-}   
+            // Avoid JSON parser null issues
+            try{
+                if (SR.Element.HelpTopic__r.Keyword__c == null) {SR.Element.HelpTopic__r.Keyword__c = '';}
+            } catch (exception exc) {
+                
+        }   
 
-                             
+                                
                                 // Add a listing item plus keep the full helped element
                                 HEsOut.add(SR.Element);                             
                                 LI = new ServiceIHLists.ListingItem();
@@ -4206,7 +4225,7 @@ try{
                                 // In these cases, use icon label to hold Element Type -> class on listings controls
                                 LI.Icon = 'fa-question';
                                 LI.IconLabel = SR.Element.ElementType__c.replaceAll(' ', '');
-    
+
                                 LI.IconTitle = '';
                                 LI.RowState = '';
                                 
@@ -4220,7 +4239,7 @@ try{
                                     LI.Parameters = SR.Element.Identifier__c + '^' + SR.Element.HelpedPageLayout__r.PageLayoutIdentifier__c;                    
                                     
                                     LI.StyleClass = 'IHHelpedSFElementError';
-    
+
                                 } else {
                                     // Otherwise, retrieve details of listing from Topic
                                     // Listing row labelling details vary according to component parameters
@@ -4232,14 +4251,14 @@ try{
                                         // Default to topic name only
                                         LI.Label = SR.Result.Name;
                                     }
-    
-    
+
+
                                     LI.Title = SR.Result.Summary;                               
                                     LI.ActionCode = 'HelpCallout';
                                     LI.Parameters = SR.Element.HelpTopic__r.CalloutHeight__c + '^' + SR.Element.HelpTopic__r.CalloutTemplate__r.PageURL__c + '^' 
                                                 +  SR.Element.Identifier__c + '^' + SR.Element.HelpedPageLayout__r.PageLayoutIdentifier__c + '^' 
                                                 + SR.Element.Id;                    
-    
+
                                     // Add any custom style, plus recency marker where relevant
                                     LI.StyleClass = SR.Element.HelpTopic__r.CustomStyle__c;
                                     if (SR.Element.HelpTopic__r.LastModifiedDate > dTRecenyLimit) {LI.StyleClass += ' ' + recencyMarker;}
@@ -4371,13 +4390,13 @@ try{
                         Datetime dT = Datetime.now();
                         dT = dT.addHours(numHours * -1);
 
-// v1.54.10+ : Nudge component ID is now stored in Component ID field - not context!
-                                      
+        // v1.54.10+ : Nudge component ID is now stored in Component ID field - not context!
+                                        
                         HelpInteraction__c[] Nudges = [SELECT Id
                             FROM HelpInteraction__c
                             WHERE HelpInteractionType__c = 'Nudge Displayed'
-//AND Context__c = :ClientComponentId
-AND ComponentId__c = :ClientComponentId
+        //AND Context__c = :ClientComponentId
+        AND ComponentId__c = :ClientComponentId
                             AND OwnerId = :UserInfo.getUserId()
                             AND CreatedDate > :dT
                             LIMIT 500
@@ -4385,13 +4404,13 @@ AND ComponentId__c = :ClientComponentId
                             
                         timesNudged = Nudges.size();
 
-timeStamps += getTimeStamp() + 'getTools - GetTagsForNudge (' + ClientComponentId + ') nudged ' + timesNudged + ' times in the past ' + numHours + ' hours... ';
+        timeStamps += getTimeStamp() + 'getTools - GetTagsForNudge (' + ClientComponentId + ') nudged ' + timesNudged + ' times in the past ' + numHours + ' hours... ';
 
-                           
+                            
                     } catch (exception ex) {                        
                         timesNudged = 0;
 
-timeStamps += getTimeStamp() + 'getTools - GetTagsForNudge (' + ClientComponentId + ') error: ' + ex.getMessage() + '... ';
+        timeStamps += getTimeStamp() + 'getTools - GetTagsForNudge (' + ClientComponentId + ') error: ' + ex.getMessage() + '... ';
                         
                     }
                     
@@ -4490,20 +4509,20 @@ timeStamps += getTimeStamp() + 'getTools - GetTagsForNudge (' + ClientComponentI
 
                 // Get items matching selections                     
                 // NOTE: we're having to do this via DB query as we otherwise cannot include multiple HTIDs via an "IN" clause for "selected" items
-//strSearchSOQL = 'SELECT Id, Name, iahelp__Summary__c, CustomStyle__c, iahelp__CalloutHeight__c, iahelp__CalloutTemplate__r.iahelp__PageURL__c, LastModifiedDate ';
-//strSearchSOQL +='FROM iahelp__HelpTopic__c ';
+                //strSearchSOQL = 'SELECT Id, Name, iahelp__Summary__c, CustomStyle__c, iahelp__CalloutHeight__c, iahelp__CalloutTemplate__r.iahelp__PageURL__c, LastModifiedDate ';
+                //strSearchSOQL +='FROM iahelp__HelpTopic__c ';
 
-strSearchSOQL = cH.getHelpTopicSelectSOQL();
+                    strSearchSOQL = cH.getHelpTopicSelectSOQL();
 
                 strSearchSOQL +='WHERE Id IN (' + HTIDClause + ') ';
                         
                 HTs1 = database.query(strSearchSOQL);
 
                 // Get items matching search term (limited to 1000 rows) - and, to avoid duplicates, not including "selected" IDs
-//strSearchSOQL = 'SELECT Id, Name, iahelp__Summary__c, CustomStyle__c, iahelp__CalloutHeight__c, iahelp__CalloutTemplate__r.iahelp__PageURL__c, LastModifiedDate ';
-//strSearchSOQL +='FROM iahelp__HelpTopic__c ';
+                //strSearchSOQL = 'SELECT Id, Name, iahelp__Summary__c, CustomStyle__c, iahelp__CalloutHeight__c, iahelp__CalloutTemplate__r.iahelp__PageURL__c, LastModifiedDate ';
+                //strSearchSOQL +='FROM iahelp__HelpTopic__c ';
 
-strSearchSOQL = cH.getHelpTopicSelectSOQL();
+                strSearchSOQL = cH.getHelpTopicSelectSOQL();
 
                 strSearchSOQL +='WHERE (Name LIKE \'' + searchTerm + '\' ';
                 strSearchSOQL +='OR iahelp__Summary__c LIKE \'' + searchTerm + '\' ';               
@@ -4568,9 +4587,9 @@ strSearchSOQL = cH.getHelpTopicSelectSOQL();
                     LIs.add(LI);
                 }
                 
-NVP = new NameValuePair('HelpTopics', 'HelpTopics', '' + JSON.serialize(HTResults));
-NVPs.add(NVP);    
-                 
+        NVP = new NameValuePair('HelpTopics', 'HelpTopics', '' + JSON.serialize(HTResults));
+        NVPs.add(NVP);    
+                        
             }
 
 
@@ -4829,7 +4848,7 @@ NVPs.add(NVP);
                     } else {
                         LI.Parameters += '2';                       
                     }   
-                       
+                        
                     LI.RowState = '';           
 
                     LIs.add(LI);
@@ -4844,46 +4863,46 @@ NVPs.add(NVP);
             // "ReadingListEntries" = list of all ENTRIES for a given RL
             // "RListEntry"         = client-side action code to show individual RL entry
 
-// "AllReadingLists" = ALL RLs matching a search term by name
-if (ActionCode == 'AllReadingLists') {
-    
-    localDiags += 'About to obtain ALL Reading Lists matching search term... ';
-    
-    string[] parms;
-    parms = Params.split(ControllerSettings.D1);
-    string sTerm = parms[0];
+        // "AllReadingLists" = ALL RLs matching a search term by name
+        if (ActionCode == 'AllReadingLists') {
+            
+            localDiags += 'About to obtain ALL Reading Lists matching search term... ';
+            
+            string[] parms;
+            parms = Params.split(ControllerSettings.D1);
+            string sTerm = parms[0];
 
-    if (sTerm == null) {sTerm = '';}
-    sTerm = '%' + sTerm + '%';
-    
-    HelpReadingList__c[] RLs = [
-        SELECT Id, Name, Summary__c
-        FROM HelpReadingList__c
-        WHERE Name LIKE :sTerm OR Summary__c LIKE :sTerm
-        LIMIT 1000
-    ];
-    
-    
-    for (HelpReadingList__c RL : RLs) {
-        LI = new ServiceIHLists.ListingItem();
-                        
-        LI.Id = RL.id;
-        LI.Label = RL.Name;
-        LI.Title = RL.Summary__c;
-        LI.Icon = 'fa-list-ol';
-        LI.IconTitle = '';
-        LI.StyleClass = '';
-        LI.IconLabel = '';
-        LI.ActionCode = 'ReadingList';   
-                          
-        // Put escaped copy of RL name into parameters for convenience             
-        LI.Parameters = RL.Name.escapeHtml4();         
-                        
-        LI.RowState = '';           
+            if (sTerm == null) {sTerm = '';}
+            sTerm = '%' + sTerm + '%';
+            
+            HelpReadingList__c[] RLs = [
+                SELECT Id, Name, Summary__c
+                FROM HelpReadingList__c
+                WHERE Name LIKE :sTerm OR Summary__c LIKE :sTerm
+                LIMIT 1000
+            ];
+            
+            
+            for (HelpReadingList__c RL : RLs) {
+                LI = new ServiceIHLists.ListingItem();
+                                
+                LI.Id = RL.id;
+                LI.Label = RL.Name;
+                LI.Title = RL.Summary__c;
+                LI.Icon = 'fa-list-ol';
+                LI.IconTitle = '';
+                LI.StyleClass = '';
+                LI.IconLabel = '';
+                LI.ActionCode = 'ReadingList';   
+                                
+                // Put escaped copy of RL name into parameters for convenience             
+                LI.Parameters = RL.Name.escapeHtml4();         
+                                
+                LI.RowState = '';           
 
-        LIs.add(LI);
-    }
-}
+                LIs.add(LI);
+            }
+        }
 
             if (ActionCode == 'ReadingLists' || ActionCode == 'ReadingListsXF') {
                 localDiags += 'About to process Reading Lists... ';
@@ -4954,7 +4973,7 @@ if (ActionCode == 'AllReadingLists') {
 
                         LI.IconLabel = '';
                         LI.ActionCode = 'ReadingList';   
-                          
+                            
                         // Put escaped copy of RL name into parameters for convenience             
                         LI.Parameters = Ent.HelpReadingList__r.Name.escapeHtml4();         
                         
@@ -4971,7 +4990,7 @@ if (ActionCode == 'AllReadingLists') {
                 // If we were provided with author overrides, check for help topic ID amoung them
                 // and use in preference to default (i.e., if we weren't asked for specific topic to which to relate)                
                 if (AuthorCfgParams != '' && (IHCXTSuppliedBlank == true || IHContext == '[None]')) {
-    
+
                     try {
                         string[] cfgPs = AuthorCfgParams.split('\\^');
                         string[] cfgP;
@@ -5027,7 +5046,7 @@ if (ActionCode == 'AllReadingLists') {
                 || ActionCode == 'CommentsRLs'
                 || ActionCode == 'CommentsTopics'
             ){
-                   
+                    
                 list<iahelp__HelpInteraction__c> newHelpInteractionList = new list<iahelp__HelpInteraction__c>();
                 string querystring = 'SELECT iahelp__Description__c ,CreatedDateTime__c,Id,';
                 querystring += ' HelpTopic__r.Name, ';
@@ -5047,7 +5066,7 @@ if (ActionCode == 'AllReadingLists') {
                 if (ActionCode == 'CommentsRLs') {
                     querystring += ' AND HelpReadingList__c != null';
                 }
-              
+                
                 querystring += ' ORDER BY CreatedDate DESC limit 100';
                 
                 List<HelpInteraction__c> sobjhelpTopicsList = database.query(querystring);
@@ -5084,7 +5103,7 @@ if (ActionCode == 'AllReadingLists') {
                 }
 
                 if (HTIDs.length() > 0) HTIDs = HTIDs.substring(0, HTIDs.length() -1);
-             
+                
                 strSQL = 'SELECT Id, HelpInteractionType__c, Description__c, CreatedDateTime__c, HelpTopic__c, HelpTopic__r.Name, HelpTopic__r.CreatedBy.Name, HelpedPageLayout__c, HelpedPageLayout__r.Name ';
                 strSQL += 'FROM iahelp__HelpInteraction__c ';
                 strSQL += 'WHERE HelpInteractionType__c = \'Comment\' ';
@@ -5177,7 +5196,7 @@ if (ActionCode == 'AllReadingLists') {
                                 
                                 LI = new ServiceIHLists.ListingItem();
                                 LI.Id = HI.Id;
-                              
+                                
                                 LI.Label = HI.CreatedDate.format('d MMM yy');
                                 
                                 // Deal with blank note text
@@ -5236,7 +5255,7 @@ if (ActionCode == 'AllReadingLists') {
                                 }
                             }
                         }
-                                                                  
+                                                                    
                     }
                                         
                 } catch (exception ex) {
@@ -5315,7 +5334,7 @@ if (ActionCode == 'AllReadingLists') {
                 List<iahelp__HelpBookmark__c> lstBmk = [SELECT Id, Name, OwnerId, iahelp__HelpTopic__c 
                                                         FROM iahelp__HelpBookmark__c 
                                                         WHERE OwnerId = :UserInfo.getUserId()];
-                                                       
+                                                        
                 system.debug('lstBmk=='+lstBmk);
                 system.debug('LIs=='+LIs);
                 for (iahelp__HelpBookmark__c bmkObj : lstBmk) {
@@ -5371,11 +5390,11 @@ if (ActionCode == 'AllReadingLists') {
                     // Within each column, value is:
                     // Label [D2] Tool tip
 
-/*
-SUPPRESS FOR 1.43.0
-*/
+        /*
+        SUPPRESS FOR 1.43.0
+        */
 
-/*                  
+        /*                  
                     if (HR.HR.SemanticTag__c != null) {
                         // Column label = semantic name
                         LI.Cols = HR.HR.SemanticTag__r.Name;
@@ -5387,7 +5406,7 @@ SUPPRESS FOR 1.43.0
                     } else {
                         LI.Cols = '-' + ControllerSettings.D2 + '-';
                     }
-///////////////////////////////////////                
+        ///////////////////////////////////////                
                     
                     
                     LI.ActionCode = 'RelatedHelp';
@@ -5429,8 +5448,8 @@ SUPPRESS FOR 1.43.0
                 //Create List of iahelp__HelpBookmark__c which are related to current User
                 Set <Id> helpTopicIds = new Set <Id>();
                 List <iahelp__HelpBookmark__c> lstBmk = [SELECT Id, Name, OwnerId, iahelp__HelpTopic__c 
-                                                         FROM iahelp__HelpBookmark__c 
-                                                         where OwnerId = :UserInfo.getUserId()];
+                                                            FROM iahelp__HelpBookmark__c 
+                                                            where OwnerId = :UserInfo.getUserId()];
                 system.debug('lstBmk=='+lstBmk);
                 system.debug('LIs=='+LIs);
                 
@@ -5483,7 +5502,7 @@ SUPPRESS FOR 1.43.0
                     
                     } else if (IHContext.startsWith(ServiceSchema.getObjectIdByName('iahelp__HelpReadingList__c'))) {
                         providerClassName = 'ServiceIHTrees.TNSReadingLists';
-    
+
                     } else if (IHContext.startsWith(ServiceSchema.getObjectIdByName('iahelp__HelpedPageLayout__c'))) {                
                         providerClassName = 'ServiceIHTrees.TNSHelpedPageLayouts';
                     } else {
@@ -5566,39 +5585,39 @@ SUPPRESS FOR 1.43.0
                     }
                     LIs = TNS.getTreeNodes(IHContext, levelsMax);
                     
-// Iterating through list of tree nodes and checking if branches are in bookmarked list or not:
-// Only attempt to log bookmarked status in this way for topic-based tree providers
+        // Iterating through list of tree nodes and checking if branches are in bookmarked list or not:
+        // Only attempt to log bookmarked status in this way for topic-based tree providers
 
-/*
-DISABLING FOR PRESENT AS THIS IS NOT REQUIRED IN ORDER TO MAKE BOOKMARKING TOOL CORRECTLY OPERATIONAL
-ON TOPIC VIEWER WITH TREE AS CACHE SOURCE (CALL TO getClickablesJSON WHEN NAVIGATING CACHE HANDLES THIS ISSUE)
-AND ADDITION OF STATE MARKERS HERE CAUSES ISSUES WITH ACTIVE MARKER FILTERS ON TOOLS - EG TreeShowPeers
-*/
+        /*
+        DISABLING FOR PRESENT AS THIS IS NOT REQUIRED IN ORDER TO MAKE BOOKMARKING TOOL CORRECTLY OPERATIONAL
+        ON TOPIC VIEWER WITH TREE AS CACHE SOURCE (CALL TO getClickablesJSON WHEN NAVIGATING CACHE HANDLES THIS ISSUE)
+        AND ADDITION OF STATE MARKERS HERE CAUSES ISSUES WITH ACTIVE MARKER FILTERS ON TOOLS - EG TreeShowPeers
+        */
 
 
-/*
-if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 'ServiceIHTrees.TNSHelpTopicsOrdered') {
-    
-    //Create List of iahelp__HelpBookmark__c which are related to current User
-    Set <Id> helpTopicIds = new Set <Id>();
-    List <iahelp__HelpBookmark__c> lstBmk = [SELECT Id, Name, OwnerId, iahelp__HelpTopic__c 
-                                             FROM iahelp__HelpBookmark__c 
-                                             where OwnerId = :UserInfo.getUserId()];
-    for(iahelp__HelpBookmark__c bmkObj : lstBmk) {
-        helpTopicIds.add(bmkObj.iahelp__HelpTopic__c);
-    }
-    
-    for(ServiceIHLists.ListingItem l : LIs) {
-        
-        if(helpTopicIds.contains(l.Id)) {
-            l.RowState += ' Bookmarked';
-        } else {
-            l.RowState += ' NotBookmarked';
-        }
-        
-    }   
-}           
-*/                    
+        /*
+        if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 'ServiceIHTrees.TNSHelpTopicsOrdered') {
+            
+            //Create List of iahelp__HelpBookmark__c which are related to current User
+            Set <Id> helpTopicIds = new Set <Id>();
+            List <iahelp__HelpBookmark__c> lstBmk = [SELECT Id, Name, OwnerId, iahelp__HelpTopic__c 
+                                                    FROM iahelp__HelpBookmark__c 
+                                                    where OwnerId = :UserInfo.getUserId()];
+            for(iahelp__HelpBookmark__c bmkObj : lstBmk) {
+                helpTopicIds.add(bmkObj.iahelp__HelpTopic__c);
+            }
+            
+            for(ServiceIHLists.ListingItem l : LIs) {
+                
+                if(helpTopicIds.contains(l.Id)) {
+                    l.RowState += ' Bookmarked';
+                } else {
+                    l.RowState += ' NotBookmarked';
+                }
+                
+            }   
+        }           
+        */                    
 
                     /*
                     FOR CASES WHERE LISTING ITEM ID IS A TOPIC: USE THESE TO GET FULL TOPIC DETAILS 
@@ -5613,7 +5632,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                         inClause += '\'' + L.Id + '\',';
                     }        
                     if (inClause.length() > 0) {inClause = inClause.subString(0, inClause.length() - 1);} 
-                                       
+                                        
                     strSOQLHlp += 'WHERE Id IN (' + inClause + ')';
                     try {
                         NodeTopics = database.query(strSOQLHlp);
@@ -5660,7 +5679,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     if (ActionCode != 'Stickies') {
                         LIs.sort();
                     }
-                                             
+                                                
                     retVal = concatenateJSON(retVal, JSON.serialize(LIs));
 
                 } else {
@@ -5720,7 +5739,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                                 ];
                             
                             strTemp = JSON.serialize(HI); 
-                                       
+                                        
                         } catch (exception exc) {
                             // If getting the sticky failed, do nothing further
                         }    
@@ -5794,7 +5813,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                                 // Exception means field not present at all: skip
                             }
                         }            
-    
+
                         helpInfo.add(cH.Hlp);
                     }                    
 
@@ -5805,11 +5824,11 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                         string CXT = IHContext;
                         
                         timeStamps += getTimeStamp() + 'getTools - Action code "' + ActionCode + '": about to log Help Topic interaction for component "' + ClientComponentId + '"... ';                        
-                       
+                        
                         // Commenting as of release version 1.55 to avoid duplicate logging of full topic interaction
-                       
+                        
                         // cH.svsI.logInteraction (4, 'Help Topic Viewed (LEX)', CXT, null, null, cH.Hlp.Id, null, null);
-                          
+                            
                 
                         // Also return details of any custom fields            
                         if (cH.CustomFields != null) {
@@ -5844,7 +5863,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
         
                         LIs.add(LI);
                         retVal = concatenateJSON(retVal, JSON.serialize(LIs));
-    
+
                         
                         // Add a Name / Value pair item to hold a keyword-parsed copy of topic description
                         strTemp = '';
@@ -5852,8 +5871,8 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                         timeStamps += getTimeStamp() + 'getTools - HelpTopic action marking keywords... ';                        
                         strTemp = cH.markKeywords(cH.Hlp, true); 
                         timeStamps += getTimeStamp() + 'getTools - HelpTopic action - keywords marked... ';
-                                 
-                                                          
+                                    
+                                                            
                         NVP = new NameValuePair('ParsedContent', 'HelpTopicDescription', strTemp);
                         retVal = concatenateJSON(retVal, JSON.serialize(NVP));
 
@@ -5861,11 +5880,11 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     } //End if found Topic OK      
                     
                     timeStamps += getTimeStamp() + 'getTools - HelpTopic action processed... ';
-                                  
+                                    
                 } // End if action = HelpTopic
             } // End if action = HelpTopic OR NewSticky      
             
-          
+            
             // Also, tack on global settings
             if (SkipGlobals != true) {
                 iahelp__IASetIHOrg__c GS = ControllerSettings.getSettings();
@@ -5909,7 +5928,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                 strTemp = ControllerSettings.getPortalPageName(false);        
                 NVP = new NameValuePair('PortalPage', 'PortalPage', strTemp);
                 NVPs.add(NVP);            
-    
+
                 
                 // Also, tack on details of the styles in the custom CSS as a style text block
                 strTemp = '';
@@ -5932,7 +5951,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                 
                 // Also tack on internationalisations: note that there is considerable overlap with IHTools
                 // (for IHDetail / topic editor) so we include translations for that directly. Ditto Globals
-    
+
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('LUXComponents', false);            
                 for (string trans : mapDlgLocs.keyset()) {
                     NVP = new NameValuePair('Internationalisations', trans, mapDlgLocs.get(trans));
@@ -5950,7 +5969,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     NVPs.add(NVP);  
                 }
 
-    
+
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('Globals', false);            
                 for (string trans : mapDlgLocs.keyset()) {
@@ -5965,14 +5984,14 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     NVPs.add(NVP);  
                 }
                 
-    
+
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('Branding', false);            
                 for (string trans : mapDlgLocs.keyset()) {
                     NVP = new NameValuePair('Internationalisations', trans, mapDlgLocs.get(trans));
                     NVPs.add(NVP);            
                 }
-    
+
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('ClientSide', false);            
                 for (string trans : mapDlgLocs.keyset()) {
@@ -5987,21 +6006,21 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     NVPs.add(NVP);  
                 }
 
-                           
+                            
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('iahelp__IHConfirmActions', false);            
                 for (string trans : mapDlgLocs.keyset()) {
                     NVP = new NameValuePair('Internationalisations', trans, mapDlgLocs.get(trans));
                     NVPs.add(NVP);            
                 }
-    
+
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('iahelp__IHSearchResults', false);            
                 for (string trans : mapDlgLocs.keyset()) {
                     NVP = new NameValuePair('Internationalisations', trans, mapDlgLocs.get(trans));
                     NVPs.add(NVP);            
                 }
-    
+
                 mapDlgLocs = null;
                 mapDlgLocs = ServiceLocalisation.getDialogueLocalisations('iahelp__IHTools', false);            
                 for (string trans : mapDlgLocs.keyset()) {
@@ -6016,10 +6035,10 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                 
                 NVP = new NameValuePair('Permissions', 'isAnalyst', '' + cIHQ.isAnalyst);
                 NVPs.add(NVP);            
-    
+
                 NVP = new NameValuePair('Permissions', 'isAuthor', '' + cIHQ.isAuthor);
                 NVPs.add(NVP);            
-    
+
                 NVP = new NameValuePair('Permissions', 'isAdministrator', '' + cIHQ.isAdministrator);
                 NVPs.add(NVP);            
                 
@@ -6058,7 +6077,7 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                 }
                 
             } catch (exception exc) {}
-                                     
+                                        
             
             // Tack on Vote Options if retrieving a single Help Topic
             if (ActionCode == 'HelpTopic') {
@@ -6072,10 +6091,10 @@ if (providerClassName == 'ServiceIHTrees.TNSHelpTopics' || providerClassName == 
                     NVPs.add(NVP);            
                 }
             }
-             /*if(ActionCode == 'checkUserGeolocationAccess'){
+                /*if(ActionCode == 'checkUserGeolocationAccess'){
                 iahelp__IASetIHOrg__c GS = ControllerSettings.getSettings();
                 retVal = concatenateJSON(retVal, JSON.serialize(GS));
-               
+                
             }*/
 
             retVal = concatenateJSON(retVal, JSON.serialize(NVPs));
