@@ -41,6 +41,7 @@ Member data
 	<aura:attribute name="CarouselTimer" type="integer" default="6000" required="true" access="public" />
 
 	<aura:attribute name="CurrentRecord" type="sObject" required="false" access="global" />    
+	<aura:attribute name="DataMode" type="string" required="false" default="View" access="public" />
 
 <!-- 
 ================================================

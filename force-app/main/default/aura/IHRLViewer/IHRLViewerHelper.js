@@ -407,5 +407,28 @@ cmp.set("v.RLStyle", RLDefault);
         		
 	},
 
-	    
+	doSelectReadingListDialog : function(cmp, helper) {
+		let dlgTitle = 'Select Reading List';
+		let dlgType = 'LUX'; // component dialog
+		let dlgSource = 'c:IHList';
+	
+	// Prepare the frame attributes for the IHList embedded in the dialog:
+	let dlgAttrs = {		
+					CardConfig:'ShowReadingLists',
+					ListingStyle: 'Narrow',
+					ListingClickActionCode: 'RL_SELECT_FOR_VIEW',
+					ToolContext: 'ShowReadingLists',
+					ActionCode: 'ShowReadingLists',
+					SkipGlobals: true,
+					SuppressHeader : true
+				};
+	
+		let dlgHeight = 400;
+		let allowScroll = true;
+		let largeMode = false;
+		let showFooter = false;
+	
+		// Call doDialogue to open
+		helper.doDialogue(dlgTitle, dlgType, dlgSource, dlgAttrs, dlgHeight, allowScroll, largeMode, showFooter, cmp, false);
+	}   
 })

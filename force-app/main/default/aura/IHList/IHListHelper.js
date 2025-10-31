@@ -244,7 +244,15 @@ case 'CommentsHPLs':
                 cmp.set('v.Icon', 'fa-list-ol');
                 cxt = cmp.get('v.recordId');
                 break;
-                
+
+			case "Show Reading Lists" :
+				case "ShowReadingLists" :
+					cmp.set('v.ToolContext', 'ShowReadingLists');
+					cmp.set('v.ActionCode', 'ShowReadingLists');
+					cmp.set('v.Icon', 'fa-list-ol');
+					cxt = ''; // No specific context - we want ALL accessible lists
+					break;
+					
             case "Related Help" :
             case "RelatedHelp" :
                 cmp.set('v.ToolContext', 'CardRelatedHelp');

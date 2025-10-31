@@ -111,6 +111,9 @@
 			if (act === 'View') {
 				cmp.set("v.DataMode", 'View');
 			}
+			if (act === 'SelectReadingList') {
+				helper.doSelectReadingListDialog(cmp, helper);
+			}
 
 			// Pin the current Reading List for this component instance
 			if (act === 'PinRL') {
@@ -125,7 +128,7 @@
 					var state = response.getState ? response.getState() : (response.getReturnValue ? 'SUCCESS' : 'ERROR');
 					if (state === "SUCCESS") {
 						// Empty string denotes success per logAuthorConfig pattern
-						cmp.set("v.DataMode", "PinRL");
+						cmp.set("v.DataMode", "View");
 					} else {
 						// keep UX simple; optionally surface toast via IHCard if available
 						cmp.set("v.DataMode", "View");
@@ -134,6 +137,51 @@
 				$A.enqueueAction(action);
 			}
         }
+		
+		// Handle when user clicks a reading list item in the dialog
+		// IMPORTANT: Scope this to only the instance that opened the dialog.
+		// We do that by ensuring the event is both from our own component OR our own dialogue.
+		if (act === 'RL_SELECT_FOR_VIEW') {
+			var parameters = event.getParam("Parameters");
+			console.log('RL_SELECT_FOR_VIEW parameters:', parameters);
+			var readingListId = parameters;
+			if (parameters && parameters.indexOf('^') > -1) {
+				var parts = parameters.split('^');
+				readingListId = parts[0];
+			}
+			
+			if (!readingListId) {
+				console.error('No reading list ID provided');
+				return;
+			}
+			
+			console.log('Reading List ID selected:', readingListId);
+			
+			helper.showSpinner(cmp);
+			cmp.set("v.IHContext", readingListId);
+			
+			var act = cmp.get("c.getTools");
+			act.setParams({
+				"ToolContext": 'RLViewer',
+				"ActionCode": 'ReadingListEntries',
+				"IHContext": readingListId,
+				"ClientComponentId": cmp.get("v.ComponentId"),
+				"SkipGlobals": false
+			});
+			
+			act.setCallback(helper, function (response, cmp) {
+				helper.processTools(response, cmp);
+				var RLEs = cmp.get("v.ListingItems");
+				
+				if (RLEs && RLEs.length > 0 && RLEs[0].iahelp__HelpReadingList__r) {
+					cmp.set("v.Title", RLEs[0].iahelp__HelpReadingList__r.Name);
+				}
+				// Now switch back mode to View
+				cmp.set("v.DataMode", 'View');
+			});
+			
+			$A.enqueueAction(act);
+		}
         
 	},
 	
@@ -244,7 +292,58 @@ if (lst[i].iahelp__HelpTopic__r.iahelp__Template__r.iahelp__PageURL__c.indexOf(L
     	
     	
     },
-	
-	
-	
+		
+	// Handle when user clicks a reading list item in the dialog
+	// handleReadingListSelect : function(cmp, event, helper) {
+	// 	var actionCode = event.getParam("ActionCode");
+	// 	var parameters = event.getParam("Parameters");
+		
+	// 	console.log('handleReadingListSelect actionCode:', actionCode, 'parameters:', parameters);
+		
+	// 	if (actionCode !== 'RL_SELECT_FOR_VIEW') {
+	// 		console.log('Ignoring - waiting for RL_SELECT_FOR_VIEW, got:', actionCode);
+	// 		return;
+	// 	}
+		
+	// 	console.log('User selected a reading list from dialog');
+		
+	// 	var readingListId = parameters;
+	// 	if (parameters && parameters.indexOf('^') > -1) {
+	// 		var parts = parameters.split('^');
+	// 		readingListId = parts[0];
+	// 	}
+		
+	// 	if (!readingListId) {
+	// 		console.error('No reading list ID provided');
+	// 		return;
+	// 	}
+		
+	// 	console.log('Reading List ID selected:', readingListId);
+		
+	// 	helper.showSpinner(cmp);
+	// 	cmp.set("v.IHContext", readingListId);
+		
+	// 	var act = cmp.get("c.getTools");
+	// 	act.setParams({
+	// 		"ToolContext": 'RLViewer',
+	// 		"ActionCode": 'ReadingListEntries',
+	// 		"IHContext": readingListId,
+	// 		"ClientComponentId": cmp.get("v.ComponentId"),
+	// 		"SkipGlobals": false
+	// 	});
+		
+	// 	act.setCallback(helper, function (response, cmp) {
+	// 		helper.processTools(response, cmp);
+	// 		var RLEs = cmp.get("v.ListingItems");
+			
+	// 		if (RLEs && RLEs.length > 0 && RLEs[0].iahelp__HelpReadingList__r) {
+	// 			cmp.set("v.Title", RLEs[0].iahelp__HelpReadingList__r.Name);
+	// 		}
+	// 		// Now switch back mode to View
+	// 		cmp.set("v.DataMode", 'View');
+	// 	});
+		
+	// 	$A.enqueueAction(act);
+	// }
+		
 })

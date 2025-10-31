@@ -530,6 +530,7 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
             mLocs.put('TipTreePrint', 'Open a printable view of the contents of  this Tree');
             mLocs.put('TipTreeVotes', 'Show Votes cast on this Tree');
             mLocs.put('TipShowRLDescriptions', 'Show Reading List Entry description text');
+            mLocs.put('TipSelectReadingList', 'Get all the reading list records');
             mLocs.put('TipRLMediaLarge', 'Show media in large format');
             mLocs.put('TipRLMediaMedium', 'Show media in medium format');
             mLocs.put('TipRLMediaSmall', 'Show media in small format');
@@ -617,6 +618,7 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
             mLocs.put('ToolLabelCommentsRLs', 'Comments - Reading Lists');
             mLocs.put('ToolLabelCommentsHPLs', 'Comments - Page Layouts');
             mLocs.put('ToolLabelPinReadingList', 'Pin Reading List');            
+            mLocs.put('ToolLabelSelectReadingList', 'Select Reading List');            
             mLocs.put('TitleCustomLinkHelp', 'Links Help');
             mLocs.put('TitleEditTopic', 'Edit Topic');
             mLocs.put('TitleFieldHelp', 'Field Help');

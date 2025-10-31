@@ -3184,6 +3184,7 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
             if (ActionCode == 'Keywords') {theBit = 1;}
             if (ActionCode == 'HelpBookmarks') {theBit = 2;}
             if (ActionCode == 'ReadingLists' || ActionCode == 'ReadingListsXF' || ActionCode == 'ReadingListEntries') {theBit = 3;}
+            if (ActionCode == 'ShowReadingLists') {theBit = 3;}
             if (ActionCode == 'AllResources') {theBit = 4;}
             if (ActionCode == 'AllRelatedHelp') {theBit = 5;}
             if (ActionCode == 'Search') {theBit = 6;}
@@ -3489,6 +3490,47 @@ if (mapRels.get(HR.ReferringTopic__c) == null) {
                 cIHQ.LUXParams = IHContext;
             }
 
+            if (ActionCode == 'ShowReadingLists') {
+                localDiags += 'Processing All Reading Lists... ';
+                
+                // Check user permission - Authors only (level 4+)
+                ServiceSecurity Security = new ServiceSecurity();
+                Boolean[] Perms = Security.UserPermissions();
+                
+                if (!Perms[3]) {
+                    // User is not Author - return empty
+                    localDiags += 'User not Author - no access. ';
+                } else {
+                    // Query ALL reading lists
+                    List<iahelp__HelpReadingList__c> allRLs = [
+                        SELECT Id, Name
+                        FROM iahelp__HelpReadingList__c
+                        ORDER BY LastModifiedDate DESC
+                        LIMIT 500
+                    ];
+                    
+                    localDiags += 'Found ' + allRLs.size() + ' reading lists. ';
+                    
+                    // Format each reading list as a ListingItem
+                    for (iahelp__HelpReadingList__c rl : allRLs) {
+                        LI = new ServiceIHLists.ListingItem();
+                        LI.Id = rl.Id;
+                        LI.Label = rl.Name;
+                        //LI.Title = (rl.iahelp__Summary__c != null) ? rl.iahelp__Summary__c : '';
+                        LI.Icon = 'fa-list-ol';
+                        LI.IconTitle = '';
+                        LI.StyleClass = '';
+                        LI.IconLabel = '';
+                        LI.ActionCode = 'RL_SELECT_FOR_VIEW';
+                        LI.Parameters = rl.Name.escapeHtml4();
+                        LI.RowState = '';
+                        
+                        LIs.add(LI);
+                    }
+                    
+                    localDiags += 'Added ' + LIs.size() + ' items to list. ';
+                }
+            }
 
             // v1.41+ : performance enhancements - don't initialie QAM settings unless necessary
             if (ActionCode == 'HelpTopic') {
