@@ -1434,6 +1434,120 @@
                     appEvent.fire();
                     break;
 
+            case 'HelpTopicsPicker':
+
+                // Step 1: Collect selected Help Topic Ids using DOM, avoiding Proxy issues
+                try {
+                    var helpTopicIds = [];
+                    console.log('IHContext HelpTopicsPicker : ' ,cmp.get('v.IHContext'));
+                    // Prefer elements that explicitly carry data-id attributes
+                    var selectedWithData = document.querySelectorAll('.IsSelected[data-id], .IsSelected [data-id]');
+                    for (var i = 0; i < selectedWithData.length; i++) {
+                        var dataId = selectedWithData[i].getAttribute('data-id');
+                        if (dataId) {
+                            helpTopicIds.push(dataId);
+                        }
+                    }
+                    // Also scan selected rows by id patterns LINarrow_<Id> / LIWide_<Id>
+                    var selectedElems = document.querySelectorAll('.IsSelected');
+                    for (var j = 0; j < selectedElems.length; j++) {
+                        var el = selectedElems[j];
+
+                        var elId = el.id || (el.closest('[id]') ? el.closest('[id]').id : null);
+                        if (elId && (elId.indexOf('LINarrow_') === 0 || elId.indexOf('LIWide_') === 0)) {
+                            var parts = elId.split('_');
+                            if (parts.length > 1) {
+                                var candidate = parts.slice(1).join('_');
+                                if (candidate && helpTopicIds.indexOf(candidate) === -1) {
+                                    helpTopicIds.push(candidate);
+                                }
+                            }
+                        }
+                    }
+                   
+                    // Step 2: Resolve Reading List Id (prefer inner modal component recordId, fallback to current card recordId)
+                    var readingListId = null;
+                    try {
+                        var inner = ourModal.get("v.theLUXComp");
+                        if (inner) {
+                            readingListId = inner.get("v.recordId");
+                        }
+                    } catch (e) { /* ignore */ }
+                    if (!readingListId) {
+                        // Try current card's recordId
+                        readingListId = cmp.get("v.recordId");
+                    }
+                    if (!readingListId) {
+                        // Try HelpRecordId as an additional fallback used elsewhere in card logic
+                        readingListId = cmp.get("v.HelpRecordId");
+                    }
+
+                    if (!readingListId) {
+                        alert('Error: Reading List Id not found.');
+                        break;
+                    }
+                    if (!helpTopicIds.length) {
+                        alert('No topics selected.');
+                        break;
+                    }
+
+                    // Step 3: Create RLEs for each selected Help Topic by invoking Apex createHelpReadingListEntry
+                    var remainingTopicCount = helpTopicIds.length;
+                    var hadErrors = false;
+                    var errorMsgs = [];
+
+                    helpTopicIds.forEach(function (htId) {
+                        var act = cmp.get("c.createHelpReadingListEntry");
+                        act.setParams({
+                            readingListId: readingListId,
+                            helpTopicId: htId
+                        });
+                        act.setCallback(this, function (response) {
+                            var state = response.getState();
+                            if (state === 'SUCCESS') {
+                                var ret = response.getReturnValue();
+                                if (ret && ret.indexOf('Error') === 0) {
+                                    hadErrors = true;
+                                    errorMsgs.push(ret);
+                                }
+                            } else {
+                                hadErrors = true;
+                                var errs = response.getError();
+                                var err = (errs && errs[0] && errs[0].message) ? errs[0].message : 'Unknown error';
+                                errorMsgs.push(err);
+                            }
+
+                            remainingTopicCount -= 1;
+                            if (remainingTopicCount === 0) {
+                                // Optional: clear selection highlights
+                                var sel = document.querySelectorAll('.IsSelected');
+                                for (var k = 0; k < sel.length; k++) {
+                                    sel[k].classList.remove('IsSelected');
+                                }
+
+                                if (hadErrors) {
+                                    alert('Some items could not be added:\n' + errorMsgs.join('\n'));
+                                } 
+
+                                //Step 4: Refresh Reading List view/listing
+                                var appEvent = $A.get("e.c:evtPassThrough");
+                                appEvent.setParams({
+                                "SourceComponent": cmp.get("v.ComponentId"),
+                                "ActionCode": "RefreshCurrentList",
+                                "Parameters": "",
+                                });
+                                appEvent.fire();
+                            }
+                        });
+                        $A.enqueueAction(act);
+                    });
+
+                } catch (ex) {
+                    console.error('HelpTopicsPicker post-processing failed: ', ex);
+                    alert('Error adding topics to reading list: ' + ex);
+                }
+                break;
+
                 default:
                     console.log('postProcessDialogue - no processing required for specified sction');
                     break;

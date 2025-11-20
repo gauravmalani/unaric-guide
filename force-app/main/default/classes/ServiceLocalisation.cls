@@ -925,6 +925,7 @@ if (mLocs.get(D.getAttributeValue('Name', '')) != null || context == 'LUXCompone
             mLocs.put('AdviceLabelRLNotFound', 'The requested Reading List could not be found. If you\'ve just deleted the last entry in a Reading List, please close this dialogue to continue.');
             mLocs.put('MessageConfirmDeleteEntryAndRL', 'Deleting the last Reading List Entry will also delete this Reading List. Do you wish to proceed?');
             mLocs.put('TipbtnAddRLEntries', 'Add Reading List Entry');
+            mLocs.put('TipbtnShowHTList', 'Add Existing Help Topic');            
             mLocs.put('TipDeleteEntry', 'Delete Entry');
             mLocs.put('TipDeleteEntryAndRL', 'Delete Entry and Reading List');
             mLocs.put('TipGotoTopic', 'Go to this Help Topic');

@@ -87,32 +87,37 @@
         
         cmp.set("v.ActionCode", "TreeNodes");
         
-/*
-NEED TO SET CONTEXT TO HOME ROOT IN CASES RELATING TO COMPLEX PROVIDERS
-SUCH AS ServiceIHTrees.TNSHelpedPageLayouts / RECONFIGURE MODE:
-INSTEAD OF A HELPED PAGE LAYOUT ID AS CONTEXT (ROOT NODE - THE HPL WHOSE ELEMENTS
-ARE BEING STUDIED) WE WANT OBJECT CODE ^ ELEMENT IDENT - WHICH WILL FILTER TO A 
-PARTICULAR ELEMENT
-*/
+		/*
+		NEED TO SET CONTEXT TO HOME ROOT IN CASES RELATING TO COMPLEX PROVIDERS
+		SUCH AS ServiceIHTrees.TNSHelpedPageLayouts / RECONFIGURE MODE:
+		INSTEAD OF A HELPED PAGE LAYOUT ID AS CONTEXT (ROOT NODE - THE HPL WHOSE ELEMENTS
+		ARE BEING STUDIED) WE WANT OBJECT CODE ^ ELEMENT IDENT - WHICH WILL FILTER TO A 
+		PARTICULAR ELEMENT
+		*/
 
-//        cmp.set("v.IHContext", cmp.get("v.RootNode"));
+		//        cmp.set("v.IHContext", cmp.get("v.RootNode"));
 
-var complexRoot = false;
-var D1 = '^';
+		var complexRoot = false;
+		var RLMarker = 'rL_';
+		var D1 = '^';
 
-if (cmp.get("v.HomeRoot") != '' && cmp.get("v.HomeRoot") + '' != 'undefined') {
-	if (cmp.get("v.HomeRoot").indexOf(D1) != -1) {
-		complexRoot = true;
-	}
-}
+		if (cmp.get("v.HomeRoot") != '' && cmp.get("v.HomeRoot") + '' != 'undefined') {
+			if (cmp.get("v.HomeRoot").indexOf(D1) != -1) {
+				complexRoot = true;
+			}
+		}
 
-if (complexRoot == true) {
-    cmp.set("v.IHContext", cmp.get("v.HomeRoot"));
-} else {
-    cmp.set("v.IHContext", cmp.get("v.RootNode"));
-}        
-
-        
+		if (complexRoot == true) {
+			cmp.set("v.IHContext", cmp.get("v.HomeRoot"));
+		} else {
+			cmp.set("v.IHContext", cmp.get("v.RootNode"));
+		}        
+		
+		var root = cmp.get("v.IHContext");
+		if (root.startsWith(RLMarker)) {
+			root = root.substring(RLMarker.length);
+			cmp.set("v.IHContext", root);
+		}
         act.setParams({ 
             "ToolContext" : cmp.get("v.ToolContext"), 
             "ActionCode" : cmp.get("v.ActionCode"),

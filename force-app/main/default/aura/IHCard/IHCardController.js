@@ -987,6 +987,32 @@
 
 				break;
 
+			case 'SearchHelpTopics':
+			//case 'AddReadingListEntries':
+
+				// Show spinner for server call
+				helper.showSpinner(cmp);
+				
+				// Call getTools with new action code
+				var act = cmp.get("c.getTools");
+				
+				act.setParams({
+					"ToolContext": cmp.get("v.ToolContext"),
+					"ActionCode": "Search",
+					"IHContext": cmp.get("v.recordId"),
+					"ClientComponentId": cmp.get("v.ComponentId"),
+					"Params": '',
+					"SkipGlobals": false,
+				});
+				
+				act.setCallback(helper, function (response, cmp) {
+					helper.processTools(response, cmp);
+					helper.logListType(cmp, event, helper, theId);
+				});
+				
+				$A.enqueueAction(act);
+				
+				break;
 
 			case 'RelatedHelpLink':
 			case 'RelatedResourceLink':
@@ -1842,7 +1868,7 @@
 			case 'ToggleSelected':
 				// Mark the list row whose tool cued this action as among the collection of those "selected"
 				var LI;
-
+				console.log('Toggle selected row: ' + theId[0]);
 				LI = document.getElementById('LINarrow_' + theId[0]);
 				$A.util.toggleClass(LI, 'IsSelected');
 				LI = document.getElementById('LIWide_' + theId[0]);

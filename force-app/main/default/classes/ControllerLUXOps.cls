@@ -9399,6 +9399,32 @@ global static string addExistingTopictoRL(string ReferringHTID, string RelatedHT
     //Detail : Chat GPT API call method for zTest1 component (test phase) 
     //Date : 21/May/2024
     /////////////////////////////////////////////////////////////////////
-   
+    /**
+     * Create a Help Reading List Entry for a given Reading List Id and Help Topic Id.
+     * Returns empty string on success or an error message starting with 'Error' on failure.
+     */
+    @AuraEnabled
+    public static String createHelpReadingListEntry(String readingListId, String helpTopicId) {
+        try {
+            // Permission: reuse existing EditHelp check pattern
+            ServiceSecurity sS = new ServiceSecurity();
+            if (!sS.IsAllowed(ServiceSecurity.KnownSecureOperations.EditHelp)) {
+                Map<String,String> locs = ServiceLocalisation.getDialogueLocalisations('Globals', false);
+                return 'Error: ' + locs.get('MessageNoRights');
+            }
+            // Use existing Reading List service to add the topic to RL
+            List<HelpReadingListEntry__c> RLEs = [SELECT Id FROM HelpReadingListEntry__c WHERE HelpReadingList__c = :ReadingListId];
+            HelpReadingListEntry__c RLE = new HelpReadingListEntry__c();
+            RLE.HelpReadingList__c = readingListId;
+            RLE.HelpTopic__c = helpTopicId;
+            RLE.ReadingOrder__c = RLEs.size();
+            
+            insert RLE;
+            System.debug('RLE : '+RLE);
+            return 'Successfully linked Help topic to reading List.';
+        } catch (Exception e) {
+            return 'Error: ' + e.getMessage();
+        }
+    }
 
 }

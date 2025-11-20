@@ -367,22 +367,6 @@
 
 
 								// Log a tree search complete interaction
-								// actI.setParams({ 
-								//     "iTyp" : "23",
-								//     "Description" : term,
-								//     "IHContext" : root + '^' + P[0]
-								// });                               
-
-								//   actI.setCallback(this, function (response, cmp){ 
-								// 	if (response.getState() === 'SUCCESS') {
-								// 		// Do nothing if OK
-								// 	} else {
-								// 		console.log('"' + cmp.get("v.ComponentId") + '" - ERROR logging tree search interaction');
-								// 	}
-								// });
-
-								// Send log interaction action
-								// $A.enqueueAction(actI);
 
 								helper.logLUXInteractions(cmp, 23, term, root + '^' + P[0]).then((response) => {
 									//do nothing to response.
@@ -1287,6 +1271,34 @@
 					prompt(helper.Internationalise(cmp, 'MessageShareViaURL'), U);
 
 					break;
+
+				case 'RLBuilderShowHelpTopics':
+					// Open a dialog listing Help Topics; on selection, create a Help Reading List Entry
+					// Source component for body
+					var srcCmp = 'iahelp:IHList';
+					// Title and configuration
+					var dlgTitle = 'Help Topics List';
+					var cardCfg = 'HelpTopicsPicker';
+					// Build attribute map for IHDialogue
+					var attrMap = {
+						"SuppressHeader": false,
+						"SuppressFooter": true,
+						"SuppressPoweredBy": true,
+						"ListingClickActionCode" : "DoNothing",
+						"Height": 400,
+						"CardConfig": cardCfg,
+						"ToolContext": "ReadingListAddExistingTopic",
+						"NoDataMessage": "Enter a search term to locate an existing record",
+						"ComponentId": "HelpTopicsPickerDlg",
+						"Parent": cmp
+					};
+					helper.setDialogueActionCode(cmp, 'HelpTopicsPicker');
+
+					// Launch the dialogue
+					helper.doDialogue(dlgTitle, 'LUX', srcCmp, attrMap, 480, true, false, false, cmp, false);
+					//Raise an event to show these topic ids have been select
+					break;
+
                 case 'Search':	
                     var src = 'c:IHList';
                     var Ttl;

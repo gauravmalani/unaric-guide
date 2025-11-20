@@ -146,12 +146,12 @@
                 break;
                 
 
-case 'CommentsAll':
-case 'CommentsTopics':
-case 'CommentsRLs':
-case 'CommentsHPLs':
-	cmp.set('v.ActionCode', listConfig);
-	break;
+			case 'CommentsAll':
+			case 'CommentsTopics':
+			case 'CommentsRLs':
+			case 'CommentsHPLs':
+				cmp.set('v.ActionCode', listConfig);
+				break;
 
 
 			case "Disambiguation" :
@@ -252,6 +252,10 @@ case 'CommentsHPLs':
 					cmp.set('v.Icon', 'fa-list-ol');
 					cxt = ''; // No specific context - we want ALL accessible lists
 					break;
+
+			case "HelpTopicsPicker" : 
+				cmp.set('v.Title', 'Help Topics');
+				break;
 					
             case "Related Help" :
             case "RelatedHelp" :
